@@ -28,7 +28,8 @@
 
 ### 5. Incomplete or deferred
 
-- **Admin 404 (CODE FIXED, CDN CACHE PENDING)**: Middleware now properly handles admin.superseller.agency /login → /en/login redirect. Deployed to Vercel (4 deploys). Root `/` works (MISS, fresh response). But `/login` has a stale CDN cache (age 5.6h, `stale-while-revalidate=31536000`) from the old deployment that still serves 404. Will self-resolve as CDN revalidates. If urgent, manually purge Vercel edge cache via Vercel dashboard → Settings → Data Cache → Purge.
+- **Admin 404 (FIXED)**: Root cause was TWO issues: (1) Middleware didn't rewrite `/login` to `/en/login` on admin domain. (2) `.vercel/project.json` pointed to wrong project (`superseller-site` / `prj_Pj64AYbyUcN1fEJRaqvJt7XY6mEU`) instead of the project that actually serves the custom domains (`rensto-site` / `prj_AKC4gUSm2EWNj3RR8Cou4cILHYxp`). 4 deploys went to the wrong project before discovery. Fixed: middleware redirects `/login` → `/en/login`; `.vercel/project.json` at repo root corrected to `rensto-site`. Deploy to `rensto-site` confirmed working: admin.superseller.agency → 200 login page.
+  - **Rule**: The `.vercel/project.json` for `vercel --prod` MUST be at repo root (not in `apps/web/superseller-site/`) and point to `prj_AKC4gUSm2EWNj3RR8Cou4cILHYxp` (`rensto-site`). The `apps/web/superseller-site/.vercel/project.json` is also set but deploy must run from repo root because Vercel project has `rootDirectory: apps/web/superseller-site`.
 - **VideoForge quality**: Fixes implemented (Mar 4) but "NEVER validated end-to-end" — PRODUCT_STATUS blocker: run 1 test job.
 - **DECISIONS §14 action items**: "Update all model references (2.5-flash → 3-flash)", "Check Aitable.ai for outdated VideoForge process data", "Remove contradictions between sources" — unchecked.
 

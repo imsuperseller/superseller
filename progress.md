@@ -31,7 +31,7 @@
 - .env.example: QuickBooks section commented with cancellation note; AIRTABLE_PAT commented with retirement note.
 
 ### Execution phase (Mar 9 continued)
-- **Admin 404**: Middleware fix deployed — admin root works (MISS). `/login` still has stale CDN cache (SWR=1yr); will self-resolve. Code: `/login` → redirect to `/en/login` on admin domain.
+- **Admin 404 FIXED**: Root cause: `.vercel/project.json` pointed to wrong Vercel project. Custom domains are on `rensto-site` not `superseller-site`. Fixed project config + deployed middleware `/login` → redirect `/en/login`. Verified: admin.superseller.agency → 200.
 - **NOTEBOOKLM_SCOPE.md**: Marked DROPPED in DECISIONS §4 — scope already covered by CLAUDE.md §4.
 - **Gemini model refs**: Updated `fb-marketplace-lister/deploy-package/content-generator.js` (2.5-flash → 3-flash), `tools/seed-prompt-configs.ts` (8 occurrences), `tools/model-observatory/README.md` examples. Worker `gemini.ts` already on 3-flash. Telnyx ref left (external API).
 - **PORT_REFERENCE.md**: Fixed video-merge port 3001 → 3456 (contradicted Rensto port 3001 and findings.md).
@@ -43,7 +43,7 @@
 ### Still tracked
 - VideoForge one validation job (PRODUCT_STATUS blocker — needs API credits).
 - Server PM2 rename tourreel-worker → videoforge-worker (deferred).
-- Admin login CDN cache will self-clear (monitor).
+- Admin login: RESOLVED. Working at admin.superseller.agency.
 - DECISIONS §14 remaining items: Aitable.ai VideoForge data check, cross-source contradictions.
 
 ### Cost table (this session)

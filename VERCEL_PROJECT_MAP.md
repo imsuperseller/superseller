@@ -27,7 +27,8 @@
 ### After changes to superseller-site (main site, video, marketplace)
 
 1. Push to `main` — deploys **api.superseller.agency** (deploy-api.yml) and **superseller.agency** (deploy-main-site.yml).
-2. To deploy main site manually: from repo root `eval "$(grep -E '^VERCEL_TOKEN=' .env)" && vercel --prod` or Vercel dashboard → superseller-site → Redeploy.
+2. **Manual deploy**: From **repo root** (NOT from `apps/web/superseller-site/`): `vercel --prod`. The `.vercel/project.json` at repo root points to `rensto-site` (`prj_AKC4gUSm2EWNj3RR8Cou4cILHYxp`), which owns all custom domains.
+3. **CRITICAL**: The `rensto-site` Vercel project has `rootDirectory: apps/web/superseller-site` configured. Running `vercel --prod` from inside `apps/web/superseller-site/` will cause a double-path error. Always deploy from repo root.
 
 ### After changes to worker or other apps
 
