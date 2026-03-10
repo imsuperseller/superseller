@@ -6,6 +6,24 @@
 
 ---
 
+## 2026-03-10: Shai Friedman as Internal Customer (Portal + Compete)
+
+**What**: Treat Shai (owner) as an internal "customer" — same structure as paying clients — so everything (portal, compete, CRM) is organized in one place. No billing.
+
+**Built**:
+1. **Seed script** `apps/web/superseller-site/scripts/seed-shai-tenant.ts` — Creates Tenant `shai-personal-brand`, Brand, TenantUser (owner). Plan: 999 credits, all features enabled, tier `internal`. Run: `cd apps/web/superseller-site && npx tsx scripts/seed-shai-tenant.ts`
+2. **Compete scrape script** `apps/worker/src/scripts/shai-personal-brand-competitor-scrape.ts` — Cloned from Yoram pattern. Search terms: Iran freedom, Persian Jewish, Jewish content creator, Iran protest, etc. Country: US. Pass 1 (Haiku) + Pass 2 (Sonnet) with Shai context. Run: `cd apps/worker && npx tsx src/scripts/shai-personal-brand-competitor-scrape.ts`
+3. **Mission Control** — Shai Personal Brand status: green, detail: internal, tooltip updated with portal/compete URLs
+4. **PRODUCT_STATUS** — Shai row: ✅ PORTAL + COMPETE (was 🔴 NOT BUILT)
+
+**URLs**:
+- Portal: https://superseller.agency/portal/shai-personal-brand
+- Compete: https://superseller.agency/compete/shai-personal-brand
+
+**Next**: Run scrape to populate competitor ads, then rate at Compete page. Feed learnings into SocialHub.
+
+---
+
 ## 2026-03-10: Spec-Driven Development System — GSD Hybrid
 
 **What**: Built a hybrid of GSD's (get-shit-done) spec-driven planning with our existing Agent Behavior execution model. Takes the best ideas from GSD — requirement clarity, atomic commits, context rot prevention — without adopting GSD wholesale.

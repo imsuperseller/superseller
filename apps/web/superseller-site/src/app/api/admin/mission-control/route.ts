@@ -279,7 +279,7 @@ export async function GET() {
       { name: 'Elite Pro Remodeling', status: 'red', detail: '$2k BLOCKED', tooltip: '$2,000/mo SIGNED but NOT started\nBlocked on: IG credentials, not yet paying\nContact: Saar Bitton, Mor Dayan' },
       { name: 'Yoram (Insurance)', status: 'amber', detail: 'low priority', tooltip: 'Landing page / lead gen\nSite LIVE: yoramfriedman.co.il\nApify: empty (0 actors)' },
       { name: 'Yossi (Mivnim)', status: 'blue', detail: 'PAUSED', tooltip: 'Winner Studio customer\nPaused: war in Israel\nNext: Pesach April 2026' },
-      { name: 'Shai Personal Brand', status: 'red', detail: 'BROKEN', tooltip: '10K+ IG, 17.8K+ FB followers\nDashboard: iron-dome-os.vercel.app\nData pipeline BROKEN (Aitable tables deleted)' },
+      { name: 'Shai Personal Brand', status: 'green', detail: 'internal', tooltip: '10K+ IG, 17.8K+ FB followers\nPortal: /portal/shai-personal-brand\nCompete: /compete/shai-personal-brand\nInternal tenant — no billing' },
     ]
   });
 

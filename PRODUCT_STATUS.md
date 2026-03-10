@@ -17,7 +17,7 @@
 | **Elite Pro Remodeling** | Saar Bitton (owner), Mor Dayan (PM) | Daily IG content: 1 reel + 1 story + 1 carousel/day | $2,000/mo SIGNED — NOT started yet | 🔴 BLOCKED |
 | **Yoram** | Shai's father | Landing page / lead gen (family referral) | Lihi pays once Yoram recommends | ⚠️ LOW PRI |
 | **Yossi (Mivnim)** | Yossi | AI avatar videos (Winner Studio) | TBD — one Trump video delivered | ⏸ PAUSED (war in Israel, no parties) |
-| **Shai Personal Brand** | @shaifriedman | Instagram/FB automation — Iran viral persona | Internal — future affiliate / brand | 🔴 NOT BUILT |
+| **Shai Personal Brand** | @shaifriedman | Instagram/FB automation — Iran viral persona | Internal — no billing | ✅ PORTAL + COMPETE |
 
 **WhatsApp for customer comms**: Use Shai's personal session (14695885133) until confirmed safe to add customer numbers.
 
