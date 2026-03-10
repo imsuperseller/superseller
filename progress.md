@@ -20,7 +20,12 @@
 - Portal: https://superseller.agency/portal/shai-personal-brand
 - Compete: https://superseller.agency/compete/shai-personal-brand
 
-**Next**: Run scrape to populate competitor ads, then rate at Compete page. Feed learnings into SocialHub.
+**Scrape (2026-03-10)**: Ran `npx tsx src/scripts/shai-personal-brand-competitor-scrape.ts`. Result: 860 raw → 789 unique → 93 proven (14d+). Stored 93 ads with AI analysis (Haiku extraction + Sonnet replication briefs). Tiers: evergreen 20, winner 19, strong 20, promising 34.
+
+**Next**:
+1. **Rate ads**: Go to https://superseller.agency/compete/shai-personal-brand → magic-link login (shai@superseller.agency) → like/dislike + add notes per ad.
+2. **Refine SocialHub content**: Use liked ads and notes to inform content strategy (replication briefs in `meta.aiAnalysis`). Competitor-research skill §"Client feedback → RAG Update → Content Strategy". No automated pipeline yet — manually apply liked patterns and notes when creating SuperSeller/Shai social content.
+3. **iron-dome-os**: Consider rebuilding later with PostgreSQL instead of Aitable (Aitable retired). Note in findings.
 
 ---
 

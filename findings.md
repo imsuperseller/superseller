@@ -1,5 +1,13 @@
 ---
 
+## 2026-03-10: iron-dome-os — Rebuild Consideration
+
+**Context**: iron-dome-os (personal brand dashboard at iron-dome-os.vercel.app) previously used Aitable tables. Aitable.ai is retired for transactional use; PostgreSQL is the only transactional DB.
+
+**Consideration**: Rebuild iron-dome-os later using PostgreSQL instead of Aitable. Same pattern as competitor_ads, content_entries, etc. — store in existing Superseller DB, serve via API. Document when prioritization happens.
+
+---
+
 ## 2026-03-10: SuperSeller Ops Center — Data Integrity Findings
 
 During Ops Center build, discovered column name mismatches between code assumptions and actual DB schema:
