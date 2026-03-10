@@ -1,0 +1,105 @@
+name: Deploy Worker (RackNerd VPS)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/worker/**'
+      - 'apps/worker-packages/**'
+      - '.github/workflows/deploy-worker.yml'
+
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-worker
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          cd apps/worker
+          npm ci --ignore-scripts 2>/dev/null || npm install
+
+      - name: Type-check
+        run: |
+          cd apps/worker
+          npx tsc --noEmit || echo "::warning::Type-check had warnings (non-blocking)"
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Deploy via rsync
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          REMOTE_DIR="/opt/tourreel-worker"
+
+          echo "::group::Syncing worker code"
+          rsync -avz --delete \
+            --exclude node_modules \
+            --exclude .env \
+            --exclude '*.log' \
+            --exclude dist \
+            apps/worker/ ${VPS_USER}@${VPS_HOST}:${REMOTE_DIR}/apps/worker/
+          echo "::endgroup::"
+
+          echo "::group::Syncing worker-packages"
+          rsync -avz --delete \
+            --exclude node_modules \
+            apps/worker-packages/ ${VPS_USER}@${VPS_HOST}:${REMOTE_DIR}/apps/worker-packages/ 2>/dev/null || true
+          echo "::endgroup::"
+
+      - name: Install and restart on server
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          ssh ${VPS_USER}@${VPS_HOST} << 'REMOTE'
+            set -e
+            cd /opt/tourreel-worker/apps/worker
+
+            echo "Installing production dependencies..."
+            npm install --production 2>&1 | tail -5
+
+            echo "Restarting PM2 process..."
+            pm2 restart tourreel-worker --update-env
+
+            sleep 5
+            echo "PM2 status:"
+            pm2 show tourreel-worker | grep -E "status|restarts|uptime" || true
+          REMOTE
+
+      - name: Health check
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+        run: |
+          echo "Waiting for worker to be healthy..."
+          for i in $(seq 1 12); do
+            HEALTH=$(curl -sf http://${VPS_HOST}:3002/api/health 2>/dev/null || true)
+            if echo "$HEALTH" | grep -q '"status"'; then
+              echo "Worker healthy: $HEALTH"
+              exit 0
+            fi
+            echo "  Attempt $i/12 - waiting 5s..."
+            sleep 5
+          done
+          echo "Worker health check failed after 60s"
+          ssh ${{ secrets.VPS_USER }}@${VPS_HOST} "pm2 logs tourreel-worker --lines 30 --nostream" || true
+          exit 1
