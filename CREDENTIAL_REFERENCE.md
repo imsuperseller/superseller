@@ -2,7 +2,22 @@
 
 **Purpose**: Agent reference. Every service maps to exactly ONE file where its key lives. **No actual secrets in this file — only paths and key prefixes for identification.**
 
-**CRITICAL DISTINCTION**: SuperSeller AI credentials are Shai's own business. UAD/MissParty (aka "Unique Supplies") credentials belong to client David Szender. NEVER mix them.
+**CRITICAL DISTINCTION**: Some credentials are SEPARATE per business, others are SHARED (Shai's personal accounts used everywhere).
+
+### Shared vs Separate Keys (GROUND TRUTH — March 2026)
+
+| Service | Status | Key Prefix | Notes |
+|---------|--------|------------|-------|
+| **Anthropic/Claude** | **SHARED** | `sk-ant-api03-Ghts...` | One Shai-owned account, same key in ALL .env files |
+| **OpenAI** | **SHARED** | `sk-proj-KFun...` | One Shai-owned account, same key everywhere |
+| **Kie.ai** | **SHARED** | `6bb5a5...` | One Shai-owned account, same key everywhere |
+| **GoLogin** | **SHARED** | `eyJhbG...I6hDVY...` | One Shai-owned account, same JWT everywhere |
+| **ElevenLabs** | **SHARED** | `sk_f0dd...` | One Shai-owned account |
+| **Telnyx** | **SEPARATE** | SuperSeller: `KEY019CACA6A...`, UAD: `KEY019B52B283...` | Two different Telnyx accounts |
+| **GitHub** | **SEPARATE** | SuperSeller: `github_pat_11AZ2TTM...`, UAD: `github_pat_11B6FT76I...` | Two different GitHub accounts |
+| **Vercel** | **SEPARATE** | SuperSeller: `vcp_0PlCp13...`, UAD: `vcp_4l6LW3...` | Two different Vercel accounts |
+| **Workiz** | **UAD ONLY** | `api_uj4t1r0msb...` | Only used by UAD (garage door CRM) |
+| **Facebook** | **SEPARATE** | UAD: `1shaifriedman@gmail.com` (Shai's personal), MissParty: `michalkacher2006@gmail.com` | UAD uses Shai's FB because David never provided his own |
 
 ---
 
@@ -27,9 +42,9 @@
 
 | Service | Key Name | Lives At | Notes |
 |---------|----------|----------|-------|
-| **Claude (SuperSeller AI)** | `ANTHROPIC_API_KEY` | `~/.claude/.credentials` or shell env | Key: `sk-ant-api03-GqQf...`. Used by Claude Code. |
-| **Gemini (Google)** | `GOOGLE_GENERATIVE_AI_API_KEY` | `apps/worker/.env` | Key: `AIzaSyAz...`. TourReel + Winner Studio brain |
-| **OpenAI (SuperSeller AI)** | `OPENAI_API_KEY` | `social app/.env` | SuperSeller AI has 2 OpenAI keys (both in `social app/.env`). Not used in active products |
+| **Claude (SHARED)** | `ANTHROPIC_API_KEY` | Root `.env`, `apps/worker/.env`, `fb-marketplace-lister/.env`, server `.env` | Key: `sk-ant-api03-Ghts...`. **ONE account** — Shai's personal, used by ALL projects (SuperSeller + UAD + FB Bot). |
+| **Gemini (Google)** | `GOOGLE_GENERATIVE_AI_API_KEY` | `apps/worker/.env` | Key: `AIzaSyAz...`. VideoForge + Winner Studio brain |
+| **OpenAI (SHARED)** | `OPENAI_API_KEY` | Root `.env`, `apps/worker/.env`, `fb-marketplace-lister/.env`, server `.env` | Key: `sk-proj-KFun...`. **ONE account** — Shai's personal, used by ALL projects. |
 | **DeepSeek** | `DEEPSEEK_API_KEY` | `social app/.env` | Not used in active products |
 | **OpenRouter** | `OPENROUTER_API_KEY` | `social app/.env` | Not used in active products |
 | **Ollama** | N/A (local) | RackNerd `http://172.245.56.50:11434` | No API key needed. nomic-embed-text for RAG. |
@@ -40,7 +55,7 @@
 
 | Service | Key Name | Lives At | Notes |
 |---------|----------|----------|-------|
-| **Kie.ai (SuperSeller AI)** | `KIE_API_KEY` | `apps/worker/.env` (worker), `apps/web/superseller-site/.env.local` (web) | SuperSeller AI key: `cb711f...`. TourReel + Winner Studio. Different from UAD's key. |
+| **Kie.ai (SHARED)** | `KIE_API_KEY` | Root `.env`, `apps/worker/.env`, `fb-marketplace-lister/.env`, server `.env` | Key: `6bb5a5...`. **ONE account** — Shai's personal, used by ALL projects (VideoForge + FB Bot). |
 | **ElevenLabs** | `ELEVENLABS_API_KEY` | `social app/.env` | SuperSeller AI key: `sk_f0dd...`. Not used in active products |
 | **Runware** | `RUNWARE_API_KEY` | `social app/.env` | Not used in active products |
 | ~~fal.ai~~ | — | REMOVED | Fully removed Feb 2026 — Kie.ai is the only video provider |
@@ -79,7 +94,7 @@
 | **X/Twitter** | `X_ACCOUNT_ID`, `X_USERNAME`, `X_API_KEY`, `X_API_KEY_SECRET`, `X_CLIENT_ID`, `X_CLIENT_SECRET` | `apps/web/superseller-site/.env.local`, `social app/.env` | Account: `@iamsupersel`. API Key: `v6UJ1...`. Client ID: `MXhuMj...`. SocialHub. |
 | **YouTube** | `YOUTUBE_API_KEY`, `YOUTUBE_OAUTH_CLIENT_ID`, `YOUTUBE_CLIENT_SECRET` | `apps/web/superseller-site/.env.local`, `social app/.env` | API Key: `AIzaSyBm...`. OAuth Client: `10651066...`. SocialHub. |
 | **TikTok** | Client ID + Secret | `social app/.env` | Developer app ID: `7611282302357899276`. Status: Pending approval. SocialHub Phase 2. |
-| **Apify** | `APIFY_API_TOKEN` | `apps/worker/.env` | Zillow scraping for TourReel. User ID: `wjz2NfU1Y0MdMxeey`. Key: `apify_api_gQw...` |
+| **Apify** | `APIFY_API_TOKEN` | `apps/worker/.env` | Zillow scraping for VideoForge. User ID: `wjz2NfU1Y0MdMxeey`. Key: `apify_api_gQw...` |
 
 ### Auth / OAuth (SuperSeller AI)
 
@@ -129,13 +144,13 @@ These belong to the client. Used ONLY by the FB Marketplace Bot and lead pipelin
 | Service | Key Name | Lives At | Notes |
 |---------|----------|----------|-------|
 | **Telnyx (UAD/MissParty)** | `TELNYX_API_KEY` | n8n credential `uadgaragedoors` | Key: `KEY019B52B283...`. 5 numbers (4 UAD + 1 MissParty). Two AI Assistants: UAD (`assistant-5515bf13`), MissParty (`assistant-f1708158`). DIFFERENT account from SuperSeller AI's Telnyx. |
-| **Workiz (UAD CRM)** | `WORKIZ_API_TOKEN`, `WORKIZ_API_SECRET` | n8n UAD workflow (HTTP Request node) | Token: `api_uj4t1r0msb...`, Secret: `sec_258867...`. **POST auth: `auth_secret` goes INSIDE JSON body.** PascalCase fields. WORKING. |
+| **Workiz (UAD CRM)** | `WORKIZ_API_TOKEN`, `WORKIZ_API_SECRET` | `/opt/fb-marketplace-bot/.env`, `fb-marketplace-lister/.env`, n8n UAD workflow | Token: `api_uj4t1r0msb...`, Secret: `sec_258867...`. **POST auth: `auth_secret` goes INSIDE JSON body.** PascalCase fields. WORKING. |
 | **GoLogin** | `GOLOGIN_TOKEN` | `fb-marketplace-lister/deploy-package/bot-config.json` | JWT token. Profiles: UAD `694b5e53...`, Miss Party `6949a854...` |
-| **Claude (UAD)** | `ANTHROPIC_API_KEY` | Client provides | Key: `sk-ant-api03-Ghts...`. DIFFERENT from SuperSeller AI's Claude key. |
-| **Vercel (UAD)** | Vercel token | Client provides | Token: `vcp_4l6...`. DIFFERENT from SuperSeller AI's Vercel. |
-| **GitHub (UAD)** | `GITHUB_PAT` | Client provides | PAT: `github_pat_11B6FT76I...`. DIFFERENT from SuperSeller AI's GitHub. |
-| **Kie.ai (UAD)** | `KIE_API_KEY` | `/opt/fb-marketplace-bot/.env` (server) | Key: `6bb5a5...`. DIFFERENT from SuperSeller AI's kie.ai key. Used for FB Bot AI copy + image variations. |
-| **OpenAI (UAD)** | `OPENAI_API_KEY` | Client provides | Key: `sk-proj-KFun...`. DIFFERENT from SuperSeller AI's OpenAI. |
+| **Claude** | `ANTHROPIC_API_KEY` | `/opt/fb-marketplace-bot/.env`, `fb-marketplace-lister/.env` | Key: `sk-ant-api03-Ghts...`. **SHARED** — same Shai-owned account as SuperSeller AI. |
+| **Vercel (UAD)** | Vercel token | Not in any .env (reference only) | Token: `vcp_4l6LW3...`. David's own Vercel. DIFFERENT from SuperSeller AI's. Not used by FB bot. |
+| **GitHub (UAD)** | `GITHUB_PAT` | Not in any .env (reference only) | PAT: `github_pat_11B6FT76I...`. David's own GitHub. DIFFERENT from SuperSeller AI's. Not used by FB bot. |
+| **Kie.ai** | `KIE_API_KEY` | `/opt/fb-marketplace-bot/.env`, `fb-marketplace-lister/.env` | Key: `6bb5a5...`. **SHARED** — same Shai-owned account as SuperSeller AI. |
+| **OpenAI** | `OPENAI_API_KEY` | `/opt/fb-marketplace-bot/.env`, `fb-marketplace-lister/.env` | Key: `sk-proj-KFun...`. **SHARED** — same Shai-owned account as SuperSeller AI. |
 
 ### FB Marketplace Bot (Client data)
 
@@ -143,8 +158,8 @@ These belong to the client. Used ONLY by the FB Marketplace Bot and lead pipelin
 |---------|----------|----------|-------|
 | **FB Credentials (UAD)** | `fbEmail`, `fbPass` | `fb-marketplace-lister/deploy-package/bot-config.json` | `1shaifriedman@gmail.com` — Shai's personal Facebook (managed by GoLogin profile "uad (shai fb)") |
 | **FB Credentials (Miss Party)** | `fbEmail`, `fbPass` | `fb-marketplace-lister/deploy-package/bot-config.json` | `michalkacher2006@gmail.com` |
-| **Telnyx Phone Numbers (UAD)** | N/A | `bot-config.json` → `phoneRotation` | 4 numbers: `+1-972-954-2407`, `+1-972-628-3587`, `+1-469-625-0960`, `+1-469-535-7538` |
-| **Telnyx Phone Numbers (Miss Party)** | N/A | `bot-config.json` → `phoneRotation` | 1 number: `+1-469-283-9855` |
+| **Telnyx Phone Numbers (UAD)** | N/A | `bot-config.json` → `phoneRotation` | 4 numbers: `+1-972-954-2407`, `+1-214-256-3408`, `+1-469-814-6509`, `+1-972-646-6110` |
+| **Telnyx Phone Numbers (Miss Party)** | N/A | `bot-config.json` → `phoneRotation` | 1 number: `+1-469-814-6509` |
 | **WAHA (FB Bot)** | `wahaApiKey` | `bot-config.json` | Same WAHA instance as SuperSeller AI (`4fc7e008...`). Notification target: `14695885133@c.us` |
 
 ### n8n Lead Routing Workflows (LIVE — Feb 22, 2026)
@@ -159,15 +174,15 @@ These belong to the client. Used ONLY by the FB Marketplace Bot and lead pipelin
 
 | File | What's In It | Owner | Active Products |
 |------|-------------|-------|----------------|
-| `apps/worker/.env` | DB, Redis, Apify, Kie (SuperSeller AI), Gemini, R2, NextAuth | SuperSeller AI | TourReel, Winner Studio |
+| `apps/worker/.env` | DB, Redis, Apify, Kie (shared), OpenAI (shared), Anthropic (shared), Gemini, R2, NextAuth, ElevenLabs | SuperSeller AI | VideoForge, ClaudeClaw |
 | `apps/web/superseller-site/.env` | DATABASE_URL only | SuperSeller AI | superseller-site (web) |
 | `apps/web/superseller-site/.env.local` | Airtable, Kie, Redis, PayPal, Vercel, VIDEO_WORKER_URL, Boost | SuperSeller AI | superseller-site (web) |
 | `.env.racknerd` | VPS_PASSWORD only | SuperSeller AI | SSH access |
 | `social app/.env` | 50+ keys (SuperSeller AI credential dump) | SuperSeller AI | NONE actively — reference only |
 | `social app/.env.master` | Same as above (COMMITTED TO GIT — security risk) | SuperSeller AI | NONE |
-| `fb-marketplace-lister/.env` | DB, Redis, GoLogin | UAD/MissParty | FB Bot |
+| `fb-marketplace-lister/.env` | DB, Redis, GoLogin, Telnyx (UAD), Kie (shared), OpenAI (shared), Anthropic (shared), Workiz | UAD/MissParty | FB Bot |
 | `fb-marketplace-lister/deploy-package/bot-config.json` | GoLogin, FB creds, phone rotation, WAHA, webhook URLs | UAD/MissParty | FB Marketplace Bot |
-| `/opt/fb-marketplace-bot/.env` | Kie.ai (UAD key), DB connection | UAD/MissParty | FB Bot (server) |
+| `/opt/fb-marketplace-bot/.env` | Kie (shared), GoLogin (shared), Telnyx (UAD), OpenAI (shared), Anthropic (shared), Workiz, DB | UAD/MissParty | FB Bot (server) |
 | `~/.cursor/mcp.json` | n8n, NotebookLM MCP configs | SuperSeller AI | Claude Code MCP tools |
 
 ---
@@ -247,4 +262,48 @@ Workiz's API has undocumented auth requirements for POST/write operations:
 | **Stitch** | `STITCH_API_KEY` | `AQ.Ab8RN6...` | Tax4Us's own Stitch API |
 
 ---
-*Updated: 2026-03-02. Canonical source for credential locations.*
+
+## FB Marketplace Bot — Session Management
+
+### How Sessions Work
+The FB Marketplace Bot uses GoLogin browser profiles with Facebook cookies for authentication. Each customer (UAD, MissParty) has a dedicated GoLogin profile that stores session cookies.
+
+### Session Establishment
+1. Run `session-login.js` on the server: `ssh root@172.245.56.50 'cd /opt/fb-marketplace-bot && rm -f /tmp/gl_lock && DISPLAY=:100 timeout 660 node session-login.js [0|1]'` (0=UAD, 1=MissParty)
+2. The script opens a GoLogin browser, navigates to Facebook, and fills in credentials from `bot-config.json`
+3. Facebook triggers passkey 2FA — **this CANNOT be automated**. Shai must approve the login on his phone (for UAD) or Michal must approve (for MissParty)
+4. Monitor the browser via noVNC at `http://172.245.56.50:6080/vnc.html` to see the 2FA prompt
+5. After approval, the script saves cookies to: GoLogin API (S3), `cookies.json` local file, and the GoLogin profile
+
+### Cookie Lifetime
+- Facebook session cookies (`c_user`, `xs`) expire in approximately **365 days**
+- The `cookie-monitor.js` PM2 job checks cookie health every 6 hours
+- Alerts via WhatsApp (WAHA) if cookies are stale (>7 days without successful post) or if failures exceed threshold
+
+### What Causes Session Expiry
+- Facebook security checkpoint (unusual location, suspicious activity)
+- Manual logout from any device on the same account
+- Facebook account lockout or password change
+- GoLogin profile corruption (rare)
+- Cookie file overwritten with empty/invalid data (mitigated by backup logic)
+
+### How to Restore a Session
+1. SSH into RackNerd: `ssh root@172.245.56.50`
+2. Run session-login.js: `cd /opt/fb-marketplace-bot && rm -f /tmp/gl_lock && DISPLAY=:100 timeout 660 node session-login.js 0` (0=UAD, 1=MissParty)
+3. Open noVNC: `http://172.245.56.50:6080/vnc.html`
+4. Wait for 2FA prompt, approve on phone
+5. Script auto-saves cookies on success. Verify: `node -e "const c=require('./cookies.json'); console.log(c.filter(x=>x.name==='c_user').length + ' c_user cookies')"`
+
+### Why It Cannot Be Fully Automated
+- Facebook uses **passkey 2FA** — requires physical approval on an authenticated device (Shai's phone for UAD, Michal's phone for MissParty)
+- The login form is sometimes not present in the DOM on server-side rendering (Facebook serves different HTML to headless/server environments)
+- `refresh-session.js` can handle password-only re-authentication modals (no 2FA) but not full login checkpoints
+
+### Session Safety Rules
+- **NEVER overwrite `cookies_uad.json` or `cookies_missparty.json`** when existing file has valid `c_user` cookies and new data does not
+- Always backup existing cookies to `.bak` before any overwrite
+- `uploadCookiesToServer=false` is enforced in all failure paths to prevent broken profiles from overwriting good ones on GoLogin S3
+- The bot checks for `c_user` + `xs` presence before proceeding with any posting cycle
+
+---
+*Updated: 2026-03-08. Canonical source for credential locations.*

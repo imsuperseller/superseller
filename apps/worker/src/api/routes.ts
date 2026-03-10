@@ -925,6 +925,273 @@ apiRouter.get("/crew-videos/status", async (req: Request, res: Response) => {
     }
 });
 
+// ─── DIAGNOSTICS (for Mission Control) ───
+apiRouter.get("/diagnostics", async (_req, res) => {
+    try {
+        const { execSync } = await import("child_process");
+        const run = (cmd: string) => { try { return execSync(cmd, { timeout: 3000 }).toString().trim(); } catch { return ""; } };
+
+        // Disk
+        const dfLine = run("df -h / | tail -1");
+        const dfParts = dfLine.split(/\s+/);
+        const disk = { used: dfParts[2] || "?", total: dfParts[1] || "?", percent: dfParts[4] || "?" };
+
+        // Memory
+        const memLine = run("free -h | awk '/Mem:/{print $2\"|\"$3\"|\"$7}'");
+        const [memTotal, memUsed, memAvail] = (memLine || "|||").split("|");
+
+        // Uptime
+        const uptime = run("uptime -p") || `${Math.floor(process.uptime())}s (node)`;
+
+        // PM2
+        let pm2Processes: { name: string; status: string; restarts: number; pid: number; memory: string; uptime: number }[] = [];
+        try {
+            const pm2Raw = run("pm2 jlist");
+            if (pm2Raw) {
+                const pm2Data = JSON.parse(pm2Raw);
+                pm2Processes = pm2Data.map((p: any) => ({
+                    name: p.name,
+                    status: p.pm2_env?.status || "unknown",
+                    restarts: p.pm2_env?.restart_time || 0,
+                    pid: p.pid || 0,
+                    memory: `${Math.round((p.monit?.memory || 0) / 1024 / 1024)}MB`,
+                    uptime: p.pm2_env?.pm_uptime || 0,
+                }));
+            }
+        } catch {}
+
+        // Systemd services
+        const systemdServices = ["rensto", "video-merge", "nginx"].map(svc => ({
+            name: svc,
+            active: run(`systemctl is-active ${svc}`) === "active",
+        }));
+
+        // BullMQ queue depths
+        const { videoPipelineQueue, clipGenerationQueue, claudeclawQueue, remotionQueue, crewVideoQueue, marketplaceReplenisherQueue } = await import("../queue/queues");
+        const queueStats = await Promise.all([
+            { name: "video-pipeline", q: videoPipelineQueue },
+            { name: "clip-generation", q: clipGenerationQueue },
+            { name: "claudeclaw", q: claudeclawQueue },
+            { name: "remotion", q: remotionQueue },
+            { name: "crew-video", q: crewVideoQueue },
+            { name: "marketplace-replenisher", q: marketplaceReplenisherQueue },
+        ].map(async ({ name, q }) => {
+            try {
+                const counts = await q.getJobCounts("active", "waiting", "completed", "failed", "delayed");
+                return { name, ...counts };
+            } catch { return { name, active: 0, waiting: 0, completed: 0, failed: 0, delayed: 0 }; }
+        }));
+
+        // WAHA sessions
+        let wahaSessions: { name: string; status: string }[] = [];
+        try {
+            const wahaKey = process.env.WAHA_API_KEY || "4fc7e008d7d24fc995475029effc8fa8";
+            const wahaRes = await fetch("http://localhost:3000/api/sessions", {
+                headers: { "X-Api-Key": wahaKey },
+                signal: AbortSignal.timeout(3000),
+            });
+            if (wahaRes.ok) {
+                const sessions = await wahaRes.json();
+                wahaSessions = (Array.isArray(sessions) ? sessions : []).map((s: any) => ({
+                    name: s.name || "unknown",
+                    status: s.status || "unknown",
+                }));
+            }
+        } catch {}
+
+        // SSL certs
+        let sslCerts: { domain: string; expiry: string }[] = [];
+        try {
+            const certDirs = run("ls /etc/letsencrypt/live/ 2>/dev/null").split("\n").filter(d => d && d !== "README");
+            sslCerts = certDirs.map(domain => {
+                const expiry = run(`openssl x509 -enddate -noout -in /etc/letsencrypt/live/${domain}/fullchain.pem 2>/dev/null`);
+                return { domain, expiry: expiry.replace("notAfter=", "") };
+            });
+        } catch {}
+
+        // Cron jobs
+        const cronJobs = run("crontab -l 2>/dev/null || echo 'none'");
+
+        // DB stats
+        let dbStats: any = { tables: 0, connections: 0, dbSize: "" };
+        try {
+            const tableCount = await queryOne("SELECT count(*) as c FROM information_schema.tables WHERE table_schema = 'public'");
+            const connCount = await queryOne("SELECT count(*) as c FROM pg_stat_activity WHERE datname = 'app_db'");
+            const sizeResult = await queryOne("SELECT pg_size_pretty(pg_database_size('app_db')) as s");
+            dbStats = { tables: tableCount?.c || 0, connections: connCount?.c || 0, dbSize: sizeResult?.s || "?" };
+        } catch {}
+
+        // Business data
+        let businessData: any = {};
+        try {
+            const userCount = await queryOne('SELECT count(*) as c FROM "User"');
+            const videoJobStats = await queryOne("SELECT count(*) as total, count(*) FILTER (WHERE status='complete') as completed, count(*) FILTER (WHERE status='failed') as failed, count(*) FILTER (WHERE status='pending' OR status='processing') as active FROM video_jobs");
+            const clipCount = await queryOne("SELECT count(*) as c FROM clips");
+            const listingCount = await queryOne("SELECT count(*) as c FROM listings");
+
+            let expenseData: any = null;
+            try {
+                expenseData = await queryOne("SELECT count(*) as total_calls, COALESCE(SUM(cost_usd), 0) as total_spend, COALESCE(SUM(cost_usd) FILTER (WHERE created_at > NOW() - INTERVAL '30 days'), 0) as month_spend, COALESCE(SUM(cost_usd) FILTER (WHERE created_at > NOW() - INTERVAL '1 day'), 0) as today_spend FROM api_expenses");
+            } catch {}
+
+            let ragDocs: any = null;
+            try {
+                ragDocs = await queryOne("SELECT count(*) as docs, count(DISTINCT tenant_id) as tenants FROM rag_documents");
+            } catch {}
+
+            let leadCount: any = null;
+            try {
+                leadCount = await queryOne("SELECT count(*) as c FROM leads");
+            } catch {}
+
+            let groupAgentConfigs: any = null;
+            try {
+                groupAgentConfigs = await queryOne("SELECT count(*) as c FROM group_agent_config");
+            } catch {}
+
+            let modelCount: any = null;
+            try {
+                modelCount = await queryOne("SELECT count(*) as c FROM model_catalog");
+            } catch {}
+
+            businessData = {
+                users: userCount?.c || 0,
+                videoJobs: videoJobStats || { total: 0, completed: 0, failed: 0, active: 0 },
+                clips: clipCount?.c || 0,
+                listings: listingCount?.c || 0,
+                expenses: expenseData,
+                ragDocuments: ragDocs,
+                leads: leadCount?.c || 0,
+                groupAgentConfigs: groupAgentConfigs?.c || 0,
+                modelCatalog: modelCount?.c || 0,
+            };
+        } catch {}
+
+        // n8n instances
+        let n8nInstances: { name: string; port: number; status: string }[] = [];
+        for (const inst of [{ name: "production", port: 5678 }, { name: "personal", port: 5679 }]) {
+            try {
+                const r = await fetch(`http://localhost:${inst.port}/healthz`, { signal: AbortSignal.timeout(2000) });
+                n8nInstances.push({ ...inst, status: r.ok ? "online" : `HTTP ${r.status}` });
+            } catch {
+                try {
+                    const r2 = await fetch(`http://localhost:${inst.port}`, { signal: AbortSignal.timeout(2000) });
+                    n8nInstances.push({ ...inst, status: r2.status > 0 ? "online" : "offline" });
+                } catch {
+                    n8nInstances.push({ ...inst, status: "offline" });
+                }
+            }
+        }
+
+        res.json({
+            timestamp: new Date().toISOString(),
+            server: { disk, memory: { total: memTotal, used: memUsed, available: memAvail }, uptime },
+            pm2: pm2Processes,
+            systemd: systemdServices,
+            queues: queueStats,
+            wahaSessions,
+            sslCerts,
+            cronJobs,
+            database: dbStats,
+            business: businessData,
+            n8nInstances,
+        });
+    } catch (err: any) {
+        logger.error({ msg: "Diagnostics error", error: err.message });
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ─── OPS CENTER (detailed queue + job data for admin dashboard) ───
+apiRouter.get("/ops", async (_req, res) => {
+    try {
+        const { videoPipelineQueue, clipGenerationQueue, claudeclawQueue, remotionQueue, crewVideoQueue, marketplaceReplenisherQueue } = await import("../queue/queues");
+
+        const allQueues = [
+            { name: "video-pipeline", q: videoPipelineQueue },
+            { name: "clip-generation", q: clipGenerationQueue },
+            { name: "claudeclaw", q: claudeclawQueue },
+            { name: "remotion-composition", q: remotionQueue },
+            { name: "crew-video", q: crewVideoQueue },
+            { name: "marketplace-replenisher", q: marketplaceReplenisherQueue },
+        ];
+
+        const queues = await Promise.all(allQueues.map(async ({ name, q }) => {
+            try {
+                const counts = await q.getJobCounts("active", "waiting", "completed", "failed", "delayed", "paused");
+                const failed = await q.getFailed(0, 4);
+                const active = await q.getActive(0, 4);
+                const completed = await q.getCompleted(0, 4);
+                const waiting = await q.getWaiting(0, 4);
+
+                const mapJob = (j: any) => ({
+                    id: j.id,
+                    name: j.name,
+                    data: { jobId: j.data?.jobId, chatId: j.data?.chatId, productId: j.data?.productId },
+                    status: j.finishedOn ? (j.failedReason ? "failed" : "completed") : j.processedOn ? "active" : "waiting",
+                    createdAt: j.timestamp ? new Date(j.timestamp).toISOString() : null,
+                    processedAt: j.processedOn ? new Date(j.processedOn).toISOString() : null,
+                    finishedAt: j.finishedOn ? new Date(j.finishedOn).toISOString() : null,
+                    duration: j.finishedOn && j.processedOn ? j.finishedOn - j.processedOn : null,
+                    failedReason: j.failedReason || null,
+                    attemptsMade: j.attemptsMade || 0,
+                    attemptsTotal: j.opts?.attempts || 1,
+                });
+
+                return {
+                    name,
+                    counts,
+                    isPaused: await q.isPaused(),
+                    recentFailed: failed.map(mapJob),
+                    recentActive: active.map(mapJob),
+                    recentCompleted: completed.map(mapJob),
+                    recentWaiting: waiting.map(mapJob),
+                };
+            } catch {
+                return { name, counts: { active: 0, waiting: 0, completed: 0, failed: 0, delayed: 0, paused: 0 }, isPaused: false, recentFailed: [], recentActive: [], recentCompleted: [], recentWaiting: [] };
+            }
+        }));
+
+        // Scheduler info
+        const { getSchedulerStatus } = await import("../services/scheduler");
+        let schedulerJobs: { name: string; intervalMs: number; lastRun: string | null; nextRun: string | null; runCount: number }[] = [];
+        try {
+            schedulerJobs = getSchedulerStatus();
+        } catch {}
+
+        let recentVideoJobs: any[] = [];
+        try {
+            recentVideoJobs = await query(
+                `SELECT vj.id, vj.status, vj.created_at, vj.updated_at, vj.error_message,
+                        vj.progress_percent, vj.total_api_cost, vj.model_preference,
+                        l.address as listing_address
+                 FROM video_jobs vj
+                 LEFT JOIN listings l ON vj.listing_id = l.id
+                 ORDER BY vj.created_at DESC LIMIT 10`
+            );
+        } catch {}
+
+        let recentExpenses: any[] = [];
+        try {
+            recentExpenses = await query(
+                `SELECT service, operation, estimated_cost as cost_usd, created_at
+                 FROM api_expenses ORDER BY created_at DESC LIMIT 10`
+            );
+        } catch {}
+
+        res.json({
+            timestamp: new Date().toISOString(),
+            queues,
+            schedulerJobs,
+            recentVideoJobs,
+            recentExpenses,
+        });
+    } catch (err: any) {
+        logger.error({ msg: "Ops endpoint error", error: err.message });
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // ─── HEALTH ───
 apiRouter.get("/health", async (req, res) => {
     const checks: Record<string, string> = { api: "ok" };

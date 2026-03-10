@@ -76,7 +76,7 @@ export default function NewProduct() {
             : ["Dallas, TX", "Richardson, TX", "Garland, TX"],
           phoneNumbers: productType === 'DOORS'
             ? ["+1-972-954-2407", "+1-214-256-3408", "+1-469-814-6509", "+1-972-646-6110"]
-            : ["+1-469-283-9855"]
+            : ["+1-469-814-6509"]
         }),
       });
 

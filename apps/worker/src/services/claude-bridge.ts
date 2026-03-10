@@ -288,13 +288,15 @@ export async function handleCommand(chatId: string, text: string): Promise<strin
             await clearSession(chatId);
             return "Session cleared. Starting fresh.";
 
-        case "/memory":
-            const turns = await getRecentTurns(chatId, 5);
-            return turns ? `Recent context:\n${turns}` : "No conversation history yet.";
+        case "/memory": {
+            const recentTurns = await getRecentTurns(chatId, 5);
+            return recentTurns ? `Recent context:\n${recentTurns}` : "No conversation history yet.";
+        }
 
-        case "/status":
-            const session = await getSession(chatId);
-            return `Session: ${session ? "active" : "none"}\nProject: ${config.claudeclaw.projectDir}`;
+        case "/status": {
+            const currentSession = await getSession(chatId);
+            return `Session: ${currentSession ? "active" : "none"}\nProject: ${config.claudeclaw.projectDir}`;
+        }
 
         case "/health": {
             const { getHealthSnapshot, formatHealthSummary } = await import("./health-monitor");
@@ -314,16 +316,126 @@ export async function handleCommand(chatId: string, text: string): Promise<strin
             return results || "No matching documents found.";
         }
 
+        case "/digest": {
+            const { buildDigest } = await import("./proactive-digest");
+            return buildDigest();
+        }
+
+        case "/videos": {
+            const { query: dbQuery } = await import("../db/client");
+            try {
+                const rows = await dbQuery<any>(
+                    `SELECT id, status, address, created_at, updated_at
+                     FROM video_jobs ORDER BY created_at DESC LIMIT 5`
+                );
+                if (!rows.length) return "No video jobs found.";
+                const lines = rows.map((r: any) => {
+                    const icon = r.status === "complete" ? "✅" : r.status === "failed" ? "🔴" : "⏳";
+                    const addr = r.address ? ` — ${r.address.slice(0, 40)}` : "";
+                    return `${icon} ${r.id.slice(0, 8)}${addr} (${r.status})`;
+                });
+                return `*Recent Video Jobs*\n${lines.join("\n")}`;
+            } catch {
+                return "Unable to query video jobs.";
+            }
+        }
+
+        case "/spend": {
+            const { query: dbQuery } = await import("../db/client");
+            try {
+                const today = await dbQuery<any>(`
+                    SELECT service, COALESCE(SUM(cost_usd), 0) as total 
+                    FROM api_expenses WHERE created_at > CURRENT_DATE
+                    GROUP BY service ORDER BY total DESC
+                `);
+                const month = await dbQuery<any>(`
+                    SELECT COALESCE(SUM(cost_usd), 0) as total 
+                    FROM api_expenses WHERE created_at > date_trunc('month', CURRENT_DATE)
+                `);
+                if (!today.length) return "💰 No API expenses tracked today.";
+                const todayTotal = today.reduce((s: number, r: any) => s + Number(r.total), 0).toFixed(2);
+                const monthTotal = Number(month[0]?.total || 0).toFixed(2);
+                const breakdown = today.map((r: any) => `  ${r.service}: $${Number(r.total).toFixed(2)}`).join("\n");
+                return `💰 *API Spend*\nToday: $${todayTotal}\nMonth: $${monthTotal}\n\n${breakdown}`;
+            } catch {
+                return "💰 No api_expenses table. Cost tracking not set up.";
+            }
+        }
+
+        case "/leads": {
+            const { query: dbQuery } = await import("../db/client");
+            try {
+                const rows = await dbQuery<any>(
+                    `SELECT id, name, phone, source, created_at
+                     FROM leads ORDER BY created_at DESC LIMIT 5`
+                );
+                if (!rows.length) return "📋 No leads yet.";
+                const lines = rows.map((r: any) => {
+                    const age = Math.round((Date.now() - new Date(r.created_at).getTime()) / 3600000);
+                    return `📋 ${r.name || "Unknown"} — ${r.phone || "no phone"} (${r.source || "?"}, ${age}h ago)`;
+                });
+                return `*Recent Leads*\n${lines.join("\n")}`;
+            } catch {
+                return "📋 No leads table found.";
+            }
+        }
+
+        case "/marketplace":
+        case "/fb": {
+            const { query: dbQuery } = await import("../db/client");
+            try {
+                const rows = await dbQuery<any>(`
+                    SELECT product_id, 
+                           count(*) as total,
+                           count(*) FILTER (WHERE posted_at > NOW() - INTERVAL '24 hours') as today,
+                           count(*) FILTER (WHERE status = 'failed') as failed
+                    FROM marketplace_listings GROUP BY product_id
+                `);
+                if (!rows.length) return "🏪 No marketplace listings.";
+                const lines = rows.map((r: any) =>
+                    `  ${r.product_id}: ${r.total} total, ${r.today} today, ${r.failed} failed`
+                );
+                return `🏪 *Marketplace Stats*\n${lines.join("\n")}`;
+            } catch {
+                return "🏪 Unable to query marketplace listings.";
+            }
+        }
+
+        case "/groups": {
+            const { query: dbQuery } = await import("../db/client");
+            try {
+                const rows = await dbQuery<any>(
+                    `SELECT group_id, tenant_id, agent_name, language FROM group_agent_config ORDER BY registered_at`
+                );
+                if (!rows.length) return "No registered groups.";
+                const lines = rows.map((r: any) =>
+                    `• ${r.agent_name} (${r.tenant_id}) — ${r.language || "auto"}`
+                );
+                return `*Registered Groups (${rows.length})*\n${lines.join("\n")}`;
+            } catch {
+                return "Unable to query groups.";
+            }
+        }
+
         case "/help":
             return [
                 "*ClaudeClaw Commands*",
+                "",
+                "📊 *Dashboards*",
+                "/digest — Full business digest",
                 "/health — System health summary",
+                "/videos — Recent video jobs",
+                "/spend — API cost breakdown",
+                "/leads — Recent leads",
+                "/fb — Marketplace posting stats",
+                "/groups — Registered WhatsApp groups",
                 "/approvals — Pending approval requests",
+                "",
+                "🔍 *Tools*",
                 "/rag [query] — Search system knowledge",
-                "/newchat — Clear session, start fresh",
                 "/memory — Show recent context",
-                "/status — Show session info",
-                "/help — This message",
+                "/status — Session info",
+                "/newchat — Clear session",
             ].join("\n");
 
         default:

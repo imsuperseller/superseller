@@ -108,12 +108,14 @@
 | Drizzle Schema | `apps/worker-packages/db/src/schema.ts` |
 | **Data Dictionary** | `docs/DATA_DICTIONARY.md` — where every entity lives, sync rules, mismatches |
 | **Schema Sentinel** | `tools/schema-sentinel.ts` — Prisma vs Drizzle drift detector (`npx tsx tools/schema-sentinel.ts`) |
+| **Codebase Mapper** | `tools/map-codebase.ts` — Auto-generates `REPO_MAP.md` (`npx tsx tools/map-codebase.ts`) |
+| **Spec-Driven Dev** | `.claude/skills/spec-driven-dev/SKILL.md` — SPEC → PLAN → EXECUTE → VERIFY workflow |
 | Credits Logic | `apps/web/superseller-site/src/lib/credits.ts`, `apps/worker/src/services/credits.ts` |
 | **Cost Tracking** | `apps/web/superseller-site/src/lib/monitoring/expense-tracker.ts` — trackExpense(), rates, anomalies |
 | Cost Rates | Kling Pro $0.10, Std $0.03, Suno $0.06, Nano $0.02, Gemini $0.001 — see videoforge-pipeline SKILL.md |
 | FB Bot Config | `fb-marketplace-lister/deploy-package/bot-config.json` (local), `/opt/fb-marketplace-bot/bot-config.json` (server) |
 | FB Bot Status | `PRODUCT_STATUS.md` §2 (feature matrix), `platforms/marketplace/PLATFORM_BIBLE.md` |
-| **API Documentation** | `docs/API_DOCUMENTATION.md` — All 94 API endpoints, auth patterns, response formats |
+| **API Documentation** | `docs/API_DOCUMENTATION.md` — API endpoints, auth patterns, response formats (run `npx tsx tools/map-codebase.ts` for current count) |
 | **Testing Strategy** | `docs/TESTING_STRATEGY.md` — Test plans, CI pipeline, coverage targets |
 | **Runbooks** | `docs/RUNBOOKS.md` — 12 incident response procedures |
 | **Monitoring** | `docs/MONITORING.md` — Alerting, health checks, expense tracking setup |

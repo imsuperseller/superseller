@@ -31,9 +31,9 @@ Manages the complete lifecycle of Facebook Marketplace listings for UAD Garage D
 - **Lead Pipeline**: Telnyx Voice AI → Claude Sonnet → Workiz CRM
 
 ### Miss Party Rentals
-- **Phone Number**: +1-469-283-9855 (single)
+- **Phone Number**: +1-469-814-6509 (single)
 - **Locations**: 20 DFW cities (sequential rotation, populated suburbs)
-- **Category**: "Inflatable Bouncers" (exact FB dropdown match)
+- **Category**: "Miscellaneous" (exact FB dropdown match)
 - **Pricing**: $49.99 flat
 - **Video**: Static `michal_video.mp4`
 - **Images**: 3 product images with dynamic phone overlay on main image

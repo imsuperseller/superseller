@@ -79,7 +79,7 @@ model AFDeliverable {
 
 ## Common Patterns
 
-### Run Pipeline via BullMQ (follows TourReel pattern)
+### Run Pipeline via BullMQ (follows VideoForge pattern)
 ```typescript
 import { Queue } from 'bullmq';
 import { checkCredits, deductCredits } from '@/lib/credits';

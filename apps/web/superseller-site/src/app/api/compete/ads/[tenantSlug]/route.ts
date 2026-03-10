@@ -60,6 +60,8 @@ export async function GET(
        WHERE tenant_id = $1
        ORDER BY
          CASE WHEN liked IS NULL THEN 0 ELSE 1 END,
+         COALESCE((meta->'aiAnalysis'->>'overallScore')::int, 0) DESC,
+         CASE WHEN video_url IS NOT NULL THEN 0 WHEN image_url IS NOT NULL THEN 1 ELSE 2 END,
          created_at DESC`,
       tenantSlug
     );

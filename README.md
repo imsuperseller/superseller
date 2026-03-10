@@ -6,7 +6,7 @@ Unified lead generation and content platform. AI-powered video creation, social 
 
 | Product | Status | What It Does |
 |---------|--------|-------------|
-| **TourReel** | Live | AI property videos (Kling 3.0 + Remotion dual-path) |
+| **VideoForge** | Live | AI property videos (Kling 3.0 + Remotion dual-path) |
 | **FB Marketplace Bot** | Live | Automated FB Marketplace posting (UAD + Miss Party) |
 | **ClaudeClaw** | Live | WhatsApp-to-Claude AI bridge with 3-tier memory |
 | **SocialHub/Buzz** | Live | Text+image to WhatsApp approval to FB publish |

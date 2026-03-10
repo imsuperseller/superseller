@@ -5,7 +5,7 @@ description: >-
   product configuration, GoLogin session management, Kie.ai image generation per listing,
   scheduled posting, and admin/customer portals. Use when working on marketplace automation,
   FB bot, listing generation, customer isolation, or SaaS billing for marketplace products.
-  Not for TourReel video pipeline, UI/UX design, or non-marketplace backend code.
+  Not for VideoForge video pipeline, UI/UX design, or non-marketplace backend code.
   Example: "Add customer product configuration UI" or "Fix delivery field bug".
 autoTrigger:
   - "FB Marketplace"
@@ -18,7 +18,7 @@ autoTrigger:
   - "customer products"
   - "marketplace automation"
 negativeTrigger:
-  - "TourReel"
+  - "VideoForge"
   - "video pipeline"
   - "Kling"
   - "real estate video"
@@ -28,7 +28,7 @@ negativeTrigger:
 # FB Marketplace SaaS
 
 ## When to Use
-Use this skill when working on FB Marketplace bot automation, listing generation, customer product management, or marketplace SaaS features. Not for TourReel video pipeline, UI/UX design, or non-marketplace backend.
+Use this skill when working on FB Marketplace bot automation, listing generation, customer product management, or marketplace SaaS features. Not for VideoForge video pipeline, UI/UX design, or non-marketplace backend.
 
 ## Critical Rules
 1. **NEVER use overlaid images as Seedream references** — AI reproduces text from reference causing double phone overlays
@@ -238,7 +238,7 @@ const listings = await db.query(`
 | Kie.ai video timeout (300s) | Kie API latency or failure | Use static fallback video (`michal_video.mp4`). System already handles this automatically. |
 | Missing delivery/$1/mile on FB post | AI description doesn't include delivery text | Enforce in content-generator.js: if MissParty and no "$1/mile", append to description. |
 | Customer sees other customer's posts | Missing `WHERE customer_id = $1` filter | ALWAYS filter by customerId in all queries. Add E2E test to verify isolation. |
-| GoLogin session expired | Cookies outdated (>30 days) | Auto-refresh session weekly. Add session health check cron. Notify customer to reconnect. |
+| GoLogin session expired | Cookies outdated (>365 days) or Facebook security checkpoint | Run `session-login.js` on server, approve 2FA on phone. `cookie-monitor.js` alerts via WhatsApp when session is stale. |
 
 ## Deployment
 

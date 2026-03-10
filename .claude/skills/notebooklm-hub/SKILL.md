@@ -5,7 +5,7 @@ description: >-
   source of truth, query patterns, auth flow, notebook index, research workflows, and
   conflict resolution. Use when querying NotebookLM, managing notebooks, researching specs,
   or resolving cross-reference conflicts. Not for codebase changes, video pipeline, or UI design.
-  Example: "Query the Kie.ai notebook for API limits" or "Sync TourReel spec from NotebookLM".
+  Example: "Query the Kie.ai notebook for API limits" or "Sync VideoForge spec from NotebookLM".
 autoTrigger:
   - "NotebookLM"
   - "notebook"
@@ -58,7 +58,7 @@ notebooklm-mcp-auth
 | ID | Title | Sources | Use For |
 |----|-------|---------|---------|
 | 3e820274 | KIE.AI | 40 | Kie.ai API docs, models, limits |
-| 0baf5f36 | Zillow-to-Video (TourReel) | 25 | TourReel production instructions |
+| 0baf5f36 | Zillow-to-Video (VideoForge) | 25 | VideoForge production instructions |
 | 6bb5f16d | Kling 3.0 | 2 | Cinematic prompt engineering |
 | e109bcb2 | Mivnim (Yossi Laham) | 38 | Winner Studio client context |
 | 7d06c748 | AgentForge | 7 | Research pipeline spec |
@@ -142,7 +142,7 @@ Params: { notebook_id: "uuid" }
 
 | Domain | Notebook | Example Query |
 |--------|----------|--------------|
-| TourReel spec | 0baf5f36 | "What are the 12 pipeline stages?" |
+| VideoForge spec | 0baf5f36 | "What are the 12 pipeline stages?" |
 | Kie.ai API limits | 3e820274 | "What is the rate limit for Kling 3.0 Pro?" |
 | Methodology | 1dc7ce26 | "What is the B.L.A.S.T. framework?" |
 | Client context | e109bcb2 | "What characters does Yossi use?" |

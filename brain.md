@@ -173,7 +173,7 @@ NotebookLM + Stitch MCP are connected to Antigravity. Draw from these notebooks 
 ├── security/                ← Policies, credential rotation
 │
 ├── .cursor/                 ← Agent rules, context, MCP status
-└── .claude/skills/          ← Agent skills (rag-pgvector, videoforge-pipeline, billing-credits, ui-ux-pro-max, etc.)
+└── .claude/skills/          ← Agent skills (rag-pgvector, videoforge-pipeline, spec-driven-dev, ui-ux-pro-max, etc.)
 ```
 
 **Tools**: `apps/worker/tools/` (pipeline diagnostics), `apps/web/superseller-site/tools/` (aitable sync). No root-level `tools/` or `architecture/`.

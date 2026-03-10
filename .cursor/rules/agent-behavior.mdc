@@ -97,7 +97,7 @@ When a task involves async work (deploy, run job, poll status, fix, iterate):
 - **Every API generation MUST log its cost.** No exceptions, every session, forever.
 - **In automated pipeline** (video-pipeline.worker.ts): Call `trackExpense()` after each Kling/Suno/Nano/Gemini API call.
 - **In manual/ad-hoc sessions**: Add a cost table to the session's progress entry in `progress.md` before closing.
-- **Rate table**: See `INFRA_SSOT.md` §5b or `.claude/skills/tourreel-pipeline/SKILL.md`.
+- **Rate table**: See `INFRA_SSOT.md` §5b or `.claude/skills/videoforge-pipeline/SKILL.md`.
 - **Format**: `| Operation | Count | Unit Cost | Total |` with session total row.
 
 ---
@@ -106,7 +106,7 @@ When a task involves async work (deploy, run job, poll status, fix, iterate):
 
 Every experiment, test, bug fix, or creative exploration is a potential product feature. When trying something new (new API capability, creative prompt technique, workflow optimization), always ask:
 1. **Could this become a feature?** If a technique works (e.g., Kling Elements character reference, furniture-from-sky animation, AI room detection without floorplan), document it as a potential product offering.
-2. **Which product does it fit?** TourReel, Winner Studio, AgentForge, FrontDesk — map the discovery to an existing product or note it as a new product seed.
+2. **Which product does it fit?** VideoForge, Winner Studio, AgentForge, FrontDesk — map the discovery to an existing product or note it as a new product seed.
 3. **Log it immediately.** Add to findings.md or PRODUCT_BIBLE.md under "Feature Discovery" so it doesn't get lost in session noise.
 
 **Never just solve the task at hand — always think about what the solution means for the product roadmap.**
@@ -131,13 +131,34 @@ Before deleting or archiving docs, ask:
 
 ---
 
-## Task Sizing (Hybrid Planning)
+## Task Sizing (Spec-Driven Planning)
 
 | Size | Scope | Action |
 |------|-------|--------|
-| **Small** | 1-2 files | Execute immediately |
-| **Medium** | 3-5 files | Brief plan in response, then execute |
-| **Large** | 6+ files or new system | Full B.L.A.S.T. Blueprint, HALT until approved |
+| **Small** | 1-2 files | Execute immediately, single commit |
+| **Medium** | 3-5 files | SPEC → PLAN → atomic commits (see `spec-driven-dev` skill) |
+| **Large** | 6+ files or new system | Full SPEC → PLAN with subagent isolation → atomic commits. For new projects, B.L.A.S.T. Blueprint = the SPEC. |
+
+### Spec-Driven Workflow (Medium + Large)
+
+Before writing code on any 3+ file task:
+1. **SPEC** (30s): Write requirements + acceptance criteria inline in response
+2. **PLAN**: Decompose into atomic tasks, each with a commit message
+3. **EXECUTE**: One task at a time → verify → commit
+4. **VERIFY**: Check acceptance criteria from SPEC
+
+Full workflow: `.claude/skills/spec-driven-dev/SKILL.md`
+
+### Atomic Commit Discipline
+
+- Each logical unit of work = one commit. Not one giant commit at the end.
+- Use conventional prefixes: `feat:`, `fix:`, `refactor:`, `test:`, `docs:`, `chore:`
+- Each commit should be independently revertable without breaking other work.
+- Push after final commit (not after every commit).
+
+### Codebase Mapping
+
+Run `npx tsx tools/map-codebase.ts` to auto-refresh `REPO_MAP.md` before Large tasks. Ensures the codebase index matches reality.
 
 ---
 
@@ -148,7 +169,7 @@ NotebookLM notebooks are a reference resource, not a mandatory sync target. Upda
 ### Notebook-to-Product Map (for reference)
 | Product Changed | Notebook |
 |-----------------|-----------|
-| TourReel / video pipeline | 0baf5f36 (Zillow-to-Video) |
+| VideoForge / video pipeline | 0baf5f36 (Zillow-to-Video) |
 | Winner Studio | e109bcb2 (Mivnim/Yossi) |
 | FB Bot | cb99e6aa (Social Media & Lead Gen) |
 | Infrastructure / deploy | fc048ba8 (Automation & Core Infra) |

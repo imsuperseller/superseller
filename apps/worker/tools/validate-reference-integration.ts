@@ -1,5 +1,5 @@
 /**
- * Validates TourReel reference integration: inferRoomType, ROOM_NEGATIVE_ADDITIONS, STYLE_MODIFIERS.
+ * Validates VideoForge reference integration: inferRoomType, ROOM_NEGATIVE_ADDITIONS, STYLE_MODIFIERS.
  * Usage: cd apps/worker && npx tsx tools/validate-reference-integration.ts
  */
 import { ROOM_DESCRIPTIONS, STYLE_MODIFIERS } from "../src/services/prompt-generator";
@@ -64,7 +64,7 @@ const STYLE_CASES: Array<string> = [
 ];
 
 function main() {
-    console.log("\n=== TourReel Reference Integration Validation ===\n");
+    console.log("\n=== VideoForge Reference Integration Validation ===\n");
 
     let ok = true;
 

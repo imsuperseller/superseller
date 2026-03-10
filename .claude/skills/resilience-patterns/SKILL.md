@@ -3,7 +3,7 @@ name: resilience-patterns
 description: >-
   Cross-cutting resilience patterns for SuperSeller AI's external API dependencies.
   Covers exponential backoff, circuit breakers, fallback chains, graceful degradation,
-  error budgets, and SLA tracking. Applies to ALL products (TourReel, Winner Studio,
+  error budgets, and SLA tracking. Applies to ALL products (VideoForge, Winner Studio,
   FB Bot, AgentForge). Created after Kie.ai outage caused 0% success rate.
   Use when adding retry logic, circuit breakers, fallback providers, or handling
   API outages. Not for UI design, database schema, or business logic.
@@ -36,18 +36,18 @@ negativeTrigger:
 - **Every external API call MUST have retry logic** — no exceptions.
 - **Circuit breakers prevent cascade failures** — stop calling a dead service.
 - **Fallback chains provide degraded service** — better than total failure.
-- **This is cross-cutting** — applies to TourReel, Winner Studio, FB Bot, AgentForge, FrontDesk.
+- **This is cross-cutting** — applies to VideoForge, Winner Studio, FB Bot, AgentForge, FrontDesk.
 
 ## External API Dependencies
 
 | Service | Used By | Failure Impact |
 |---------|---------|---------------|
-| Kie.ai (Kling, Suno, Nano, Avatar) | TourReel, Winner Studio | Total pipeline failure |
-| Gemini (Flash, Vision) | TourReel, Winner Studio, FB Bot | No AI analysis/prompts |
+| Kie.ai (Kling, Suno, Nano, Avatar) | VideoForge, Winner Studio | Total pipeline failure |
+| Gemini (Flash, Vision) | VideoForge, Winner Studio, FB Bot | No AI analysis/prompts |
 | PayPal | All products | No payments, no provisioning |
 | Resend | All products | No email notifications |
 | WAHA | Winner Studio, Lead Pages | No WhatsApp delivery |
-| Apify | TourReel | No Zillow scraping |
+| Apify | VideoForge | No Zillow scraping |
 | Telnyx | FrontDesk, FB Bot | No voice/phone |
 | Ollama | RAG | No embeddings |
 | GoLogin | FB Bot | No browser profiles |
@@ -210,7 +210,7 @@ interface ErrorBudget {
 1. **Kie.ai** — add retry + circuit breaker to `apps/worker/src/services/kie.ts` and `apps/studio/src/lib/kie.ts`
 2. **Gemini** — add retry to `apps/worker/src/services/gemini.ts` and `apps/studio/src/lib/gemini.ts`
 3. **Winner Studio fallback** — already has avatar-pro → kling-3.0 fallback (verify it works)
-4. **TourReel fallback** — add pro → std degradation on Kie errors
+4. **VideoForge fallback** — add pro → std degradation on Kie errors
 5. **Error budget tracking** — extend `api_expenses` table or create `error_budget` table
 
 ## Key Files to Modify

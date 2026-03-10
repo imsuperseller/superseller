@@ -142,7 +142,7 @@ const total = await getTotalExpenses(30); // {total, byService: {kie: $X, gemini
 
 ## Where trackExpense() Must Be Added
 
-### TourReel Worker (`video-pipeline.worker.ts`)
+### VideoForge Worker (`video-pipeline.worker.ts`)
 - After each Kling clip generation (pro or std)
 - After Suno music generation
 - After Nano Banana composite

@@ -1,15 +1,15 @@
 ---
-name: tourreel-pipeline
+name: videoforge-pipeline
 description: >-
-  TourReel real estate video pipeline automation. Dual-path: (1) Kling 3.0 AI clip generation +
+  VideoForge real estate video pipeline automation. Dual-path: (1) Kling 3.0 AI clip generation +
   FFmpeg assembly, (2) Remotion photo composition (Ken Burns, transitions, branding). Covers Zillow
   scraping, floorplan analysis, clip generation, Remotion rendering, and deployment on RackNerd.
-  Use when working on TourReel, real estate video, property video, listing video, video pipeline,
+  Use when working on VideoForge, real estate video, property video, listing video, video pipeline,
   Kie.ai, Kling, Remotion, composition, Ken Burns, clip generation, or video worker code.
   Not for UI/UX design, n8n workflows, WhatsApp bots, or non-video backend code.
   Example: "Fix the double realtor bug in the video pipeline" or "Update the Remotion intro card".
 autoTrigger:
-  - "TourReel"
+  - "VideoForge"
   - "video pipeline"
   - "Kling"
   - "Kie.ai"
@@ -37,7 +37,7 @@ negativeTrigger:
   - "FB Marketplace"
 ---
 
-# TourReel Video Pipeline
+# VideoForge Video Pipeline
 
 ## Critical
 - **Kling duration must be `"5"` or `"10"` (string enum)** — floats like `5.00` cause Kie 500 errors

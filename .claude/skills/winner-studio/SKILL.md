@@ -5,7 +5,7 @@ description: >-
   Covers Gemini brain routing, Kie.ai avatar-pro/infinitalk/kling-3.0 video generation,
   audio isolation, WhatsApp delivery via WAHA, R2 storage, and credit billing.
   Use when working on Winner Studio, Spoke, avatar video, lip-sync, Mivnim, Yossi,
-  studio.superseller.agency, or the apps/studio/ codebase. Not for TourReel, FB Marketplace,
+  studio.superseller.agency, or the apps/studio/ codebase. Not for VideoForge, FB Marketplace,
   UI design, or non-studio video work.
   Example: "Fix the avatar-pro fallback in Winner Studio".
 autoTrigger:
@@ -22,7 +22,7 @@ autoTrigger:
   - "winner_generations"
   - "Gemini brain"
 negativeTrigger:
-  - "TourReel"
+  - "VideoForge"
   - "Zillow"
   - "FB Marketplace"
   - "UI design"

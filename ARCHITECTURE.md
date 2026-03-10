@@ -23,7 +23,7 @@
 | **docs/** | Documentation: **docs/frameworks/**, **docs/templates/videoforge/**, **docs/n8n/N8N_WORKFLOWS_CATALOG.md**, **docs/NOTEBOOKLM_INDEX.md** |
 | **security/** | Security policies, credential rotation |
 | **.cursor/** | Agent rules, context, MCP status |
-| **.claude/skills/** | Agent skills (antigravity, database, rag-pgvector, billing-credits, videoforge-pipeline, ui-design-workflow, ui-ux-pro-max) |
+| **.claude/skills/** | Agent skills (antigravity, database, rag-pgvector, spec-driven-dev, videoforge-pipeline, ui-design-workflow, ui-ux-pro-max) |
 
 ---
 

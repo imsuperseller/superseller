@@ -1,37 +1,37 @@
 # SuperSeller AI Methodology
 
-**Purpose**: Process methodology for B.L.A.S.T. vs Agent Behavior. For authority precedence across all docs, see [`brain.md`](brain.md).
+**Purpose**: Process methodology for Spec-Driven Development, B.L.A.S.T., and Agent Behavior. For authority precedence across all docs, see [`brain.md`](brain.md).
 
-**Last Updated**: February 2026
+**Last Updated**: March 2026
 
 ---
 
 ## 1. Three Contexts, One System
 
-| Context | Rules Apply | Reporting | Tool |
-|--------|-------------|-----------|------|
-| **Routine tasks** (fix bug, deploy, verify, add feature) | Agent Behavior | One final output. No mid-task status. | Direct execution or Subagents |
-| **Parallel focused work** (research, migration, audit across modules) | Agent Behavior | Subagents report back to lead. | Subagents (Task tool) |
-| **Multi-layer feature builds** (frontend + API + worker + billing) | B.L.A.S.T. + Agent Teams | Lead coordinates, teammates communicate. | Agent Teams |
-| **New projects / major scoping** (new app, new automation) | B.L.A.S.T. | Phase gates. HALT at Blueprint. | Agent Teams or direct |
+| Context | Rules Apply | Planning | Tool |
+|--------|-------------|----------|------|
+| **Small tasks** (1-2 files: fix bug, deploy, config) | Agent Behavior | None — execute immediately | Direct execution |
+| **Medium tasks** (3-5 files: feature, integration) | Agent Behavior + Spec-Driven | SPEC → PLAN → atomic commits | Direct execution or Subagents |
+| **Large tasks** (6+ files: new system, major refactor) | Agent Behavior + Spec-Driven | Full SPEC → PLAN → subagent isolation → atomic commits | Subagents (Task tool) |
+| **New projects** (new app, new automation) | B.L.A.S.T. | Blueprint = SPEC, then PLAN → EXECUTE → VERIFY | Agent Teams or direct |
 
 ### When to use which
 
 | Situation | Use | Why |
 |-----------|-----|-----|
 | Single file fix, config change, deploy | **Direct execution** | Zero overhead |
+| 3-5 file feature or integration | **Spec-Driven + direct** | SPEC prevents scope creep, atomic commits enable safe rollback |
+| 6+ file refactor, multi-layer feature | **Spec-Driven + subagents** | Fresh subagent context per task prevents context rot |
 | 3+ independent research/migration tasks | **Subagents** | Parallel, no inter-agent communication needed |
-| Multi-layer feature (changes span frontend, API, worker) | **Agent Teams** | Teammates need to coordinate schema, types, contracts |
-| Complex debugging (competing hypotheses) | **Agent Teams** | Agents disprove each other's theories |
-| Simple CRUD, single-module feature | **Direct execution** | Agent Teams adds bureaucracy overhead |
+| New product, new app, major architecture | **B.L.A.S.T.** | Phase gates, HALT at Blueprint for approval |
 
-**Rule of thumb**: If you can explain the task in 2 sentences → direct execution. If tasks are parallel but independent → subagents. If agents need to talk to each other → Agent Teams.
+**Rule of thumb**: 1-2 files → execute. 3+ files → SPEC first. New project → B.L.A.S.T.
 
 ---
 
 ## 2. Routine Tasks → Agent Behavior (+ Subagents)
 
-**When**: Fix X, deploy Y, verify Z, add feature, run smoke, etc.
+**When**: Fix X, deploy Y, verify Z, add small feature, run smoke, etc. (1-2 files)
 
 **Rules**: `.cursor/rules/agent-behavior.mdc` (Cursor) and `.claude/rules/agent-behavior.md` (Claude Code). Same content. AlwaysApply.
 
@@ -46,6 +46,33 @@
 - User-facing flows: Open URL in browser, confirm no errors.
 - Pipeline changes: Run dry-run or preflight.
 - Document each thing in progress.md, findings.md.
+
+---
+
+## 2b. Spec-Driven Development → Medium & Large Tasks
+
+**When**: Any task touching 3+ files. Features, integrations, refactors, multi-layer changes.
+
+**Skill**: `.claude/skills/spec-driven-dev/SKILL.md` — full workflow with templates.
+
+**The 4-Phase Loop**:
+
+```
+SPEC (30s) → PLAN → EXECUTE (atomic commits) → VERIFY
+```
+
+1. **SPEC**: Before code, write requirements + acceptance criteria inline in response. Not a separate file (avoids doc sprawl). Exception: B.L.A.S.T. Blueprint IS the SPEC for new projects.
+2. **PLAN**: Break SPEC into ordered atomic tasks. Each task = one logical commit with a conventional message (`feat:`, `fix:`, `refactor:`, etc.).
+3. **EXECUTE**: Implement one task at a time. Load only files relevant to that task. Verify (lint, type-check). Commit.
+4. **VERIFY**: Check each acceptance criterion from the SPEC. Update progress.md + findings.md.
+
+**Why this matters**:
+- **Context rot prevention**: Each task loads only its own files, not the whole repo. For Large tasks, each subagent gets fresh context.
+- **Revert safety**: If task 4 breaks, revert task 4 without losing 1-3.
+- **Scope clarity**: SPEC defines what "done" means before coding starts. No scope creep.
+- **Traceability**: Every commit maps to a requirement.
+
+**Codebase Mapping**: Run `npx tsx tools/map-codebase.ts` to auto-refresh `REPO_MAP.md` before Large tasks.
 
 ---
 
@@ -104,7 +131,7 @@ Use Sonnet for each teammate. Require plan approval before implementation.
 
 **When**: Any UI/UX work — designing pages, choosing palettes, reviewing components.
 
-**Location**: `.claude/skills/ui-ux-pro-max-skill/` — auto-loaded. Provides 50+ styles, 97 color palettes, 57 font pairings, 99 UX guidelines. Stack: Next.js + Tailwind + shadcn/ui.
+**Location**: `.claude/skills/ui-ux-pro-max/` — loaded on demand. Provides 50+ styles, 97 color palettes, 57 font pairings, 99 UX guidelines. Stack: Next.js + Tailwind + shadcn/ui.
 
 ---
 
@@ -114,8 +141,10 @@ Use Sonnet for each teammate. Require plan approval before implementation.
 |-------|----------|
 | Methodology (this doc) | METHODOLOGY.md |
 | Agent Behavior | .claude/rules/agent-behavior.md |
+| Spec-Driven Dev | .claude/skills/spec-driven-dev/SKILL.md |
+| Codebase Mapper | tools/map-codebase.ts → REPO_MAP.md |
 | Agent Teams | ~/.claude/settings.json |
-| UI/UX Skill | .claude/skills/ui-ux-pro-max-skill/ |
+| UI/UX Skill | .claude/skills/ui-ux-pro-max/ |
 | Architecture | CLAUDE.md, brain.md |
 | Conflict audit | CONFLICT_AUDIT.md |
 

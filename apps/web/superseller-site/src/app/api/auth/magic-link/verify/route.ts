@@ -58,8 +58,17 @@ export async function GET(request: NextRequest) {
 
         const isAdmin = ADMIN_EMAILS.includes(pgToken.email.toLowerCase());
         const isProd = process.env.NODE_ENV === 'production';
-        const adminUrl = isProd ? 'https://admin.superseller.agency' : '/admin';
-        const destination = isAdmin ? adminUrl : `/dashboard/${pgToken.clientId}`;
+        const redirectTo = searchParams.get('redirectTo');
+
+        let destination: string;
+        if (redirectTo && redirectTo.startsWith('/')) {
+            // Custom redirect (e.g. /compete/elite-pro-remodeling) — only allow relative paths
+            destination = redirectTo;
+        } else if (isAdmin) {
+            destination = isProd ? 'https://admin.superseller.agency' : '/admin';
+        } else {
+            destination = `/dashboard/${pgToken.clientId}`;
+        }
 
         // Set auth cookie and redirect
         const response = NextResponse.redirect(

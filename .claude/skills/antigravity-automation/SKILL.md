@@ -18,7 +18,7 @@ negativeTrigger:
 # Antigravity Automation
 
 ## When to Use
-Use when working on automation workflows, Antigravity engine, n8n backup patterns, or integrating NotebookLM/Stitch with automation. Not for video pipeline (use tourreel-pipeline), UI design, or billing logic.
+Use when working on automation workflows, Antigravity engine, n8n backup patterns, or integrating NotebookLM/Stitch with automation. Not for video pipeline (use videoforge-pipeline), UI design, or billing logic.
 
 ## Critical Rules
 1. **Antigravity is PRIMARY for new automation.** n8n runs existing production workflows (FB Bot lead pipeline) but all new automation must be programmatic. Per brain.md Tier 1.

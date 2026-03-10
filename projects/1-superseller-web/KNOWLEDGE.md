@@ -34,7 +34,7 @@ SuperSeller Web is a Next.js 14+ application deployed on Vercel. It serves as th
 
 ### Credit System
 - Three tiers: Starter ($79/mo, 500cr), Pro ($149/mo, 1500cr), Team ($299/mo, 4000cr)
-- Credits per video: 50cr (TourReel), 50cr (Winner Studio), 10cr/scene regen
+- Credits per video: 50cr (VideoForge), 50cr (Winner Studio), 10cr/scene regen
 - Credit ledger in PostgreSQL with debit/credit transactions
 - PayPal webhook triggers provisioning on subscription activation
 - `src/lib/credits.ts` for web-side credit operations

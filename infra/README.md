@@ -235,7 +235,7 @@ sudo systemctl start cloudflared
 **Contents**:
 - `server.js` - Express API for merging videos
 - `docker-compose.yml`, `Dockerfile` - Container setup
-- Uses: n8n workflows, KIE/TourReel-style video pipelines
+- Uses: n8n workflows, KIE/VideoForge-style video pipelines
 
 **Status**: ⚠️ Verify if in active use
 

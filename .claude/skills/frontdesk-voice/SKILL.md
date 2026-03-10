@@ -21,7 +21,7 @@ autoTrigger:
   - "conversation polling"
 negativeTrigger:
   - "video pipeline"
-  - "TourReel"
+  - "VideoForge"
   - "Kling"
   - "FFmpeg"
   - "UI design"

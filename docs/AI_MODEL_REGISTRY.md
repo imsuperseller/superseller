@@ -32,7 +32,7 @@
 
 ## Models by Product
 
-### TourReel — Real Estate Video
+### VideoForge — Real Estate Video
 | Role | Model | Endpoint | Notes |
 |------|-------|----------|-------|
 | AI video clips | Kling 3.0 | `kling-3.0/video` | Pro = $0.10, Std = $0.03 |
@@ -84,7 +84,7 @@
 
 | Task Type | Endpoint | Used For |
 |-----------|----------|---------|
-| Kling video | `/api/v1/jobs/createTask` | TourReel clips |
+| Kling video | `/api/v1/jobs/createTask` | VideoForge clips |
 | Nano Banana | `/api/v1/jobs/createTask` | Room images, listing images |
 | Suno music | `generate/record-info` | Background music |
 | ElevenLabs TTS | `jobs/recordInfo` | Voice generation |

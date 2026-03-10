@@ -29,7 +29,9 @@ import {
     Star,
     MoreVertical,
     CheckCircle2,
-    Activity
+    Activity,
+    Crosshair,
+    Terminal
 } from 'lucide-react';
 import WorkflowManagement from '@/components/admin/WorkflowManagement';
 import AIAgentManagement from '@/components/admin/AIAgentManagement';
@@ -44,6 +46,8 @@ import TreasuryManagement from '@/components/admin/TreasuryManagement';
 import TerryAssistant from '@/components/admin/TerryAssistant';
 import EcosystemMap from '@/components/admin/EcosystemMap';
 import SystemMonitor from '@/components/admin/SystemMonitor';
+import MissionControl from '@/components/admin/MissionControl';
+import SuperSellerOps from '@/components/admin/SuperSellerOps';
 import { Skeleton } from '@/components/ui/skeleton-enhanced';
 import { Button } from '@/components/ui/button-enhanced';
 import { Badge } from '@/components/ui/badge-enhanced';
@@ -317,6 +321,8 @@ export default function AdminDashboardClient({
                         <ul className="space-y-1">
                             {[
                                 { id: 'overview', label: 'Dashboard', icon: LayoutDashboard },
+                                { id: 'mission', label: 'Mission Control', icon: Crosshair },
+                                { id: 'ops', label: 'Ops Center', icon: Terminal },
                                 { id: 'ecosystem', label: 'Ecosystem Map', icon: Activity },
                                 { id: 'crm', label: 'Client CRM', icon: Users },
                                 { id: 'projects', label: 'Projects', icon: FolderOpen },
@@ -544,6 +550,12 @@ export default function AdminDashboardClient({
                                 </div>
                                 <EcosystemMap products={products} />
                             </div>
+                        )}
+                        {activeTab === 'mission' && (
+                            <MissionControl />
+                        )}
+                        {activeTab === 'ops' && (
+                            <SuperSellerOps />
                         )}
                         {activeTab === 'crm' && (
                             <ClientCRM />

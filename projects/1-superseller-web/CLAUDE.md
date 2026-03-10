@@ -43,7 +43,7 @@ brain.md, CLAUDE.md, *.md (root)  → Project 7 (Strategy & Docs)
 ## Assigned Skills
 - admin-portal
 - customer-journey
-- billing-credits
+- cost-tracker
 - lead-pages
 - ui-ux-pro-max
 - ui-design-workflow

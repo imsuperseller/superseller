@@ -1,13 +1,13 @@
 # Claude Skills — SuperSeller AI Project
 
-**30 active skills** — see `SKILL_ROUTER.md` for full index, decision tree, and multi-skill workflow patterns.
+**29 active skills** — see `SKILL_ROUTER.md` for full index, decision tree, and multi-skill workflow patterns.
 
-## Active Skills (30)
+## Active Skills (29)
 
 ### Product Skills (7)
 | Skill | Purpose | Status |
 |-------|---------|--------|
-| **tourreel-pipeline** | Real estate video: Kling 3.0 AI clips + Remotion photo composition | Active |
+| **videoforge-pipeline** | Real estate video: Kling 3.0 AI clips + Remotion photo composition | Active |
 | **winner-studio** | AI avatar video for Mivnim/Yossi (Gemini + avatar-pro + WhatsApp delivery) | Active |
 | **marketplace-saas** | FB Marketplace bot SaaS (multi-tenant, GoLogin, Kie.ai image gen) | Active |
 | **lead-pages** | Dynamic /lp/[slug] landing pages with per-customer branding | Active |
@@ -28,20 +28,17 @@
 | **resilience-patterns** | Retry, circuit breakers, fallback chains, error budgets |
 | **antigravity-automation** | Primary automation engine (n8n = backup only) |
 
-### Billing & Cost Skills (2)
+### Cost & Development Skills (2)
 | Skill | Purpose |
 |-------|---------|
-| **billing-credits** | PayPal billing + credit ledger (formerly stripe-credits) |
 | **cost-tracker** | API cost tracking (trackExpense(), anomaly detection, budgets) |
+| **spec-driven-dev** | SPEC → PLAN → EXECUTE → VERIFY workflow, atomic commits, codebase mapping |
 
-### UI/UX & Creative Skills (5)
+### UI/UX & Creative Skills (2)
 | Skill | Purpose |
 |-------|---------|
 | **ui-ux-pro-max** | Design intelligence (50+ styles, 97 palettes, 57 fonts) |
 | **ui-design-workflow** | External UI bridge (v0/Stitch → SuperSeller branded React) + scroll-driven animation pipeline (Lenis + GSAP) |
-| **video-to-website** | Turn video into scroll-driven animated website (standalone vanilla HTML/CSS/JS, Apple-style) |
-| **excalidraw-diagram** | Generate editable Excalidraw diagrams (JSON schema, color zones, layout) |
-| **nano-banana-image** | Hyper-realistic AI image generation via Kie.ai (Nano Banana 2, structured JSON prompting) |
 
 ### Knowledge & AI Skills (3)
 | Skill | Purpose |
@@ -50,24 +47,23 @@
 | **rag-pgvector** | pgvector + Ollama RAG stack (HNSW, multi-tenant docs) |
 | **model-observatory** | 34+ curated + 118 auto-discovered models, daily sync, pipeline recommendations |
 
-### Customer & Portal Skills (2)
+### Customer & Portal Skills (3)
 | Skill | Purpose |
 |-------|---------|
 | **customer-journey** | 4-stage funnel, PayPal provisioning, magic-link auth, entitlements |
 | **admin-portal** | 8-tab admin dashboard, CRM, system monitoring, treasury |
+| **competitor-research** | Multi-tenant competitor ad research via Meta Ads Library |
 
 ### Communication Skills (1)
 | Skill | Purpose |
 |-------|---------|
 | **whatsapp-waha** | WhatsApp via WAHA Pro (messaging, OTP, video delivery) |
 
-### Meta Skills (1)
+### Autonomous & Meta Skills (2)
 | Skill | Purpose |
 |-------|---------|
+| **autonomous-agents** | Self-healing monitoring (credential sentinel, session watchdog, doc scanner) |
 | **skill-template** | Scaffold for creating new skills |
-
-## Cowork Plugins (6)
-Located in `plugins/` — for Claude Desktop/Web (Cowork layer). See individual plugin READMEs.
 
 ## Key References
 - `SKILL_ROUTER.md` — Decision tree for task→skill routing

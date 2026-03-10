@@ -5,7 +5,7 @@ description: >-
   per-customer branding (colors, logo, font, RTL/LTR), lead capture forms,
   WhatsApp/email notifications, seed scripts, and content extraction governance.
   Use when working on landing pages, lead capture, /lp/ routes, customer branding,
-  or lead page content. Not for TourReel, video pipeline, admin dashboard,
+  or lead page content. Not for VideoForge, video pipeline, admin dashboard,
   or general website pages.
   Example: "Add a new landing page for a dental client" or "Fix RTL layout on customer landing page".
 autoTrigger:
@@ -19,7 +19,7 @@ autoTrigger:
   - "LandingPage model"
   - "lead pages"
 negativeTrigger:
-  - "TourReel"
+  - "VideoForge"
   - "video pipeline"
   - "FB Marketplace"
   - "admin dashboard"

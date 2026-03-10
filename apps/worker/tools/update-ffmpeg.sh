@@ -3,7 +3,7 @@
 #
 # IMPORTANT (Mar 4, 2026): This script is DISABLED in cron.
 # The johnvansickle static builds (both "release" and "git/full" variants)
-# do NOT include the drawtext filter, which is essential for TourReel
+# do NOT include the drawtext filter, which is essential for VideoForge
 # text overlays (address, price, room labels, CTA).
 #
 # We now use the Ubuntu apt-installed FFmpeg (/usr/bin/ffmpeg) which includes

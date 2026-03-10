@@ -47,7 +47,7 @@ async function validateConfig() {
 }
 
 async function bootstrap() {
-    logger.info("🚀 Starting TourReel Worker Service...");
+    logger.info("🚀 Starting VideoForge Worker Service...");
 
     // 0. Validate critical connections before proceeding
     await validateConfig();

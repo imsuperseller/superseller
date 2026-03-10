@@ -1,5 +1,5 @@
 #!/bin/bash
-# TourReel Video Validator
+# VideoForge Video Validator
 # Usage: ./validate-video.sh <video-url-or-path>
 # Options:
 #   --help     Show this help message
@@ -10,7 +10,7 @@ set -euo pipefail
 show_help() {
     echo "Usage: $0 <video-url-or-path> [--preview]"
     echo ""
-    echo "Validate a TourReel video file for quality and format."
+    echo "Validate a VideoForge video file for quality and format."
     echo ""
     echo "Checks:"
     echo "  - Resolution (expect 1920x1080 for master)"

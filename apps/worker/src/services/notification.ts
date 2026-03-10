@@ -23,7 +23,7 @@ interface VideoFailedNotification {
 }
 
 /**
- * Customer notification service for TourReel video pipeline.
+ * Customer notification service for VideoForge video pipeline.
  * Sends email notifications via Resend when jobs complete or fail.
  */
 export class NotificationService {

@@ -63,16 +63,16 @@ Kitchen/bathroom/bedroom remodeling, full home remodeling, new construction, gar
 Luxury custom new construction + complete renovations in Dallas TX. 13 properties (8 available + 5 coming soon). Clusters in Dalhart, San Leandro, Cullen neighborhoods. Price range $800K-$1.5M+. Smart home tech integration.
 
 ### SuperSeller Relationship
-**Status**: Active TourReel pilot — first external customer.
+**Status**: Active VideoForge pilot — first external customer.
 
 **Delivered**:
 - 6847 Lakeshore Drive V8 video tour (2:22, 1080p, 16 cinematic scenes, 6 Kling AI clips)
-- Full PRD for TourReel product
+- Full PRD for VideoForge product
 - Strategic plan with competitive analysis (vs. VideoTour.ai)
 - Pricing brief (market research on competitors)
 - Infrastructure audit
 
-**TourReel web app**: Built at `kedem developments/tourreel-app/` (Next.js 16) but audited as "broken shell" — pipeline calls use wrong endpoints, no actual FFmpeg integration.
+**VideoForge web app**: Built at `kedem developments/tourreel-app/` (Next.js 16) but audited as "broken shell" — pipeline calls use wrong endpoints, no actual FFmpeg integration.
 
 **Property focus**: 6847 Lakeshore Drive, Dallas TX 75214 (Lakewood near White Rock Lake). Acquired for $1.2M. "Old South Brick" style. Target completion: October 2026.
 
@@ -273,7 +273,7 @@ Age 40-55, married with active mortgage, NIS 10K-15K/month income, Hebrew-speaki
 | Customer | Location | Industry | SuperSeller Service | Status | Revenue Model |
 |----------|----------|----------|-------------------|--------|---------------|
 | Elite Pro Remodeling | Dallas TX | Remodeling | IG content pipeline | 90% built, blocked | SaaS subscription |
-| Kedem Developments | Dallas TX | Luxury real estate | TourReel video | Pilot delivered | Per-video / SaaS |
+| Kedem Developments | Dallas TX | Luxury real estate | VideoForge video | Pilot delivered | Per-video / SaaS |
 | AC&C HVAC | Dallas TX | HVAC + chimney | Website + lead gen | Delivered, behind password | Lead gen |
 | Ortal Pilates | Dallas TX (likely) | Fitness / Pilates | Website | Delivered, not operational | TBD |
 | Wonder.care | Petach Tikva, Israel | Healthtech | n8n automation | Delivered + proposal pending | Project-based ($900-$6,450) |

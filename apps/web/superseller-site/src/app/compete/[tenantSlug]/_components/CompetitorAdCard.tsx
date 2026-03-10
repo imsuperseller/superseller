@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface CompetitorAd {
   id: string;
@@ -28,43 +29,64 @@ interface CompetitorAd {
 
 interface Props {
   ad: CompetitorAd;
-  onRate: (adId: string, liked: boolean, feedbackNote: string, feedbackBy: string) => Promise<void>;
+  onRate: (adId: string, liked: boolean | null, feedbackNote: string, feedbackBy: string) => Promise<void>;
   reviewerName: string;
+  compact?: boolean;
 }
 
-const tierConfig: Record<string, { he: string; color: string; bg: string }> = {
-  evergreen: { he: "ירוקעד", color: "var(--superseller-cyan)", bg: "rgba(78, 205, 196, 0.15)" },
-  winner: { he: "מנצחת", color: "var(--superseller-blue)", bg: "rgba(36, 148, 224, 0.15)" },
-  strong: { he: "חזקה", color: "var(--superseller-orange)", bg: "rgba(244, 121, 32, 0.15)" },
-  promising: { he: "מבטיחה", color: "var(--superseller-text-muted)", bg: "rgba(148, 163, 184, 0.1)" },
+const TIER: Record<string, { he: string; badge: string }> = {
+  evergreen: { he: "ירוקעד", badge: "superseller-badge-success" },
+  winner:    { he: "מנצחת",  badge: "superseller-badge-info" },
+  strong:    { he: "חזקה",   badge: "superseller-badge-warning" },
+  promising: { he: "מבטיחה", badge: "superseller-badge-neon" },
 };
 
-function ScoreBadge({ score }: { score: number }) {
-  const color = score >= 7 ? "var(--superseller-cyan)" : score >= 5 ? "var(--superseller-orange)" : "var(--superseller-text-muted)";
-  const bg = score >= 7 ? "rgba(78, 205, 196, 0.15)" : score >= 5 ? "rgba(244, 121, 32, 0.15)" : "rgba(148, 163, 184, 0.1)";
-  const glow = score >= 7 ? "0 0 16px rgba(78, 205, 196, 0.3)" : score >= 5 ? "0 0 16px rgba(244, 121, 32, 0.2)" : "none";
+// Hebrew translations for AI analysis tags
+const TAG_HE: Record<string, string> = {
+  // Hook types
+  "text-overlay": "טקסט על וידאו", "raw-footage": "צילום גולמי", "before-after": "לפני-אחרי",
+  "testimonial": "המלצה", "testimonial-video": "סרטון המלצה", "slideshow": "מצגת", "animation": "אנימציה", "talking-head": "דובר מול מצלמה",
+  "product-demo": "הדגמת מוצר", "ugc": "תוכן גולשים", "meme": "מם", "carousel": "קרוסלה",
+  "transformation": "טרנספורמציה", "project-showcase": "תצוגת פרויקט", "stock-photo": "תמונת סטוק", "video-thumbnail": "תמונה ממוזערת",
+  // Angles
+  "benefit-focused": "מוטה תועלת", "problem-solution": "בעיה-פתרון", "social-proof": "הוכחה חברתית",
+  "urgency": "דחיפות", "curiosity": "סקרנות", "authority": "סמכות", "scarcity": "מחסור",
+  "price-focused": "מחיר", "emotional": "רגשי", "educational": "חינוכי", "comparison": "השוואה",
+  "story": "סיפור", "outcome": "תוצאה", "problem": "בעיה",
+  "pain-focused": "מוטה כאב", "value-proposition": "הצעת ערך",
+  // Tones
+  "friendly": "ידידותי", "professional": "מקצועי", "urgent": "דחוף", "casual": "לא פורמלי",
+  "inspirational": "מעורר השראה", "trustworthy": "אמין", "playful": "שובב", "serious": "רציני",
+  "empathetic": "אמפתי", "bold": "נועז", "calm": "רגוע", "aspirational": "שאפתני",
+  // Visual styles
+  "cinematic": "קולנועי", "minimal": "מינימלי", "vibrant": "צבעוני", "dark": "כהה",
+  "clean": "נקי", "luxury": "יוקרתי", "natural": "טבעי", "modern": "מודרני",
+};
 
-  return (
-    <div
-      className="absolute bottom-3 left-3 w-11 h-11 rounded-xl flex items-center justify-center text-xs font-black border border-white/10"
-      style={{ background: bg, color, boxShadow: glow, backdropFilter: "blur(12px)" }}
-    >
-      {score}
-    </div>
-  );
+function heTag(val: string): string | null {
+  const lower = val.toLowerCase().trim();
+  if (lower === "unknown" || lower === "n/a" || lower === "none" || lower === "missing" || !lower) return null;
+  return TAG_HE[lower] || val;
 }
 
-export default function CompetitorAdCard({ ad, onRate, reviewerName }: Props) {
+export default function CompetitorAdCard({ ad, onRate, reviewerName, compact = false }: Props) {
   const [showFeedback, setShowFeedback] = useState(false);
   const [note, setNote] = useState(ad.feedbackNote ?? "");
   const [saving, setSaving] = useState(false);
   const [localLiked, setLocalLiked] = useState<boolean | null>(ad.liked ?? null);
   const [localNote, setLocalNote] = useState(ad.feedbackNote ?? "");
   const [saved, setSaved] = useState(false);
+  const [videoError, setVideoError] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const isReviewed = localLiked !== null;
-  const tier = ad.longevityTier ? tierConfig[ad.longevityTier] : null;
+  const tier = ad.longevityTier ? TIER[ad.longevityTier] : null;
   const score = ad.aiAnalysis?.overallScore;
+  const hasVideo = ad.videoUrl && !videoError;
+  const hasImage = ad.imageUrl && !imageError;
+  const hasMedia = hasVideo || hasImage;
+  const analysis = ad.aiAnalysis;
 
   const handleRate = async (liked: boolean) => {
     setSaving(true);
@@ -83,7 +105,6 @@ export default function CompetitorAdCard({ ad, onRate, reviewerName }: Props) {
   };
 
   const handleSaveNote = async () => {
-    if (localLiked === null) return;
     setSaving(true);
     setSaved(false);
     try {
@@ -96,265 +117,271 @@ export default function CompetitorAdCard({ ad, onRate, reviewerName }: Props) {
     }
   };
 
-  // Dynamic border/glow based on rating state
-  const borderColor = localLiked === true
-    ? "rgba(78, 205, 196, 0.35)"
-    : localLiked === false
-      ? "rgba(244, 121, 32, 0.25)"
-      : "rgba(255, 255, 255, 0.06)";
-
-  const glowShadow = localLiked === true
-    ? "0 0 24px rgba(78, 205, 196, 0.08), inset 0 1px 0 rgba(255,255,255,0.04)"
-    : localLiked === false
-      ? "0 0 24px rgba(244, 121, 32, 0.08), inset 0 1px 0 rgba(255,255,255,0.04)"
-      : "inset 0 1px 0 rgba(255,255,255,0.04)";
-
-  return (
-    <div
-      className="rounded-2xl overflow-hidden transition-all duration-500 ring-1 ring-inset ring-white/[0.03]"
-      style={{
-        background: "rgba(22, 37, 64, 0.55)",
-        backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)",
-        border: `1px solid ${borderColor}`,
-        boxShadow: glowShadow,
-      }}
-    >
-      {/* Media */}
-      {(ad.imageUrl || ad.videoUrl) && (
-        <div className="relative" style={{ background: "rgba(10, 22, 40, 0.5)" }}>
-          {ad.videoUrl ? (
-            <video
-              src={ad.videoUrl}
-              poster={ad.imageUrl ?? undefined}
-              controls
-              preload="metadata"
-              className="w-full max-h-[420px] object-cover"
-            />
-          ) : ad.imageUrl ? (
-            <img
-              src={ad.imageUrl}
-              alt={ad.pageName ?? "Ad"}
-              className="w-full max-h-[420px] object-cover"
-              loading="lazy"
-            />
-          ) : null}
-
-          {/* Top badges */}
-          <div className="absolute top-3 right-3 flex gap-2">
-            {isReviewed && (
-              <span
-                className="px-2.5 py-1 rounded-lg text-[11px] font-bold border border-white/10"
-                style={{
-                  background: localLiked ? "rgba(78, 205, 196, 0.85)" : "rgba(244, 121, 32, 0.85)",
-                  backdropFilter: "blur(8px)",
-                  color: "white",
-                }}
-              >
-                {localLiked ? "אהבתי" : "לא אהבתי"}
-              </span>
-            )}
-            {tier && (
-              <span
-                className="px-2.5 py-1 rounded-lg text-[11px] font-bold border border-white/10"
-                style={{ background: tier.bg, backdropFilter: "blur(8px)", color: tier.color }}
-              >
-                {tier.he}
-              </span>
+  // ━━━ Compact / history card ━━━
+  if (compact) {
+    return (
+      <div className="superseller-card group rounded-2xl overflow-hidden cursor-pointer">
+        {hasMedia && (
+          <div className="relative" style={{ background: "var(--superseller-bg-surface)" }}>
+            {hasVideo ? (
+              <video ref={videoRef} src={ad.videoUrl!} poster={!imageError ? ad.imageUrl ?? undefined : undefined} controls preload="metadata" className="w-full max-h-[200px] object-cover" onError={() => setVideoError(true)} />
+            ) : (
+              <img src={ad.imageUrl!} alt={ad.pageName ?? "Ad"} className="w-full max-h-[200px] object-cover" loading="lazy" onError={() => setImageError(true)} />
             )}
           </div>
-
-          {/* Score */}
-          {score != null && <ScoreBadge score={score} />}
-
-          {/* Bottom gradient fade */}
-          <div className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none" style={{ background: "linear-gradient(to top, rgba(22, 37, 64, 0.8), transparent)" }} />
+        )}
+        <div className="p-4">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-sm font-bold" style={{ color: "var(--superseller-text-primary)" }}>{ad.pageName}</span>
+            <span className="text-[11px] font-bold" style={{ color: localLiked ? "var(--superseller-teal)" : "var(--superseller-orange)" }}>
+              {localLiked ? "אהבתי" : "לא אהבתי"}
+            </span>
+          </div>
+          {localNote && <p className="text-[11px] mt-1" style={{ color: "var(--superseller-text-muted)" }}>{localNote}</p>}
         </div>
-      )}
+      </div>
+    );
+  }
 
-      {/* Content */}
-      <div className="p-5">
-        {/* Header row */}
-        <div className="flex items-start justify-between mb-3">
-          <div className="min-w-0 flex-1">
-            {ad.pageName && (
-              <p className="text-sm font-bold truncate" style={{ color: "var(--superseller-text-primary)" }}>{ad.pageName}</p>
-            )}
-            <div className="flex items-center gap-3 mt-1">
-              {ad.startDate && (
-                <p className="text-[11px]" style={{ color: "var(--superseller-text-muted)" }}>
-                  פעילה מ-{ad.startDate}
-                </p>
-              )}
+  // ━━━ Full card ━━━
+  return (
+    <div className="relative group">
+      {/* Glow orb behind card — intensifies on hover */}
+      <div
+        className="absolute -inset-1 rounded-[28px] blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+        style={{ background: "linear-gradient(135deg, rgba(244,121,32,0.12), rgba(95,251,253,0.12))" }}
+      />
+
+      <div
+        className="superseller-card-neon relative rounded-[24px] overflow-hidden"
+        style={{ background: "var(--superseller-bg-card)" }}
+      >
+        {/* Top accent gradient bar */}
+        <div className="h-[2px] w-full" style={{ background: "var(--superseller-gradient-brand)" }} />
+
+        {/* ── Social header row ── */}
+        <div className="flex items-center gap-3 px-5 pt-5 pb-3" dir="rtl">
+          {/* Avatar with glow ring */}
+          <div
+            className="w-12 h-12 rounded-full flex-shrink-0 flex items-center justify-center text-base font-black relative"
+            style={{
+              background: "linear-gradient(135deg, var(--superseller-orange), var(--superseller-teal))",
+              color: "#fff",
+              boxShadow: "0 0 20px rgba(244,121,32,0.25)",
+            }}
+          >
+            {ad.pageName?.charAt(0).toUpperCase() || "?"}
+          </div>
+          {/* Name + meta */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <span className="text-[15px] font-bold truncate" style={{ color: "var(--superseller-text-primary)" }}>
+                {ad.pageName || "Unknown"}
+              </span>
+              {tier && <span className={`${tier.badge} text-[10px] font-bold px-2 py-0.5`}>{tier.he}</span>}
+            </div>
+            <div className="flex items-center gap-2 mt-0.5">
               {ad.daysRunning != null && ad.daysRunning > 0 && (
-                <p className="text-[11px] font-semibold" style={{ color: "var(--superseller-text-accent)" }}>
+                <span className="text-[11px] font-semibold" style={{ color: "var(--superseller-cyan)" }}>
                   {ad.daysRunning} ימים
-                </p>
+                </span>
+              )}
+              {ad.startDate && <span className="text-[11px]" style={{ color: "var(--superseller-text-muted)" }}>{ad.startDate}</span>}
+              {score != null && (
+                <span
+                  className="text-[10px] font-black px-1.5 py-0.5 rounded"
+                  style={{
+                    color: score >= 7 ? "var(--superseller-teal)" : score >= 5 ? "var(--superseller-orange)" : "var(--superseller-text-muted)",
+                    background: score >= 7 ? "rgba(78,205,196,0.12)" : score >= 5 ? "rgba(244,121,32,0.1)" : "rgba(148,163,184,0.08)",
+                  }}
+                >
+                  {score}/10
+                </span>
               )}
             </div>
           </div>
+          {/* External link */}
           {ad.adUrl && (
-            <a
-              href={ad.adUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 hover:bg-white/5"
-              style={{ color: "var(--superseller-text-muted)" }}
-              title="צפה בפרסומת המקורית"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                <polyline points="15 3 21 3 21 9" />
-                <line x1="10" y1="14" x2="21" y2="3" />
-              </svg>
+            <a href={ad.adUrl} target="_blank" rel="noopener noreferrer" className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center border border-white/5 hover:border-white/20 hover:bg-white/[0.04] transition-all duration-300 cursor-pointer" style={{ color: "var(--superseller-text-muted)" }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
             </a>
           )}
         </div>
 
-        {/* AI Analysis Tags */}
-        {ad.aiAnalysis && (
-          <div className="flex flex-wrap gap-1.5 mb-3">
-            {ad.aiAnalysis.hookType && (
-              <span className="px-2.5 py-0.5 rounded-md text-[10px] font-medium border border-white/5" style={{ background: "rgba(36, 148, 224, 0.1)", color: "var(--superseller-blue)" }}>
-                הוק: {ad.aiAnalysis.hookType}
-              </span>
+        {/* ── Media / Text content ── */}
+        {hasMedia ? (
+          <div className="relative mx-4 rounded-2xl overflow-hidden" style={{ background: "var(--superseller-bg-surface)" }}>
+            {hasVideo ? (
+              <video ref={videoRef} src={ad.videoUrl!} poster={!imageError ? ad.imageUrl ?? undefined : undefined} controls preload="metadata" className="w-full max-h-[400px] object-cover" onError={() => setVideoError(true)} />
+            ) : (
+              <img src={ad.imageUrl!} alt={ad.pageName ?? "Ad"} className="w-full max-h-[400px] object-cover" loading="lazy" onError={() => setImageError(true)} />
             )}
-            {ad.aiAnalysis.angle && (
-              <span className="px-2.5 py-0.5 rounded-md text-[10px] font-medium border border-white/5" style={{ background: "rgba(244, 121, 32, 0.1)", color: "var(--superseller-orange)" }}>
-                זווית: {ad.aiAnalysis.angle}
-              </span>
-            )}
-            {ad.aiAnalysis.emotionalTone && (
-              <span className="px-2.5 py-0.5 rounded-md text-[10px] font-medium border border-white/5" style={{ background: "rgba(78, 205, 196, 0.1)", color: "var(--superseller-cyan)" }}>
-                טון: {ad.aiAnalysis.emotionalTone}
-              </span>
-            )}
-            {ad.aiAnalysis.visualStyle && (
-              <span className="px-2.5 py-0.5 rounded-md text-[10px] font-medium border border-white/5" style={{ background: "rgba(95, 251, 253, 0.06)", color: "var(--superseller-neon)" }}>
-                סגנון: {ad.aiAnalysis.visualStyle}
-              </span>
+            {ad.videoUrl && videoError && hasImage && (
+              <div className="absolute top-3 left-3 superseller-badge text-[10px]" style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(12px)" }}>
+                סרטון לא זמין
+              </div>
             )}
           </div>
-        )}
+        ) : (
+          /* Text-post card — glassmorphic text area */
+          <div className="relative mx-4 rounded-2xl overflow-hidden backdrop-blur-xl" style={{ background: "rgba(22,37,64,0.6)", border: "1px solid rgba(255,255,255,0.06)" }}>
+            {/* Inner glow */}
+            <div className="absolute top-0 right-0 w-40 h-40 rounded-full blur-3xl opacity-[0.06]" style={{ background: "var(--superseller-cyan)" }} />
+            <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-[0.04]" style={{ background: "var(--superseller-orange)" }} />
 
-        {/* Ad title */}
-        {ad.adTitle && (
-          <h3 className="text-sm font-semibold mb-2" style={{ color: "var(--superseller-text-primary)" }}>{ad.adTitle}</h3>
-        )}
+            {/* Accent gradient line at top */}
+            <div className="h-[2px] w-full" style={{ background: "var(--superseller-gradient-brand)" }} />
 
-        {/* Ad text */}
-        {ad.adText && (
-          <p
-            className="text-sm leading-relaxed mb-4"
-            style={{
-              color: "var(--superseller-text-secondary)",
-              display: "-webkit-box",
-              WebkitLineClamp: 5,
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden",
-            }}
-          >
-            {ad.adText}
-          </p>
-        )}
-
-        {/* CTA tag */}
-        {ad.ctaText && (
-          <div className="mb-4">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[11px] font-medium" style={{ background: "rgba(255,255,255,0.03)", color: "var(--superseller-text-secondary)", border: "1px solid rgba(255,255,255,0.06)" }}>
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M13.8 12H3"/></svg>
-              CTA: {ad.ctaText}
-            </span>
-          </div>
-        )}
-
-        {/* Divider */}
-        <div className="h-px mb-4" style={{ background: "rgba(255,255,255,0.05)" }} />
-
-        {/* Rating buttons */}
-        <div className="flex gap-3 mb-3">
-          <button
-            onClick={() => handleRate(true)}
-            disabled={saving}
-            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
-            style={{
-              background: localLiked === true
-                ? "linear-gradient(135deg, var(--superseller-cyan), var(--superseller-blue))"
-                : "rgba(255,255,255,0.03)",
-              color: localLiked === true ? "white" : "var(--superseller-text-secondary)",
-              border: localLiked === true ? "1px solid rgba(78, 205, 196, 0.3)" : "1px solid rgba(255,255,255,0.06)",
-              boxShadow: localLiked === true ? "0 4px 20px rgba(78, 205, 196, 0.25)" : "none",
-            }}
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill={localLiked === true ? "white" : "none"} stroke="currentColor" strokeWidth="2">
-              <path d="M7 10v12" /><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z" />
-            </svg>
-            {localLiked === true ? "אהבתי!" : "אהבתי"}
-          </button>
-          <button
-            onClick={() => handleRate(false)}
-            disabled={saving}
-            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
-            style={{
-              background: localLiked === false
-                ? "linear-gradient(135deg, var(--superseller-orange), #fe3d51)"
-                : "rgba(255,255,255,0.03)",
-              color: localLiked === false ? "white" : "var(--superseller-text-secondary)",
-              border: localLiked === false ? "1px solid rgba(244, 121, 32, 0.3)" : "1px solid rgba(255,255,255,0.06)",
-              boxShadow: localLiked === false ? "0 4px 20px rgba(244, 121, 32, 0.25)" : "none",
-            }}
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill={localLiked === false ? "white" : "none"} stroke="currentColor" strokeWidth="2">
-              <path d="M17 14V2" /><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22h0a3.13 3.13 0 0 1-3-3.88Z" />
-            </svg>
-            {localLiked === false ? "לא מתאים" : "לא אהבתי"}
-          </button>
-        </div>
-
-        {/* Feedback toggle */}
-        <button
-          onClick={() => setShowFeedback(!showFeedback)}
-          className="flex items-center gap-1.5 text-xs transition-all duration-200 hover:opacity-80 py-1"
-          style={{ color: "var(--superseller-text-muted)" }}
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-          </svg>
-          {showFeedback ? "הסתר הערות" : localNote ? "ערוך הערות" : "למה? (הוסף הערות)"}
-        </button>
-
-        {/* Feedback textarea */}
-        {showFeedback && (
-          <div className="mt-3 space-y-3 animate-[superseller-fadeIn_0.3s_ease-out]">
-            <textarea
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              placeholder="מה אהבתם או לא אהבתם? איזה סגנון / טון / מסר עובד? מה לא?"
-              rows={3}
-              maxLength={2000}
-              className="superseller-input w-full text-sm resize-none"
-            />
-            <div className="flex items-center gap-3">
-              <button
-                onClick={handleSaveNote}
-                disabled={saving || localLiked === null}
-                className="px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-300 disabled:opacity-20 hover:scale-[1.02] active:scale-[0.98]"
-                style={{
-                  background: saved
-                    ? "rgba(78, 205, 196, 0.15)"
-                    : "linear-gradient(135deg, var(--superseller-blue), var(--superseller-neon))",
-                  color: saved ? "var(--superseller-cyan)" : "white",
-                  boxShadow: !saved && localLiked !== null ? "0 4px 16px rgba(36, 148, 224, 0.2)" : "none",
-                }}
-              >
-                {saved ? "נשמר!" : "שמור הערות"}
-              </button>
-              {localLiked === null && (
-                <p className="text-[11px]" style={{ color: "var(--superseller-text-muted)" }}>דרגו קודם, אחר כך שמרו הערות</p>
+            <div className="relative px-6 py-6" dir="rtl">
+              {ad.adTitle && (
+                <h3 className="text-lg font-extrabold leading-snug mb-3" style={{ color: "var(--superseller-text-primary)", letterSpacing: "-0.01em" }}>
+                  {ad.adTitle}
+                </h3>
+              )}
+              {ad.adText && (
+                <p
+                  className="text-[15px] leading-[1.7]"
+                  style={{
+                    color: "var(--superseller-text-secondary)",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 5,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                  }}
+                >
+                  {ad.adText}
+                </p>
+              )}
+              {!ad.adTitle && !ad.adText && (
+                <p className="text-center py-6 text-sm" style={{ color: "var(--superseller-text-muted)" }}>אין תוכן טקסטואלי</p>
               )}
             </div>
           </div>
         )}
+
+        {/* ── Content below media ── */}
+        <div className="px-5 pt-3 pb-2">
+          {/* Media cards: show title + text */}
+          {hasMedia && (ad.adTitle || ad.adText) && (
+            <div dir="rtl" className="mb-3">
+              {ad.adTitle && <h4 className="text-sm font-bold leading-snug mb-1" style={{ color: "var(--superseller-text-primary)" }}>{ad.adTitle}</h4>}
+              {ad.adText && (
+                <p className="text-[13px] leading-relaxed" style={{ color: "var(--superseller-text-muted)", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                  {ad.adText}
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* Analysis tags — Hebrew, hide "unknown" */}
+          {analysis && (() => {
+            const tags: { label: string; cls: string }[] = [];
+            if (analysis.hookType) { const t = heTag(analysis.hookType); if (t) tags.push({ label: t, cls: "superseller-badge-info" }); }
+            if (analysis.emotionalTone) { const t = heTag(analysis.emotionalTone); if (t) tags.push({ label: t, cls: "superseller-badge-success" }); }
+            if (analysis.angle) { const t = heTag(analysis.angle); if (t) tags.push({ label: t, cls: "superseller-badge-warning" }); }
+            if (analysis.visualStyle) { const t = heTag(analysis.visualStyle); if (t) tags.push({ label: t, cls: "superseller-badge-neon" }); }
+            return tags.length > 0 ? (
+              <div className="flex flex-wrap gap-1.5 mb-3" dir="rtl">
+                {tags.map((t, i) => <span key={i} className={`${t.cls} text-[10px]`}>{t.label}</span>)}
+              </div>
+            ) : null;
+          })()}
+
+          {/* CTA pill */}
+          {ad.ctaText && (
+            <div className="mb-3">
+              <span className="superseller-badge-neon text-[11px]">{ad.ctaText}</span>
+            </div>
+          )}
+        </div>
+
+        {/* ── Rating section ── */}
+        <div className="px-5 pb-5">
+          {/* Divider */}
+          <div className="h-px mb-4" style={{ background: "rgba(255,255,255,0.04)" }} />
+
+          {/* 3D Rating buttons — using brand button system */}
+          <div className="flex gap-3">
+            <button
+              onClick={() => handleRate(true)}
+              disabled={saving}
+              className={`flex-1 flex items-center justify-center gap-2.5 py-4 rounded-2xl font-bold text-[15px] transition-all duration-300 cursor-pointer active:scale-[0.97] disabled:opacity-40 ${
+                localLiked === true ? "superseller-btn-3d-primary" : "superseller-btn-3d-glass"
+              }`}
+              style={localLiked === true ? undefined : {
+                color: "var(--superseller-teal)",
+                border: "1px solid rgba(78,205,196,0.2)",
+                background: "rgba(78,205,196,0.06)",
+              }}
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill={localLiked === true ? "white" : "var(--superseller-teal)"} stroke="none">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+              {localLiked === true ? "אהבתי!" : "אהבתי"}
+            </button>
+            <button
+              onClick={() => handleRate(false)}
+              disabled={saving}
+              className={`flex-1 flex items-center justify-center gap-2.5 py-4 rounded-2xl font-bold text-[15px] transition-all duration-300 cursor-pointer active:scale-[0.97] disabled:opacity-40 ${
+                localLiked === false ? "superseller-btn-3d-primary" : "superseller-btn-3d-glass"
+              }`}
+              style={localLiked === false ? { background: "linear-gradient(135deg, #dc2626, #f97316)" } : {
+                color: "var(--superseller-orange)",
+                border: "1px solid rgba(244,121,32,0.2)",
+                background: "rgba(244,121,32,0.06)",
+              }}
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={localLiked === false ? "white" : "var(--superseller-orange)"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+              {localLiked === false ? "לא מתאים" : "פאס"}
+            </button>
+          </div>
+
+          {/* Feedback toggle */}
+          <button
+            onClick={() => setShowFeedback(!showFeedback)}
+            className="flex items-center gap-1.5 mt-3 text-[11px] transition-all duration-300 hover:text-[var(--superseller-cyan)] py-1 cursor-pointer"
+            style={{ color: "var(--superseller-text-muted)" }}
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            {showFeedback ? "הסתר" : localNote ? "ערוך הערה" : "הוסף הערה"}
+          </button>
+
+          <AnimatePresence>
+            {showFeedback && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1] }}
+                className="overflow-hidden"
+              >
+                <div className="mt-3 space-y-3">
+                  <textarea
+                    value={note}
+                    onChange={(e) => setNote(e.target.value)}
+                    placeholder="מה עובד? מה לא? למה?"
+                    rows={2}
+                    maxLength={2000}
+                    className="superseller-input w-full text-sm resize-none rounded-xl px-4 py-3"
+                    style={{ color: "var(--superseller-text-primary)" }}
+                  />
+                  <button
+                    onClick={handleSaveNote}
+                    disabled={saving}
+                    className={`px-5 py-2 rounded-xl text-sm font-bold transition-all duration-300 disabled:opacity-20 cursor-pointer ${
+                      saved ? "" : "superseller-btn-3d-neon"
+                    }`}
+                    style={saved ? { background: "rgba(78,205,196,0.15)", color: "var(--superseller-teal)" } : undefined}
+                  >
+                    {saved ? "נשמר!" : "שמור"}
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </div>
   );

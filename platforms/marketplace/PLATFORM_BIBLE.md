@@ -30,8 +30,15 @@ fb-marketplace-lister/deploy-package/   ← Canonical source code
 **Image server**: nginx port 8080 serving static + variations + dynamic overlay images
 **AI API**: Kie.ai (`KIE_API_KEY`) — Gemini 2.5 Flash for copy, Seedream 4.5 Edit for image variations
 
-### UAD session (cookies_uad.json)
-UAD cannot use automated Facebook login on the server (login form not in DOM). Session is obtained **once** via manual login: run `node scripts/manual-login-uad.js`, then log in at noVNC (http://172.245.56.50:6080/vnc.html) within the 10-minute wait. **Do not lose this session and do not ask the user to run manual login again** unless the session is confirmed lost. The bot never overwrites `cookies_uad.json` when it already contains `c_user` with cookies that lack `c_user`. Before any overwrite, existing session is backed up to `cookies_uad.json.bak`.
+### Session Management (UAD + MissParty)
+Facebook sessions are established via `session-login.js` (replaces older `manual-login-uad.js` / `interactive_login.js`):
+- **UAD**: `1shaifriedman@gmail.com` (Shai's personal Facebook) — GoLogin profile `694b5e53fcacf3fe4b4ff79c`
+- **MissParty**: `michalkacher2006@gmail.com` — GoLogin profile `6949a854f4994b150d430f37`
+- **Login**: `DISPLAY=:100 node session-login.js [0|1]` (0=UAD, 1=MissParty). Fills credentials, then waits 10 min for 2FA approval via noVNC (`http://172.245.56.50:6080/vnc.html`)
+- **2FA**: Facebook has passkey 2FA enabled — **cannot be automated**. Must be approved on Shai's phone (UAD) or Michal's phone (MissParty)
+- **Cookie lifetime**: `c_user` + `xs` cookies last ~365 days
+- **Health monitoring**: `cookie-monitor.js` (PM2) checks every 6h, WhatsApp alerts if stale
+- **Safety**: Bot never overwrites `cookies_uad.json`/`cookies_missparty.json` when existing file has valid `c_user` and new data lacks it. Always backs up to `.bak` before overwrite. `uploadCookiesToServer=false` in all failure paths.
 
 ## Clients
 
@@ -45,10 +52,10 @@ UAD cannot use automated Facebook login on the server (login form not in DOM). S
 
 ### Miss Party (Michal Kacher Szender)
 - **Focus**: White Bounce House rentals
-- **Stack**: GoLogin, WhatsApp via WAHA, single phone number
-- **Category**: "Inflatable Bouncers" (exact FB dropdown match)
-- **Video**: Static `michal_video.mp4` on server (video variation is the only remaining stealth gap — B9)
-- **Locations**: 20 DFW cities (sequential rotation)
+- **Stack**: GoLogin, WhatsApp via WAHA, single phone number (`+1-469-814-6509`)
+- **Category**: "Miscellaneous" (exact FB dropdown match — matches `bot-config.json`)
+- **Video**: Static `video.mp4` on server (same filename as UAD per `bot-config.json`; video variation is the only remaining stealth gap — B9)
+- **Locations**: 5 DFW cities (sequential rotation — Dallas, Fort Worth, Arlington, Plano, Frisco)
 - **Stealth**: High — 3 posts/cycle, 30-min cooldown
 
 ## Key Systems
@@ -89,4 +96,4 @@ curl -s http://172.245.56.50:8082/health
 ```
 
 ---
-*Updated: 2026-03-03. Canonical config: `fb-marketplace-lister/deploy-package/bot-config.json`. UAD session preservation: progress.md, findings.md.*
+*Updated: 2026-03-08. Canonical config: `fb-marketplace-lister/deploy-package/bot-config.json`. Session management: `session-login.js` (2FA via passkey, ~365-day cookies). See also CREDENTIAL_REFERENCE.md §Session Management.*

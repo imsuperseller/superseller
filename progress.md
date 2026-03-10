@@ -6,6 +6,150 @@
 
 ---
 
+## 2026-03-10: Spec-Driven Development System — GSD Hybrid
+
+**What**: Built a hybrid of GSD's (get-shit-done) spec-driven planning with our existing Agent Behavior execution model. Takes the best ideas from GSD — requirement clarity, atomic commits, context rot prevention — without adopting GSD wholesale.
+
+**Built**:
+1. **`spec-driven-dev` skill** (`.claude/skills/spec-driven-dev/SKILL.md`) — SPEC → PLAN → EXECUTE → VERIFY workflow with templates, context engineering rules, and integration with existing systems (B.L.A.S.T., Agent Behavior, skills, Ops Center).
+2. **`map-codebase.ts` tool** (`tools/map-codebase.ts`) — Auto-generates `REPO_MAP.md` from the actual file tree. Scans 102 API routes, 58 pages, 34 admin components, 28 worker endpoints, 6 queues, 29 skills.
+3. **Updated agent-behavior rules** (both `.cursor/rules/agent-behavior.mdc` and `.claude/rules/agent-behavior.md`) — Task Sizing now references spec-driven workflow, atomic commit discipline, and codebase mapping.
+4. **Updated METHODOLOGY.md** — Added §2b "Spec-Driven Development" as a first-class methodology between routine tasks and B.L.A.S.T.
+5. **Updated SKILL_ROUTER.md** — Added `spec-driven-dev` to the skill lookup table (32 skills total).
+
+**Comparison to GSD**:
+| GSD Feature | Our Equivalent | Status |
+|-------------|---------------|--------|
+| REQUIREMENTS.md generation | SPEC block (inline) | Built |
+| Roadmap → Phases → Tasks | PLAN with atomic tasks | Built |
+| Subagent context isolation | Task tool + fresh context loading rules | Built |
+| Atomic git commits | Conventional commit discipline | Built |
+| Codebase mapping | `tools/map-codebase.ts` → REPO_MAP.md | Built |
+| Meta-prompting templates | Agent behavior rules + skills | Built |
+| Context rot prevention | Load-on-demand rules per phase | Built |
+
+**What we have that GSD doesn't**: Production ops (Ops Center, health monitoring), 29 domain skills, NotebookLM knowledge hub, production job queues, autonomous agents, WhatsApp-delivered alerts.
+
+---
+
+## 2026-03-10: SuperSeller Ops Center — Unified Job Orchestration Dashboard
+
+**What**: Built and deployed a new "Ops Center" admin tab at `admin.superseller.agency` that combines Mission Control, Bull Board, and job management into one cohesive view — a trigger.dev-level experience using existing $6/mo infrastructure.
+
+**Components Built**:
+1. **Worker `/api/ops` endpoint** — Returns detailed BullMQ data for all 6 queues (video-pipeline, clip-generation, claudeclaw, remotion-composition, crew-video, marketplace-replenisher) including recent jobs, failed reasons, durations, and attempt counts
+2. **Scheduler status tracking** — Enhanced `scheduler.ts` with `getSchedulerStatus()` that tracks lastRun, runCount, lastError for all 7 scheduled jobs
+3. **Web `/api/admin/ops` route** — Aggregates worker ops data + worker health + Prisma DB stats (users, video jobs, leads, daily spend)
+4. **`SuperSellerOps.tsx` component** — Three-panel UI:
+   - **Infrastructure Strip**: Worker latency, Redis/Postgres status, queue health, today's API spend
+   - **Job Queues tab**: Expandable queue cards with active/waiting/failed/done counts and detailed job listings with error messages
+   - **Scheduler tab**: All 7 cron jobs with interval, run count, last run time, error tracking
+   - **Job History tab**: Recent video jobs (address, model, cost, status) + recent API expenses side-by-side
+5. **Admin tab registration** — Added to `AdminDashboardClient.tsx` sidebar with Terminal icon
+
+**Data Fixes**: Corrected `listing_address` → JOIN on listings table, `cost_usd` → `estimated_cost` column name, `pipeline_type` → `model_preference`
+
+**Deployed**: Vercel (superseller.agency) + RackNerd (worker:3002). Verified all 3 panels render correctly with live data.
+
+**Access**: Login at `admin.superseller.agency` → "Ops Center" tab (2nd in sidebar). Auto-refreshes every 30 seconds.
+
+---
+
+## 2026-03-10: ClaudeClaw Full Audit & Activation
+
+**Scope**: Investigate why ClaudeClaw was underutilized, fix all blockers, add proactive features, verify end-to-end.
+
+### Investigation Findings
+| Issue | Root Cause | Impact |
+|-------|-----------|--------|
+| 0 DM sessions | Nobody actively using it | Dead personal mode |
+| Group agent "never responded" | Actually worked (jobs 3-6 returned 314-780 chars) but agent responses not in DB | Appeared broken but wasn't |
+| Queue blocked | Job 8 (test@c.us) stuck ACTIVE, concurrency=1 | All future jobs blocked |
+| health_checks errors | CHECK constraint rejected `healthy/critical/warning` | Agent findings not stored |
+| Wrong project dir | Two .env files, second overrides first | Claude SDK using wrong cwd |
+| RAG empty | Only 4 system docs | Context-blind responses |
+
+### Fixes Deployed
+1. **Killed stuck Job 8** — removed from Redis active list, queue unblocked
+2. **Fixed health_checks constraint** — added healthy/critical/warning/unhealthy
+3. **Fixed CLAUDECLAW_PROJECT_DIR** — updated both `/opt/tourreel-worker/.env` AND `/opt/tourreel-worker/apps/worker/.env`
+4. **Added `proactive-digest.ts`** — daily 7 AM WhatsApp digest with: VideoForge stats, Marketplace stats, API spend, Leads, ClaudeClaw activity, RAG docs, System health, Pending approvals
+5. **Added 7 slash commands**: `/digest`, `/videos`, `/spend`, `/leads`, `/fb`, `/marketplace`, `/groups`
+6. **Extended RAG ingestor** — 3 new knowledge sources: product-knowledge (all 8 products + pricing), customer-summary (from User table + key accounts), business-context (operational data)
+7. **Scheduler** — added daily-digest job (7 total scheduled jobs)
+
+### Verification
+- `/digest` command: ✅ processed, response sent via WhatsApp
+- `/help` command: ✅ shows all 14 commands
+- `/videos` command: ✅ queries video_jobs
+- Natural language ("What products do we have?"): ✅ Claude SDK responded in 11s with 888-char answer
+- Session persistence: ✅ 4 turns stored in claudeclaw_turns
+- Worker restart: ✅ 7 scheduler jobs, ClaudeClaw initialized with correct projectDir
+
+### ClaudeClaw Status After Fix
+| Metric | Before | After |
+|--------|--------|-------|
+| DM sessions | 0 | 0 (will populate on use) |
+| Conversation turns | 0 | 4 |
+| Slash commands | 7 | 14 |
+| RAG documents | 4 | 5 (will be 15+ after first daily ingestion) |
+| Scheduled jobs | 6 | 7 |
+| Proactive output | None | Daily digest at 7 AM |
+| Queue blocked | Yes (stuck job) | No |
+
+---
+
+## 2026-03-09: Mission Control Dashboard V3 — Full Business Command Center
+
+**Scope**: Build comprehensive real-time status dashboard covering ALL business dimensions (not just infrastructure).
+
+**V3 Expansion (30 categories)**: User correctly identified V2 was shallow (only 16 infra-heavy categories). Expanded to 30 categories covering:
+
+| Layer | Categories Added |
+|-------|-----------------|
+| **Business Intelligence** | Audiences & Prospects (40+ Israeli Parliament Dallas members), Customer Leads, Revenue & Billing |
+| **Financial** | Expenses & Costs (API spend today/month/all-time, RackNerd, Vercel, Kie.ai balance) |
+| **Usage** | Users, Video Jobs (40 total, 10 complete, 29 failed), Clips (288), Listings (15), RAG docs |
+| **Communications** | WhatsApp Numbers & Telephony (Shai personal, Telnyx UAD/MissParty numbers, WAHA service) |
+| **Assets** | R2 storage, generated videos, customer deliverables, brand assets, voice clones |
+| **UX/UI** | Design quality scores per product (Lead Pages 5.2/10, design system partial) |
+| **Customer Journeys** | Per-product funnel stages (FB Bot 4/4, VideoForge 3/4, FrontDesk 1/4, AgentForge 0/4) |
+| **Brands** | SuperSeller AI, Rensto (separate), UAD, MissParty, Elite Pro, Kedem, Avi Construction |
+| **Intelligence** | Competitive intelligence (compete page, ad library, competitor scrape scripts) |
+| **AI Agents** | ClaudeClaw, FrontDesk Voice, Credential Sentinel, Doc Integrity Scanner, Session Watchdog |
+| **Content** | SocialHub (not started), FB Bot posting (active), Blog (live), Prompt Store |
+| **RAG & Knowledge** | pgvector, Ollama embeddings, RAG documents per tenant, ClaudeClaw 3-tier memory |
+| **n8n** | Now shows BOTH instances (production :5678 + personal :5679) with individual status |
+
+**Worker diagnostics expanded**: `/api/diagnostics` now returns business data (users, video_jobs with status breakdown, clips, listings, expenses, leads, group_agent_configs, model_catalog) + n8n instance probes.
+
+**Business Summary Bar**: Dashboard now shows 6 key metrics at top: Users (2), Video Jobs (40), Leads (2), API Today ($X), API Month ($X), RAG Docs.
+
+**Deployed**: Worker to RackNerd (PM2 restarted), Web to Vercel (production). Both verified.
+
+**Previous V2 work**:
+1. **rensto.com fix** — nginx was down on RackNerd, causing HTTP 000 from outside. Started nginx, verified 200 OK. SSL cert valid until May 31 2026.
+2. **Google AI key** — confirmed empty but not blocking (Kie.ai proxy handles Gemini calls). Documented.
+3. **Mission Control admin tab** — new tab in admin.superseller.agency with:
+   - 5 categories: Domains (7 items), Infrastructure (7), API Keys (10), Products (10), Customers (6)
+   - Color-coded status: green (healthy), red (critical), amber (warning), blue (paused), gray (not started)
+   - Live probes to all endpoints with latency measurement
+   - API key presence verification
+   - Auto-refresh every 60 seconds
+   - Search and filter by status
+   - Collapsible categories with inline issue counts
+4. **Standalone HTML** — `tools/mission-control.html` with pan/zoom/minimap for offline reference (8 categories, 61 items)
+
+**Files created/modified**:
+- `apps/web/superseller-site/src/app/api/admin/mission-control/route.ts` (new)
+- `apps/web/superseller-site/src/components/admin/MissionControl.tsx` (new)
+- `apps/web/superseller-site/src/app/[locale]/(main)/admin/AdminDashboardClient.tsx` (modified — added tab)
+- `tools/mission-control.html` (new — standalone visualization)
+
+**Deployed**: Vercel production — API returning 401 (auth-protected correctly), all 7 live probes returning valid responses.
+
+---
+
 ## 2026-03-09: Methodical Project Audit — Conflicts, Outdated, Incomplete
 
 ### Audit scope

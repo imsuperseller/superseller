@@ -1,7 +1,7 @@
 # Project 3: Marketplace Bot (FB Marketplace)
 
 > **Role**: Facebook Marketplace automation — GoLogin profiles, scheduled posting, Kie.ai image gen, UAD + MissParty.
-> **Isolation**: COMPLETE — uses Firestore (not PostgreSQL), zero imports from apps/.
+> **Isolation**: COMPLETE — uses PostgreSQL (`fb_listings` table in `app_db`), zero imports from apps/.
 
 ---
 
@@ -51,12 +51,12 @@ brain.md, CLAUDE.md, *.md (root)  → Project 7 (Strategy & Docs)
 | Webhook Server | `fb marketplace lister/deploy-package/webhook-server.js` |
 | Image Generator | `fb marketplace lister/deploy-package/image-generator.js` |
 | Product Configs | `fb marketplace lister/deploy-package/product-configs.js` |
+| Session Login | `fb marketplace lister/deploy-package/session-login.js` |
 | Session Refresh | `fb marketplace lister/deploy-package/refresh-session.js` |
 | Bot Config (local) | `fb marketplace lister/deploy-package/bot-config.json` |
 | Bot Config (server) | `/opt/fb-marketplace-bot/bot-config.json` |
 | Platform Bible | `platforms/marketplace/PLATFORM_BIBLE.md` |
-| SaaS Engine | `platforms/marketplace/saas-engine/` |
-| Firebase (Firestore) | `platforms/marketplace/saas-engine/lib/firebase.js` |
+| SaaS Engine (legacy) | `platforms/marketplace/saas-engine/` |
 | GoLogin Skills | `fb marketplace lister/.agent/skills/gologin-profile-management/SKILL.md` |
 
 ---
@@ -72,7 +72,7 @@ rsync -avz "fb marketplace lister/deploy-package/" root@172.245.56.50:/opt/fb-ma
 curl -s http://172.245.56.50:8082/health
 
 # PM2 services on server
-pm2 status           # webhook-server + fb-scheduler
+pm2 status           # webhook-server, fb-scheduler, image-pool, cookie-monitor
 ```
 
 ---
@@ -80,19 +80,21 @@ pm2 status           # webhook-server + fb-scheduler
 ## Cross-Project Rules
 
 1. **Complete isolation**: This project has ZERO dependencies on apps/web or apps/worker. Do not create imports.
-2. **Firestore**: Still uses Firestore for posting schedule (pending PostgreSQL migration). Exception to the general Firestore retirement.
+2. **Database**: Uses PostgreSQL (`fb_listings` table in `app_db`). Firestore fully retired for this project.
 3. **Root docs**: To update root `.md` files, create a request for Project 7.
 4. **Env changes**: To add/modify server env vars, create a request for Project 4.
 
 ---
 
 ## Architecture
-- **Database**: Firestore (NOT PostgreSQL) — pending migration
-- **Image Gen**: Kie.ai API for per-listing images
+- **Database**: PostgreSQL (`fb_listings` table in `app_db`)
+- **Image Gen**: Kie.ai API (Gemini 2.5 Flash for copy, Seedream 4.5 Edit for image variations)
 - **Browser Automation**: GoLogin for FB session management
-- **Scheduling**: Custom scheduler-v2.js with PM2
+- **Session Login**: `session-login.js` — fills FB credentials, waits for 2FA (passkey, must approve on phone), saves cookies to GoLogin API + local file
+- **Scheduling**: Custom scheduler.js with PM2 (60-min cycles, +/-15min jitter)
 - **Webhook**: Express server on port 8082
-- **Customers**: UAD + MissParty (posting daily)
+- **PM2 processes**: `webhook-server`, `fb-scheduler`, `image-pool`, `cookie-monitor`
+- **Customers**: UAD (`1shaifriedman@gmail.com`, Shai's personal FB) + MissParty (`michalkacher2006@gmail.com`)
 
 ## URLs
 | Service | URL |

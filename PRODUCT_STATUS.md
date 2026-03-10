@@ -27,7 +27,7 @@
 
 1. 🔴 **Elite Pro Remodeling** — $2,000/mo waiting. Blocked on IG credentials from Saar.
 2. 🔴 **Shai Personal Brand** — Instagram/Facebook automation system to build.
-3. 🟡 **TourReel** — Quality regressions unvalidated. Run 1 test job to confirm fixes work.
+3. 🟡 **VideoForge** — Quality regressions unvalidated. Run 1 test job to confirm fixes work.
 4. ✅ **Miss Party + UAD** — Verified posting Mar 8. UAD 5/5, Miss Party 3/3. Fix video variation gap when time allows.
 5. ✅ **ClaudeClaw** — Group agent rebuilt and deployed Mar 8. All 6 service files live. Test with Elite Pro group next.
 6. ⚪ **Yoram** — Landing page when ready.
@@ -40,7 +40,7 @@
 
 | # | Blocker | Impact | Fix |
 |---|---------|--------|-----|
-| 1 | TourReel quality fixes NEVER validated end-to-end | Can't sell to realtors confidently | Run 1 test job (~$1-2) — deep audit first |
+| 1 | VideoForge quality fixes NEVER validated end-to-end | Can't sell to realtors confidently | Run 1 test job (~$1-2) — deep audit first |
 | ~~2~~ | ~~`docs/AI_MODEL_REGISTRY.md` referenced but doesn't exist~~ | RESOLVED | File exists (created Mar 8) |
 | 3 | `docs/BUSINESS_COVERAGE_INDEX.md` is abstract, not a real navigation map | Every session loses context | Rewrite to concrete file-location map |
 | 4 | Iron Dome OS data pipeline broken — Aitable tables deleted | Shai personal brand dashboard shows zeros | Rebuild n8n → PostgreSQL pipeline |
@@ -63,8 +63,8 @@
 - Miss Party: $49.99 = RENTAL PRICE in listings. She doesn't pay Shai. Free service.
 - UAD: Revenue split — Shai earns % of actual sales from leads that convert.
 
-**Miss Party config**: fbEmail `michalkacher2006@gmail.com`, category "Inflatable Bouncers", 1 phone, 3 posts/30min cooldown
-**UAD config**: category "garage doors", 4 Telnyx phones (972-954-2407, 972-628-3587, 469-625-0960, 469-535-7538), 5 posts/15min cooldown, 30 DFW cities
+**Miss Party config**: fbEmail `michalkacher2006@gmail.com`, category "Miscellaneous", 1 phone (`+1-469-814-6509`), 3 posts/30min cooldown, 5 DFW cities
+**UAD config**: category "Miscellaneous", 4 Telnyx phones (972-954-2407, 214-256-3408, 469-814-6509, 972-646-6110), 5 posts/15min cooldown, 30 DFW cities
 
 **Scores**: UAD 96% (50/52), Miss Party 94% (49/52)
 
@@ -146,7 +146,7 @@ pm2 logs webhook-server --lines 100
 
 ---
 
-## 4. TourReel — AI Property Videos
+## 4. VideoForge — AI Property Videos
 
 **Status**: LIVE but quality unvalidated since fixes. Dual-path (Kling AI + Remotion).
 
@@ -158,7 +158,7 @@ pm2 logs webhook-server --lines 100
 
 **What's needed**: 1 full test job (~$1-2 Kling credits) to confirm all fixes work together.
 
-**Live URL**: https://superseller.agency/video/create | Worker: pm2 `tourreel-worker` on 172.245.56.50:3002
+**Live URL**: https://superseller.agency/video/create | Worker: pm2 `tourreel-worker` on 172.245.56.50:3002 (PM2 name pending rename to `videoforge-worker`)
 
 ---
 
@@ -176,15 +176,19 @@ pm2 logs webhook-server --lines 100
 
 ## 6. ClaudeClaw — WhatsApp AI Bridge
 
-**Status**: ✅ FULLY OPERATIONAL as of Mar 8, 2026
+**Status**: ✅ FULLY OPERATIONAL — Audited & enhanced Mar 10, 2026
 
-**What works**: Personal mode, group agent (3-tier memory + 4-layer guardrails), RAG context, health monitoring, approval system, hourly + daily scheduler.
+**What works**: Personal DM mode (Claude Agent SDK), group agent (3-tier memory + 4-layer guardrails), RAG context enrichment, health monitoring, approval system, 7 scheduled jobs, 14 slash commands, daily morning digest.
 
-**6 service files rebuilt Mar 8**: group-agent.ts, group-memory.ts, guardrails.ts, approval-service.ts, rag-ingestor.ts, claudeclaw-router.ts
+**Mar 10 Audit Fixes**: Killed stuck BullMQ job blocking queue, fixed health_checks CHECK constraint, fixed CLAUDECLAW_PROJECT_DIR in both .env files, added proactive daily digest, added 7 new commands (/digest, /videos, /spend, /leads, /fb, /marketplace, /groups), extended RAG with product knowledge + customer data + business context.
 
-**Elite Pro group**: `120363408376076110@g.us`, tenant `elite-pro-remodeling`, 63 competitor ads loaded.
+**Slash Commands**: /help, /health, /digest, /videos, /spend, /leads, /fb, /marketplace, /groups, /approvals, /rag, /memory, /status, /newchat
 
-**Next**: Test group agent in Elite Pro group using Shai's personal number before adding Saar/Mor.
+**Elite Pro group**: `120363408376076110@g.us`, tenant `elite-pro-remodeling`. Group agent confirmed working (4/6 test messages got Claude responses on Mar 8).
+
+**Usage**: 4 conversation turns, 6 group messages, 5 RAG documents. Daily RAG ingestion runs automatically (product knowledge, customer summary, business context, health, queue stats, group configs, error summary).
+
+**Next**: Seed RAG with more docs after daily ingestion runs. Add more customer groups as customers onboard. Add event-driven alerts (new leads, job completions).
 
 ---
 

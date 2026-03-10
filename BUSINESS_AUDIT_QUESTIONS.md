@@ -68,10 +68,10 @@
 
 ### 1.7 Kedem Developments (Daniel Arbel)
 
-40. Did Daniel actually use/share the 6847 Lakeshore Drive TourReel video?
+40. Did Daniel actually use/share the 6847 Lakeshore Drive VideoForge video?
 41. Was he happy with it? Did it generate any interest in ongoing service?
-42. Does he have other listings right now that could get TourReel videos?
-43. Is the TourReel web app built for Kedem (`kedem developments/tourreel-app/`) still relevant? (Audited as "broken shell")
+42. Does he have other listings right now that could get VideoForge videos?
+43. Is the VideoForge web app built for Kedem (`kedem developments/tourreel-app/`) still relevant? (Audited as "broken shell")
 
 ### 1.8 Yossi (Mivnim — Winner Studio)
 
@@ -89,15 +89,15 @@
 
 ## SECTION 2: PRODUCTS — WHAT'S ACTUALLY WORKING VS. ASSUMED-WORKING
 
-### 2.1 TourReel
+### 2.1 VideoForge
 
 50. If a new customer goes to superseller.agency/video/create RIGHT NOW, what exactly happens? Walk me through it step by step.
 51. Can they actually pay with PayPal and get credits? Or is billing not wired?
 52. When the video finishes generating, how does the customer get it? Email? Dashboard? Download link? WhatsApp?
-53. Has ANY external customer (not Shai, not Kedem) successfully used TourReel end-to-end with their own Zillow listing?
+53. Has ANY external customer (not Shai, not Kedem) successfully used VideoForge end-to-end with their own Zillow listing?
 54. The Remotion path (photo composition) — has it ever generated a complete video for a real listing?
 55. When a job fails, does anything notify Shai? Or does it just fail silently?
-56. Are there any customers with active TourReel subscriptions (Starter/Pro/Team) in the PayPal system?
+56. Are there any customers with active VideoForge subscriptions (Starter/Pro/Team) in the PayPal system?
 
 ### 2.2 FB Marketplace Bot (UAD + Miss Party)
 
@@ -157,8 +157,8 @@
 
 88. **New lead from FB Bot**: When someone messages UAD's listing, does David get notified immediately? How?
 89. **New lead from Telnyx voice call**: After a call ends, how long until David/Michal sees the lead? What format?
-90. **TourReel video complete**: Customer gets... what exactly? Automatic email? Manual WhatsApp from you?
-91. **TourReel job failed**: Who finds out? How?
+90. **VideoForge video complete**: Customer gets... what exactly? Automatic email? Manual WhatsApp from you?
+91. **VideoForge job failed**: Who finds out? How?
 92. **PayPal subscription activated**: Customer gets what? Automatic welcome email? Manual onboarding?
 93. **PayPal payment failed**: Customer gets what? Do they get locked out of credits immediately?
 94. **Worker goes down (PM2 crash)**: Who gets notified? Does the health monitor alert fire?
@@ -241,7 +241,7 @@
 
 136. **ClaudeClaw pricing**: Should it be a standalone product ($X/month per group)? Or bundled with custom retainer deals like Elite Pro?
 137. **Iron Dome OS**: Do you want to rebuild this? Is your personal brand a serious business priority or back-burner?
-138. **TourReel test job**: Approve ~$2 spend to run a full end-to-end test?
+138. **VideoForge test job**: Approve ~$2 spend to run a full end-to-end test?
 139. **Wonder.care follow-up**: Do you want to follow up on the 3-month-old proposal? How?
 140. **AC&C HVAC**: Is Neitha still a real lead or should we mark this as dormant?
 141. **Rensto**: Actively building this as a second business, or maintaining as-is?

@@ -30,7 +30,7 @@ Production Facebook marketplace bot on RackNerd VPS. Bot is LIVE and posting.
 |---------|------|-------|
 | `webhook-server` | Job serving + dynamic phone overlay | Port 8082 |
 | `fb-scheduler` | 60-min cycle scheduler | Alternates UAD/MissParty |
-| `tourreel-worker` | TourReel video pipeline | Port 3002 (separate product) |
+| `tourreel-worker` | VideoForge video pipeline | Port 3002 (separate product) |
 
 ## Operations
 

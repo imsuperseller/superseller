@@ -1,4 +1,4 @@
-# TourReel API Deep Reference (Level 2)
+# VideoForge API Deep Reference (Level 2)
 
 > Loaded when working on clip generation, prompt engineering, TTS, or Kling API integration.
 > For pipeline overview and critical rules, see SKILL.md (Level 1).

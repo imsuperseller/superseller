@@ -22,7 +22,7 @@ negativeTrigger:
   - "customer dashboard"
   - "client dashboard"
   - "video pipeline"
-  - "TourReel"
+  - "VideoForge"
   - "landing page"
   - "public website"
 ---

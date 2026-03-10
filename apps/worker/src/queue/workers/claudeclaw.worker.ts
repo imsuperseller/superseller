@@ -158,6 +158,9 @@ export const claudeclawWorker = new Worker<ClaudeClawJobData>(
                         if (chunks.length > 1) await new Promise((r) => setTimeout(r, 500));
                     }
 
+                    // Log agent response to group_messages
+                    await logGroupMessage({ groupId: chatId, tenantId: groupConfig.tenantId, content: safeText, isAgent: true });
+
                     return {
                         handled: blocked ? "group-claude-guardrailed" : "group-claude",
                         isGroup: true,

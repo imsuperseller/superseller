@@ -31,7 +31,7 @@ This document provides a comprehensive side-by-side analysis of the two Facebook
 | **Media Handling** | Static master video (`video.mp4`) | Dynamic Kie.ai video URLs |
 | **Image Count** | Up to 10 (from n8n logic) | 3 distinct prompts per listing |
 | **Copywriting** | Professional/Technical (Claude 4.5) | Festive/Parent-focused (Claude 4.5) |
-| **Phone Number** | `14695885133` | `+1-469-283-9855` |
+| **Phone Number** | `14695885133` | `+1-469-814-6509` |
 | **Deduplication** | `uniqueHash` (dimensions-based) | `uniqueHash` (scenario-based) |
 
 ## 4. Bot Behavior & Stealth

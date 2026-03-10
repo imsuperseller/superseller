@@ -1,4 +1,4 @@
-# Backlog: TourReel Full Audit + End-to-End Test
+# Backlog: VideoForge Full Audit + End-to-End Test
 
 > **Status**: Not started — needs ~$1-2 spend (Kling API)
 > **Decision needed**: Approve spend before starting
@@ -8,7 +8,7 @@
 
 ## What This Is
 
-TourReel is LIVE at superseller.agency/video/create but has never been fully validated end-to-end since the quality fixes. A full pipeline test is needed to confirm:
+VideoForge is LIVE at superseller.agency/video/create but has never been fully validated end-to-end since the quality fixes. A full pipeline test is needed to confirm:
 1. Zillow URL → photo extraction → scene planning → Kling clip generation → FFmpeg assembly → R2 upload → playable URL
 2. Credit deduction works
 3. No double-realtor bug

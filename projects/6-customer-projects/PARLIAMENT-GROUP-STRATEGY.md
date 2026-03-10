@@ -29,8 +29,8 @@ A mutual-aid community group for Israeli/Jewish diaspora in DFW (primarily Plano
 | Electrical / plumbing / gas | 6+ | Website + lead gen |
 | Legal (divorce, eviction, injury) | 6+ | Lead landing pages |
 | Insurance (home, health, car) | 6+ | Lead gen (Yoram is already a customer!) |
-| Contractors / remodeling | 5+ | TourReel + website (Elite Pro!) |
-| Real estate (buying, renting) | 5+ | TourReel (Kedem!) |
+| Contractors / remodeling | 5+ | VideoForge + website (Elite Pro!) |
+| Real estate (buying, renting) | 5+ | VideoForge (Kedem!) |
 | Locksmith | 4+ | FB Marketplace Bot + website |
 | Financial (CPA, tax, credit repair) | 5+ | Lead gen + voice AI |
 | HVAC / chimney / air duct | 3+ | Website + lead gen (AC&C!) |
@@ -86,7 +86,7 @@ A mutual-aid community group for Israeli/Jewish diaspora in DFW (primarily Plano
 ```
 ככה נראה שיווק AI לבעל עסק מקומי בדאלאס.
 
-[Share actual TourReel or SocialHub demo video]
+[Share actual VideoForge or SocialHub demo video]
 
 30 שניות. בלי צילומים. רק תמונות + AI.
 מי רוצה כזה לעסק שלו?

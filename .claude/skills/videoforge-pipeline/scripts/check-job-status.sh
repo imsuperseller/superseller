@@ -1,5 +1,5 @@
 #!/bin/bash
-# TourReel Job Status Checker
+# VideoForge Job Status Checker
 # Usage: ./check-job-status.sh <job-id> [--watch]
 # Options:
 #   --watch    Poll every 30s until job completes
@@ -12,7 +12,7 @@ WORKER_URL="${WORKER_URL:-http://172.245.56.50:3002}"
 show_help() {
     echo "Usage: $0 <job-id> [--watch]"
     echo ""
-    echo "Check TourReel video job status."
+    echo "Check VideoForge video job status."
     echo ""
     echo "Arguments:"
     echo "  job-id    The UUID of the video job"

@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: "tourreel-worker",
+      name: "tourreel-worker", // TODO: rename to "videoforge-worker" on server (PM2 name must match)
       script: "npx",
       args: "tsx src/index.ts",
       cwd: "/opt/tourreel-worker/apps/worker",

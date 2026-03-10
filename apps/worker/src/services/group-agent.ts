@@ -171,6 +171,7 @@ const GROUP_COMMANDS: Record<string, string> = {
         "/help — Show this message",
         "/status — Agent status",
         "/memory — What I remember about this group",
+        "/digest — Business digest",
         "",
         "Or just ask me anything about your project!",
     ].join("\n"),
@@ -209,6 +210,11 @@ async function handleGroupCommand(
             `📝 Messages archived: ${count?.count || 0}`,
             `🧠 Semantic memories: ${memCount?.count || 0}`,
         ].join("\n");
+    }
+
+    if (cmd === "/digest") {
+        const { buildDigest } = await import("./proactive-digest");
+        return buildDigest();
     }
 
     return null;

@@ -1,5 +1,117 @@
 ---
 
+## 2026-03-10: SuperSeller Ops Center — Data Integrity Findings
+
+During Ops Center build, discovered column name mismatches between code assumptions and actual DB schema:
+- `video_jobs` has no `listing_address` (lives on `listings.address` via JOIN on `listing_id`)
+- `video_jobs` has no `pipeline_type` (use `model_preference` instead)
+- `api_expenses` column is `estimated_cost` not `cost_usd`
+- `MagicLinkToken` has no `token` column — the `id` field IS the token; `clientId` is the User ID
+- Scheduler metadata (lastRun, runCount) was not tracked — added in-memory registry via `getSchedulerStatus()`
+
+**Prevention**: Worker ops endpoint queries now use correct column names with LEFT JOIN. Web API uses `estimated_cost` alias.
+
+---
+
+## 2026-03-10: ClaudeClaw Audit — Dead System Revival
+
+### Root Causes Found
+1. **Stuck BullMQ job** (Job 8, test@c.us) was in ACTIVE state with concurrency=1, blocking ALL future ClaudeClaw processing indefinitely.
+2. **health_checks CHECK constraint** only accepted `ok/degraded/down`, rejecting agent status values `healthy/critical/warning`. Autonomous agent findings couldn't be stored.
+3. **Two .env files**: Root `.env` AND `apps/worker/.env` — second overrides first with `override: true` in dotenv config, causing CLAUDECLAW_PROJECT_DIR to show old value.
+4. **RAG knowledge base starved**: Only 4 docs (test, health snapshot, group config, health context). No product knowledge, customer data, or business context. ClaudeClaw was essentially context-blind.
+5. **Group agent DID work on Mar 8** (Jobs 3-6 returned 314-780 char responses) but agent responses weren't logged because table was likely recreated. System appeared dead but actually worked.
+6. **No proactive output**: ClaudeClaw was purely reactive — no daily digest, no event alerts, no business reporting.
+7. **Only 7 new slash commands**: /digest, /videos, /spend, /leads, /fb, /groups existed as data but had no CLI access.
+
+### Fixes Applied
+- Killed stuck Job 8 from Redis active list
+- Fixed health_checks CHECK constraint: added `healthy`, `critical`, `warning`, `unhealthy`
+- Fixed CLAUDECLAW_PROJECT_DIR in BOTH .env files
+- Added `proactive-digest.ts`: daily WhatsApp digest at 7 AM with VideoForge, Marketplace, Expense, Lead, ClaudeClaw, RAG, Health stats
+- Added 7 new slash commands: `/digest`, `/videos`, `/spend`, `/leads`, `/fb`, `/marketplace`, `/groups`
+- Extended RAG ingestor: 3 new sources (product-knowledge, customer-summary, business-context)
+- Scheduler now has 7 jobs (was 6) — added daily-digest
+- Verified end-to-end: Claude Agent SDK responds in ~11s, sessions persist, conversations work
+
+### Prevention
+- Monitor `bull:claudeclaw:active` list — should be empty between jobs
+- health_checks constraint should accept all realistic status values
+- When modifying env vars, check ALL `.env` files in the repo (`find -name '.env'`)
+- RAG ingestion runs daily but first run is after 1 hour — manual trigger if needed
+
+---
+
+## 2026-03-09: Mission Control V3 — Shallow Dashboard Lesson
+
+### Root Cause
+Built a health-check dashboard (16 categories, all infrastructure) when user asked for a **complete business command center**. Missed:
+- Business intelligence (prospects, audiences, leads)
+- Financial (expenses, costs, revenue tracking)
+- Asset management (R2 files, deliverables, brand assets)
+- Customer lifecycle (journey stages per product)
+- Usage analytics (job counts, clip generation, DB stats)
+- UX quality (design scores per product)
+- Communications (WhatsApp numbers, not just sessions)
+- n8n instances (2 exist, only tracked 1)
+
+### Fix
+Expanded to 30 categories across 10 layers. Worker `/api/diagnostics` now queries PostgreSQL for business data (users, video_jobs, clips, listings, leads, expenses, group_agent_configs, model_catalog). API route aggregates 30 categories with real-time probes + DB stats. Component shows business summary bar.
+
+### Key Data Points Discovered
+- 2 registered users, 40 video jobs (10 complete, 29 failed), 288 clips, 15 listings, 2 leads
+- Israeli Parliament Dallas group: 40+ members, many service providers (locksmith, construction, food, insurance)
+- Yaron asked about building AI agent on Mar 9 — immediate prospect
+- n8n: 2 instances both online (production :5678, personal :5679)
+- WAHA: 2 sessions active (superseller-whatsapp, personal)
+- api_expenses and rag_documents tables don't exist yet — queries return null gracefully
+
+### Interconnection Audit (live verification)
+Logged into admin.superseller.agency, navigated to Mission Control, verified all 33 categories, 201 items rendering with real data. Cross-referenced every data point appearing in multiple categories:
+- Elite Pro: consistent red across 5 categories (Customers, Revenue, Blockers, Errors, Insights)
+- WAHA: consistent green across 3 categories
+- Video jobs 29/40 failed: consistent across Usage, Errors, Insights
+- PM2 restarts: clarified aggregate vs per-process in tooltip
+- Fixed: Avi Construction status mismatch (green in Audiences vs amber in Brands → now amber in both)
+- Fixed: API keys (Kie.ai, Telnyx) showed "MISSING" because checked on Vercel env, but keys exist on RackNerd worker. Now shows "worker-side only" instead of false red.
+- Fixed: 500 error on first deploy — `wahaSessionCount` variable undefined (used but never declared)
+
+### Prevention
+When user asks for "a view of everything", scope to ALL business dimensions, not just infrastructure. Business data (who, how much, what was delivered) matters more than "is nginx up". Always test the dashboard in the browser before declaring done.
+
+---
+
+## 2026-03-09: Mission Control Dashboard + nginx Down + Rensto Fix
+
+### Findings
+1. **nginx was stopped on RackNerd** — rensto.com returned HTTP 000 (connection timeout) from outside even though `systemctl status rensto` showed active. Root cause: nginx service was in `failed` state. Started nginx → rensto.com immediately returned 200. No one was monitoring nginx as a separate service.
+2. **GOOGLE_GENERATIVE_AI_API_KEY empty** — not blocking because FB Bot uses Kie.ai proxy (`api.kie.ai/gemini-3-flash`). Direct Google AI API calls would fail but nothing currently uses them directly.
+3. **No unified status dashboard existed** — closest was PRODUCT_STATUS.md (text) and System Monitor tab (health checks only). Neither showed the full picture (businesses, customers, integrations, documentation sync, PM2 processes, domains).
+
+### Actions Taken
+- Started nginx on RackNerd: `systemctl start nginx` → rensto.com 200 OK, SSL cert valid until May 31 2026
+- Built Mission Control tab for admin dashboard:
+  - API route: `apps/web/superseller-site/src/app/api/admin/mission-control/route.ts` — probes 10+ endpoints, checks API keys, returns categorized status
+  - Component: `apps/web/superseller-site/src/components/admin/MissionControl.tsx` — search, filter, collapse, auto-refresh 60s
+  - Wired into AdminDashboardClient.tsx sidebar as "Mission Control" tab with Crosshair icon
+- Deployed to Vercel: API returning 401 (auth-protected), all probes returning valid status codes
+- Standalone HTML version: `tools/mission-control.html` (static snapshot for offline reference)
+
+### V2 Expansion (same session)
+- Expanded from 5 to **16 categories**: Businesses, Domains, Server Resources, Core Infrastructure, Nginx/SSL, PM2/Services, BullMQ Queues, WhatsApp Sessions, Products, Customers, API Keys, n8n Workflows, Documentation, GitHub Repos, Scheduled Tasks, Pending Blockers
+- Added `/api/diagnostics` worker endpoint — returns disk, RAM, uptime, PM2 processes, systemd services, BullMQ queue depths, WAHA sessions, SSL cert expiry, cron jobs, DB stats (75 tables, 22MB)
+- Added **WhatsApp alerts via WAHA** — when any live-probed service changes status (green→red, etc.), sends formatted message to Shai's WhatsApp via WAHA `sendText` API
+- Fixed WAHA API key (was `666`, actual is `4fc7e008d7d24fc995475029effc8fa8`)
+- Discovered 2 WAHA sessions: `superseller-whatsapp` (WORKING), `personal` (WORKING)
+- SSL certs: n8n.superseller.agency expires May 27 2026, rensto.com expires May 31 2026
+
+### Prevention
+- nginx is now monitored via Mission Control (systemd service check)
+- SSL cert expiry shows days remaining with amber (<30d) and red (<7d) thresholds
+- Consider systemd watchdog or monit for nginx auto-restart
+
+---
+
 ## 2026-03-09: Methodical Project Audit — Conflicts, Contradictions, Incomplete
 
 ### 1. Broken or missing references

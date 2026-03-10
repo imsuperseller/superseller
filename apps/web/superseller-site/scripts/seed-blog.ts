@@ -232,7 +232,7 @@ The businesses that win on social media in 2026 are not the ones spending the mo
       seoTitle: "The Small Business Owner's Guide to AI Video Marketing | SuperSeller AI",
       seoDescription: 'Transform your project photos into professional marketing videos with AI. No film crew, no editing skills, no massive budget required.',
       focusKeyword: 'AI video marketing small business',
-      categories: ['Video Marketing', 'TourReel'],
+      categories: ['Video Marketing', 'VideoForge'],
     },
     content: `Video marketing is not optional anymore. It is the most effective content format on every platform -- Facebook, Instagram, TikTok, YouTube, even email. Posts with video get 48% more engagement. Listings with video tours get 403% more inquiries. These are not opinions. They are documented industry metrics.
 

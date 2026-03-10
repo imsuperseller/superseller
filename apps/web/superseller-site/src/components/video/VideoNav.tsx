@@ -40,7 +40,7 @@ export default function VideoNav({ email, clientId }: VideoNavProps) {
           <div className="w-8 h-8 bg-[#f47920] rounded-lg flex items-center justify-center">
             <Video size={16} className="text-white" />
           </div>
-          <span>TourReel</span>
+          <span>VideoForge</span>
         </Link>
 
         {/* Desktop Nav */}

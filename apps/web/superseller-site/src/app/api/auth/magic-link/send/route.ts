@@ -59,6 +59,19 @@ export async function POST(request: NextRequest) {
             } else if (csc) {
                 clientId = csc.id;
                 clientName = csc.name || 'Client';
+            } else if (redirectTo && redirectTo.startsWith('/compete/')) {
+                // Auto-provision user for compete page access
+                const created = await prisma.user.create({
+                    data: {
+                        email: normalizedEmail,
+                        name: normalizedEmail.split('@')[0],
+                        status: 'active',
+                        emailVerified: false,
+                        dashboardToken: crypto.randomUUID(),
+                    },
+                });
+                clientId = created.id;
+                clientName = created.name || 'Reviewer';
             } else {
                 console.log(`Login attempt for unknown email: ${normalizedEmail}`);
                 return NextResponse.json({
@@ -83,7 +96,8 @@ export async function POST(request: NextRequest) {
         });
         // Build magic link URL
         const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://superseller.agency';
-        const magicLink = `${baseUrl}/api/auth/magic-link/verify?token=${token}`;
+        const redirectParam = redirectTo ? `&redirectTo=${encodeURIComponent(redirectTo)}` : '';
+        const magicLink = `${baseUrl}/api/auth/magic-link/verify?token=${token}${redirectParam}`;
 
         // Send email via Resend
         const resendApiKey = process.env.RESEND_API_KEY;

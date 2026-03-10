@@ -8,7 +8,7 @@ This sheet breaks down every operational and logistical difference between the t
 
 | Feature | **UAD (Garage Doors)** | **Miss Party (Bounce House)** |
 | :--- | :--- | :--- |
-| **Phone Numbers** | 🔄 **4 Rotating Numbers** (972/469) | 📍 **1 Fixed Number** (+1-469-283-9855) |
+| **Phone Numbers** | 🔄 **4 Rotating Numbers** (972/469) | 📍 **1 Fixed Number** (+1-469-814-6509) |
 | **Video Type** | 🎞️ **Static** (Same `video.mp4` for all) | ⚡ **Dynamic** (Unique AI video per listing) |
 | **Image Source** | 📁 **Catalogue** (Standard set of photos) | 🤖 **AI-Generated** (DALL-E/Flux scenes) |
 | **Pricing** | 💸 **Dynamic** ($1500 - $4500) | 🏷️ **Flat Rate** ($49.99) |

@@ -1,5 +1,5 @@
 /**
- * Photo Pre-Classification & Upscaling for TourReel Pipeline.
+ * Photo Pre-Classification & Upscaling for VideoForge Pipeline.
  *
  * Before ANY room-photo mapping, every listing photo is classified and filtered.
  * This prevents floorplans, marketing collages, aerial shots, and duplicate

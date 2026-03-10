@@ -17,7 +17,7 @@
 
 - Website (same Vite+React pattern as AC&C)
 - Lead landing page (`/lp/avi-construction`)
-- TourReel for project showcase videos
+- VideoForge for project showcase videos
 - SocialHub for before/after content
 
 ---

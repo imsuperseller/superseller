@@ -14,7 +14,7 @@
 |---------|------|------|
 | `webhook-server` | 8082 | Job serving + dynamic phone overlay generation |
 | `fb-scheduler` | — | 60-min cycle scheduler, alternates UAD/MissParty |
-| `tourreel-worker` | 3002 | TourReel video pipeline (separate product) |
+| `tourreel-worker` | 3002 | VideoForge video pipeline (separate product) |
 
 ### Core Files (`/opt/fb-marketplace-bot/`)
 | File | Role |

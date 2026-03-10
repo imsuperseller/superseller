@@ -1,4 +1,4 @@
-# TourReel Quality Fix Plan — March 2026
+# VideoForge Quality Fix Plan — March 2026
 
 **Owner**: Claude (AI) + Shai (review)
 **Goal**: Produce consistently good final videos. Zero tolerance for the 7 recurring issues.

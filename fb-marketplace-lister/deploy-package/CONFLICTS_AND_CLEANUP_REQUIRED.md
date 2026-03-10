@@ -10,7 +10,7 @@
 | Bot posting broken | FIXED | GoLogin config reverted to V13 pattern (default tmpdir, `--display=:100`, `browser.newPage()`) |
 | Form navigation broken | FIXED | Exact Facebook category names: "Inflatable Bouncers", "Miscellaneous" |
 | Phone rotation not implemented | FIXED | `webhook-server.js` rotates through Telnyx phone array per-job |
-| UAD authentication missing | FIXED | `uad.garage.doors@gmail.com` with working cookies |
+| UAD authentication missing | FIXED | `1shaifriedman@gmail.com` (Shai's personal FB) with working cookies via GoLogin profile |
 | Contradictory documentation | CLEANED | 58 files → 21 core files. False "100% COMPLETE" docs deleted |
 | Redundant deployment scripts | CONSOLIDATED | Single rsync deploy path |
 | Location rotation not implemented | FIXED | 30 cities (UAD), 20 cities (MissParty) with DFW-wide geographic spread |

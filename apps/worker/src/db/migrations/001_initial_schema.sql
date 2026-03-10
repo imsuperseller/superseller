@@ -1,4 +1,4 @@
--- TourReel Database Schema v1
+-- VideoForge Database Schema v1
 -- Enable UUID generation
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 

@@ -10,7 +10,7 @@ import { prisma } from '@/lib/prisma';
 
 // Hardcoded product status from PRODUCT_STATUS.md
 const PRODUCTS = [
-  { id: 'tourreel', name: 'TourReel', status: 'live' as const, statusLabel: 'Live — 25+ videos', description: 'AI real estate video pipeline (Kling + Remotion)', customers: ['UAD', 'MissParty'], completionPct: 90 },
+  { id: 'tourreel', name: 'VideoForge', status: 'live' as const, statusLabel: 'Live — 25+ videos', description: 'AI real estate video pipeline (Kling + Remotion)', customers: ['UAD', 'MissParty'], completionPct: 90 },
   { id: 'fb-bot', name: 'FB Marketplace Bot', status: 'live' as const, statusLabel: 'Live — posting daily', description: 'Automated FB Marketplace listing & reposting', customers: ['UAD', 'MissParty'], completionPct: 85 },
   { id: 'socialhub', name: 'SocialHub / Buzz', status: 'live' as const, statusLabel: 'Live — Phase 1', description: 'AI content → WhatsApp approval → FB publish', customers: [], completionPct: 60 },
   { id: 'winner-studio', name: 'Winner Studio', status: 'built' as const, statusLabel: 'Built, not active', description: 'AI avatar video pipeline for Mivnim/Yossi', customers: ['Yossi'], completionPct: 75 },

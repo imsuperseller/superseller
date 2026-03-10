@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SuperSeller AI — Mission Control</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0e17;
+  --bg2: #111827;
+  --bg3: #1a2236;
+  --border: #2a3654;
+  --text: #e2e8f0;
+  --text-dim: #8892a8;
+  --green: #00ff88;
+  --green-bg: rgba(0,255,136,0.08);
+  --green-border: rgba(0,255,136,0.25);
+  --red: #ff3366;
+  --red-bg: rgba(255,51,102,0.08);
+  --red-border: rgba(255,51,102,0.25);
+  --amber: #ffaa00;
+  --amber-bg: rgba(255,170,0,0.08);
+  --amber-border: rgba(255,170,0,0.25);
+  --blue: #4488ff;
+  --blue-bg: rgba(68,136,255,0.08);
+  --blue-border: rgba(68,136,255,0.25);
+  --gray: #555e70;
+  --gray-bg: rgba(85,94,112,0.08);
+  --gray-border: rgba(85,94,112,0.25);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'JetBrains Mono', monospace;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
+.toolbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(10,14,23,0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 24px;
+  display: flex; align-items: center; gap: 20px;
+}
+.toolbar h1 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px; font-weight: 700;
+  background: linear-gradient(135deg, var(--green), var(--blue));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  letter-spacing: -0.5px;
+}
+.toolbar .sep { width: 1px; height: 24px; background: var(--border); }
+.legend {
+  display: flex; gap: 14px; font-size: 11px;
+}
+.legend-item {
+  display: flex; align-items: center; gap: 5px;
+}
+.legend-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+}
+.toolbar .stats {
+  margin-left: auto;
+  display: flex; gap: 16px;
+  font-size: 11px; color: var(--text-dim);
+}
+.toolbar .stats span b {
+  color: var(--text);
+}
+.zoom-controls {
+  display: flex; gap: 4px;
+}
+.zoom-controls button {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  width: 28px; height: 28px;
+  border-radius: 4px; cursor: pointer;
+  font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+}
+.zoom-controls button:hover { background: var(--border); }
+
+.search-box {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  width: 180px;
+  outline: none;
+}
+.search-box:focus { border-color: var(--blue); }
+
+#viewport {
+  position: fixed; top: 48px; left: 0; right: 0; bottom: 0;
+  overflow: hidden;
+  cursor: grab;
+}
+#viewport:active { cursor: grabbing; }
+
+#world {
+  position: absolute;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+.category {
+  position: absolute;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg2);
+  overflow: visible;
+}
+.category-header {
+  padding: 12px 16px 8px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-dim);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
+}
+.category-header .cat-icon {
+  font-size: 15px;
+}
+.category-header .cat-count {
+  margin-left: auto;
+  font-size: 10px;
+  color: var(--text-dim);
+  background: var(--bg3);
+  padding: 2px 6px;
+  border-radius: 8px;
+}
+.category-body {
+  padding: 10px 12px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+
+.node {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 10px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+}
+.node:hover {
+  background: rgba(255,255,255,0.03);
+}
+.node.status-green { border-color: var(--green-border); background: var(--green-bg); }
+.node.status-red { border-color: var(--red-border); background: var(--red-bg); }
+.node.status-amber { border-color: var(--amber-border); background: var(--amber-bg); }
+.node.status-blue { border-color: var(--blue-border); background: var(--blue-bg); }
+.node.status-gray { border-color: var(--gray-border); background: var(--gray-bg); }
+
+.node.highlight { box-shadow: 0 0 0 2px var(--blue); }
+
+.status-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  position: relative;
+}
+.status-dot.green { background: var(--green); box-shadow: 0 0 6px var(--green); }
+.status-dot.red { background: var(--red); box-shadow: 0 0 6px var(--red); animation: pulse-red 2s infinite; }
+.status-dot.amber { background: var(--amber); box-shadow: 0 0 6px var(--amber); }
+.status-dot.blue { background: var(--blue); box-shadow: 0 0 4px var(--blue); }
+.status-dot.gray { background: var(--gray); }
+
+@keyframes pulse-red {
+  0%, 100% { box-shadow: 0 0 6px var(--red); }
+  50% { box-shadow: 0 0 14px var(--red), 0 0 28px rgba(255,51,102,0.3); }
+}
+
+.node-name {
+  font-size: 11.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.node-detail {
+  font-size: 9.5px;
+  color: var(--text-dim);
+  margin-left: auto;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 200;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 11px;
+  max-width: 340px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  line-height: 1.5;
+}
+.tooltip.visible { opacity: 1; }
+.tooltip .tt-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+.tooltip .tt-status {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.tooltip .tt-body { color: var(--text-dim); }
+.tooltip .tt-body b { color: var(--text); }
+
+svg.connections {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+}
+svg.connections line {
+  stroke: var(--border);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+  opacity: 0.4;
+}
+
+.minimap {
+  position: fixed;
+  bottom: 16px; right: 16px;
+  width: 200px; height: 140px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  z-index: 100;
+  overflow: hidden;
+}
+.minimap-viewport {
+  position: absolute;
+  border: 1.5px solid var(--green);
+  background: rgba(0,255,136,0.05);
+  border-radius: 2px;
+}
+.minimap canvas { width: 100%; height: 100%; }
+
+.bottom-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 220px;
+  z-index: 100;
+  background: rgba(10,14,23,0.9);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--border);
+  padding: 6px 24px;
+  display: flex; align-items: center; gap: 20px;
+  font-size: 10px;
+  color: var(--text-dim);
+}
+.bottom-bar .metric {
+  display: flex; align-items: center; gap: 4px;
+}
+.bottom-bar .metric b { color: var(--text); }
+.bottom-bar .metric .dot { width: 6px; height: 6px; border-radius: 50%; }
+
+.missing-panel {
+  position: fixed;
+  bottom: 26px; left: 24px;
+  z-index: 100;
+  background: var(--bg2);
+  border: 1px solid var(--red-border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 10px;
+  max-width: 360px;
+  display: none;
+}
+.missing-panel.visible { display: block; }
+.missing-panel h3 {
+  color: var(--red);
+  font-size: 11px;
+  margin-bottom: 6px;
+  font-family: 'Space Grotesk', sans-serif;
+}
+.missing-panel ul { list-style: none; color: var(--text-dim); }
+.missing-panel li { padding: 2px 0; }
+.missing-panel li::before { content: "▸ "; color: var(--red); }
+
+.dim { opacity: 0.25; }
+
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <h1>SUPERSELLER AI ── MISSION CONTROL</h1>
+  <div class="sep"></div>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Healthy</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>Critical</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div>Warning</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>Paused</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--gray)"></div>Not Started</div>
+  </div>
+  <div class="sep"></div>
+  <input type="text" class="search-box" placeholder="Search..." id="searchInput">
+  <div class="zoom-controls">
+    <button id="zoomIn" title="Zoom In">+</button>
+    <button id="zoomOut" title="Zoom Out">−</button>
+    <button id="zoomFit" title="Fit All">⊞</button>
+  </div>
+  <div class="stats" id="statsBar"></div>
+</div>
+
+<div id="viewport">
+  <div id="world"></div>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<div class="minimap" id="minimap">
+  <canvas id="minimapCanvas"></canvas>
+  <div class="minimap-viewport" id="minimapViewport"></div>
+</div>
+
+<div class="bottom-bar" id="bottomBar"></div>
+
+<script>
+const DATA = {
+  businesses: {
+    icon: "◆", label: "BUSINESSES",
+    items: [
+      { name: "SuperSeller AI", status: "green", detail: "Primary", tooltip: "SaaS platform — superseller.agency\nProducts: VideoForge, FB Bot, ClaudeClaw, SocialHub, Winner Studio, AgentForge\nStack: Next.js + Node.js + PostgreSQL + Redis + R2\nRevenue: $2k/mo pending (Elite Pro)" },
+      { name: "Rensto.com", status: "red", detail: "UNREACHABLE", tooltip: "Contractor directory — rensto.com\nService: systemd 'rensto' (ACTIVE on server)\nPort: 3001 on RackNerd\nISSUE: External requests timeout (000)\nPossible: nginx/SSL/DNS misconfiguration\nCode: ~/rensto - online directory/\nGitHub: imsuperseller/rensto-app\n⚠ SEPARATE BUSINESS — never mix with SuperSeller" },
+    ]
+  },
+  infrastructure: {
+    icon: "▣", label: "INFRASTRUCTURE",
+    items: [
+      { name: "RackNerd VPS", status: "green", detail: "3d 17h up", tooltip: "172.245.56.50 (Ubuntu 24.04)\nDisk: 64G/96G (70%) ⚠\nRAM: 2.0Gi used / 5.8Gi total (3.7Gi free)\nUptime: 3 days 17 hours\nCPU: KVM, Dallas DC\nServices: PM2, systemd, nginx" },
+      { name: "PostgreSQL", status: "green", detail: "port 5432", tooltip: "Database: app_db\nUser: admin\nORM: Prisma (web) + Drizzle (worker)\nExtensions: pgvector 0.8.1 (HNSW)\nShared tables: User, Job, Clip\nHealth: OK (verified)" },
+      { name: "Redis", status: "green", detail: "port 6379", tooltip: "Sessions, rate limits, BullMQ job queues\nAuth: password protected\nHealth: PONG OK\nUsed by: Worker queues, ClaudeClaw, session store" },
+      { name: "Ollama", status: "green", detail: "1 model", tooltip: "http://172.245.56.50:11434\nModel: nomic-embed-text (768-dim)\nUsed for: RAG embeddings (ClaudeClaw context)\nStack: pgvector + Ollama + LiteLLM" },
+      { name: "WAHA (WhatsApp)", status: "amber", detail: "running", tooltip: "WhatsApp Web API Pro\nPort: 3000 on RackNerd\nService is running (systemd active)\nSession status: Could not verify (API key issue)\nUsed by: ClaudeClaw, Lead Pages, Winner Studio, FB Bot alerts" },
+      { name: "Vercel", status: "green", detail: "auto-deploy", tooltip: "Project: rensto-site (serves superseller.agency)\nDomains: superseller.agency, admin.superseller.agency, studio.superseller.agency\nRoot Dir: apps/web/superseller-site\nDeploy: git push or 'vercel --prod' from repo root" },
+      { name: "Cloudflare R2", status: "green", detail: "video storage", tooltip: "Bucket: zillow-to-video-finals\nPublic: videos.superseller.agency\nStores: Generated videos, photos, assets\nAccount: 46a5b8a6...r2.cloudflarestorage.com" },
+      { name: "Disk Usage", status: "amber", detail: "70% full", tooltip: "64G used of 96G total\n⚠ At 70% — clean up old video jobs and temp files\nPath to check: /tmp/videoforge-jobs/, /opt/tourreel-worker/temp/\nRecommend: Add cleanup cron or alert at 85%" },
+    ]
+  },
+  products: {
+    icon: "◈", label: "PRODUCTS",
+    items: [
+      { name: "VideoForge", status: "amber", detail: "UNVALIDATED", tooltip: "AI real estate video pipeline\nDual-path: Kling 3.0 AI clips + Remotion photo composition\n7 quality fix phases applied (Feb-Mar 2026)\n⚠ NOT validated end-to-end — need 1 test job (~$1-2)\nPM2: tourreel-worker (name pending rename)\nURL: superseller.agency/video/create" },
+      { name: "FB Bot (UAD)", status: "green", detail: "5/5 posting", tooltip: "David Szender — Garage doors DFW\nCategory: Miscellaneous\n4 Telnyx phones, 5 posts/15min cooldown, 30 cities\nScore: 96% (50/52)\nRevenue: % split on converted leads\nLast verified: Mar 8, 2026" },
+      { name: "FB Bot (MissParty)", status: "green", detail: "3/3 posting", tooltip: "Michal Kacher Szender — Bouncy castle rentals\n1 phone, 3 posts/30min cooldown, 5 DFW cities\nScore: 94% (49/52)\nRevenue: FREE (proving value)\nLast verified: Mar 8, 2026" },
+      { name: "ClaudeClaw", status: "green", detail: "operational", tooltip: "WhatsApp → Claude AI bridge\nPersonal mode + Group Agent\n3-tier memory + 4-layer guardrails\nRAG context via pgvector\n6 service files rebuilt Mar 8\nElite Pro group ready: 120363408376076110@g.us" },
+      { name: "SocialHub / Buzz", status: "amber", detail: "Phase 1 only", tooltip: "Multi-platform social media management\nPhase 1 LIVE: text+image → WhatsApp approval → FB publish\n7 posts published successfully\nPhase 2 NOT BUILT: IG, LinkedIn, X, TikTok, YouTube\nNeeds: Meta App ID/Secret for Instagram" },
+      { name: "Winner Studio", status: "blue", detail: "PAUSED", tooltip: "AI avatar video pipeline — Yossi (Mivnim)\nFull pipeline verified Feb 19\nAudio → Gemini → Kling avatar-pro → R2 → WhatsApp\n⏸ Paused: War in Israel, no parties\nNext window: Pesach April 2026\nURL: studio.superseller.agency" },
+      { name: "Lead Pages", status: "amber", detail: "design 5.2/10", tooltip: "Dynamic lead landing pages (/lp/[slug])\nInfrastructure: 100% complete\nPer-customer branding (colors, logo, font, RTL/LTR)\nLead capture → WhatsApp + email\n⚠ Design quality: 5.2/10 — needs dark theme + glassmorphism\nTiers: Starter $500, Pro $1k, Enterprise $2k+" },
+      { name: "FrontDesk Voice", status: "amber", detail: "partial", tooltip: "Telnyx AI Voice Assistant\nPhone: +14699299314\nVoice works, but:\n⚠ Webhook migration n8n → worker PENDING\n⚠ eSignatures not started\nUsed for: UAD + MissParty voice lead analysis" },
+      { name: "AgentForge", status: "gray", detail: "spec only", tooltip: "Multi-stage AI research pipeline\nBusiness discovery → design analysis → market research → deliverables\nDecision made: internal tool\nCode: NOT STARTED\nSpec: AgentForge SKILL.md" },
+      { name: "Model Observatory", status: "green", detail: "34 models", tooltip: "AI model registry and auto-selector\n34+ models tracked across 8 categories\nCategories: video, llm, upscale, compositing, image, avatar, music, audio\nAuto-sync from Kie.ai/fal.ai\nDB: model_catalog table in PostgreSQL" },
+      { name: "Compete (Ad Intel)", status: "green", detail: "63 ads cached", tooltip: "Competitor ad intelligence feed\nElite Pro: 63 competitor ads loaded & cached\nApify scraping pipeline ready\nFeed: /compete/[tenantSlug]\nIntegrated with ClaudeClaw group agent" },
+    ]
+  },
+  customers: {
+    icon: "◉", label: "CUSTOMERS",
+    items: [
+      { name: "Miss Party (Michal)", status: "green", detail: "posting", tooltip: "Michal Kacher Szender\nService: FB Marketplace bot — inflatable bouncy castles\nRevenue: FREE (proving value)\nStatus: Posting 3/3 daily in DFW\nEmail: michalkacher2006@gmail.com" },
+      { name: "UAD (David)", status: "green", detail: "posting", tooltip: "David Szender\nService: FB Marketplace bot — garage doors DFW\nRevenue: % split on lead conversions\nStatus: Posting 5/5 daily in DFW\nScore: 96%" },
+      { name: "Elite Pro Remodeling", status: "red", detail: "$2k BLOCKED", tooltip: "Saar Bitton (owner), Mor Dayan (PM)\nService: Daily IG content (1 reel + 1 story + 1 carousel)\n$2,000/mo SIGNED but NOT started\n🔴 BLOCKED ON:\n• IG Meta App ID/Secret from Saar\n• Not paying yet — can't request until they pay\n• WhatsApp numbers needed\n• Brand assets needed\nDemo delivered: V12 video on R2 ✅" },
+      { name: "Yoram (Insurance)", status: "amber", detail: "low priority", tooltip: "Yoram Friedman — Shai's father\nService: Landing page / lead gen\nSite LIVE: yoramfriedman.co.il\nApify: empty (0 actors/tasks)\nWaiting on: Lead/competitor scraping setup\nRevenue: Lihi pays once Yoram recommends" },
+      { name: "Yossi (Mivnim)", status: "blue", detail: "PAUSED", tooltip: "Yossi — Winner Video Studio customer\nService: AI avatar videos for party promotions\nOne Trump video delivered\nRevenue: TBD\n⏸ Paused: War in Israel, no parties\nNext: Pesach campaign April 2026" },
+      { name: "Shai Personal Brand", status: "red", detail: "BROKEN", tooltip: "@shaifriedman — Iran freedom / Persian-Jewish content\n10K+ IG, 17.8K+ FB followers\nDashboard: iron-dome-os.vercel.app\n🔴 DATA PIPELINE BROKEN:\n• 3 Aitable tables deleted in Mar 5 cleanup\n• Dashboard shows zeros/mock data\n• Personal n8n status unknown\nPlan: Rebuild pipeline, replace Aitable with PostgreSQL" },
+    ]
+  },
+  integrations: {
+    icon: "⬡", label: "API INTEGRATIONS",
+    items: [
+      { name: "Kie.ai (Kling 3.0)", status: "green", detail: "connected", tooltip: "Primary AI video/image API\nModels: Kling 3.0 Pro/Std, avatar-pro, infinitalk\nEndpoint: api.kie.ai\nCost: Pro $0.10, Std $0.03 per clip\nAPI key configured ✅" },
+      { name: "OpenAI", status: "green", detail: "sk-proj-...", tooltip: "GPT models via API\nKey: sk-proj-KFun...T3Blbk...\nUsed by: Content generation, research\nCost tracking: via expense-tracker.ts" },
+      { name: "Anthropic (Claude)", status: "green", detail: "connected", tooltip: "Claude models for ClaudeClaw, content gen\nKey: sk-ant-api03-...\nUsed by: ClaudeClaw bridge, group agent, content scripts" },
+      { name: "Google AI (Gemini)", status: "red", detail: "EMPTY KEY!", tooltip: "🔴 GOOGLE_GENERATIVE_AI_API_KEY is EMPTY in .env!\nModel: gemini-3-flash via Kie.ai proxy works\nDirect Google API: BROKEN (no key)\nFB Bot uses Kie.ai proxy (api.kie.ai/gemini-3-flash) — still works\nAction: Add direct Google AI API key if needed" },
+      { name: "PayPal", status: "green", detail: "active", tooltip: "Payment processor (migrated from Stripe Feb 2026)\nDB columns retain stripe* names but store PayPal IDs\nWebhook: configured for subscription lifecycle\nStripe keys: preserved dormant for rensto.com" },
+      { name: "Telnyx", status: "green", detail: "voice AI", tooltip: "Voice AI + telephony\nFrontDesk phone: +14699299314\nUAD phones: 4 DFW numbers\nVoice lead analysis: n8n workflows (production)\nKey: KEY019CACA..." },
+      { name: "ElevenLabs", status: "green", detail: "2 keys", tooltip: "Voice cloning + TTS\nClone: Saar (jlOXsp2...), Mor (1prnFN...)\n2 API keys configured (primary + alt)\nUsed by: Elite Pro voice content" },
+      { name: "Apify", status: "green", detail: "2 keys", tooltip: "Web scraping & automation\n2 API keys configured\nUsed by: Zillow scraping, competitor research\nYoram: empty account (0 actors)" },
+      { name: "GoLogin", status: "green", detail: "connected", tooltip: "Browser profile management\nUsed by: FB Marketplace bot for multi-account posting\nToken: JWT configured\nCritical for bot antidetect browsing" },
+      { name: "n8n", status: "green", detail: "backup mode", tooltip: "Automation engine at n8n.superseller.agency\nRole: BACKUP for new automation (Antigravity is primary)\nActive workflows:\n• Telnyx voice lead analysis UAD\n• Telnyx voice lead analysis MissParty\nDO NOT disable these production workflows" },
+      { name: "GitHub", status: "green", detail: "PAT active", tooltip: "Source control + CI\nPAT: github_pat_11AZ2TTM...\nOrg: imsuperseller\nMain repos: superseller, rensto-app, iron-dome-os, yoram-landing\nVercel auto-deploy on push" },
+      { name: "Aitable.ai", status: "green", detail: "dashboards", tooltip: "Dashboard-only (no transactional data)\nSpace: spc63cnXLdMYc\nNote: Airtable.com retired, Aitable.ai for dashboards only\nPostgreSQL is the only transactional DB truth" },
+      { name: "Firecrawl", status: "green", detail: "connected", tooltip: "Web content extraction API\nKey: fc-484d801f...\nUsed for: Page scraping, content extraction\nBackup to Apify for specific use cases" },
+      { name: "eSignatures", status: "green", detail: "connected", tooltip: "Contract signing service\nKey: 08995283-ce2f-...\nUsed for: Elite Pro contract\nTemplate: SuperSeller AI Services Agreement\nStatus: Not yet sent to Saar" },
+    ]
+  },
+  pm2: {
+    icon: "▶", label: "PM2 PROCESSES",
+    items: [
+      { name: "tourreel-worker", status: "amber", detail: "online (30 restarts)", tooltip: "Video pipeline worker\nPID: 734873 | Status: ONLINE\nRestarts: 30 (manual deploys, not crashes)\n⚠ Name needs rename → videoforge-worker\nPort: 3002 on RackNerd\nHealth: API OK, Redis OK, Postgres OK" },
+      { name: "webhook-server", status: "green", detail: "online", tooltip: "FB Marketplace webhook handler\nPID: 735088 | Status: ONLINE\nRestarts: 2\nPort: 8082 on RackNerd\nHandles: FB webhook events, bot triggers" },
+      { name: "fb-scheduler", status: "green", detail: "online", tooltip: "FB Marketplace post scheduler\nPID: 735100 | Status: ONLINE\nRestarts: 2\nSchedules: UAD 5/cycle, MissParty 3/cycle\nCooldowns: UAD 15min, MissParty 30min" },
+      { name: "rensto (systemd)", status: "amber", detail: "active but...", tooltip: "Rensto.com application service\nType: systemd (not PM2)\nStatus: systemd shows ACTIVE\n⚠ BUT rensto.com is externally unreachable!\nPort: 3001\nPossible: nginx proxy, SSL, or DNS issue" },
+      { name: "video-merge (systemd)", status: "green", detail: "active", tooltip: "Video merge service\nType: systemd (not PM2)\nPort: 3456 on RackNerd\nStatus: ACTIVE\nUsed for: FFmpeg merge operations" },
+    ]
+  },
+  domains: {
+    icon: "◎", label: "DOMAINS & URLS",
+    items: [
+      { name: "superseller.agency", status: "green", detail: "HTTP 200", tooltip: "Main website — Vercel\nProject: rensto-site (legacy name)\nStack: Next.js 14 + next-intl\nLocales: en, he, fa, cs, hu, hi, ko\nHealth: /api/health → 200 OK" },
+      { name: "admin.superseller.agency", status: "green", detail: "HTTP 200", tooltip: "Admin dashboard — Vercel (same project)\nAuth: Magic-link email\n8 tabs: Dashboard, CRM, System, Treasury, Workflows, AI Agents, Video, Settings\nMiddleware: subdomain rewrite → /admin/*\nFixed: 404 bug resolved Mar 9 (CDN cache + wrong Vercel project)" },
+      { name: "studio.superseller.agency", status: "green", detail: "HTTP 307", tooltip: "Winner Video Studio — Vercel (same project)\n307 redirect → login page (expected behavior)\nUsed by: Yossi (Mivnim) for avatar videos\nCurrently paused (war)" },
+      { name: "n8n.superseller.agency", status: "green", detail: "backup", tooltip: "n8n automation UI\nRole: BACKUP engine\n2 active production workflows (Telnyx voice)\nRunning on RackNerd" },
+      { name: "rensto.com", status: "red", detail: "UNREACHABLE", tooltip: "🔴 Returns HTTP 000 (connection timeout)\nServer: systemd rensto service is ACTIVE on port 3001\nnginx should proxy rensto.com → localhost:3001\nPossible causes:\n• SSL certificate expired\n• nginx config broken\n• DNS not resolving to VPS IP\n• Firewall blocking port 443\nAction: Check nginx, SSL, DNS" },
+      { name: "iron-dome-os.vercel.app", status: "amber", detail: "shows zeros", tooltip: "Shai personal brand dashboard\nUI exists but data pipeline broken\n3 Aitable tables deleted\nDashboard displays mock/zero data\nNeeds: Rebuild pipeline on PostgreSQL" },
+      { name: "videos.superseller.agency", status: "green", detail: "R2 CDN", tooltip: "Cloudflare R2 public domain\nServes generated videos and media assets\nBucket: zillow-to-video-finals" },
+    ]
+  },
+  documentation: {
+    icon: "☰", label: "DOCUMENTATION",
+    items: [
+      { name: "brain.md", status: "green", detail: "synced", tooltip: "Mission control — North Star, agent protocol\nAuthority: Tier 0 (highest precedence)\nUpdated: Mar 9, 2026\nContains: Authority hierarchy, product-to-doc mapping" },
+      { name: "CLAUDE.md", status: "green", detail: "synced", tooltip: "Technical router — paths, URLs, stack\nUpdated: Mar 9, 2026\nContains: Architecture, commands, key files, URLs\nUpdated: Fixed consistency-checker ref, Vercel deploy path" },
+      { name: "PRODUCT_STATUS.md", status: "amber", detail: "partially stale", tooltip: "Per-product status, customers, blockers\n⚠ Some entries outdated:\n• Says admin.superseller.agency 404 (fixed Mar 9)\n• PM2 name still says 'pending rename'\n• Smoke test results from Mar 8\nNeeds: Refresh after today's audit" },
+      { name: "findings.md", status: "green", detail: "synced", tooltip: "Root causes and lessons learned\nUpdated: Mar 9, 2026\nIncludes: Mar 9 methodical audit findings\nRule: Never repeat documented mistakes" },
+      { name: "progress.md", status: "green", detail: "synced", tooltip: "Execution logs and task tracking\nUpdated: Mar 9, 2026\nIncludes: Mar 9 audit execution log" },
+      { name: "DECISIONS.md", status: "green", detail: "synced", tooltip: "User decisions as canonical truth\n20 decisions documented\nRecent: §20 QuickBooks cancelled, §14 model refs updated\nSuperseded: §5 (by §20)" },
+      { name: "NotebookLM", status: "amber", detail: "stale sync", tooltip: "36 notebooks — spec/methodology source of truth\nKey: BLAST (1dc7ce26), VideoForge (0baf5f36)\n⚠ Not synced with latest code changes\nSync frequency: when convenient (not mandatory per task)\nAuth: notebooklm-mcp-auth if errors" },
+      { name: ".claude/skills/", status: "green", detail: "20+ skills", tooltip: "Agent skill library\n20+ skills covering all products\nRouter: SKILL_ROUTER.md\nRecent fix: whatsapp-group-agent → whatsapp-waha" },
+    ]
+  },
+};
+
+const MISSING_ITEMS = [
+  "Live health polling (auto-refresh every 60s with real API calls)",
+  "Cost tracker dashboard (daily/monthly API spend visualization)",
+  "Git status integration (uncommitted changes, branch info)",
+  "SSL certificate expiry monitoring per domain",
+  "Customer revenue pipeline (MRR tracking, churn)",
+  "Deployment history timeline (last deploy per service, who/when)",
+  "Error log aggregation (PM2 errors, API failures, 5xx counts)",
+  "Credential expiry tracking (API keys with known TTLs)",
+  "Schema drift detector (Prisma vs Drizzle live check)",
+  "NotebookLM sync freshness per notebook",
+  "Disk cleanup automation / alerts at 85%",
+  "WAHA session monitoring (connection drops, re-auth needed)",
+  "Performance metrics (response times, queue depths, job throughput)",
+  "Dependency vulnerability scanning (npm audit results)",
+  "Backup status (database dumps, R2 snapshots)",
+];
+
+let scale = 1, panX = 0, panY = 0;
+let isDragging = false, dragStartX, dragStartY, dragPanX, dragPanY;
+const world = document.getElementById('world');
+const viewport = document.getElementById('viewport');
+const tooltip = document.getElementById('tooltip');
+
+const CATEGORY_LAYOUT = [
+  { key: 'businesses', x: 40, y: 20, w: 300 },
+  { key: 'infrastructure', x: 40, y: 180, w: 300 },
+  { key: 'products', x: 380, y: 20, w: 330 },
+  { key: 'customers', x: 380, y: 530, w: 330 },
+  { key: 'integrations', x: 750, y: 20, w: 320 },
+  { key: 'pm2', x: 750, y: 610, w: 320 },
+  { key: 'domains', x: 1110, y: 20, w: 310 },
+  { key: 'documentation', x: 1110, y: 380, w: 310 },
+];
+
+function statusClass(s) {
+  return { green: 'status-green', red: 'status-red', amber: 'status-amber', blue: 'status-blue', gray: 'status-gray' }[s] || '';
+}
+
+function renderWorld() {
+  let html = '';
+  const nodePositions = {};
+
+  CATEGORY_LAYOUT.forEach(cat => {
+    const data = DATA[cat.key];
+    const itemH = 36;
+    const headerH = 42;
+    const bodyPad = 20;
+    const h = headerH + bodyPad + data.items.length * itemH + 10;
+
+    html += `<div class="category" style="left:${cat.x}px;top:${cat.y}px;width:${cat.w}px;height:${h}px;" data-cat="${cat.key}">`;
+    html += `<div class="category-header"><span class="cat-icon">${data.icon}</span>${data.label}<span class="cat-count">${data.items.length}</span></div>`;
+    html += `<div class="category-body">`;
+
+    data.items.forEach((item, i) => {
+      const id = `${cat.key}-${i}`;
+      nodePositions[id] = {
+        x: cat.x + cat.w / 2,
+        y: cat.y + headerH + bodyPad + i * itemH + itemH / 2
+      };
+      html += `<div class="node ${statusClass(item.status)}" data-id="${id}" data-name="${item.name}" data-tooltip="${encodeURIComponent(item.tooltip)}">`;
+      html += `<div class="status-dot ${item.status}"></div>`;
+      html += `<span class="node-name">${item.name}</span>`;
+      html += `<span class="node-detail">${item.detail}</span>`;
+      html += `</div>`;
+    });
+
+    html += `</div></div>`;
+    cat.h = h;
+  });
+
+  world.innerHTML = html;
+  updateTransform();
+  updateStats();
+  renderMinimap();
+  renderBottomBar();
+}
+
+function updateTransform() {
+  world.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
+}
+
+viewport.addEventListener('wheel', e => {
+  e.preventDefault();
+  const rect = viewport.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+  const worldX = (mx - panX) / scale;
+  const worldY = (my - panY) / scale;
+
+  const delta = e.deltaY > 0 ? 0.9 : 1.1;
+  const newScale = Math.max(0.2, Math.min(3, scale * delta));
+
+  panX = mx - worldX * newScale;
+  panY = my - worldY * newScale;
+  scale = newScale;
+  updateTransform();
+  updateMinimap();
+}, { passive: false });
+
+viewport.addEventListener('mousedown', e => {
+  if (e.target.closest('.node')) return;
+  isDragging = true;
+  dragStartX = e.clientX;
+  dragStartY = e.clientY;
+  dragPanX = panX;
+  dragPanY = panY;
+});
+window.addEventListener('mousemove', e => {
+  if (!isDragging) return;
+  panX = dragPanX + (e.clientX - dragStartX);
+  panY = dragPanY + (e.clientY - dragStartY);
+  updateTransform();
+  updateMinimap();
+});
+window.addEventListener('mouseup', () => { isDragging = false; });
+
+world.addEventListener('mouseover', e => {
+  const node = e.target.closest('.node');
+  if (!node) return;
+  const raw = decodeURIComponent(node.dataset.tooltip);
+  const name = node.dataset.name;
+  const dot = node.querySelector('.status-dot');
+  const statusName = dot.classList.contains('green') ? 'HEALTHY' :
+    dot.classList.contains('red') ? 'CRITICAL' :
+    dot.classList.contains('amber') ? 'WARNING' :
+    dot.classList.contains('blue') ? 'PAUSED' : 'NOT STARTED';
+  const statusColor = dot.classList.contains('green') ? 'var(--green)' :
+    dot.classList.contains('red') ? 'var(--red)' :
+    dot.classList.contains('amber') ? 'var(--amber)' :
+    dot.classList.contains('blue') ? 'var(--blue)' : 'var(--gray)';
+
+  const lines = raw.split('\n').map(l => {
+    if (l.startsWith('🔴') || l.startsWith('⚠') || l.startsWith('⏸')) return `<b>${l}</b>`;
+    if (l.startsWith('•')) return `&nbsp;&nbsp;${l}`;
+    return l;
+  }).join('<br>');
+
+  tooltip.innerHTML = `
+    <div class="tt-title">${name}</div>
+    <span class="tt-status" style="background:${statusColor}22;color:${statusColor};border:1px solid ${statusColor}44">${statusName}</span>
+    <div class="tt-body">${lines}</div>
+  `;
+  tooltip.classList.add('visible');
+
+  const rect = node.getBoundingClientRect();
+  let tx = rect.right + 12;
+  let ty = rect.top;
+  if (tx + 340 > window.innerWidth) tx = rect.left - 350;
+  if (ty + 200 > window.innerHeight) ty = window.innerHeight - 220;
+  tooltip.style.left = tx + 'px';
+  tooltip.style.top = ty + 'px';
+});
+world.addEventListener('mouseout', e => {
+  if (!e.target.closest('.node')) return;
+  tooltip.classList.remove('visible');
+});
+
+document.getElementById('searchInput').addEventListener('input', e => {
+  const q = e.target.value.toLowerCase();
+  document.querySelectorAll('.node').forEach(n => {
+    const match = !q || n.dataset.name.toLowerCase().includes(q) ||
+      decodeURIComponent(n.dataset.tooltip).toLowerCase().includes(q);
+    n.classList.toggle('dim', !match);
+    n.classList.toggle('highlight', match && q.length > 0);
+  });
+});
+
+document.getElementById('zoomIn').addEventListener('click', () => {
+  scale = Math.min(3, scale * 1.2);
+  updateTransform();
+  updateMinimap();
+});
+document.getElementById('zoomOut').addEventListener('click', () => {
+  scale = Math.max(0.2, scale * 0.8);
+  updateTransform();
+  updateMinimap();
+});
+document.getElementById('zoomFit').addEventListener('click', () => {
+  const vw = viewport.clientWidth;
+  const vh = viewport.clientHeight;
+  let maxX = 0, maxY = 0;
+  CATEGORY_LAYOUT.forEach(c => {
+    maxX = Math.max(maxX, c.x + c.w + 40);
+    maxY = Math.max(maxY, c.y + (c.h || 400) + 40);
+  });
+  scale = Math.min(vw / maxX, vh / maxY, 1);
+  panX = (vw - maxX * scale) / 2;
+  panY = (vh - maxY * scale) / 2;
+  updateTransform();
+  updateMinimap();
+});
+
+function updateStats() {
+  let total = 0, green = 0, red = 0, amber = 0, blue = 0, gray = 0;
+  Object.values(DATA).forEach(cat => {
+    cat.items.forEach(item => {
+      total++;
+      if (item.status === 'green') green++;
+      else if (item.status === 'red') red++;
+      else if (item.status === 'amber') amber++;
+      else if (item.status === 'blue') blue++;
+      else gray++;
+    });
+  });
+  document.getElementById('statsBar').innerHTML = `
+    <span><b>${total}</b> total</span>
+    <span style="color:var(--green)"><b>${green}</b> healthy</span>
+    <span style="color:var(--red)"><b>${red}</b> critical</span>
+    <span style="color:var(--amber)"><b>${amber}</b> warning</span>
+    <span style="color:var(--blue)"><b>${blue}</b> paused</span>
+    <span style="color:var(--gray)"><b>${gray}</b> not started</span>
+  `;
+}
+
+function renderBottomBar() {
+  const bar = document.getElementById('bottomBar');
+  bar.innerHTML = `
+    <div class="metric"><div class="dot" style="background:var(--green)"></div><b>VPS</b> 3d17h up</div>
+    <div class="metric"><div class="dot" style="background:var(--amber)"></div><b>Disk</b> 70%</div>
+    <div class="metric"><div class="dot" style="background:var(--green)"></div><b>RAM</b> 3.7Gi free</div>
+    <div class="metric"><div class="dot" style="background:var(--green)"></div><b>PM2</b> 3/3 online</div>
+    <div class="metric"><div class="dot" style="background:var(--green)"></div><b>DB</b> healthy</div>
+    <div class="metric"><div class="dot" style="background:var(--green)"></div><b>Redis</b> PONG</div>
+    <div class="metric" style="margin-left:auto;color:var(--text-dim)">Pan: drag | Zoom: scroll | Search: type</div>
+  `;
+}
+
+function renderMinimap() {
+  const canvas = document.getElementById('minimapCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = 200;
+  canvas.height = 140;
+
+  let maxX = 0, maxY = 0;
+  CATEGORY_LAYOUT.forEach(c => {
+    maxX = Math.max(maxX, c.x + c.w);
+    maxY = Math.max(maxY, c.y + (c.h || 400));
+  });
+
+  const sx = 190 / maxX;
+  const sy = 130 / maxY;
+  const s = Math.min(sx, sy);
+
+  ctx.clearRect(0, 0, 200, 140);
+
+  CATEGORY_LAYOUT.forEach(cat => {
+    const data = DATA[cat.key];
+    ctx.fillStyle = '#1a2236';
+    ctx.strokeStyle = '#2a3654';
+    ctx.lineWidth = 0.5;
+    const rx = 5 + cat.x * s;
+    const ry = 5 + cat.y * s;
+    const rw = cat.w * s;
+    const rh = (cat.h || 300) * s;
+    ctx.fillRect(rx, ry, rw, rh);
+    ctx.strokeRect(rx, ry, rw, rh);
+
+    data.items.forEach((item, i) => {
+      const dotX = rx + 4;
+      const dotY = ry + 6 + i * (rh / data.items.length);
+      ctx.fillStyle = { green: '#00ff88', red: '#ff3366', amber: '#ffaa00', blue: '#4488ff', gray: '#555e70' }[item.status];
+      ctx.beginPath();
+      ctx.arc(dotX, dotY, 1.5, 0, Math.PI * 2);
+      ctx.fill();
+    });
+  });
+
+  updateMinimap();
+}
+
+function updateMinimap() {
+  const mv = document.getElementById('minimapViewport');
+  let maxX = 0, maxY = 0;
+  CATEGORY_LAYOUT.forEach(c => {
+    maxX = Math.max(maxX, c.x + c.w);
+    maxY = Math.max(maxY, c.y + (c.h || 400));
+  });
+
+  const sx = 190 / maxX;
+  const sy = 130 / maxY;
+  const s = Math.min(sx, sy);
+
+  const vw = viewport.clientWidth;
+  const vh = viewport.clientHeight;
+  const worldViewL = -panX / scale;
+  const worldViewT = -panY / scale;
+  const worldViewW = vw / scale;
+  const worldViewH = vh / scale;
+
+  mv.style.left = (5 + worldViewL * s) + 'px';
+  mv.style.top = (5 + worldViewT * s) + 'px';
+  mv.style.width = (worldViewW * s) + 'px';
+  mv.style.height = (worldViewH * s) + 'px';
+}
+
+renderWorld();
+setTimeout(() => document.getElementById('zoomFit').click(), 100);
+window.addEventListener('resize', () => {
+  updateMinimap();
+});
+</script>
+</body>
+</html>

@@ -3,7 +3,7 @@
  * Supports Community Posts (text/image) via YouTube's API.
  *
  * NOTE: YouTube Community Posts API is limited. For video uploads,
- * use the resumable upload endpoint (not implemented here — that's TourReel's domain).
+ * use the resumable upload endpoint (not implemented here — that's VideoForge's domain).
  *
  * For text/image social posts, YouTube doesn't have a public API for community posts.
  * Instead, we support:

@@ -89,7 +89,7 @@ customers/
       "delivery": "$1/mile delivery available. Free pickup.",
       "rentalPeriod": "24 hours",
       "locations": ["Dallas, TX", "Richardson, TX", "Garland, TX", "..."],
-      "phoneNumbers": ["+1-469-283-9855"]
+      "phoneNumbers": ["+1-469-814-6509"]
     }
   ]
 }
@@ -515,7 +515,7 @@ console.log(`Added product ${newProduct.productId} for customer ${customerId}`);
 ## Week 3: Billing Integration
 
 ### Objective
-Stripe subscriptions with post limits. Reuse TourReel credit system foundation.
+Stripe subscriptions with post limits. Reuse VideoForge credit system foundation.
 
 ### Tasks
 

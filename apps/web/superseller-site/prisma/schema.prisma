@@ -17,9 +17,9 @@ model Tenant {
   settings  Json?
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
-  
-  brand     Brand?
-  leads     Lead[]
+
+  brand Brand?
+  leads Lead[]
 }
 
 /// Centralized brand identity and configuration
@@ -47,9 +47,9 @@ model Brand {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  tenant         Tenant?  @relation(fields: [tenantId], references: [id])
-  user           User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
-  landingPages   LandingPage[]
+  tenant       Tenant?       @relation(fields: [tenantId], references: [id])
+  user         User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  landingPages LandingPage[]
 }
 
 /// Join table for User <-> Tenant many-to-many relationship
@@ -91,9 +91,9 @@ model User {
   updatedAt              DateTime  @updatedAt
   lastLoginAt            DateTime?
   metrics                Json?
-  
-  brands                 Brand[]
-  leads                  Lead[]
+
+  brands Brand[]
+  leads  Lead[]
 }
 
 /// NextAuth Account — kept for future OAuth integration
@@ -425,7 +425,7 @@ model Solution {
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
 
-  instances             SolutionInstance[]
+  instances SolutionInstance[]
 }
 
 /// Client-specific solution instance with deployment tracking
@@ -562,8 +562,8 @@ model Lead {
   updatedAt           DateTime  @updatedAt
   tenantId            String?   @db.Uuid
 
-  user                User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tenant              Tenant?   @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
 }
 
 /// Free-leads trial requests
@@ -631,26 +631,26 @@ model UsageLog {
 
 /// Blog posts and social content (enhanced for SocialHub)
 model ContentPost {
-  id                String    @id @default(dbgenerated("(gen_random_uuid())::text"))
+  id                String           @id @default(dbgenerated("(gen_random_uuid())::text"))
   userId            String
   title             String?
   content           String?
   type              String?
-  status            String    @default("draft")
+  status            String           @default("draft")
   slug              String?
   metadata          Json?
   publishedAt       DateTime?
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
   platform          String?
-  tenantId          String?   @db.Uuid
+  tenantId          String?          @db.Uuid
   mediaUrls         Json?
   platformPostId    String?
   platformUrl       String?
-  scheduledAt       DateTime? @db.Timestamptz(6)
+  scheduledAt       DateTime?        @db.Timestamptz(6)
   approvalStatus    String?
   approvedBy        String?
-  approvedAt        DateTime? @db.Timestamptz(6)
+  approvedAt        DateTime?        @db.Timestamptz(6)
   rejectionNote     String?
   aiModel           String?
   aiPrompt          String?
@@ -664,13 +664,13 @@ model ContentPost {
 model PlatformAccount {
   id           String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   userId       String
-  tenantId     String?   @db.Uuid
+  tenantId     String?       @db.Uuid
   platform     String
   accountName  String?
   accountId    String?
   accessToken  String?
   refreshToken String?
-  tokenExpiry  DateTime? @db.Timestamptz(6)
+  tokenExpiry  DateTime?     @db.Timestamptz(6)
   scope        String?
   isActive     Boolean       @default(true)
   metadata     Json?
@@ -1080,39 +1080,50 @@ model LlmModelConfig {
 /// Each page lives at /lp/[slug]. Leads from submissions are stored in the Lead model
 /// with source="landing_page" and sourceId=slug.
 model LandingPage {
-  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  userId          String
-  slug            String   @unique
-  active          Boolean  @default(true)
-  
+  id     String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId String
+  slug   String  @unique
+  active Boolean @default(true)
+
   // Content
   heroHeadline    String
   heroSubheadline String?
   ctaText         String
   sections        Json?
-  
+
   // Contact (Can override Brand or be specific to LP)
-  whatsappNumber  String?
-  phone           String?
-  email           String?
-  
+  whatsappNumber String?
+  phone          String?
+  email          String?
+
   // Settings
-  direction       String   @default("rtl")
-  locale          String   @default("he")
-  
+  direction String @default("rtl")
+  locale    String @default("he")
+
+  // Design Tokens
+  theme              String  @default("dark") // "dark", "light", "glass"
+  style              String  @default("modern") // "modern", "corporate", "creative", "minimal"
+  fontHeading        String? // Google Font name, e.g. "Inter", "Playfair Display"
+  fontBody           String? // Google Font name for body text
+  animationSpeed     String  @default("normal") // "none", "subtle", "normal", "dramatic"
+  heroStyle          String  @default("split") // "split", "fullwidth", "video", "parallax"
+  cardStyle          String  @default("glass") // "glass", "solid", "outline", "elevated"
+  sectionAlternation Boolean @default(true) // alternate bg colors between sections
+  heroMediaUrl       String? // hero background image/video URL
+
   // SEO
   metaTitle       String?
   metaDescription String?
-  
+
   // Analytics
-  views           Int      @default(0)
-  submissions     Int      @default(0)
-  
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @default(now()) @updatedAt
-  
-  brandId         String?  // References Brand.id (String)
-  brand           Brand?   @relation(fields: [brandId], references: [id])
+  views       Int @default(0)
+  submissions Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  brandId String? // References Brand.id (String)
+  brand   Brand?  @relation(fields: [brandId], references: [id])
 
   @@map("landing_pages")
 }
@@ -1128,9 +1139,9 @@ model MarketplaceCustomer {
   createdAt    DateTime? @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt    DateTime? @default(now()) @map("updated_at") @db.Timestamp(6)
 
-  products     MarketplaceProduct[]
-  posts        MarketplacePost[]
-  sessions     FacebookSession[]
+  products MarketplaceProduct[]
+  posts    MarketplacePost[]
+  sessions FacebookSession[]
 
   @@unique([userId])
   @@map("marketplace_customers")
@@ -1149,8 +1160,8 @@ model MarketplaceProduct {
   createdAt   DateTime? @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt   DateTime? @default(now()) @map("updated_at") @db.Timestamp(6)
 
-  customer    MarketplaceCustomer @relation(fields: [customerId], references: [id])
-  posts       MarketplacePost[]
+  customer MarketplaceCustomer @relation(fields: [customerId], references: [id])
+  posts    MarketplacePost[]
 
   @@map("marketplace_products")
 }
@@ -1168,7 +1179,7 @@ model FacebookSession {
   createdAt  DateTime? @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt  DateTime? @default(now()) @map("updated_at") @db.Timestamp(6)
 
-  customer   MarketplaceCustomer @relation(fields: [customerId], references: [id])
+  customer MarketplaceCustomer @relation(fields: [customerId], references: [id])
 
   @@unique([customerId, productId])
   @@map("facebook_sessions")
@@ -1194,8 +1205,8 @@ model MarketplacePost {
   createdAt          DateTime? @default(now()) @map("created_at") @db.Timestamp(6)
   postedAt           DateTime? @map("posted_at") @db.Timestamp(6)
 
-  customer           MarketplaceCustomer @relation(fields: [customerId], references: [id])
-  product            MarketplaceProduct  @relation(fields: [productId], references: [id])
+  customer MarketplaceCustomer @relation(fields: [customerId], references: [id])
+  product  MarketplaceProduct  @relation(fields: [productId], references: [id])
 
   @@map("marketplace_posts")
 }
@@ -1301,6 +1312,25 @@ model AIModelDecision {
   created_by              String?   @db.Uuid
 
   @@map("ai_model_decisions")
+}
+
+/// DB-driven prompt configuration — update prompts without code deploys.
+/// Services: "videoforge", "marketplace", "claudeclaw", "socialhub"
+/// Falls back to hardcoded prompts when DB is unavailable.
+model PromptConfig {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  service   String   @db.VarChar(100)
+  promptKey String   @map("prompt_key") @db.VarChar(200)
+  template  String   @db.Text
+  version   Int      @default(1)
+  isActive  Boolean  @default(true) @map("is_active")
+  metadata  Json?
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([service, promptKey, version], name: "prompt_config_service_key_version")
+  @@index([service, promptKey], name: "idx_prompt_config_lookup")
+  @@map("prompt_configs")
 }
 
 enum UserRole {

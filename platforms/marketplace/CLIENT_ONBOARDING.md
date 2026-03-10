@@ -9,9 +9,11 @@ Follow these steps to set up a new client on the Facebook Marketplace posting sy
 
 ## 2. Facebook Account
 - Client needs a Facebook account with Marketplace access.
-- First login must be done from the server via `interactive_login.js` (triggers 2FA).
-- Client approves 2FA on their phone. noVNC at `http://172.245.56.50:6080/vnc.html` for visual verification.
-- After approval, cookies are saved to `cookies_{clientId}.json`.
+- First login must be done from the server via `session-login.js`: `DISPLAY=:100 node session-login.js [index]` where index matches the product's position in `bot-config.json`.
+- Facebook has passkey 2FA enabled — **cannot be automated**. The account owner must approve on their phone.
+- Monitor via noVNC at `http://172.245.56.50:6080/vnc.html` to see the 2FA prompt and interact if needed.
+- After approval, cookies are auto-saved to GoLogin API + `cookies.json`. Cookie lifetime is ~365 days (`c_user`, `xs`).
+- `cookie-monitor.js` (PM2) checks session health every 6h and alerts via WhatsApp if stale.
 
 ## 3. Bot Configuration
 Update `fb-marketplace-lister/deploy-package/bot-config.json`:

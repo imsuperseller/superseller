@@ -10,7 +10,7 @@ async function verifyAI() {
 
     try {
         const result = await geminiChatCompletion([
-            { role: "user", content: "Say 'TourReel AI Operational (2026 SOTA - Gemini 3.0)'" }
+            { role: "user", content: "Say 'VideoForge AI Operational (2026 SOTA - Gemini 3.0)'" }
         ], {
             model: "google/gemini-3-pro",
             temperature: 0.1

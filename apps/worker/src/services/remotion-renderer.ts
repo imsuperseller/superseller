@@ -1,5 +1,5 @@
 /**
- * Remotion Server-Side Renderer for TourReel.
+ * Remotion Server-Side Renderer for VideoForge.
  *
  * Bundles the Remotion project once at startup, then renders
  * property tour videos on demand via renderMedia().

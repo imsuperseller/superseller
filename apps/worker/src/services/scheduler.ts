@@ -13,27 +13,54 @@ import { logger } from "../utils/logger";
 
 let schedulerIntervals: NodeJS.Timeout[] = [];
 
-function scheduleJob(name: string, fn: () => Promise<void>, intervalMs: number, initialDelayMs: number = 0): void {
-    if (initialDelayMs > 0) {
-        setTimeout(async () => {
-            try {
-                await fn();
-            } catch (err: any) {
-                logger.error({ msg: `Scheduler: ${name} failed`, error: err.message });
-            }
-        }, initialDelayMs);
-    }
+interface JobMeta {
+    name: string;
+    intervalMs: number;
+    lastRun: string | null;
+    lastError: string | null;
+    runCount: number;
+    registeredAt: string;
+}
 
-    const interval = setInterval(async () => {
+const jobRegistry = new Map<string, JobMeta>();
+
+function scheduleJob(name: string, fn: () => Promise<void>, intervalMs: number, initialDelayMs: number = 0): void {
+    jobRegistry.set(name, {
+        name,
+        intervalMs,
+        lastRun: null,
+        lastError: null,
+        runCount: 0,
+        registeredAt: new Date().toISOString(),
+    });
+
+    const wrappedFn = async () => {
+        const meta = jobRegistry.get(name)!;
         try {
             await fn();
+            meta.lastRun = new Date().toISOString();
+            meta.lastError = null;
+            meta.runCount++;
         } catch (err: any) {
+            meta.lastRun = new Date().toISOString();
+            meta.lastError = err.message;
+            meta.runCount++;
             logger.error({ msg: `Scheduler: ${name} failed`, error: err.message });
         }
-    }, intervalMs);
+    };
+
+    if (initialDelayMs > 0) {
+        setTimeout(wrappedFn, initialDelayMs);
+    }
+
+    const interval = setInterval(wrappedFn, intervalMs);
 
     schedulerIntervals.push(interval);
     logger.info({ msg: `Scheduler: ${name} scheduled`, intervalMs });
+}
+
+export function getSchedulerStatus(): { name: string; intervalMs: number; lastRun: string | null; lastError: string | null; runCount: number; registeredAt: string }[] {
+    return Array.from(jobRegistry.values());
 }
 
 export function startScheduler(): void {
@@ -92,7 +119,22 @@ export function startScheduler(): void {
         logger.info({ msg: "Scheduler: system cleanup complete", results });
     }, 7 * DAY, 3 * HOUR);
 
-    logger.info({ msg: "Scheduler started", jobs: 5 });
+    // Autonomous agents — every 6 hours (first run after 15 min to let services stabilize)
+    scheduleJob("agent-orchestrator", async () => {
+        const { runOrchestrator } = await import("./agents/orchestrator");
+        await runOrchestrator();
+    }, 6 * HOUR, 15 * 60 * 1000);
+
+    // Daily digest — every hour, but only sends between 7-8 AM server time
+    scheduleJob("daily-digest", async () => {
+        const hour = new Date().getHours();
+        if (hour === 7) {
+            const { sendDailyDigest } = await import("./proactive-digest");
+            await sendDailyDigest();
+        }
+    }, HOUR, 20 * 60 * 1000);
+
+    logger.info({ msg: "Scheduler started", jobs: 7 });
 }
 
 export function stopScheduler(): void {

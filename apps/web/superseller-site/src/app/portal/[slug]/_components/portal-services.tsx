@@ -9,7 +9,7 @@ interface FeatureInfo {
 
 const FEATURE_MAP: Record<string, FeatureInfo> = {
     tourReel: {
-        name: 'TourReel Video',
+        name: 'VideoForge Video',
         description: 'AI-generated cinematic property tours from Zillow listings',
         credits: CREDIT_COSTS.forge.credits,
         unit: 'video',

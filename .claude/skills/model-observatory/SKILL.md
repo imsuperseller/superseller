@@ -7,7 +7,7 @@ description: >-
   60+ structured fields per model, daily auto-sync from Kie.ai/fal.ai, pipeline recommendations,
   and decision audit logging. Use when selecting AI models, checking model pricing, comparing
   providers, updating model data, or querying the observatory. Not for video pipeline execution
-  (see tourreel-pipeline), UI design, or billing.
+  (see videoforge-pipeline), UI design, or billing.
   Example: "Which model should I use for room transitions?" or "Update Kling pricing".
 autoTrigger:
   - "model"
@@ -114,6 +114,6 @@ See [references/model-inventory.md](references/model-inventory.md) for all 50+ c
 ## References
 
 - `tools/model-observatory/README.md` -- Architecture spec
-- `.claude/skills/tourreel-pipeline/SKILL.md` -- Pipeline that consumes observatory
+- `.claude/skills/videoforge-pipeline/SKILL.md` -- Pipeline that consumes observatory
 - `.claude/skills/cost-tracker/SKILL.md` -- Cost tracking paired with observatory pricing
 - NotebookLM 02c3946b -- AI Cost & Performance benchmarks

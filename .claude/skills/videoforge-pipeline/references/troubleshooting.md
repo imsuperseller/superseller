@@ -1,4 +1,4 @@
-# TourReel Troubleshooting Guide
+# VideoForge Troubleshooting Guide
 
 ## Error: Double Realtor (Two Identical Figures)
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Setup Yaron Yashar's TourReel video job with custom prompts.
+ * Setup Yaron Yashar's VideoForge video job with custom prompts.
  * Run on RackNerd: node tools/setup-yaron-job.mjs [--test]
  * --test: Only seed clip 1 for Stage 5 test
  */
@@ -8,7 +8,7 @@ import pg from "pg";
 import { Queue } from "bullmq";
 
 const DB_URL = process.env.DATABASE_URL || "postgresql://admin:${POSTGRES_PASSWORD}@localhost:5432/app_db";
-const REDIS_PASSWORD = process.env.REDIS_PASSWORD || "${REDIS_PASSWORD}";
+const REDIS_PASSWORD = process.env.REDIS_PASSWORD;
 const testOnly = process.argv.includes("--test");
 
 const YARON_USER_ID = "e81973b0-12f3-4d2d-8005-cc97913789bb";

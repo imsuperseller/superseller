@@ -1,6 +1,6 @@
-# Project 2: Video Engine (TourReel + Remotion)
+# Project 2: Video Engine (VideoForge + Remotion)
 
-> **Role**: Video pipeline — TourReel AI videos, Remotion photo composition, Kling AI clips, FFmpeg, BullMQ workers, model selection.
+> **Role**: Video pipeline — VideoForge AI videos, Remotion photo composition, Kling AI clips, FFmpeg, BullMQ workers, model selection.
 > **Authority**: SOLE owner of Drizzle schema and worker code.
 
 ---
@@ -36,7 +36,7 @@ brain.md, CLAUDE.md, *.md (root)  → Project 7 (Strategy & Docs)
 ---
 
 ## Assigned Skills
-- tourreel-pipeline
+- videoforge-pipeline
 - model-observatory
 - cost-tracker
 - winner-studio

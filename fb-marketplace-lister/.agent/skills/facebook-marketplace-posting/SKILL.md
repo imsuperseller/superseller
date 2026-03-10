@@ -46,8 +46,8 @@ scheduler.js (PM2, 60-min cycles)
 
 ### Miss Party Rentals
 - **GoLogin Profile**: `6949a854f4994b150d430f37`
-- **Category**: "Inflatable Bouncers" (exact FB dropdown match)
-- **Phone**: Single `+1-469-283-9855`
+- **Category**: "Miscellaneous" (exact FB dropdown match)
+- **Phone**: Single `+1-469-814-6509`
 - **Locations**: 20 DFW cities (sequential rotation)
 - **Video**: Static `michal_video.mp4`
 - **Stealth**: High — 3 posts/cycle, 30-min cooldown

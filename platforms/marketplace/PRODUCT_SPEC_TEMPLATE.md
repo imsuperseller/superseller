@@ -1,17 +1,17 @@
 # Product Spec Template — SuperSeller AI SaaS
 
 **Version**: 1.0  
-**Purpose**: Reusable structure for product PRDs. Use for video products (TourReel, Winner), non-video products, and different niches.
+**Purpose**: Reusable structure for product PRDs. Use for video products (VideoForge, Winner), non-video products, and different niches.
 
-> **Source**: Pattern extracted from Winner Video Automator PRD + TourReel TOURREEL_REALTOR_HANDOFF_SPEC. Adapt sections as needed—not all apply to every product.
+> **Source**: Pattern extracted from Winner Video Automator PRD + VideoForge TOURREEL_REALTOR_HANDOFF_SPEC. Adapt sections as needed—not all apply to every product.
 
 ---
 
 ## 1. Product Identity
 
-| Field | Example (TourReel) | Example (Winner) |
+| Field | Example (VideoForge) | Example (Winner) |
 |-------|--------------------|------------------|
-| **Name** | TourReel / Zillow-to-Video | Winner Video Automator |
+| **Name** | VideoForge / Zillow-to-Video | Winner Video Automator |
 | **Input** | Property photos, Zillow URL | Voice note + reference image |
 | **Output** | 60–90s property tour MP4 | 20–30s branded MP4 |
 | **Niche** | Real estate listings | Israeli RE professionals |
@@ -81,7 +81,7 @@ User Input → [Processing Stage] → [Generation Stage] → [Post-Processing] �
 ## 7. Flexible Sections (Product-Specific)
 
 - **Script Processing**: Only for voice→video. Skip for photo→video.
-- **Music Generation**: Always for Winner; optional for TourReel.
+- **Music Generation**: Always for Winner; optional for VideoForge.
 - **Delivery Channel**: WhatsApp, dashboard, both.
 - **Identity Consistency**: Nano Banana for realtor; Gemini routing for Winner.
 
@@ -89,7 +89,7 @@ User Input → [Processing Stage] → [Generation Stage] → [Post-Processing] �
 
 ## 8. References
 
-- **TourReel**: `apps/worker/TOURREEL_REALTOR_HANDOFF_SPEC.md`, `VIDEO_APP_USER_GUIDE.md`
+- **VideoForge**: `apps/worker/TOURREEL_REALTOR_HANDOFF_SPEC.md`, `VIDEO_APP_USER_GUIDE.md`
 - **Winner PRD**: External document (provided by user)
 - **Infra**: `docs/INFRA_SSOT.md`
 - **NotebookLM**: Production instructions per product

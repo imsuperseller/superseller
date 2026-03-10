@@ -22,7 +22,7 @@
 | # | Project | Folder | What It Covers |
 |---|---------|--------|----------------|
 | 1 | **SuperSeller Web** | `projects/1-superseller-web/` | Next.js SaaS platform, admin portal, billing, PayPal, i18n, Prisma, auth |
-| 2 | **Video Engine** | `projects/2-video-engine/` | TourReel pipeline, Kling AI clips, Remotion compositions, FFmpeg, model selector |
+| 2 | **Video Engine** | `projects/2-video-engine/` | VideoForge pipeline, Kling AI clips, Remotion compositions, FFmpeg, model selector |
 | 3 | **Marketplace Bot** | `projects/3-marketplace-bot/` | FB Marketplace automation, GoLogin, UAD + MissParty, Firestore |
 | 4 | **Infrastructure** | `projects/4-infrastructure/` | RackNerd VPS, PM2, Docker, MCP servers, CI/CD, env vars |
 | 5 | **Social & Content** | `projects/5-social-content/` | SocialHub/Buzz (Phase 1 live), WAHA sessions, Telnyx FrontDesk Voice |
@@ -77,7 +77,7 @@ Items that need to happen but aren't assigned to an active sprint:
 
 | Item | Folder | Decision Needed |
 |------|--------|-----------------|
-| TourReel end-to-end audit + test | `projects/backlog/tourreel-audit/` | Approve ~$2 API spend |
+| VideoForge end-to-end audit + test | `projects/backlog/tourreel-audit/` | Approve ~$2 API spend |
 | Billing system fix (7 issues) | `projects/backlog/billing-system-fix/` | Prioritize which of 7 issues to start |
 | Iron Dome OS pipeline rebuild | `projects/backlog/iron-dome-rebuild/` | Pick rebuild option (A/B/C) |
 | Elite Pro go-live (once Saar sends creds) | `projects/backlog/elite-pro-go-live/` | Waiting on Saar |
@@ -122,7 +122,7 @@ ortal pilates/**                       → Customer: Ortal
 | lead-pages | 1 — Web |
 | ui-ux-pro-max | 1 — Web |
 | ui-design-workflow | 1 — Web |
-| tourreel-pipeline | 2 — Video Engine |
+| videoforge-pipeline | 2 — Video Engine |
 | model-observatory | 2 — Video Engine |
 | cost-tracker | 2 — Video Engine |
 | winner-studio | 2 — Video Engine |

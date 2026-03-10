@@ -485,4 +485,4 @@ Lambda benchmarks (2048MB, us-east-1): Hello World $0.001/7.5s, 1-min video $0.0
 
 ---
 
-*Canonical reference for all Remotion video work. For TourReel pipeline specifics, see NotebookLM 0baf5f36. For AI model selection, see `.claude/skills/model-observatory/SKILL.md`.*
+*Canonical reference for all Remotion video work. For VideoForge pipeline specifics, see NotebookLM 0baf5f36. For AI model selection, see `.claude/skills/model-observatory/SKILL.md`.*

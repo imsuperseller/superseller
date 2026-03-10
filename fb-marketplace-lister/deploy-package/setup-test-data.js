@@ -17,7 +17,7 @@ async function setupTestData() {
             UPDATE fb_listings 
             SET 
                 image_url = 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600&h=400&fit=crop',
-                phone_number = '+1-469-283-9855',
+                phone_number = '+1-469-814-6509',
                 status = 'queued',
                 error_message = NULL
             WHERE id = 3
@@ -68,7 +68,7 @@ async function setupTestData() {
                 'White',
                 49.99,
                 49.99,
-                '+1-469-283-9855',
+                '+1-469-814-6509',
                 'Dallas, Texas',
                 'White Bounce House Rental - Perfect for Parties!',
                 'Amazing 15x15 bounce house perfect for kids parties! Includes blower, setup, and pickup. Safe, clean, and tons of fun. Book today!',

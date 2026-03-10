@@ -140,8 +140,8 @@ server.tool(
 // Tool: get_skill
 server.tool(
   "get_skill",
-  "Get the full SKILL.md content for a specific skill. This returns the complete instructions/context that Claude Code uses when that skill is triggered. Pass the skill directory name (e.g. 'tourreel-pipeline', 'deploy-ops').",
-  { skill_name: z.string().describe("The skill directory name (e.g. 'tourreel-pipeline')") },
+  "Get the full SKILL.md content for a specific skill. This returns the complete instructions/context that Claude Code uses when that skill is triggered. Pass the skill directory name (e.g. 'videoforge-pipeline', 'deploy-ops').",
+  { skill_name: z.string().describe("The skill directory name (e.g. 'videoforge-pipeline')") },
   async ({ skill_name }) => {
     const skill = skills.get(skill_name);
     if (!skill) {

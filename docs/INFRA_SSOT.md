@@ -41,7 +41,7 @@
     *   `WAHA_URL` (Studio app) / `WAHA_BASE_URL` (superseller-site) / `config.shared.wahaUrl` (FB Bot) — same server: `http://172.245.56.50:3000`
     *   `WAHA_API_KEY` — passed via `X-Api-Key` header (NOT Bearer token)
     *   `WAHA_SESSION` — Session name (default: superseller-whatsapp)
-    *   **Sessions**: `internalBoss` (business notifications/approvals to owner — like Slack), `superseller-whatsapp` (future website chatbot with knowledge base)
+    *   **Sessions**: `personal` (14695885133 — Shai's personal WhatsApp, ClaudeClaw personal mode + FB Bot notifications), `superseller-whatsapp` (12144362102 — business mode, "Rensto" display name)
     *   **Dashboard**: `http://172.245.56.50:3000/dashboard`
 *   **LightRAG**: `LIGHTRAG_BASE_URL` (referenced in admin health-check)
 *   **Finance** (PayPal — migrated from Stripe Feb 2026):
@@ -62,7 +62,7 @@
 ### R2 Buckets
 | Bucket | Location | Public URL | Used By |
 |--------|----------|------------|---------|
-| `zillow-to-video-finals` | WNAM | `https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev` | TourReel video exports |
+| `zillow-to-video-finals` | WNAM | `https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev` | VideoForge video exports |
 | `winner-video-studio` | ENAM | `https://pub-ac6c152d1390490f95184e78af932739.r2.dev` | Winner Studio video exports |
 
 ---

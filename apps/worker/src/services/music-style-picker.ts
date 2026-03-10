@@ -1,7 +1,7 @@
 /**
  * Music Style Picker — Selects Suno music style based on property characteristics.
  *
- * Prevents all TourReel videos from sounding the same by diversifying the Suno
+ * Prevents all VideoForge videos from sounding the same by diversifying the Suno
  * prompt based on: property type, price bracket, architectural style, and listing
  * description keywords.
  *
