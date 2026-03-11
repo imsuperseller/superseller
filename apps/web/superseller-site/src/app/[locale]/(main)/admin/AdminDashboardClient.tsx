@@ -31,7 +31,10 @@ import {
     CheckCircle2,
     Activity,
     Crosshair,
-    Terminal
+    Terminal,
+    Menu,
+    X,
+    ClipboardCheck
 } from 'lucide-react';
 import WorkflowManagement from '@/components/admin/WorkflowManagement';
 import AIAgentManagement from '@/components/admin/AIAgentManagement';
@@ -46,6 +49,7 @@ import TreasuryManagement from '@/components/admin/TreasuryManagement';
 import TerryAssistant from '@/components/admin/TerryAssistant';
 import EcosystemMap from '@/components/admin/EcosystemMap';
 import SystemMonitor from '@/components/admin/SystemMonitor';
+import AuditManagement from '@/components/admin/AuditManagement';
 import MissionControl from '@/components/admin/MissionControl';
 import SuperSellerOps from '@/components/admin/SuperSellerOps';
 import { Skeleton } from '@/components/ui/skeleton-enhanced';
@@ -92,6 +96,7 @@ export default function AdminDashboardClient({
     const router = useRouter();
     const [activeTab, setActiveTab] = useState('overview');
     const [userMenuOpen, setUserMenuOpen] = useState(false);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
 
     const handleSignOut = async () => {
         try {
@@ -248,6 +253,12 @@ export default function AdminDashboardClient({
                 <div className="flex h-16 items-center justify-between px-6 sm:px-8">
                     <div className="flex items-center space-x-6">
                         <div className="flex items-center space-x-3">
+                            <button
+                                onClick={() => setSidebarOpen(!sidebarOpen)}
+                                className="lg:hidden p-2 text-slate-400 hover:text-white transition-colors -ml-2"
+                            >
+                                {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                            </button>
                             <Image
                                 src="/superseller-logo.webp"
                                 alt="SuperSeller AI"
@@ -255,8 +266,9 @@ export default function AdminDashboardClient({
                                 height={32}
                                 className="object-contain"
                             />
-                            <h1 className="text-xl font-black uppercase tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
-                                SuperSeller AI Admin
+                            <h1 className="text-lg sm:text-xl font-black uppercase tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
+                                <span className="hidden sm:inline">SuperSeller AI Admin</span>
+                                <span className="sm:hidden">Admin</span>
                             </h1>
                         </div>
                     </div>
@@ -315,8 +327,23 @@ export default function AdminDashboardClient({
             </header>
 
             <div className="flex relative z-10">
+                {/* Mobile sidebar overlay */}
+                {sidebarOpen && (
+                    <div
+                        className="fixed inset-0 bg-black/60 z-40 lg:hidden"
+                        onClick={() => setSidebarOpen(false)}
+                    />
+                )}
+
                 {/* Sidebar */}
-                <aside className="w-66 border-r border-white/5 min-h-[calc(100vh-64px)] bg-black/40 backdrop-blur-2xl">
+                <aside className={`
+                    fixed lg:relative z-50 lg:z-auto
+                    w-66 border-r border-white/5 min-h-[calc(100vh-64px)] bg-[#0a1628]/95 lg:bg-black/40 backdrop-blur-2xl
+                    transition-transform duration-300 ease-in-out
+                    ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+                    top-16 lg:top-auto left-0
+                    overflow-y-auto
+                `}>
                     <nav className="p-4 space-y-1">
                         <ul className="space-y-1">
                             {[
@@ -326,6 +353,7 @@ export default function AdminDashboardClient({
                                 { id: 'ecosystem', label: 'Ecosystem Map', icon: Activity },
                                 { id: 'crm', label: 'Client CRM', icon: Users },
                                 { id: 'projects', label: 'Projects', icon: FolderOpen },
+                                { id: 'audits', label: 'Audits', icon: ClipboardCheck },
                                 { id: 'landing', label: 'Landing Content', icon: Globe },
                                 { id: 'factory', label: 'Product Factory', icon: Package },
                                 { id: 'monitor', label: 'System Monitor', icon: Activity },
@@ -340,13 +368,13 @@ export default function AdminDashboardClient({
                             ].map(item => (
                                 <li key={item.id}>
                                     <button
-                                        onClick={() => setActiveTab(item.id)}
-                                        className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-left transition-all border group ${activeTab === item.id
+                                        onClick={() => { setActiveTab(item.id); setSidebarOpen(false); }}
+                                        className={`w-full flex items-center space-x-3 px-4 py-2.5 lg:py-3 rounded-xl text-left transition-all border group ${activeTab === item.id
                                             ? 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20 shadow-[0_0_20px_rgba(6,182,212,0.1)]'
                                             : 'text-slate-400 hover:text-white hover:bg-white/5 border-transparent'
                                             }`}
                                     >
-                                        <item.icon className={`w-5 h-5 transition-colors ${activeTab === item.id ? 'text-cyan-400' : 'text-slate-500 group-hover:text-slate-300'}`} />
+                                        <item.icon className={`w-5 h-5 shrink-0 transition-colors ${activeTab === item.id ? 'text-cyan-400' : 'text-slate-500 group-hover:text-slate-300'}`} />
                                         <span className="text-sm font-black uppercase tracking-widest">{item.label}</span>
                                     </button>
                                 </li>
@@ -356,13 +384,13 @@ export default function AdminDashboardClient({
                 </aside>
 
                 {/* Main Content */}
-                <main className="flex-1 p-6 md:p-8 overflow-y-auto max-h-[calc(100vh-64px)]">
+                <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto max-h-[calc(100vh-64px)] w-full">
                     <div className="max-w-7xl mx-auto">
                         {activeTab === 'overview' && (
                             <div className="space-y-12">
                                 {/* Page Header */}
                                 <div>
-                                    <h2 className="text-3xl font-black uppercase tracking-tighter text-white mb-2">
+                                    <h2 className="text-xl sm:text-2xl lg:text-3xl font-black uppercase tracking-tighter text-white mb-2">
                                         Dashboard Overview
                                     </h2>
                                     <p className="text-slate-400 font-medium">
@@ -628,6 +656,9 @@ export default function AdminDashboardClient({
                         )}
                         {activeTab === 'treasury' && (
                             <TreasuryManagement />
+                        )}
+                        {activeTab === 'audits' && (
+                            <AuditManagement />
                         )}
                     </div>
                 </main>
