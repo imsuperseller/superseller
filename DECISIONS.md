@@ -27,7 +27,7 @@ Legal entity: "Rensto LLC (DBA SuperSeller Agency)" — but the *brands* must st
 
 **Account Separation (March 11, 2026)**:
 - **GitHub**: SuperSeller = `imsuperseller`, Rensto = `renstollc` (separate accounts). Rensto code pushed to `renstollc/rensto-app`.
-- **Vercel**: Both still on same team (`shais-projects`). Rensto project needs its own Vercel team (pending).
+- **Vercel**: SuperSeller account email changed from `service@rensto.com` → `shai@superseller.agency` (March 11, 2026). Zero Rensto association. `service@rensto.com` freed for future Rensto Vercel account when needed. Rensto.com runs on RackNerd (nginx + systemd), not Vercel.
 - **Iron Dome OS**: Moved to Shai's personal GitHub (`1shaifriedman-create`) and personal Vercel team.
 
 **History**: On March 5, 2026, I (Claude Code) incorrectly created `/etc/nginx/sites-available/rensto-redirect` which 301-redirected rensto.com → superseller.agency. Fixed March 8, 2026 — rensto.com now serves a neutral placeholder.

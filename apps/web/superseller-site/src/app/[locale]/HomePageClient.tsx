@@ -69,7 +69,7 @@ export default function HomePageClient() {
         <div className="hidden md:block">
           <ScrollAnimation
             videoSrc="https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/crew-videos/showcase/crew-reveal.mp4"
-            scrollHeight={1}
+            scrollHeight={0.5}
             className="bg-[#0d1b2e]"
           />
         </div>
