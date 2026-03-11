@@ -5,8 +5,8 @@ module.exports = {
       script: "npx",
       args: "tsx src/index.ts",
       cwd: "/opt/tourreel-worker/apps/worker",
-      node_args: "--max-old-space-size=2048",
-      max_memory_restart: "1800M",
+      node_args: "--max-old-space-size=4096",
+      max_memory_restart: "3500M",
       env: {
         NODE_ENV: "production",
       },
