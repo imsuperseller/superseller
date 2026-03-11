@@ -141,7 +141,7 @@ export const CREW_MEMBERS: CrewMember[] = [
       'AI content creation (text + images)',
       'WhatsApp approval workflow',
       'Facebook + Instagram publishing',
-      'Aitable analytics dashboard',
+      'Analytics dashboard',
       'Blog content generation',
       'Brand-consistent messaging',
     ],

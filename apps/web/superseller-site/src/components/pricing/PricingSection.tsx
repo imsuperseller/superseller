@@ -216,7 +216,7 @@ function PricingCard({ plan, index }: { plan: PricingPlan; index: number }) {
         </ul>
 
         {/* CTA */}
-        <Link href="/pricing" className="mt-auto block">
+        <Link href={`/contact?plan=${plan.id}`} className="mt-auto block">
           <Button
             className={`w-full font-black text-lg h-14 rounded-2xl uppercase tracking-[0.1em] cursor-pointer ${
               plan.popular

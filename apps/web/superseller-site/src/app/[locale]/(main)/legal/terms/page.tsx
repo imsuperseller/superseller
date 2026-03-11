@@ -42,15 +42,16 @@ export default function TermsOfServicePage() {
               <section className="mb-8">
                 <h2 className="text-2xl font-semibold mb-4">2. Services Description</h2>
                 <p className="text-muted mb-4">
-                  SuperSeller AI provides automation consulting and development services, including but not limited to:
+                  SuperSeller AI provides AI-powered business automation services through a credit-based subscription model. Our AI crew includes specialized agents that handle:
                 </p>
                 <ul className="list-disc list-inside text-muted mb-4 space-y-2">
-                  <li>Process automation consulting and audits</li>
-                  <li>Workflow design and development</li>
-                  <li>n8n workflow implementation</li>
-                  <li>System integration services</li>
-                  <li>Training and documentation</li>
-                  <li>Ongoing support and maintenance</li>
+                  <li>AI video production for real estate and business marketing (Forge, Spoke)</li>
+                  <li>Social media content creation and automated publishing (Buzz)</li>
+                  <li>AI-powered call answering and lead qualification (FrontDesk)</li>
+                  <li>Lead generation and prospecting (Scout)</li>
+                  <li>Facebook Marketplace automation (Market)</li>
+                  <li>Business analytics and intelligence (Cortex)</li>
+                  <li>Ongoing support and account management</li>
                 </ul>
               </section>
 
@@ -65,19 +66,20 @@ export default function TermsOfServicePage() {
 
                 <h3 className="text-xl font-semibold mb-3">Payment Terms</h3>
                 <p className="text-muted mb-4">
-                  Payment terms will be specified in your project agreement. Generally:
+                  Subscriptions are billed monthly. Payment details:
                 </p>
                 <ul className="list-disc list-inside text-muted mb-4 space-y-2">
-                  <li>One-time services require payment before project commencement</li>
-                  <li>Care plans are billed monthly in advance</li>
+                  <li>Subscription plans (Starter, Pro, Team) are billed monthly in advance</li>
+                  <li>Credits are allocated at the start of each billing cycle and do not roll over</li>
                   <li>All payments are processed securely through PayPal</li>
-                  <li>Late payments may result in service suspension</li>
+                  <li>Failed payments may result in service suspension after a 3-day grace period</li>
+                  <li>You may cancel your subscription at any time; service continues through the end of the billing period</li>
                 </ul>
 
                 <h3 className="text-xl font-semibold mb-3">Intellectual Property</h3>
                 <p className="text-muted mb-4">
-                  Upon full payment, you own the custom workflows and configurations created for your project.
-                  We retain rights to our proprietary methodologies, templates, and general knowledge.
+                  Content generated through our AI agents (videos, social media posts, marketing copy) is owned by you upon creation.
+                  We retain rights to our proprietary AI models, agent configurations, templates, and platform technology.
                 </p>
               </section>
 
@@ -196,7 +198,7 @@ export default function TermsOfServicePage() {
                 <div className="card">
                   <p className="text-muted">
                     <strong>Email:</strong> {env.NEXT_PUBLIC_CONTACT_EMAIL}<br />
-                    <strong>Address:</strong> SuperSeller AI LLC, 444 Alaska Avenue, Torrance<br />
+                    <strong>Address:</strong> SuperSeller AI LLC, 444 Alaska Avenue, Torrance, CA 90503<br />
                     <strong>Website:</strong> https://superseller.agency
                   </p>
                 </div>

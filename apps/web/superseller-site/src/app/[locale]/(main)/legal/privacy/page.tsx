@@ -157,7 +157,7 @@ export default function PrivacyPolicyPage() {
                 <div className="card">
                   <p className="text-muted">
                     <strong>Email:</strong> {env.NEXT_PUBLIC_CONTACT_EMAIL}<br />
-                    <strong>Address:</strong> SuperSeller AI LLC, 444 Alaska Avenue, Torrance<br />
+                    <strong>Address:</strong> SuperSeller AI LLC, 444 Alaska Avenue, Torrance, CA 90503<br />
                     <strong>Website:</strong> https://superseller.agency
                   </p>
                 </div>
