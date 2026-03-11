@@ -14,7 +14,7 @@ interface RateLimitStore {
   };
 }
 
-class RateLimiter {
+export class RateLimiter {
   private store: RateLimitStore = {};
   private config: RateLimitConfig;
 

@@ -154,6 +154,18 @@ export function ReportClient({
   const [errorMsg, setErrorMsg] = useState("");
   const summary = (report.summary || {}) as ReportSummary;
 
+  // Validate CTA URL — only allow https: and whatsapp: protocols
+  const safeCtaUrl = (() => {
+    if (!report.ctaUrl) return null;
+    try {
+      const url = new URL(report.ctaUrl);
+      if (url.protocol === "https:" || url.protocol === "whatsapp:") return report.ctaUrl;
+      return null;
+    } catch {
+      return null;
+    }
+  })();
+
   async function handleLeadSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setFormState("submitting");
@@ -424,9 +436,9 @@ export function ReportClient({
             We monitor competitor ads 24/7, analyze what&apos;s working, and deliver actionable insights so you can outperform them.
           </p>
 
-          {report.ctaType === "whatsapp" && report.ctaUrl ? (
+          {report.ctaType === "whatsapp" && safeCtaUrl ? (
             <a
-              href={report.ctaUrl}
+              href={safeCtaUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-3 px-8 py-4 bg-green-600 hover:bg-green-500 text-white font-bold rounded-xl text-lg transition-colors shadow-lg shadow-green-900/30"
@@ -434,9 +446,9 @@ export function ReportClient({
               <WhatsAppIcon className="w-6 h-6" />
               {report.ctaText}
             </a>
-          ) : report.ctaUrl ? (
+          ) : safeCtaUrl ? (
             <a
-              href={report.ctaUrl}
+              href={safeCtaUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-3 px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl text-lg transition-colors shadow-lg shadow-blue-900/30"

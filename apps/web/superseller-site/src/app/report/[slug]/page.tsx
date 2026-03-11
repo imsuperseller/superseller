@@ -74,6 +74,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ReportPage({ params }: Props) {
   const { slug } = await params;
+  if (!/^[a-z0-9-]{3,100}$/.test(slug)) return notFound();
   const report = await getReport(slug);
   if (!report) notFound();
 

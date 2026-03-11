@@ -1,10 +1,37 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { RateLimiter } from "@/lib/rate-limiter";
+
+const leadRateLimiter = new RateLimiter({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  maxRequests: 5,
+  message: "Too many submissions. Please try again later.",
+});
 
 export async function POST(req: NextRequest) {
   try {
+    // Origin check — only allow requests from superseller.agency domains
+    const origin = req.headers.get("origin") || "";
+    if (
+      origin &&
+      !origin.endsWith(".superseller.agency") &&
+      origin !== "https://superseller.agency"
+    ) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    // Rate limiting
+    const rateLimitResult = leadRateLimiter.check(req);
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        { error: "Too many submissions. Please try again later." },
+        { status: 429 }
+      );
+    }
+
     const body = await req.json();
-    const { slug, email, phone, name } = body;
+    const { slug, phone, name } = body;
+    let { email } = body;
 
     if (!slug || !email) {
       return NextResponse.json(
@@ -13,10 +40,27 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Validate email format
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    // Validate slug format
+    if (typeof slug !== "string" || !/^[a-z0-9-]{3,100}$/.test(slug)) {
+      return NextResponse.json({ error: "Invalid slug" }, { status: 400 });
+    }
+
+    // Validate email: max 254 chars, proper format
+    email = String(email).trim();
+    if (
+      email.length > 254 ||
+      !/^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/.test(email)
+    ) {
       return NextResponse.json({ error: "Invalid email" }, { status: 400 });
     }
+
+    // Validate phone if provided
+    if (phone && !/^[\d\s\-\+\(\)]{7,20}$/.test(String(phone))) {
+      return NextResponse.json({ error: "Invalid phone number" }, { status: 400 });
+    }
+
+    // Validate name if provided: max 255 chars, trimmed
+    const sanitizedName = name ? String(name).trim().slice(0, 255) : null;
 
     // Find the prospect report
     const report = await prisma.prospectReport.findFirst({
@@ -35,7 +79,7 @@ export async function POST(req: NextRequest) {
         userId: systemUserId,
         source: "prospect_report",
         sourceId: slug,
-        name: name || null,
+        name: sanitizedName,
         email,
         phone: phone || null,
         status: "new",
@@ -47,7 +91,6 @@ export async function POST(req: NextRequest) {
           vertical: report.vertical,
           recommendedProduct: report.recommendedProduct,
           submittedAt: new Date().toISOString(),
-          userAgent: req.headers.get("user-agent") || "",
         },
       },
     });
