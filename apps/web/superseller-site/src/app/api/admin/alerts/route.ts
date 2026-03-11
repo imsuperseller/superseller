@@ -3,7 +3,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { verifySession } from '@/lib/auth';
-import { getAlertHistory, getActiveAlerts } from '@/lib/monitoring/alert-engine';
+import { getAlertHistory, getActiveAlerts, enableWhatsAppForCriticalRules } from '@/lib/monitoring/alert-engine';
 import { prisma } from '@/lib/prisma';
 
 export async function GET(request: NextRequest) {
@@ -79,6 +79,24 @@ export async function POST(request: NextRequest) {
         },
       });
       return NextResponse.json({ success: true, rule });
+    }
+
+    if (action === 'update_rule') {
+      if (!body.ruleId) return NextResponse.json({ error: 'ruleId required' }, { status: 400 });
+      const rule = await prisma.alertRule.update({
+        where: { id: body.ruleId },
+        data: {
+          ...(body.channels !== undefined ? { channels: body.channels } : {}),
+          ...(body.threshold !== undefined ? { threshold: body.threshold } : {}),
+          ...(body.cooldownMinutes !== undefined ? { cooldownMinutes: body.cooldownMinutes } : {}),
+        },
+      });
+      return NextResponse.json({ success: true, rule });
+    }
+
+    if (action === 'enable_whatsapp') {
+      const updated = await enableWhatsAppForCriticalRules();
+      return NextResponse.json({ success: true, rulesUpdated: updated });
     }
 
     return NextResponse.json({ error: 'Invalid action' }, { status: 400 });

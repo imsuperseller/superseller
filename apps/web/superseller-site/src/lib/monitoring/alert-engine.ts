@@ -1,10 +1,14 @@
 // Alert Engine — Evaluates health results against rules, fires notifications
-// Channels: email (Resend), audit_log (PostgreSQL)
+// Channels: email (Resend), whatsapp (WAHA), audit_log (PostgreSQL)
 
 import { prisma } from '@/lib/prisma';
 import { sendEmail } from '@/lib/email';
 import { ADMIN_EMAILS } from '@/lib/auth';
 import type { HealthCheckResult } from './health-checker';
+
+const VPS_IP = '172.245.56.50';
+const WAHA_API_KEY = process.env.WAHA_API_KEY || '4fc7e008d7d24fc995475029effc8fa8';
+const ADMIN_WHATSAPP = process.env.ADMIN_WHATSAPP || '14695885133@c.us';
 
 export interface AlertEvent {
   ruleId?: string;
@@ -141,12 +145,29 @@ async function fireAlert(alert: AlertEvent, channels: string[]): Promise<void> {
 
     await sendEmail({
       to: adminEmail,
-      template: 'support-ticket', // Reuse closest template
+      template: 'support-ticket',
       data: {
         ticketId: `ALERT-${alert.serviceId}`,
         subject: `${severityEmoji} [${alert.severity.toUpperCase()}] ${alert.message}`,
       },
     });
+  }
+
+  // WhatsApp channel (via WAHA on VPS)
+  if (channels.includes('whatsapp')) {
+    const severityEmoji = alert.severity === 'critical' ? '🔴' : alert.severity === 'warning' ? '🟡' : '🔵';
+    const text = `${severityEmoji} *${alert.severity.toUpperCase()}*\n\n${alert.message}\n\n_Service: ${alert.serviceId}_\n_${new Date().toLocaleTimeString()}_`;
+
+    try {
+      await fetch(`http://${VPS_IP}:3000/api/sendText`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Api-Key': WAHA_API_KEY },
+        body: JSON.stringify({ session: 'default', chatId: ADMIN_WHATSAPP, text }),
+        signal: AbortSignal.timeout(5000),
+      });
+    } catch {
+      // Silent fail — WhatsApp alerts are best-effort
+    }
   }
 
   console.log(`[ALERT] ${alert.severity}: ${alert.message}`);
@@ -200,11 +221,11 @@ export async function seedDefaultRules(): Promise<number> {
 
   const defaults = [
     // Service down rules (2 consecutive failures)
-    { serviceId: 'postgresql', condition: 'service_down', threshold: 2, cooldownMinutes: 15, channels: ['email', 'audit_log'] },
-    { serviceId: 'worker', condition: 'service_down', threshold: 2, cooldownMinutes: 15, channels: ['email', 'audit_log'] },
-    { serviceId: 'kie', condition: 'service_down', threshold: 3, cooldownMinutes: 30, channels: ['email', 'audit_log'] },
+    { serviceId: 'postgresql', condition: 'service_down', threshold: 2, cooldownMinutes: 15, channels: ['email', 'whatsapp', 'audit_log'] },
+    { serviceId: 'worker', condition: 'service_down', threshold: 2, cooldownMinutes: 15, channels: ['email', 'whatsapp', 'audit_log'] },
+    { serviceId: 'kie', condition: 'service_down', threshold: 3, cooldownMinutes: 30, channels: ['email', 'whatsapp', 'audit_log'] },
     { serviceId: 'gemini', condition: 'service_down', threshold: 3, cooldownMinutes: 30, channels: ['audit_log'] },
-    { serviceId: 'paypal', condition: 'service_down', threshold: 2, cooldownMinutes: 15, channels: ['email', 'audit_log'] },
+    { serviceId: 'paypal', condition: 'service_down', threshold: 2, cooldownMinutes: 15, channels: ['email', 'whatsapp', 'audit_log'] },
     { serviceId: 'ollama', condition: 'service_down', threshold: 3, cooldownMinutes: 60, channels: ['audit_log'] },
     { serviceId: 'n8n', condition: 'service_down', threshold: 5, cooldownMinutes: 120, channels: ['audit_log'] },
     // Latency rules
@@ -223,6 +244,29 @@ export async function seedDefaultRules(): Promise<number> {
   }
 
   return defaults.length;
+}
+
+/**
+ * Add WhatsApp channel to all critical rules that don't have it yet.
+ */
+export async function enableWhatsAppForCriticalRules(): Promise<number> {
+  const rules = await prisma.alertRule.findMany({
+    where: { condition: 'service_down', enabled: true },
+  });
+
+  let updated = 0;
+  for (const rule of rules) {
+    const channels = (rule.channels as string[]) || [];
+    if (!channels.includes('whatsapp')) {
+      channels.push('whatsapp');
+      await prisma.alertRule.update({
+        where: { id: rule.id },
+        data: { channels },
+      });
+      updated++;
+    }
+  }
+  return updated;
 }
 
 /**
