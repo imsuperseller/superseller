@@ -1,6 +1,6 @@
 import prisma from '@/lib/prisma';
 
-export type ServiceType = 'firebase' | 'stripe' | 'paypal' | 'esignatures' | 'quickbooks' | 'n8n' | 'openai' | 'marketplace' | 'provisioning' | 'whatsapp' | 'other';
+export type ServiceType = 'firebase' | 'paypal' | 'esignatures' | 'n8n' | 'openai' | 'marketplace' | 'provisioning' | 'whatsapp' | 'other';
 
 export interface AuditLog {
     service: ServiceType;

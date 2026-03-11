@@ -44,7 +44,7 @@ infra/
 | **webflow-mcp-server** | 48M | infra/mcp-servers/webflow-mcp-server/ | Webflow CMS (⚠️ Webflow retired; legacy only) |
 | **make-mcp-server** | 31M | infra/mcp-servers/make-mcp-server/ | Make.com workflow automation |
 | **typeform-mcp-server** | 22M | infra/mcp-servers/typeform-mcp-server/ | Typeform forms & responses |
-| **quickbooks-online-mcp-server** | Node.js | infra/mcp-servers/quickbooks-online-mcp-server/ | QuickBooks Online (canonical). quickbooks-mcp-server = legacy Java, disabled. |
+| ~~quickbooks-online-mcp-server~~ | ~~Node.js~~ | ~~Deleted~~ | CANCELLED Mar 8, 2026 (DECISIONS.md §20). Directories removed. |
 | **tidycal-mcp-server** | 7.4M | infra/mcp-servers/tidycal-mcp-server/ | TidyCal scheduling |
 
 **Total Local**: ~132M (includes node_modules)
@@ -54,9 +54,9 @@ infra/
 | Server | Type | Purpose |
 |--------|------|---------|
 | **n8n-mcp** | Docker | n8n workflow automation (63 tools) |
-| **airtable-mcp** | NPX | Airtable.com operations (⚠️ Airtable.com retired; Aitable.ai in use for dashboards) |
+| ~~airtable-mcp~~ | ~~NPX~~ | RETIRED — Airtable.com retired; Aitable.ai for dashboards only (no MCP needed) |
 | **notion** | NPX | Notion workspace management |
-| **stripe** | Docker | Stripe payment processing |
+| ~~stripe~~ | ~~Docker~~ | DEPRECATED Feb 2026 — PayPal uses REST API directly |
 | **supabase** | NPX | Supabase database operations |
 | ~~context7~~ | ~~NPX~~ | Removed |
 | **shadcn** | NPX | Shadcn UI component library |

@@ -29,8 +29,8 @@ Use when investigating authentication failures, rotating API keys, auditing cred
 ## Critical Rules
 1. **Never commit credentials to git.** Check `.gitignore` before any `.env` file changes.
 2. **Credentials live in FOUR locations**: Vercel dashboard (web), RackNerd `.env` (worker), `~/.cursor/mcp.json` (MCP), `infra/*.env` (n8n/services).
-3. **Shared keys must be updated in ALL locations**: `STRIPE_SECRET_KEY`, `DATABASE_URL`, `KIE_API_KEY` exist in multiple places.
-4. **Most API keys don't expire**, but OAuth tokens do (Vercel OIDC, NotebookLM, QuickBooks).
+3. **Shared keys must be updated in ALL locations**: `DATABASE_URL`, `KIE_API_KEY`, `PAYPAL_CLIENT_ID` exist in multiple places.
+4. **Most API keys don't expire**, but OAuth tokens do (Vercel OIDC, NotebookLM).
 5. **Test after rotation**: Run health checks to verify new keys work before removing old ones.
 
 ## Architecture
@@ -49,9 +49,9 @@ Use when investigating authentication failures, rotating API keys, auditing cred
 #### Payment & Billing
 | Key | Service | Where Used | Expiry |
 |-----|---------|-----------|--------|
-| `STRIPE_SECRET_KEY` | PayPal | Web + Worker | Never (live key) |
-| `STRIPE_WEBHOOK_SECRET` | PayPal | Web + Worker | Never |
-| `STRIPE_*_PRICE_ID` (3) | PayPal | Worker | Never |
+| `PAYPAL_CLIENT_ID` | PayPal | Web | Never (live key) |
+| `PAYPAL_CLIENT_SECRET` | PayPal | Web | Never |
+| `PAYPAL_WEBHOOK_ID` | PayPal | Web | Never |
 
 #### AI & Video
 | Key | Service | Where Used | Expiry |
@@ -85,7 +85,7 @@ Use when investigating authentication failures, rotating API keys, auditing cred
 |-----|---------|-----------|-----|
 | `VERCEL_OIDC_TOKEN` | Vercel | Web (.env.local) | ~12 hours (auto-rotates on `vercel env pull`) |
 | NotebookLM tokens | Google | MCP server | Session-based (auto-refresh via `notebooklm-mcp-auth`) |
-| QuickBooks OAuth | Intuit | MCP server | Sandbox only (manual refresh) |
+| ~~QuickBooks OAuth~~ | ~~Intuit~~ | ~~MCP server~~ | CANCELLED Mar 8, 2026 |
 
 ## Common Patterns
 

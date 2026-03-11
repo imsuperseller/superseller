@@ -6,7 +6,7 @@ import CustomerManagement from './CustomerManagement';
 import WorkflowManagement from './WorkflowManagement';
 import WorkflowTemplatesManagement from './WorkflowTemplatesManagement';
 import SystemMonitoring from './SystemMonitoring';
-// import QuickBooksDashboard from './QuickBooksDashboard';
+// QuickBooks CANCELLED Mar 8, 2026 (DECISIONS.md §20) — dashboard removed
 import N8nMaintenanceControl from './N8nMaintenanceControl';
 import MarketplaceManagement from './MarketplaceManagement';
 import ProgressHub from './ProgressHub';
@@ -73,9 +73,7 @@ export default function AdminDashboard() {
           <SystemMonitoring />
         </TabsContent>
 
-        {/* <TabsContent value="quickbooks" className="space-y-6">
-          <QuickBooksDashboard />
-        </TabsContent> */}
+        {/* QuickBooks tab removed — CANCELLED Mar 8, 2026 (DECISIONS.md §20) */}
       </Tabs>
     </div>
   );

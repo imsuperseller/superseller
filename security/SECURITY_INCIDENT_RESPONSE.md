@@ -66,10 +66,7 @@
 
 ### **🟡 MEDIUM PRIORITY - Review & Rotate**
 
-- [ ] **QuickBooks OAuth Credentials**
-  - Review all OAuth connections
-  - Re-authenticate if needed
-  - Update redirect URIs
+- [x] ~~**QuickBooks OAuth Credentials**~~ — CANCELLED Mar 8, 2026 (DECISIONS.md §20). No longer applicable.
 
 - [ ] **n8n API Keys**
   - Check all n8n instances

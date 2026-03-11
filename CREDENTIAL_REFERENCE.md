@@ -104,7 +104,7 @@
 |---------|----------|----------|-------|
 | **NextAuth** | `NEXTAUTH_SECRET`, `NEXTAUTH_URL` | `apps/worker/.env` | Auth for worker API |
 | **Google Cloud OAuth** | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | `social app/.env` | NotebookLM auth. Client ID: `16639173...` |
-| **QuickBooks** | Client ID + Secret | `infra/mcp-servers/quickbooks-online-mcp-server/.env` | OAuth flow. MCP server. Client ID: `ABCqMF...` |
+| ~~QuickBooks~~ | ~~Client ID + Secret~~ | ~~Deleted~~ | **CANCELLED Mar 8, 2026** (DECISIONS.md §20). MCP server directories removed. |
 
 ### MCP Servers
 

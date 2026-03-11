@@ -9,24 +9,17 @@
 
 ## 📋 CONFIGURED MCP SERVERS (13 Total)
 
-### **Docker-Based MCPs** (2)
+### **Docker-Based MCPs** (1)
 1. **n8n-mcp** - n8n workflow automation
    - Image: `ghcr.io/czlonkowski/n8n-mcp:latest`
    - Connects to: RackNerd VPS (172.245.56.50:5678)
    - Status: ✅ Running
 
-2. **stripe** - Stripe payment APIs (DEPRECATED — migrated to PayPal Feb 2026)
-   - Image: `mcp/stripe:latest`
-   - API Key: No longer active — payments now via PayPal
-   - Status: ❌ DEPRECATED — DB columns retain `stripe*` names but store PayPal IDs
-
-### **NPX-Based MCPs** (5)
-3. **context7** - Context management
-4. **airtable-mcp** - Airtable data access
-5. **supabase** - Supabase database
-6. **shadcn** - UI components
-7. **notion** - Notion documentation
-8. **browsermcp** - Browser automation (Cursor native)
+### **NPX-Based MCPs** (3)
+3. **supabase** - Supabase database
+4. **shadcn** - UI components
+5. **notion** - Notion documentation
+6. **browsermcp** - Browser automation (Cursor native)
 
 ### **Local Node.js MCPs** (6)
 9. **webflow** - Webflow Designer API
@@ -52,20 +45,6 @@ This allows you to:
 ---
 
 ## ❌ NOT CONFIGURED (By Design)
-
-### QuickBooks MCP
-**Status**: Not configured - file never existed in backup
-
-**Options if needed later**:
-1. **QuickBooks Online MCP** (canonical)
-   - infra/mcp-servers/quickbooks-online-mcp-server/ (Node.js)
-   - Requirements: Python 3.12.6 ✅, uv ✅ (both installed)
-   - Setup needed: REFRESH_TOKEN, COMPANY_ID, ENV
-
-2. **Local credentials from backup**:
-   - CLIENT_ID: `${QB_CLIENT_ID}`
-   - CLIENT_SECRET: `${QB_CLIENT_SECRET}`
-   - CODE: `XAB1755764793Z2QJzE5k26QgBhaBySZss4LgqV2uNXLIkyGgG`
 
 ### Incomplete Servers
 These exist in `/infra/mcp-servers/` but lack server.js:
@@ -94,8 +73,7 @@ These exist in `/infra/mcp-servers/` but lack server.js:
 
 ## 📊 DOCKER STATUS
 
-**n8n-mcp containers**: 4 running (stdio mode, ephemeral)
-**Stripe containers**: 3 running (stdio mode, ephemeral)
+**n8n-mcp containers**: Running (stdio mode, ephemeral)
 
 These containers are automatically created/destroyed by Cursor as needed.
 
@@ -103,7 +81,7 @@ These containers are automatically created/destroyed by Cursor as needed.
 
 ## ✅ VERIFICATION
 
-All 13 MCP servers are:
+Active MCP servers are:
 - ✅ Configured in mcp.json
 - ✅ Files/packages verified to exist
 - ✅ Credentials populated (except TidyCal placeholder)

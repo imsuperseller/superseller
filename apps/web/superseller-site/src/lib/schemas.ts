@@ -163,7 +163,6 @@ export const CredentialSchema = z.object({
     'openrouter',
     'huggingface',
     'paypal',
-    'quickbooks',
     'slack',
     'email',
     'custom'
@@ -207,7 +206,6 @@ export const InvoiceSchema = z.object({
   })),
   metadata: z.object({
     paypalInvoiceId: z.string().optional(),
-    quickbooksInvoiceId: z.string().optional(),
   }),
   createdAt: z.date(),
   updatedAt: z.date(),
@@ -220,10 +218,9 @@ export const PaymentSchema = z.object({
   amount: z.number(),
   currency: z.string().default('USD'),
   status: z.enum(['pending', 'completed', 'failed', 'refunded']),
-  method: z.enum(['paypal', 'quickbooks', 'manual']),
+  method: z.enum(['paypal', 'manual']),
   metadata: z.object({
     paypalOrderId: z.string().optional(),
-    quickbooksPaymentId: z.string().optional(),
     transactionId: z.string().optional(),
   }),
   createdAt: z.date(),
@@ -403,7 +400,6 @@ export const CreateCredentialSchema = z.object({
     'openrouter',
     'huggingface',
     'paypal',
-    'quickbooks',
     'slack',
     'email',
     'custom'
