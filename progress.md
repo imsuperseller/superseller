@@ -6,6 +6,38 @@
 
 ---
 
+## 2026-03-11: Schema Drift Fix + Critical Test Suite (234 tests)
+
+**Goal**: Fix Prisma↔Drizzle schema drift (audit finding) + add critical test coverage.
+
+### Phase 1 — Schema Drift (CRITICAL)
+- **Entitlement phantom `id` column**: Prisma declared `id UUID` but DB has NO `id` column (PK = `user_id` text). Would crash on next new user calling `CreditService.getBalance()`. **Fixed**: removed phantom id, made userId the PK.
+- **UsageEvent `userId` type**: Was `@db.Uuid` but actual column is `text`. **Fixed**.
+- **Drizzle 5 shared tables**: All referenced snake_case tables (`users`, `tenants`) but actual DB has PascalCase (`User`, `Tenant`). **Fixed all 5**.
+- **Schema Sentinel**: Added `UserRole` enum handling. Now reports **0 mismatches, 0 warnings**.
+- Commit: `127b3d08`
+
+### Phase 2 — Web Critical Tests (+49 tests)
+- PayPal webhook handler: 15 tests (all 5 event types, credit provisioning, error handling)
+- CreditService: 14 tests (balance, deduct, refund, add, insufficient balance)
+- Magic link auth: 20 tests (encryption AES-256-GCM, token lifecycle, access control, compete page)
+- Commit: `b71c8860`
+
+### Phase 3 — Worker Tests (+32 tests, NEW vitest setup)
+- CreditManager (raw SQL): 13 tests (transaction locking, metadata, refunds)
+- Kie.ai probe: 6 tests (health check, 402 exhaustion, retry logic)
+- BullMQ queues: 13 tests (retry policies, backoff configs, retention, type contracts)
+- Commit: `9a31a74c`
+
+### Admin Dashboard Update
+- Added "CODE HEALTH & QUALITY" category (#34) to Mission Control
+- Shows: schema drift status, test counts (web + worker), entitlement fix, credit parity
+
+**Total: 234 tests across 16 files** (was ~153/10 → 53% increase)
+**Cost**: $0 (no API calls — all local testing)
+
+---
+
 ## 2026-03-10: Resend Domain Verification — Magic Link Fix
 
 **Goal**: Fix "Failed to send email" — superseller.agency domain not verified in Resend.

@@ -597,6 +597,17 @@ export async function GET() {
 
   categories.push({ key: 'insights', icon: '💡', label: 'INSIGHTS & OBSERVATIONS', items: insightItems });
 
+  // ─── 34. CODE HEALTH & QUALITY ───
+  const codeHealthItems: MCNode[] = [
+    { name: 'Schema Drift (Prisma↔Drizzle)', status: 'green', detail: '0 mismatches', tooltip: 'Schema Sentinel: 5 shared tables checked\nPrisma (web) ↔ Drizzle (worker) alignment\nFixed Mar 11: Entitlement phantom id, UsageEvent uuid→text\nTool: npx tsx tools/schema-sentinel.ts' },
+    { name: 'Test Coverage (Web)', status: 'green', detail: '202 tests / 13 files', tooltip: 'Vitest unit + integration tests\nCovers: PayPal webhooks (15), CreditService (14),\nMagic link auth (20), Social publishers (153)\nRun: cd apps/web/superseller-site && npm test' },
+    { name: 'Test Coverage (Worker)', status: 'green', detail: '32 tests / 3 files', tooltip: 'Vitest unit tests (new Mar 11)\nCovers: CreditManager (13), Kie.ai probe (6),\nBullMQ queue configs (13)\nRun: cd apps/worker && npm test' },
+    { name: 'E2E Tests', status: 'amber', detail: '2 specs', tooltip: 'Playwright E2E tests\nSpecs: video-create-flash, brand-narrative\nNeeds: more coverage for critical flows\nRun: npm run test:e2e' },
+    { name: 'Entitlement Schema', status: 'green', detail: 'PK=user_id (text)', tooltip: 'FIXED Mar 11: Prisma had phantom id column\nActual DB PK is user_id (text, not uuid)\nWould have crashed on next new user signup\nBoth Prisma + Drizzle now aligned' },
+    { name: 'Credit System Parity', status: 'green', detail: 'web + worker aligned', tooltip: 'Web: CreditService (Prisma ORM)\nWorker: CreditManager (raw SQL)\nBoth write to same entitlements + usage_events tables\nTested: 14 + 13 = 27 tests total' },
+  ];
+  categories.push({ key: 'codeHealth', icon: '🧪', label: 'CODE HEALTH & QUALITY', items: codeHealthItems });
+
   // Summary counts
   const counts = { total: 0, green: 0, red: 0, amber: 0, blue: 0, gray: 0 };
   categories.forEach(cat => cat.items.forEach(item => {

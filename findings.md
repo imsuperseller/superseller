@@ -1,5 +1,20 @@
 ---
 
+## 2026-03-11: Entitlement Phantom `id` Column — Ticking Time Bomb
+
+**Symptom**: No crash yet — only 2 entitlement rows existed (both created by worker raw SQL).
+
+**Root cause**: Prisma schema declared `id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid` on Entitlement model, but the actual DB table has NO `id` column. PK is `user_id` (text type). Next call to `CreditService.getBalance()` for a new user would execute `INSERT INTO entitlements (id, ...)` → crash with "column id does not exist".
+
+**Additional drift found**:
+- `UsageEvent.userId` was `@db.Uuid` but actual column is `text` (stores non-UUID values like "superseller-admin")
+- All 5 Drizzle shared tables referenced snake_case names (`users`, `tenants`, `tenant_users`) but actual DB uses PascalCase (`User`, `Tenant`, `TenantUser`) — created by Prisma
+- `User.id` is `text` (not uuid) — Prisma uses `gen_random_uuid()::text`
+
+**Prevention**: Schema Sentinel tool (`tools/schema-sentinel.ts`) now checks all 5 shared tables and reports 0 mismatches. Run before any schema change. Added Code Health category to Mission Control for ongoing visibility.
+
+---
+
 ## 2026-03-10: Resend Magic Link — Domain Not Verified
 
 **Symptom**: "Failed to send email" when requesting magic link for admin/compete login.
