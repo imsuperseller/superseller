@@ -34,7 +34,7 @@ SuperSeller AI runs on two platforms:
 ## Key Patterns
 
 ### Deployment
-- **Web**: `git push` → Vercel auto-deploy (api.superseller.agency). Manual: `vercel --prod` for superseller.agency.
+- **Web**: `git push` → Vercel auto-deploy (all domains: superseller.agency, api, admin). Single project (`rensto-site`), single workflow (`deploy-main-site.yml`).
 - **Worker**: `./apps/worker/deploy-to-racknerd.sh` (rsync + npm install + PM2 restart)
 - **FB Bot**: `rsync` deploy-package to `/opt/fb-marketplace-bot/`
 

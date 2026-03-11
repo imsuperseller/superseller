@@ -14,8 +14,8 @@
 | **GoLogin** | **SHARED** | `eyJhbG...I6hDVY...` | One Shai-owned account, same JWT everywhere |
 | **ElevenLabs** | **SHARED** | `sk_f0dd...` | One Shai-owned account |
 | **Telnyx** | **SEPARATE** | SuperSeller: `KEY019CACA6A...`, UAD: `KEY019B52B283...` | Two different Telnyx accounts |
-| **GitHub** | **SEPARATE** | SuperSeller: `github_pat_11AZ2TTM...`, UAD: `github_pat_11B6FT76I...` | Two different GitHub accounts |
-| **Vercel** | **SEPARATE** | SuperSeller: `vcp_0PlCp13...`, UAD: `vcp_4l6LW3...` | Two different Vercel accounts |
+| **GitHub** | **SEPARATE** | SuperSeller: `github_pat_11AZ2TTM...` (`imsuperseller`), Rensto: `github_pat_11B7YGIW...` (`renstollc`), Shai Personal: `github_pat_11B7YGZS...` (`1shaifriedman-create`) | Three accounts |
+| **Vercel** | **SEPARATE** | SuperSeller: `vcp_0PlCp13...` (team `shais-projects`), Shai Personal: `vcp_4IZWV57b...` (team `1shaifriedman-5302`) | Rensto Vercel = same team as SuperSeller (separation pending) |
 | **Workiz** | **UAD ONLY** | `api_uj4t1r0msb...` | Only used by UAD (garage door CRM) |
 | **Facebook** | **SEPARATE** | UAD: `1shaifriedman@gmail.com` (Shai's personal), MissParty: `michalkacher2006@gmail.com` | UAD uses Shai's FB because David never provided his own |
 

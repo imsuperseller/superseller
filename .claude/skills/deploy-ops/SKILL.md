@@ -37,7 +37,7 @@ negativeTrigger:
 - **Never force-push or reset on the VPS** — rsync is the deploy mechanism.
 - **Always validate after deploy** — `curl -s http://172.245.56.50:3002/api/health` for worker.
 - **FFmpeg auto-update cron** is installed by `deploy-to-racknerd.sh` — runs daily at midnight.
-- **Vercel auto-deploys ONLY api.superseller.agency** on `git push`. superseller.agency requires `vercel --prod`.
+- **Vercel auto-deploys ALL SuperSeller domains** (superseller.agency, api, admin) on `git push` via `deploy-main-site.yml`. Single Vercel project (`rensto-site`).
 - **SSH password**: Use `VPS_PASSWORD` or `RACKNERD_SSH_PASSWORD` environment variable.
 
 ## Deploy Commands
@@ -66,11 +66,11 @@ ssh root@172.245.56.50 "pm2 status"
 
 ### Web (Vercel)
 ```bash
-# Auto-deploy (api.superseller.agency only)
+# Auto-deploy (all domains: superseller.agency, api, admin)
 git push origin main
 
-# Manual deploy (superseller.agency + admin.superseller.agency)
-cd apps/web/superseller-site && vercel --prod
+# Manual deploy (fallback)
+vercel --prod   # from REPO ROOT (not apps/web/superseller-site/)
 
 # With token from env
 eval "$(grep '^VERCEL_TOKEN=' .env)" && vercel --prod

@@ -25,6 +25,11 @@
 Rensto LLC and SuperSeller AI are legally separate. DNS, nginx, Vercel domains — keep them 100% isolated.
 Legal entity: "Rensto LLC (DBA SuperSeller Agency)" — but the *brands* must stay separate.
 
+**Account Separation (March 11, 2026)**:
+- **GitHub**: SuperSeller = `imsuperseller`, Rensto = `renstollc` (separate accounts). Rensto code pushed to `renstollc/rensto-app`.
+- **Vercel**: Both still on same team (`shais-projects`). Rensto project needs its own Vercel team (pending).
+- **Iron Dome OS**: Moved to Shai's personal GitHub (`1shaifriedman-create`) and personal Vercel team.
+
 **History**: On March 5, 2026, I (Claude Code) incorrectly created `/etc/nginx/sites-available/rensto-redirect` which 301-redirected rensto.com → superseller.agency. Fixed March 8, 2026 — rensto.com now serves a neutral placeholder.
 
 ---
@@ -33,10 +38,9 @@ Legal entity: "Rensto LLC (DBA SuperSeller Agency)" — but the *brands* must st
 
 | Decision | Answer |
 |----------|--------|
-| **Unify deploy** | Aspirational: One project with superseller.agency + api.superseller.agency, single deploy on push. |
+| **Unify deploy** | **DONE (March 11, 2026)**: One project (`rensto-site`) with all domains, single deploy on push. |
 
-**Current reality (Feb 2026)**: NOT yet unified. Two separate Vercel projects remain. `git push` deploys api.superseller.agency (auto). superseller.agency requires manual `vercel --prod`. See `VERCEL_PROJECT_MAP.md` for current state.
-**Action (deferred)**: Add superseller.agency and www.superseller.agency to api-superseller-site. Remove from superseller-site. Merge env vars.
+**Completed March 11, 2026**: Unified into single Vercel project (`rensto-site`). Domains: superseller.agency, api.superseller.agency, admin.superseller.agency, www.superseller.agency. `api-rensto-site` project deleted. `deploy-api.yml` removed. Single workflow `deploy-main-site.yml` handles all deploys.
 
 ---
 

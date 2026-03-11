@@ -84,9 +84,9 @@ npm run db:push          # Push schema to DB
 npm run test:credits     # Credit system test
 npm run test:e2e         # Playwright E2E tests
 
-# Deploy
-vercel --prod            # superseller.agency
-# OR git push            # auto-deploys api.superseller.agency
+# Deploy (all domains auto-deploy on push)
+git push origin main     # auto-deploys superseller.agency + api + admin
+vercel --prod            # manual fallback (from repo root)
 ```
 
 ---

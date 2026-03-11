@@ -154,7 +154,7 @@ export async function GET() {
       { name: 'n8n.superseller.agency', status: n8nProbe.status > 0 ? 'green' : 'red', detail: n8nProbe.status > 0 ? 'backup engine' : 'UNREACHABLE', latencyMs: n8nProbe.latencyMs, url: 'https://n8n.superseller.agency', tooltip: `n8n automation (backup — Antigravity is primary)\n2 active production workflows: Telnyx voice lead analysis\nLatency: ${n8nProbe.latencyMs}ms` },
       { name: 'rensto.com', status: s(renstoProbe), detail: renstoProbe.ok ? `HTTP ${renstoProbe.status}` : 'UNREACHABLE', latencyMs: renstoProbe.latencyMs, url: 'https://rensto.com', tooltip: `Rensto contractor directory\nSEPARATE business — nginx proxy to localhost:3001\nLatency: ${renstoProbe.latencyMs}ms` },
       { name: 'videos.superseller.agency', status: r2Probe.status > 0 ? 'green' : 'amber', detail: 'R2 CDN', latencyMs: r2Probe.latencyMs, tooltip: `Cloudflare R2 public video storage\nBucket: zillow-to-video-finals\nLatency: ${r2Probe.latencyMs}ms` },
-      { name: 'iron-dome-os.vercel.app', status: 'amber', detail: 'shows zeros', url: 'https://iron-dome-os.vercel.app', tooltip: 'Shai personal brand dashboard\nUI exists but data pipeline broken (3 Aitable tables deleted)\nNeeds: Rebuild pipeline on PostgreSQL' },
+      { name: 'iron-dome-os.vercel.app', status: 'amber', detail: 'shows zeros', url: 'https://iron-dome-os.vercel.app', tooltip: 'Shai personal brand dashboard (personal Vercel/GitHub)\nUI exists but data pipeline broken (3 Aitable tables deleted)\nNeeds: Rebuild pipeline on PostgreSQL' },
     ]
   });
 
@@ -344,8 +344,8 @@ export async function GET() {
     key: 'repos', icon: '⎔', label: 'GITHUB REPOS',
     items: [
       { name: 'superseller', status: 'green', detail: 'main repo', url: 'https://github.com/imsuperseller/superseller', tooltip: 'Main monorepo — web, worker, marketplace, infrastructure' },
-      { name: 'rensto-app', status: renstoProbe.ok ? 'green' : 'amber', detail: 'separate', url: 'https://github.com/imsuperseller/rensto-app', tooltip: 'Rensto contractor directory (separate business)' },
-      { name: 'iron-dome-os', status: 'amber', detail: 'broken pipeline', url: 'https://github.com/imsuperseller/iron-dome-os', tooltip: 'Shai personal brand dashboard\nData pipeline broken (Aitable tables deleted)' },
+      { name: 'rensto-app', status: renstoProbe.ok ? 'green' : 'amber', detail: 'separate repo', url: 'https://github.com/renstollc/rensto-app', tooltip: 'Rensto contractor directory (separate business, separate GitHub)' },
+      { name: 'iron-dome-os', status: 'amber', detail: 'personal', url: 'https://github.com/1shaifriedman-create/iron-dome-os', tooltip: 'Shai personal brand dashboard (personal GitHub/Vercel)\nData pipeline broken (Aitable tables deleted)' },
       { name: 'yoram-landing', status: 'green', detail: 'live', url: 'https://github.com/yoramnfridman1/yoram-landing', tooltip: 'Yoram Friedman insurance landing page\nLive at yoramfriedman.co.il' },
     ]
   });
