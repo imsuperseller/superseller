@@ -255,7 +255,7 @@ cd /Users/shaifriedman/New\ SuperSeller AI/superseller
 **Action Required**:
 - [ ] Update file paths to match current structure
 - [ ] Enable skipped gates or remove them
-- [ ] Add gates for current business model (5 service types, Stripe integration, etc.)
+- [ ] Add gates for current business model (5 service types, PayPal integration, etc.)
 - [ ] Update to reference CLAUDE.md instead of CONTEXT.md
 
 **Success Output**:

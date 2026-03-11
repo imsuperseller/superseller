@@ -23,7 +23,7 @@
 |---|---------|--------|----------------|
 | 1 | **SuperSeller Web** | `projects/1-superseller-web/` | Next.js SaaS platform, admin portal, billing, PayPal, i18n, Prisma, auth |
 | 2 | **Video Engine** | `projects/2-video-engine/` | VideoForge pipeline, Kling AI clips, Remotion compositions, FFmpeg, model selector |
-| 3 | **Marketplace Bot** | `projects/3-marketplace-bot/` | FB Marketplace automation, GoLogin, UAD + MissParty, Firestore (posting schedule only — deprecated elsewhere) |
+| 3 | **Marketplace Bot** | `projects/3-marketplace-bot/` | FB Marketplace automation, GoLogin, UAD + MissParty, PostgreSQL (migrated from Firestore Mar 2026) |
 | 4 | **Infrastructure** | `projects/4-infrastructure/` | RackNerd VPS, PM2, Docker, MCP servers, CI/CD, env vars |
 | 5 | **Social & Content** | `projects/5-social-content/` | SocialHub/Buzz (Phase 1 live), WAHA sessions, Telnyx FrontDesk Voice |
 | 8 | **ClaudeClaw** | `projects/8-claudeclaw/` | WhatsApp AI bridge, group agent, 3-tier memory, guardrails, RAG, approvals |

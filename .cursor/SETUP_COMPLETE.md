@@ -21,11 +21,8 @@
 5. **notion** - Notion documentation
 6. **browsermcp** - Browser automation (Cursor native)
 
-### **Local Node.js MCPs** (6)
-9. **webflow** - Webflow Designer API
-10. **tidycal** - Calendar management (⚠️ needs API key)
-11. **make** - Make.com workflows
-12. **typeform** - Form management
+### **Local Node.js MCPs** (retired)
+~~webflow, tidycal, make, typeform~~ — All removed (deprecated Mar 2026).
 
 ---
 
