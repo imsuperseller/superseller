@@ -113,7 +113,7 @@ npm audit --audit-level=high
 - **Location**: `superseller.agency/admin` → "System Monitor" tab
 - **API**: `GET/POST /api/admin/monitoring`, `GET/POST /api/admin/alerts`
 
-### Service Registry (11 monitored services)
+### Service Registry (10 monitored services)
 | Service | Category | Health Check | Alert Threshold |
 |---------|----------|-------------|-----------------|
 | PostgreSQL | infrastructure | `SELECT 1` via Prisma | 2 failures / 15min cooldown |
@@ -189,7 +189,7 @@ npm audit --audit-level=high
 
 ### n8n
 - **URL**: https://n8n.superseller.agency (172.245.56.50:5678)
-- **Role**: Backup for new automation. Antigravity is primary. Existing production workflows (FB Bot lead pipeline: UAD + MissParty) still run on n8n.
+- **Role**: Backup for new automation. Antigravity is primary. Existing production workflows (Telnyx voice lead analysis: UAD + MissParty) still run on n8n. These are voice call pipelines, NOT FB Bot workflows.
 - **Customer instances**: Tax4Us Cloud, Shelly Cloud
 - **Access**: MCP tools only. Direct API forbidden.
 
@@ -213,7 +213,7 @@ Legacy reference. Old base IDs archived: Operations app6saCaH88uK3kCO, Core app4
 
 ### MCP Servers
 2 active MCP servers configured in `~/.cursor/mcp.json`:
-- **universal-aggregator** — n8n, Stripe (dormant), Firebase, Vercel integrations
+- **universal-aggregator** — n8n, Firebase, Vercel integrations (Stripe removed — deprecated)
 - **notebooklm** — NotebookLM notebook access via Stitch MCP
 
 QuickBooks MCP: CANCELLED (Mar 8, 2026 — subscription cancelled, saves $600/yr). Stripe MCP deprecated (PayPal uses REST API directly).
