@@ -10,6 +10,9 @@ interface RepoConfig {
   label: string;
   vercelProjectId?: string;
   vercelTeamId?: string;
+  // Per-repo token overrides (env var names) — falls back to GITHUB_TOKEN / VERCEL_TOKEN
+  githubTokenEnv?: string;
+  vercelTokenEnv?: string;
 }
 
 // All repos across the empire
@@ -32,15 +35,17 @@ const REPOS: RepoConfig[] = [
     owner: '1shaifriedman-create',
     repo: 'iron-dome-os',
     label: 'Iron Dome OS',
-    vercelProjectId: undefined, // personal team — lookup by name
-    vercelTeamId: undefined,
+    vercelProjectId: 'prj_tlujq3pl5D0H4PwWNXefOZur52zi',
+    githubTokenEnv: 'GITHUB_TOKEN_PERSONAL',
+    vercelTokenEnv: 'VERCEL_TOKEN_PERSONAL',
   },
   {
-    owner: '1shaifriedman-create',
+    owner: 'yoramnfridman1',
     repo: 'yoram-landing',
     label: 'Yoram Friedman',
-    vercelProjectId: undefined,
-    vercelTeamId: undefined,
+    vercelProjectId: 'prj_5qSPLWMnNWoSEYnc7VXcOz89E6CA',
+    githubTokenEnv: 'GITHUB_TOKEN_YORAM',
+    vercelTokenEnv: 'VERCEL_TOKEN_YORAM',
   },
 ];
 
@@ -135,24 +140,27 @@ export async function GET(_request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const githubToken = process.env.GITHUB_TOKEN;
-    const vercelToken = process.env.VERCEL_TOKEN;
+    const defaultGithubToken = process.env.GITHUB_TOKEN;
+    const defaultVercelToken = process.env.VERCEL_TOKEN;
 
-    if (!githubToken) {
+    if (!defaultGithubToken) {
       return NextResponse.json(
         { error: 'GITHUB_TOKEN not configured' },
         { status: 500 }
       );
     }
 
-    // Fetch all repos in parallel
+    // Fetch all repos in parallel — each repo can use its own token
     const results = await Promise.all(
       REPOS.map(async (repo) => {
+        const ghToken = (repo.githubTokenEnv && process.env[repo.githubTokenEnv]) || defaultGithubToken;
+        const vcToken = (repo.vercelTokenEnv && process.env[repo.vercelTokenEnv]) || defaultVercelToken;
+
         const [commitsResult, repoInfo, deploysResult] = await Promise.all([
-          fetchGitHubCommits(repo.owner, repo.repo, githubToken),
-          fetchGitHubRepoInfo(repo.owner, repo.repo, githubToken),
-          repo.vercelProjectId && vercelToken
-            ? fetchVercelDeploys(repo.vercelProjectId, vercelToken, repo.vercelTeamId)
+          fetchGitHubCommits(repo.owner, repo.repo, ghToken),
+          fetchGitHubRepoInfo(repo.owner, repo.repo, ghToken),
+          repo.vercelProjectId && vcToken
+            ? fetchVercelDeploys(repo.vercelProjectId, vcToken, repo.vercelTeamId)
             : Promise.resolve({ deploys: [] }),
         ]);
 
