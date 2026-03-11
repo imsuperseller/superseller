@@ -1421,6 +1421,7 @@ model Project {
   auditInstances     AuditInstance[]
   serviceInstances   ServiceInstance[]  @relation("ServiceInstanceProject")
   whatsAppInstances  WhatsAppInstance[] @relation("WhatsAppInstanceProject")
+  ciRuns             CiRun[]
 
   @@index([type])
   @@index([status])
@@ -1540,4 +1541,33 @@ model AuditResponse {
 
   @@unique([instanceId, itemId])
   @@index([instanceId])
+}
+
+// ─── CI Pipeline ───
+
+model CiRun {
+  id          String   @id @default(cuid())
+  projectId   String?
+  repo        String
+  branch      String   @default("main")
+  commitSha   String
+  commitMsg   String?
+  status      String   @default("pending") /// pending | running | passed | failed
+  duration    Int?     /// seconds
+  typeCheck   String?  /// passed | failed | skipped
+  lint        String?  /// passed | failed | skipped
+  build       String?  /// passed | failed | skipped
+  testCount   Int?
+  failCount   Int?
+  errorLog    String?
+  workflowUrl String?
+  triggeredBy String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  project     Project? @relation(fields: [projectId], references: [id])
+
+  @@index([repo, branch])
+  @@index([projectId])
+  @@index([createdAt])
 }

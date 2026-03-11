@@ -34,7 +34,8 @@ import {
     Terminal,
     Menu,
     X,
-    ClipboardCheck
+    ClipboardCheck,
+    GitBranch
 } from 'lucide-react';
 import WorkflowManagement from '@/components/admin/WorkflowManagement';
 import AIAgentManagement from '@/components/admin/AIAgentManagement';
@@ -50,6 +51,7 @@ import TerryAssistant from '@/components/admin/TerryAssistant';
 import EcosystemMap from '@/components/admin/EcosystemMap';
 import SystemMonitor from '@/components/admin/SystemMonitor';
 import AuditManagement from '@/components/admin/AuditManagement';
+import CiDashboard from '@/components/admin/CiDashboard';
 import MissionControl from '@/components/admin/MissionControl';
 import SuperSellerOps from '@/components/admin/SuperSellerOps';
 import { Skeleton } from '@/components/ui/skeleton-enhanced';
@@ -354,6 +356,7 @@ export default function AdminDashboardClient({
                                 { id: 'crm', label: 'Client CRM', icon: Users },
                                 { id: 'projects', label: 'Projects', icon: FolderOpen },
                                 { id: 'audits', label: 'Audits', icon: ClipboardCheck },
+                                { id: 'ci', label: 'CI Pipeline', icon: GitBranch },
                                 { id: 'landing', label: 'Landing Content', icon: Globe },
                                 { id: 'factory', label: 'Product Factory', icon: Package },
                                 { id: 'monitor', label: 'System Monitor', icon: Activity },
@@ -659,6 +662,9 @@ export default function AdminDashboardClient({
                         )}
                         {activeTab === 'audits' && (
                             <AuditManagement />
+                        )}
+                        {activeTab === 'ci' && (
+                            <CiDashboard />
                         )}
                     </div>
                 </main>
