@@ -386,7 +386,6 @@ export async function GET() {
     { name: 'Rensto Contractors', status: 'green', detail: 'directory', url: 'https://rensto.com', tooltip: 'Rensto contractor directory\nPotential SuperSeller AI prospects\nUse for outreach — never merge codebases' },
     { name: 'Yaron (Craft/AI Agent)', status: 'amber', detail: 'warm prospect', tooltip: 'Yaron from Dallas group asked about building a custom AI agent\nAsked TODAY (Mar 9) — immediate outreach opportunity\nPerfect fit for AgentForge or ClaudeClaw' },
     { name: 'Local Locksmith', status: 'blue', detail: 'prospect', tooltip: 'Active service provider in Dallas group\nFrequently responds to requests\nIdeal for: Lead Pages, VideoForge' },
-    { name: 'Avi Construction', status: 'amber', detail: 'prospect/customer', tooltip: 'Avi Mazar — Construction company in Dallas\nDocs in projects/customers/avi-construction/\nAlso active in Dallas Israeli group\nPotential: VideoForge, SocialHub, Lead Pages' },
     { name: 'Eyal Levy (Food Business)', status: 'blue', detail: 'prospect', tooltip: 'Eyal Levy — promotes kosher food venues\nVery active in group, promotes businesses\nIdeal for: SocialHub, Lead Pages' },
     { name: 'Maydan (Insurance)', status: 'blue', detail: 'prospect', tooltip: 'Maydan — UnitedHealthcare insurance agent\nPhone: 806-500-8336\nRegularly advertises in group\nIdeal for: Lead Pages, FrontDesk Voice AI' },
     { name: 'David Szender', status: 'blue', detail: 'prospect', tooltip: 'Active in group, asks about services\nIdeal for: marketplace bot, lead pages' },
@@ -491,7 +490,6 @@ export async function GET() {
     { name: 'MissParty', status: 'green', detail: 'customer brand', tooltip: 'Customer: MissParty event services\nFB Bot + Voice AI active\nSolution data in library/solution-data/' },
     { name: 'Elite Pro', status: 'red', detail: 'not activated', tooltip: 'Saar Bitton — Elite Pro package\nContract not sent, IG creds not received\n$2,000/mo potential' },
     { name: 'Kedem Developments', status: 'amber', detail: 'pending', tooltip: 'Real estate customer\nDocs in projects/customers/kedem-developments/' },
-    { name: 'Avi Construction', status: 'amber', detail: 'prospect/customer', tooltip: 'Avi Mazar Construction\nDocs in projects/customers/avi-construction/\nAlso active in Dallas Israeli group' },
     { name: 'Parliament Group Strategy', status: 'blue', detail: 'community', tooltip: 'Israeli Parliament WhatsApp group in Dallas\nStrategy doc: PARLIAMENT-GROUP-STRATEGY.md\nLead source for multiple products' },
   ];
   categories.push({ key: 'brands', icon: '🏷️', label: 'BRANDS & IDENTITIES', items: brandItems });

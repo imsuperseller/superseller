@@ -6,6 +6,23 @@
 
 ---
 
+## 2026-03-10: Resend Domain Verification — Magic Link Fix
+
+**Goal**: Fix "Failed to send email" — superseller.agency domain not verified in Resend.
+
+**Blocker (Mar 10)**: Namecheap TXT field truncates at ~255 chars. DKIM is 392 chars → stored truncated → Resend verification fails. See findings.md.
+
+**Cloudflare migration (Mar 10)**:
+- Created `tools/migrate-dns-to-cloudflare.mjs` — copies all Namecheap DNS + full DKIM to Cloudflare.
+- API token has DNS edit but not zone create. **One manual step**: Add superseller.agency at dash.cloudflare.com (Add site → Free).
+- Then run: `node tools/migrate-dns-to-cloudflare.mjs`
+- Update Namecheap nameservers to Cloudflare's (script prints them).
+- Verify in Resend dashboard.
+
+**Vercel**: Ensure `RESEND_API_KEY` is set in Vercel project env vars for production magic links. Key is in root .env.
+
+---
+
 ## 2026-03-10: Shai Friedman as Internal Customer (Portal + Compete)
 
 **What**: Treat Shai (owner) as an internal "customer" — same structure as paying clients — so everything (portal, compete, CRM) is organized in one place. No billing.
@@ -22,8 +39,23 @@
 
 **Scrape (2026-03-10)**: Ran `npx tsx src/scripts/shai-personal-brand-competitor-scrape.ts`. Result: 860 raw → 789 unique → 93 proven (14d+). Stored 93 ads with AI analysis (Haiku extraction + Sonnet replication briefs). Tiers: evergreen 20, winner 19, strong 20, promising 34.
 
+**Compete whitelist (Mar 2026)**: Magic links for /compete/[tenantSlug] now require TenantUser OR CompeteAllowlist. Table `CompeteAllowlist` (tenant_id, email). Seed: `npx tsx scripts/seed-compete-allowlist.ts`. Add emails via Prisma or seed script. Migration: `prisma/migrations/add_compete_allowlist.sql`.
+
+**Follower baseline (Mar 2026)**: One-time baseline scrape for follower outreach pipeline. Schema: `follower_snapshots` (account_id, platform, source_handle, follower_*, raw). Service: `apps/worker/src/services/follower-scraper.ts` — IG: iron-crawler ($1.50/1K), FB: apify ($4.50/1K), both pay-per-use. Script: `npx tsx src/scripts/follower-baseline-scrape.ts`. **URLs** (Brand.instagramId, Brand.facebookPageId): IG [@shai.friedman](https://instagram.com/shai.friedman/), FB [realshaifriedman](https://www.facebook.com/realshaifriedman). **Purpose**: Sell SuperSeller products/services to Shai's personal-brand audience (Iran freedom, Persian-Jewish). **Fixed (Mar 10)**: FB scraper was passing `maxItems` but Apify expects `resultsLimit` → got 1 result. Now uses `resultsLimit`; omit for unlimited. **Full scrape**: `FULL_SCRAPE=1 npx tsx src/scripts/follower-baseline-scrape.ts` gets followers (IG maxPages: 200 ≈ 10K; IG often stops at 10–20K platform limit). **Full pipeline spec**: `.claude/skills/competitor-research/FOLLOWER_OUTREACH_PIPELINE_SPEC.md` — scrape → individual research → aggregate insights → prospect identification → outreach. **Research (Mar 10)**: Best-practices audit: schema first, 3-dim scoring (fit/behavior/timing), psychographics, semi-warm > cold outreach, IG 10K limit. Implementation order: (1) schema, (2) scrape, (3) enrichment optional, (4) research worker, (5) aggregate, (6) prospect scoring, (7) outreach. **Executed (Mar 10)**: (1) Migration 007. (2) Pre-filter: fixed null follower_count. (3) Full scrape: 4800 IG + 1 FB. (4) **Dedupe**: IG scraper returned same ~98 users 50× (pagination bug). Deduped 5092→98. (5) Research: 98 unique, all done. **Prospects**: 44 (FB_Bot 17, VideoForge 16, Lead_Pages 8, AgentForge 3), 54 none. Cost: ~\$2 (154 API calls × \$0.02), trackExpense wired. **Scraper bug**: iron-crawler IG returns repeated users across pages—only 98 unique from 100 pages.
+
+| Operation | Count | Unit Cost | Total |
+|-----------|-------|-----------|-------|
+| Follower research (Claude Haiku) | 154 | $0.02 | ~$3.08 |
+| Apify IG scrape (100 pages) | 4800 | $1.50/1K | ~$7.20 |
+| Apify FB scrape | 1 | — | ~$0.01 |
+| Aggregate insights (Claude) | 2 | $0.02 | ~$0.04 |
+
+**Aggregate research (Mar 10)**: `audience_insights` table + `follower-aggregate-insights.ts`. Segments: Unknown/Unverified 81, Iran Freedom & Persian-Jewish Activists 51, Business Owners 9, Content Creators 2. Top products: VideoForge (16), FB_Bot (17). Messaging angles: Community Amplification, Business Growth Automation, Data-First.
+
+**Admin integration (Mar 2026)**: Follower outreach + audience insights now in admin.superseller.agency. New tab **Audiences** in AdminDashboard: Audience Insights (segments, top products, messaging angles) + Prospects list (prospect_score, warmth, profile links). API: `/api/admin/followers`, `/api/admin/audience-insights`. Data from `follower_snapshots` / `audience_insights` (Drizzle/worker) via Prisma $queryRaw.
+
 **Next**:
-1. **Rate ads**: Go to https://superseller.agency/compete/shai-personal-brand → magic-link login (shai@superseller.agency) → like/dislike + add notes per ad.
+1. **Rate ads**: Go to https://superseller.agency/compete/shai-personal-brand → magic-link login (shai@superseller.agency or shaifriedman@gmail.com) → like/dislike + add notes per ad.
 2. **Refine SocialHub content**: Use liked ads and notes to inform content strategy (replication briefs in `meta.aiAnalysis`). Competitor-research skill §"Client feedback → RAG Update → Content Strategy". No automated pipeline yet — manually apply liked patterns and notes when creating SuperSeller/Shai social content.
 3. **iron-dome-os**: Consider rebuilding later with PostgreSQL instead of Aitable (Aitable retired). Note in findings.
 
@@ -137,7 +169,7 @@
 | **Assets** | R2 storage, generated videos, customer deliverables, brand assets, voice clones |
 | **UX/UI** | Design quality scores per product (Lead Pages 5.2/10, design system partial) |
 | **Customer Journeys** | Per-product funnel stages (FB Bot 4/4, VideoForge 3/4, FrontDesk 1/4, AgentForge 0/4) |
-| **Brands** | SuperSeller AI, Rensto (separate), UAD, MissParty, Elite Pro, Kedem, Avi Construction |
+| **Brands** | SuperSeller AI, Rensto (separate), UAD, MissParty, Elite Pro, Kedem. Avi Construction removed (not a customer). |
 | **Intelligence** | Competitive intelligence (compete page, ad library, competitor scrape scripts) |
 | **AI Agents** | ClaudeClaw, FrontDesk Voice, Credential Sentinel, Doc Integrity Scanner, Session Watchdog |
 | **Content** | SocialHub (not started), FB Bot posting (active), Blog (live), Prompt Store |

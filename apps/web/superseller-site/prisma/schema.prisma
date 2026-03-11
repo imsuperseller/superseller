@@ -18,8 +18,22 @@ model Tenant {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  brand Brand?
-  leads Lead[]
+  brand            Brand?
+  leads            Lead[]
+  competeAllowlist CompeteAllowlist[]
+}
+
+/// Emails allowed to request magic links for a tenant's Compete page (whitelist).
+model CompeteAllowlist {
+  id        String   @id @default(cuid())
+  tenantId  String   @db.Uuid
+  email     String
+  addedAt   DateTime @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, email])
+  @@index([tenantId])
 }
 
 /// Centralized brand identity and configuration

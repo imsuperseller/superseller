@@ -81,8 +81,10 @@
 | Service | Key Name | Lives At | Notes |
 |---------|----------|----------|-------|
 | **WAHA (WhatsApp)** | API Key in URL | `http://172.245.56.50:3000/dashboard?apiKey=4fc7e008...` | Pro license on RackNerd. Shared by SuperSeller AI + FB Bot |
-| **Resend** | `RESEND_API_KEY` | `social app/.env` | `re_XQi...`. Email delivery. Sender verification pending. |
+| **Resend** | `RESEND_API_KEY` | `apps/web/superseller-site/.env.local`, `apps/worker/.env`, `social app/.env` | **Rensto account** (service@rensto.com) for ALL brands (SuperSeller, Rensto, etc.). Email delivery. Get key: resend.com → API Keys. |
 | **Telnyx (SuperSeller AI)** | `TELNYX_API_KEY` | `apps/worker/.env`, `apps/web/superseller-site/.env.local` | Voice AI "Superseller FrontDesk" (1 number: +14699299314). Key: `KEY019CACA6A...`. **Old key `KEY019B6800DE...` is on DISABLED account (D17 block) — do NOT use.** |
+
+**Resend (Rensto account only)** — One Resend account (service@rensto.com) for all brands. SuperSeller magic links, worker notifications, Studio emails — all use this. No separate Resend accounts; nothing outside Resend mixes in.
 
 ### Platforms / Social (SuperSeller AI)
 

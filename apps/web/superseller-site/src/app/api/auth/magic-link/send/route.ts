@@ -51,16 +51,67 @@ export async function POST(request: NextRequest) {
             role = 'admin';
         } else {
             const pgUser = await prisma.user.findUnique({ where: { email: normalizedEmail } });
-            const csc = await prisma.customSolutionsClient.findFirst({ where: { email: normalizedEmail } });
+            let csc: { id: string; name: string } | null = null;
+            try {
+                csc = await prisma.customSolutionsClient.findFirst({ where: { email: normalizedEmail } });
+            } catch {
+                // CustomSolutionsClient table may not exist (legacy); treat as no match
+            }
 
             if (pgUser) {
+                // Existing user: for Compete, require TenantUser for that tenant (or be on allowlist → add TenantUser)
+                if (redirectTo?.startsWith('/compete/')) {
+                    const tenantSlug = redirectTo.replace(/^\/compete\//, '').split(/[?#]/)[0]?.trim();
+                    const tenant = tenantSlug ? await prisma.tenant.findUnique({ where: { slug: tenantSlug } }) : null;
+                    if (tenant) {
+                        let tu = await prisma.tenantUser.findUnique({
+                            where: { tenantId_userId: { tenantId: tenant.id, userId: pgUser.id } },
+                        });
+                        if (!tu) {
+                            try {
+                                const allowed = await prisma.competeAllowlist.findUnique({
+                                    where: { tenantId_email: { tenantId: tenant.id, email: normalizedEmail } },
+                                });
+                                if (allowed) {
+                                    await prisma.tenantUser.create({
+                                        data: { tenantId: tenant.id, userId: pgUser.id, role: 'user' },
+                                    });
+                                    tu = { tenantId: tenant.id, userId: pgUser.id, role: 'user' };
+                                }
+                            } catch {
+                                /* allowlist table may not exist */
+                            }
+                        }
+                        if (!tu) {
+                            return NextResponse.json({ success: false, error: 'Access denied. Your email is not authorized for this page.' }, { status: 403 });
+                        }
+                    }
+                }
                 clientId = pgUser.id;
                 clientName = pgUser.name || 'Client';
             } else if (csc) {
                 clientId = csc.id;
                 clientName = csc.name || 'Client';
             } else if (redirectTo && redirectTo.startsWith('/compete/')) {
-                // Auto-provision user for compete page access
+                // New user for Compete: must be on CompeteAllowlist
+                const tenantSlug = redirectTo.replace(/^\/compete\//, '').split(/[?#]/)[0]?.trim();
+                if (!tenantSlug) {
+                    return NextResponse.json({ success: false, error: 'Invalid compete URL' }, { status: 400 });
+                }
+                const tenant = await prisma.tenant.findUnique({ where: { slug: tenantSlug } });
+                if (!tenant) {
+                    return NextResponse.json({ success: false, error: 'Tenant not found' }, { status: 404 });
+                }
+                try {
+                    const allowed = await prisma.competeAllowlist.findUnique({
+                        where: { tenantId_email: { tenantId: tenant.id, email: normalizedEmail } },
+                    });
+                    if (!allowed) {
+                        return NextResponse.json({ success: false, error: 'Access denied. Your email is not authorized for this page.' }, { status: 403 });
+                    }
+                } catch {
+                    return NextResponse.json({ success: false, error: 'Access denied. Your email is not authorized for this page.' }, { status: 403 });
+                }
                 const created = await prisma.user.create({
                     data: {
                         email: normalizedEmail,
@@ -72,6 +123,11 @@ export async function POST(request: NextRequest) {
                 });
                 clientId = created.id;
                 clientName = created.name || 'Reviewer';
+                await prisma.tenantUser.upsert({
+                    where: { tenantId_userId: { tenantId: tenant.id, userId: created.id } },
+                    create: { tenantId: tenant.id, userId: created.id, role: 'user' },
+                    update: {},
+                });
             } else {
                 console.log(`Login attempt for unknown email: ${normalizedEmail}`);
                 return NextResponse.json({
@@ -156,13 +212,22 @@ export async function POST(request: NextRequest) {
                 });
 
                 if (!emailResponse.ok) {
-                    const errorData = await emailResponse.json();
+                    let errorData: unknown;
+                    try {
+                        errorData = await emailResponse.json();
+                    } catch {
+                        errorData = await emailResponse.text();
+                    }
                     console.error('Resend error:', errorData);
-                    return NextResponse.json({ success: false, error: 'Failed to send email' }, { status: 500 });
+                    const resendMsg = typeof errorData === 'object' && errorData && 'message' in errorData
+                        ? String((errorData as { message?: string }).message)
+                        : 'Failed to send email';
+                    return NextResponse.json({ success: false, error: resendMsg }, { status: 500 });
                 }
             } catch (emailError) {
-                console.error('Email sending error:', emailError);
-                return NextResponse.json({ success: false, error: 'Failed to send email' }, { status: 500 });
+                const msg = emailError instanceof Error ? emailError.message : String(emailError);
+                console.error('Email sending error:', msg, emailError);
+                return NextResponse.json({ success: false, error: 'Failed to send email', message: process.env.NODE_ENV === 'development' ? msg : undefined }, { status: 500 });
             }
         } else {
             // Dev mode fallback
@@ -179,9 +244,15 @@ export async function POST(request: NextRequest) {
         });
 
     } catch (error) {
-        console.error('Magic link generation error:', error);
+        const err = error instanceof Error ? error : new Error(String(error));
+        console.error('Magic link generation error:', err.message, err.stack);
+        const message = err.message || String(error);
         return NextResponse.json(
-            { success: false, error: 'Server error', message: error instanceof Error ? error.message : String(error) },
+            {
+                success: false,
+                error: 'Server error',
+                message: process.env.NODE_ENV === 'development' ? message : undefined,
+            },
             { status: 500 }
         );
     }

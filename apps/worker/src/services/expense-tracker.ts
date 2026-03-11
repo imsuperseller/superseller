@@ -30,6 +30,9 @@ const COST_RATES: Record<string, Record<string, number>> = {
   r2: {
     upload: 0.0001,
   },
+  anthropic: {
+    haiku_message: 0.02, // ~$0.02/follower research (follower-research.ts)
+  },
 };
 
 interface TrackExpenseParams {

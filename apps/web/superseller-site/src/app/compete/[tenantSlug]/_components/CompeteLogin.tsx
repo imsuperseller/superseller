@@ -33,7 +33,8 @@ export default function CompeteLogin({ tenantSlug }: Props) {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || "שגיאה בשליחת הקישור");
+        const msg = data.message || data.error || "שגיאה בשליחת הקישור";
+        setError(msg);
         return;
       }
       setSent(true);

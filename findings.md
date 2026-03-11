@@ -1,5 +1,73 @@
 ---
 
+## 2026-03-10: Resend Magic Link — Domain Not Verified
+
+**Symptom**: "Failed to send email" when requesting magic link for admin/compete login.
+
+**Root cause**: superseller.agency domain not verified in Resend. API response: `The superseller.agency domain is not verified. Please, add and verify your domain on https://resend.com/domains`.
+
+**Current state**:
+- RESEND_API_KEY configured (root .env, apps/web/superseller-site/.env.local, Vercel production).
+- Resend API key is **restricted** (send-only) — cannot add domains or fetch DNS records via API.
+- DNS: Namecheap (dns1/dns2.registrar-servers.com). dns.email shows: SPF missing, DKIM missing, MX points to Zoho (receiving).
+- Resend requires: MX (send → feedback-smtp.us-east-1.amazonses.com), TXT SPF, CNAME DKIM records.
+
+**DKIM corruption (Mar 10)**: dig showed `resend._domainkey` TXT record contained duplicated/extra content. Expected: single `p=MIGf...DwIDAQAB`. Actual: correct string plus extra `aliG0QCSx+...` and duplicate fragments. Resend verification fails on any mismatch.
+
+**Namecheap 255-char limit (Mar 10)**: Namecheap's Advanced DNS TXT value field truncates at ~255 chars (RFC 1035 per-string limit). The full DKIM is 392 chars. Pasted full value gets cut; RFC chunked format (`"chunk1" "chunk2"`) is escaped/stored literally. Result: only partial DKIM in DNS → Resend verification fails.
+
+**Fix (Cloudflare migration — script ready Mar 10)**:
+1. **One-time manual**: Log into https://dash.cloudflare.com (Google/GitHub), Add site → superseller.agency → Free plan.
+2. **Automated**: Run `node tools/migrate-dns-to-cloudflare.mjs` — copies all Namecheap records + full DKIM to Cloudflare.
+3. **Nameservers**: Script prints Cloudflare nameservers; set them at Namecheap Domain List → Manage → Custom DNS.
+4. **Resend**: Verify DNS in Resend dashboard.
+
+Existing API token has DNS edit but not zone create — zone must be added via dashboard once.
+**Correct DKIM value** (for Cloudflare or provider that accepts it):
+```
+p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDNsb+VHg7614VSK8f5fZ2wNYwQARvI/mVOLX+LmLn0bg2oNDcUK7nnV1scSwaliG0QCSx+7LcTRu66yuYZWxEAHYv6hWgnNqqbfmFUnkuBlSRC8+WFX7bxCFaZE6hgGnFjrFe0eCxpdHh0FbKJMjuLvVApoIJJPGO0ZwzKoyw0DwIDAQAB
+```
+
+**Prevention**: For long DKIM/SMIMEA TXT records, use DNS providers that support full-length values (Cloudflare, AWS Route53). Namecheap free DNS has a ~255-char TXT UI limit.
+
+---
+
+## 2026-03-10: Follower Scraper — Wrong FB Parameter
+
+**Symptom**: FB follower scrape returned 1 result despite thousands of followers.
+
+**Root cause**: Apify actor `apify/facebook-followers-following-scraper` expects `resultsLimit`, not `maxItems`. We passed `maxItems`; the actor ignored it and used its default (or minimal limit).
+
+**Fix**: Use `resultsLimit` in the actor input. Omit for unlimited; set number to cap results. IG actor uses `maxPages` (1 page ≈ 50 followers).
+
+**Prevention**: Always check Apify actor input schema (API docs) before passing parameters. Parameter names differ between actors.
+
+---
+
+## 2026-03-10: Follower Pre-filter — MIN_FOLLOWER_COUNT Too Aggressive
+
+**Result**: Pre-filter with `MIN_FOLLOWER_COUNT=50` skipped 5088 of 5092 followers → only 4 pending for research.
+
+**Cause**: Personal-brand audiences (Shai's Iran freedom, Persian-Jewish) skew toward regular people, activists, nano-creators—most have <50 followers. The threshold excluded almost everyone.
+
+**Fix**: Lower to 20 or 0. Filter only obvious bots (empty, spam patterns, zero followers). Re-run pre-filter after changing constant.
+
+**Addendum**: IG iron-crawler scraper does NOT return follower_count in follower list output (raw has username, full_name, is_private, etc.—no follower_count). All 5088 had null → we were incorrectly skipping. Fixed: only skip when follower_count is explicitly 0, not when null.
+
+---
+
+## 2026-03-10: IG Follower Scraper — Pagination Returns Same Users
+
+**Symptom**: 4800 "followers" scraped across 100 pages, but only 98 unique usernames. Same users repeated ~50×.
+
+**Root cause**: iron-crawler `instagram-followers-scraper-no-login-needed` pagination appears broken or Instagram returns the same batch. Each page (~48 items) overlapped heavily with previous pages.
+
+**Impact**: Would have researched 5K rows = \$100. After dedupe (keep one per username): 98 rows = ~\$2.
+
+**Fix**: Dedupe before research: `DELETE ... WHERE id IN (duplicate ids)`. Keep one per (account_id, platform, follower_username). Consider different IG scraper if full follower list is needed.
+
+---
+
 ## 2026-03-10: iron-dome-os — Rebuild Consideration
 
 **Context**: iron-dome-os (personal brand dashboard at iron-dome-os.vercel.app) previously used Aitable tables. Aitable.ai is retired for transactional use; PostgreSQL is the only transactional DB.

@@ -475,3 +475,5 @@ screencapture-*.png
 apps/worker/.agent/
 apps/worker/.agents/
 apps/worker/.claude/
+*.pyc
+__pycache__/

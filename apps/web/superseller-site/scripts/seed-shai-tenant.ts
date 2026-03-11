@@ -71,6 +71,8 @@ async function main() {
         tagline: "@shaifriedman — 10K+ IG, 17.8K+ FB",
         instructions: "Content: Iran viral persona, Persian-Jewish heritage, Israel advocacy.",
         nicheSettings: { niche: "personal_brand", platforms: ["instagram", "facebook"] },
+        instagramId: "shai.friedman",
+        facebookPageId: "https://www.facebook.com/realshaifriedman",
       },
     });
     console.log("Created Brand:", brand.name);

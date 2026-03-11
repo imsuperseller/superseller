@@ -119,7 +119,7 @@ pm2 logs webhook-server --lines 100
 **Repo**: https://github.com/imsuperseller/iron-dome-os | **Live**: https://iron-dome-os.vercel.app
 **Audience**: 10K+ Instagram followers, 17.8K+ Facebook followers (Persian-Jewish / Iran freedom content)
 
-**What's built**: Next.js analytics dashboard — content calendar, virality chart, stats, workflow controls, ideation terminal. All UI exists.
+**What's built**: Next.js analytics dashboard — content calendar, virality chart, stats, workflow controls, ideation terminal. All UI exists. **Follower outreach**: Admin tab Audiences (admin.superseller.agency) — audience_insights + follower_snapshots (44 prospects, segments, top products).
 
 **What's broken**: 3 Aitable tables deleted in Mar 5 cleanup (`shai_fb_posts`, `shai_fb_insights`, `shai_fb_sync_states`). Dashboard shows zeros/mock. Personal n8n at port 5679 — status unknown.
 
