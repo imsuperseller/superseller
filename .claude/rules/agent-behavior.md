@@ -45,6 +45,8 @@ When a task involves async work (deploy, run job, poll status, fix, iterate):
 - Output JSON/structured actions instead of doing the action
 - Half-finished work without a working result
 - Guess at business logic
+- **Analysis paralysis**: If you make 5+ consecutive Read/Grep/Glob calls without any Edit/Write/Bash action: STOP. State why you're stuck. Then write code or report blocked. Research without action is procrastination.
+- **Infinite retry loops**: 3 attempts max per fix approach. After 3 failures with the same strategy, switch to a different approach or ask the user. Prevents credit/time burn.
 
 ---
 
@@ -64,6 +66,8 @@ When a task involves async work (deploy, run job, poll status, fix, iterate):
 - **Ask smart questions** when truly stuck or ambiguous. "Which env?" when there are 3. "Retry or change approach?" when blocked. Don't ask when you can figure it out.
 - Report only when complete with verifiable artifact.
 - Reference conflicts: Query NotebookLM 1dc7ce26 for hierarchy and cross-reference map.
+- **Don't trust your own claims.** For Large tasks (6+ files), verification must be done by a separate sub-agent that independently checks the codebase — not by the same agent that built the code.
+- **Orchestrator stays lean.** When using sub-agents, the orchestrator (main agent) should stay at ~10-15% context utilization. Delegate heavy lifting, don't accumulate it.
 
 ---
 

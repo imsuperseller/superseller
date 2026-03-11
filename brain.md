@@ -2,7 +2,7 @@
 
 **Purpose**: Mission Control for SuperSeller AI. Top-level authority for all agents (Claude Code, Cursor, Antigravity). Read this first.
 
-**Last Updated**: February 2026
+**Last Updated**: March 2026
 
 ---
 
@@ -176,7 +176,7 @@ NotebookLM + Stitch MCP are connected to Antigravity. Draw from these notebooks 
 └── .claude/skills/          ← Agent skills (rag-pgvector, videoforge-pipeline, spec-driven-dev, ui-ux-pro-max, etc.)
 ```
 
-**Tools**: `apps/worker/tools/` (pipeline diagnostics), `apps/web/superseller-site/tools/` (aitable sync). No root-level `tools/` or `architecture/`.
+**Tools**: `tools/` (schema-sentinel, map-codebase, seed scripts), `apps/worker/tools/` (pipeline diagnostics), `apps/web/superseller-site/tools/` (aitable sync).
 
 ---
 

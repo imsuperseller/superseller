@@ -118,7 +118,7 @@ Legal entity: "Rensto LLC (DBA SuperSeller Agency)" — but the *brands* must st
 | Decision | Answer |
 |----------|--------|
 | **n8n role** | Backup for NEW automation. Antigravity is primary for new workflows. |
-| **n8n workflows** | Existing production workflows (FB Bot lead pipeline: UAD + MissParty) still run on n8n. New automation goes to Antigravity. |
+| **n8n workflows** | Existing production workflows (Telnyx voice lead analysis: UAD + MissParty) still run on n8n. New automation goes to Antigravity. |
 | **Service monitoring** | n8n categorized as "backup" with highest failure tolerance (5 consecutive, 120min cooldown). |
 
 ---

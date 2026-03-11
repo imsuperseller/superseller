@@ -18,7 +18,7 @@
 | **LLM** | Prompt Gen / Intelligence | **Gemini Flash (Primary)** | ✅ Active |
 | **Video AI** | AI Clip Generation | **Kie.ai Kling 3.0** | ✅ Active |
 | **Video Composition** | Photo-based tours (Ken Burns, transitions, branding) | **Remotion 4.0.429** (Chrome Headless Shell + FFmpeg) | ✅ Active |
-| **Communications**| WhatsApp / Voice / Email | WAHA / Telnyx / Outlook / Resend | ⚠️ WAHA active (sessions need periodic QR re-scan), Telnyx active (FB Bot lead pipeline + FrontDesk) |
+| **Communications**| WhatsApp / Voice / Email | WAHA / Telnyx / Outlook / Resend | ⚠️ WAHA active (sessions need periodic QR re-scan), Telnyx active (voice lead analysis + FrontDesk) |
 | **Embeddings** | Vector embeddings for RAG | **Ollama** (nomic-embed-text, RackNerd) | ✅ Active |
 | **LightRAG** | Graph-based RAG retrieval | RackNerd (env: `LIGHTRAG_BASE_URL`) | ⚠️ Referenced in health-check but undocumented |
 

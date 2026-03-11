@@ -27,13 +27,7 @@
 > - Both use the same `DATABASE_URL`. Shared tables like `User` must be manually synced.
 
 > [!WARNING]
-> **Pivots & Deprecations**:
-> - **n8n** is backup for NEW automation. Antigravity is primary. Existing production n8n workflows (**Telnyx voice lead analysis** for UAD + MissParty) still run.
-> - **Firestore** is retired for web/worker. **Exception**: FB Marketplace Bot (`platforms/marketplace/saas-engine/lib/firebase.js`) still uses Firestore for posting schedule — pending migration to PostgreSQL.
-> - **Airtable.com** retired. **Aitable.ai** for dashboards only. **PostgreSQL** is the only transactional DB truth.
-> - **Stripe** migrated to **PayPal** (Feb 2026) for SuperSeller. DB columns keep `stripe*` names but store PayPal IDs. Stripe keys preserved dormant for potential rensto.com use. See `findings.md`.
-> - **Webflow/BMAD** are retired. The system is 100% programmatic.
-> - **QuickBooks** cancelled (Mar 8, 2026). Solo LLC with ~5 customers — PayPal reports + built-in expense-tracker sufficient. Saves $600/yr. Wave (free) as backup if needed.
+> **Deprecated (DO NOT USE)**: Firestore (except FB Bot posting schedule), Airtable.com, Stripe, Webflow, BMAD, QuickBooks. **n8n** = backup only (Antigravity is primary). DB `stripe*` columns store PayPal IDs.
 
 > [!CAUTION]
 > **Content Extraction Rule (NEVER invent content)**:
@@ -99,56 +93,17 @@
 ### Key Files
 | Resource | Location |
 |----------|----------|
-| **Decisions** | `DECISIONS.md` — user decisions as canonical truth |
-| **Credentials** | `CREDENTIAL_REFERENCE.md` — where to look (paths only) |
-| **Vercel deploy** | `VERCEL_PROJECT_MAP.md` — domain → project, auto-deploy vs manual |
-| **Ports** | `PORT_REFERENCE.md` — site 3002, worker 3001 (local both) or 3002 (RackNerd) |
-| VideoForge Spec | NotebookLM 0baf5f36 |
-| Prisma Schema | `apps/web/superseller-site/prisma/schema.prisma` |
-| Drizzle Schema | `apps/worker-packages/db/src/schema.ts` |
-| **Data Dictionary** | `docs/DATA_DICTIONARY.md` — where every entity lives, sync rules, mismatches |
-| **Schema Sentinel** | `tools/schema-sentinel.ts` — Prisma vs Drizzle drift detector (`npx tsx tools/schema-sentinel.ts`) |
-| **Codebase Mapper** | `tools/map-codebase.ts` — Auto-generates `REPO_MAP.md` (`npx tsx tools/map-codebase.ts`) |
-| **Spec-Driven Dev** | `.claude/skills/spec-driven-dev/SKILL.md` — SPEC → PLAN → EXECUTE → VERIFY workflow |
-| Credits Logic | `apps/web/superseller-site/src/lib/credits.ts`, `apps/worker/src/services/credits.ts` |
-| **Cost Tracking** | `apps/web/superseller-site/src/lib/monitoring/expense-tracker.ts` — trackExpense(), rates, anomalies |
-| Cost Rates | Kling Pro $0.10, Std $0.03, Suno $0.06, Nano $0.02, Gemini $0.001 — see videoforge-pipeline SKILL.md |
-| FB Bot Config | `fb-marketplace-lister/deploy-package/bot-config.json` (local), `/opt/fb-marketplace-bot/bot-config.json` (server) |
-| FB Bot Status | `PRODUCT_STATUS.md` §2 (feature matrix), `platforms/marketplace/PLATFORM_BIBLE.md` |
-| **API Documentation** | `docs/API_DOCUMENTATION.md` — API endpoints, auth patterns, response formats (run `npx tsx tools/map-codebase.ts` for current count) |
-| **Testing Strategy** | `docs/TESTING_STRATEGY.md` — Test plans, CI pipeline, coverage targets |
-| **Runbooks** | `docs/RUNBOOKS.md` — 12 incident response procedures |
-| **Monitoring** | `docs/MONITORING.md` — Alerting, health checks, expense tracking setup |
-| **Developer Onboarding** | `docs/DEVELOPER_ONBOARDING.md` — Zero-to-productive new developer guide |
-| **Security & Compliance** | `docs/SECURITY_COMPLIANCE.md` — Auth, credentials, data protection, compliance checklist |
-| **Changelog** | `docs/CHANGELOG.md` — Release process, platform changelog, versioning |
-| **SLOs & Error Budgets** | `docs/SLO_ERROR_BUDGETS.md` — SLO targets, error budgets, latency thresholds |
-| **AI Model Registry** | `docs/AI_MODEL_REGISTRY.md` — 50+ models, categories, pipeline mappings |
-| **Financial Reporting** | `docs/FINANCIAL_REPORTING.md` — Revenue, costs, credits, profitability, reporting procedures |
-| **Video Merge** | systemd `video-merge` service on RackNerd, port 3456 |
-
-### Credentials
-API keys in `~/.cursor/mcp.json`, Vercel dashboard, n8n credentials.
+| **Decisions** | `DECISIONS.md` |
+| **Credentials** | `CREDENTIAL_REFERENCE.md` |
+| **Schemas** | Prisma: `apps/web/superseller-site/prisma/schema.prisma`, Drizzle: `apps/worker-packages/db/src/schema.ts` |
+| **All docs** | `docs/` — API docs, runbooks, monitoring, SLOs, model registry, onboarding, security, changelog, data dictionary |
+| **Tools** | `tools/schema-sentinel.ts` (drift check), `tools/map-codebase.ts` (repo map) |
 
 ---
 
-## 5. Implementation Status (Feb 2026)
+## 5. Implementation Status
 
-> **Canonical product status**: See `PRODUCT_STATUS.md` for detailed per-product status, feature matrices, and priority order.
-
-| Product | Status | Notes |
-|---------|--------|-------|
-| **VideoForge** | ✅ Live | 25+ AI videos + Remotion photo composition, dual-path pipeline |
-| **FB Marketplace Bot** | ✅ Live | UAD + MissParty posting daily, webhook-server + fb-scheduler on PM2 |
-| **SocialHub/Buzz** | ✅ Live | Text+image→WhatsApp approval→FB publish pipeline working |
-| **Winner Studio** | ⚠️ Built, not active | Code verified end-to-end, Yossi not actively using |
-| **Lead Landing Pages** | ⚠️ Ready for sale (design upgrade needed) | `/lp/[slug]` infrastructure complete, visual quality 5.2/10 — needs dark theme + glassmorphism |
-| **FrontDesk Voice AI** | ⚠️ Partial | Voice assistant works, webhook migration pending, eSignatures not started |
-| **ClaudeClaw** | ✅ Fully Operational | WhatsApp→Claude bridge + Group Agent with 3-tier memory + guardrails (rebuilt Mar 8) |
-| **RAG/pgvector** | ✅ Connected | Ollama + pgvector powering ClaudeClaw context + Group Agent memory |
-| **AgentForge** | ❌ Spec only | Internal tool decision made, code not started |
-
-**Infrastructure ✅ Done**: Firestore→Postgres migration (except FB Bot posting schedule), PayPal checkout (migrated from Stripe Feb 2026), credits schema, worker gating, Remotion rendering, Model Observatory (34 models).
+> See `PRODUCT_STATUS.md` for detailed per-product status, feature matrices, and priority order.
 
 ---
 
@@ -183,8 +138,6 @@ Or rsync from local: `rsync -avz --exclude node_modules apps/worker/ root@172.24
 ### Code Quality Tools
 ```bash
 npx tsx tools/schema-sentinel.ts          # Prisma <-> Drizzle drift check
-npx tsx tools/schema-sentinel.ts          # Prisma <-> Drizzle schema drift
-# consistency-checker.ts not present; use schema-sentinel + grep for brand/cross-contamination
 ```
 
 ### Health Checks
@@ -197,12 +150,4 @@ curl -s http://172.245.56.50:8082/health       # FB Marketplace Bot
 
 ---
 
-## 7. Deprecated & Cleanup
-
-### plugins/ Directory (Cowork Layer)
-- **Status**: DELETED (March 8, 2026)
-- 43 markdown files for Claude Desktop/Web plugins — all content duplicated PRODUCT_BIBLE.md and .claude/skills/. Removed during Mar 8 cleanup.
-
----
-
-**For detailed systems, products, customer journey, financial tracking, admin portal, MCP list, Airtable/Notion reference: see the references above.**
+**For detailed systems, products, customer journey, financial tracking, admin portal, MCP list: see the docs/ directory and references above.**
