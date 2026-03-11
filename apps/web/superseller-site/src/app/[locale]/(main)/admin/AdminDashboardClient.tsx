@@ -52,6 +52,7 @@ import EcosystemMap from '@/components/admin/EcosystemMap';
 import SystemMonitor from '@/components/admin/SystemMonitor';
 import AuditManagement from '@/components/admin/AuditManagement';
 import CiDashboard from '@/components/admin/CiDashboard';
+import PortfolioDashboard from '@/components/admin/PortfolioDashboard';
 import MissionControl from '@/components/admin/MissionControl';
 import SuperSellerOps from '@/components/admin/SuperSellerOps';
 import { Skeleton } from '@/components/ui/skeleton-enhanced';
@@ -357,6 +358,7 @@ export default function AdminDashboardClient({
                                 { id: 'projects', label: 'Projects', icon: FolderOpen },
                                 { id: 'audits', label: 'Audits', icon: ClipboardCheck },
                                 { id: 'ci', label: 'CI Pipeline', icon: GitBranch },
+                                { id: 'portfolio', label: 'Portfolio', icon: Globe },
                                 { id: 'landing', label: 'Landing Content', icon: Globe },
                                 { id: 'factory', label: 'Product Factory', icon: Package },
                                 { id: 'monitor', label: 'System Monitor', icon: Activity },
@@ -665,6 +667,9 @@ export default function AdminDashboardClient({
                         )}
                         {activeTab === 'ci' && (
                             <CiDashboard />
+                        )}
+                        {activeTab === 'portfolio' && (
+                            <PortfolioDashboard />
                         )}
                     </div>
                 </main>

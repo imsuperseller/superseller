@@ -1,7 +1,7 @@
 ---
 name: admin-portal
 description: >-
-  SuperSeller AI admin dashboard at admin.superseller.agency. Covers the 18-tab admin UI, magic-link auth,
+  SuperSeller AI admin dashboard at admin.superseller.agency. Covers the 19-tab admin UI, magic-link auth,
   37+ admin components, 28+ API routes, CRM, system monitoring, treasury, workflow management,
   AI agent configuration, project management, audit center, and CI pipeline. Use when building
   admin features, adding admin tabs, modifying admin API routes, or working on admin.superseller.agency.
@@ -43,10 +43,10 @@ admin.superseller.agency → /admin/page.tsx → verifySession() → AdminDashbo
                                                              ↓
                                                     Inline sidebar + header (no separate layout)
                                                              ↓
-                                                    18 Tab Components (sidebar nav)
+                                                    19 Tab Components (sidebar nav)
 ```
 
-## Admin Tabs (18 — In-Page, AdminDashboardClient.tsx)
+## Admin Tabs (19 — In-Page, AdminDashboardClient.tsx)
 
 | Tab ID | Label | Component | Purpose |
 |--------|-------|-----------|---------|
@@ -58,6 +58,7 @@ admin.superseller.agency → /admin/page.tsx → verifySession() → AdminDashbo
 | projects | Projects | ProjectManagement | Real Project CRUD (DB-backed) |
 | **audits** | **Audits** | **AuditManagement** | **Business playbooks, per-customer audit drill-down** |
 | **ci** | **CI Pipeline** | **CiDashboard** | **Build/lint/typecheck status per push** |
+| **portfolio** | **Portfolio** | **PortfolioDashboard** | **GitHub commits + Vercel deploys across all repos** |
 | landing | Landing Content | (inline) | Landing page content |
 | factory | Product Factory | NewProductWizard | Product creation |
 | monitor | System Monitor | SystemMonitor | Health checks, uptime |
