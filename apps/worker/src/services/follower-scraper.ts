@@ -40,7 +40,7 @@ export async function scrapeInstagramFollowers(
 
   const run = await apifyClient.actor(IG_ACTOR).call(
     {
-      usernames: [cleanUsername],
+      handles: [cleanUsername],
       scrapeFollowers: true,
       maxFollowers: maxPages * 50, // ~50 followers per page
     },
