@@ -20,16 +20,31 @@ import { Button } from '@/components/ui/button-enhanced';
 interface Project {
     id: string;
     name: string;
-    clientName: string;
+    description?: string;
+    type: 'internal' | 'customer' | 'infrastructure' | 'external';
     status: 'planning' | 'in_progress' | 'verification' | 'completed' | 'blocked';
     progress: number;
-    dueDate: string;
-    pillar: string;
+    pillar?: string;
+    owner?: string;
+    githubRepo?: string;
+    vercelProjectId?: string;
+    startDate?: string;
+    dueDate?: string;
     outlookEventId?: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+interface ProjectStats {
+    active: number;
+    blocked: number;
+    completed: number;
+    upcoming: number;
 }
 
 export default function ProjectManagement() {
     const [projects, setProjects] = useState<Project[]>([]);
+    const [stats, setStats] = useState<ProjectStats>({ active: 0, blocked: 0, completed: 0, upcoming: 0 });
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('');
 
@@ -41,6 +56,7 @@ export default function ProjectManagement() {
                 const data = await response.json();
                 if (data.success) {
                     setProjects(data.projects);
+                    if (data.stats) setStats(data.stats);
                 }
             } catch (error) {
                 console.error('Failed to fetch projects:', error);
@@ -50,6 +66,15 @@ export default function ProjectManagement() {
         };
         fetchProjects();
     }, []);
+
+    const getTypeColor = (type: Project['type']) => {
+        switch (type) {
+            case 'customer':       return 'text-cyan-400';
+            case 'infrastructure': return 'text-yellow-400';
+            case 'external':       return 'text-purple-400';
+            default:               return 'text-slate-500';
+        }
+    };
 
     const getStatusColor = (status: Project['status']) => {
         switch (status) {
@@ -76,10 +101,10 @@ export default function ProjectManagement() {
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 {[
-                    { label: 'Active', count: 12, color: 'text-cyan-400' },
-                    { label: 'Blocked', count: 2, color: 'text-red-500' },
-                    { label: 'Completed', count: 45, color: 'text-green-400' },
-                    { label: 'Upcoming', count: 8, color: 'text-purple-400' }
+                    { label: 'Active', count: stats.active, color: 'text-cyan-400' },
+                    { label: 'Blocked', count: stats.blocked, color: 'text-red-500' },
+                    { label: 'Completed', count: stats.completed, color: 'text-green-400' },
+                    { label: 'Upcoming', count: stats.upcoming, color: 'text-purple-400' }
                 ].map((stat) => (
                     <div key={stat.label} className="p-6 rounded-[2rem] border border-white/5 bg-white/[0.02]">
                         <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">{stat.label}</p>
@@ -133,16 +158,23 @@ export default function ProjectManagement() {
                                                         <Calendar className="w-3 h-3 text-cyan-500" />
                                                     )}
                                                 </div>
-                                                <p className="text-[10px] text-slate-500 font-medium">{project.pillar}</p>
+                                                <div className="flex items-center gap-2 mt-0.5">
+                                                    {project.pillar && (
+                                                        <p className="text-[10px] text-slate-500 font-medium">{project.pillar}</p>
+                                                    )}
+                                                    <span className={`text-[9px] font-black uppercase tracking-widest ${getTypeColor(project.type)}`}>
+                                                        {project.type}
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
                                     </td>
                                     <td className="px-8 py-6">
                                         <div className="flex items-center space-x-2">
                                             <div className="w-6 h-6 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-[10px] font-black text-slate-400 uppercase">
-                                                {project.clientName[0]}
+                                                {(project.owner ?? '?')[0].toUpperCase()}
                                             </div>
-                                            <span className="text-sm text-slate-300 font-medium">{project.clientName}</span>
+                                            <span className="text-sm text-slate-300 font-medium">{project.owner ?? '—'}</span>
                                         </div>
                                     </td>
                                     <td className="px-8 py-6">
@@ -165,7 +197,11 @@ export default function ProjectManagement() {
                                     </td>
                                     <td className="px-8 py-6 text-sm text-slate-400 font-mono">
                                         <div className="flex flex-col">
-                                            <span>{project.dueDate}</span>
+                                            <span>
+                                                {project.dueDate
+                                                    ? new Date(project.dueDate).toISOString().split('T')[0]
+                                                    : '—'}
+                                            </span>
                                             {project.outlookEventId && (
                                                 <span className="text-[8px] text-cyan-500/50 uppercase font-black tracking-tighter">Synced</span>
                                             )}
