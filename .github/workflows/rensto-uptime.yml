@@ -1,0 +1,79 @@
+name: Rensto.com Uptime Check
+
+on:
+  schedule:
+    - cron: '47 14 * * *'    # Daily 8:47 AM CDT
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check rensto.com
+        id: rensto_domain
+        continue-on-error: true
+        run: |
+          HTTP=$(curl -so /dev/null -w "%{http_code}" --max-time 15 -L https://rensto.com 2>/dev/null) || HTTP="000"
+          echo "code=$HTTP" >> $GITHUB_OUTPUT
+          [[ "$HTTP" =~ ^(200|301|302)$ ]] && echo "status=up" >> $GITHUB_OUTPUT || echo "status=down" >> $GITHUB_OUTPUT
+
+      - name: Check rensto port 3001 directly
+        id: rensto_port
+        continue-on-error: true
+        run: |
+          HTTP=$(curl -so /dev/null -w "%{http_code}" --max-time 15 http://172.245.56.50:3001 2>/dev/null) || HTTP="000"
+          echo "code=$HTTP" >> $GITHUB_OUTPUT
+          [[ "$HTTP" != "000" ]] && echo "status=up" >> $GITHUB_OUTPUT || echo "status=down" >> $GITHUB_OUTPUT
+
+      - name: Verify no redirect to superseller
+        id: redirect
+        continue-on-error: true
+        run: |
+          # CRITICAL: rensto.com must NEVER redirect to superseller.agency
+          LOCATION=$(curl -sI --max-time 10 -L https://rensto.com 2>/dev/null | grep -i "^location:" | tail -1 | tr -d '\r')
+          if echo "$LOCATION" | grep -qi "superseller"; then
+            echo "violation=true" >> $GITHUB_OUTPUT
+            echo "location=$LOCATION" >> $GITHUB_OUTPUT
+          else
+            echo "violation=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generate Report
+        id: report
+        run: |
+          ISSUES=0
+
+          DOMAIN_ICON=$([[ "${{ steps.rensto_domain.outputs.status }}" == "up" ]] && echo "✅" || echo "❌")
+          PORT_ICON=$([[ "${{ steps.rensto_port.outputs.status }}" == "up" ]] && echo "✅" || echo "❌")
+
+          if [[ "${{ steps.rensto_domain.outputs.status }}" != "up" ]]; then ISSUES=$((ISSUES + 1)); fi
+          if [[ "${{ steps.rensto_port.outputs.status }}" != "up" ]]; then ISSUES=$((ISSUES + 1)); fi
+          if [[ "${{ steps.redirect.outputs.violation }}" == "true" ]]; then ISSUES=$((ISSUES + 1)); fi
+
+          echo "issues=$ISSUES" >> $GITHUB_OUTPUT
+
+          echo "## 🏠 Rensto.com Uptime — $(date +%Y-%m-%d)"
+          echo ""
+          echo "| Check | Status |"
+          echo "|-------|--------|"
+          echo "| rensto.com (HTTPS) | $DOMAIN_ICON (HTTP ${{ steps.rensto_domain.outputs.code }}) |"
+          echo "| Port 3001 (direct) | $PORT_ICON (HTTP ${{ steps.rensto_port.outputs.code }}) |"
+          echo "| No superseller redirect | $([[ "${{ steps.redirect.outputs.violation }}" == "false" ]] && echo "✅ Clean" || echo "❌ VIOLATION: ${{ steps.redirect.outputs.location }}") |"
+
+      - name: Create Issue on Failure
+        if: steps.report.outputs.issues != '0'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const violation = '${{ steps.redirect.outputs.violation }}';
+            const title = violation === 'true'
+              ? `🚨 CRITICAL: rensto.com redirecting to superseller.agency — ${new Date().toISOString().slice(0,10)}`
+              : `🏠 Rensto.com Down — ${new Date().toISOString().slice(0,10)}`;
+            const labels = violation === 'true' ? ['ops-alert', 'critical', 'rensto'] : ['ops-alert', 'rensto'];
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              body: `Rensto.com monitoring detected issues.\n\n${violation === 'true' ? '**CRITICAL**: rensto.com is redirecting to superseller.agency. This violates the hard separation rule (DECISIONS.md §1b). Fix IMMEDIATELY.\n\n' : ''}Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              labels
+            });

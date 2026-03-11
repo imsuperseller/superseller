@@ -1,0 +1,129 @@
+name: Resend Email Delivery Check
+
+on:
+  schedule:
+    - cron: '51 16 * * *'    # Daily 10:51 AM CDT
+  workflow_dispatch:
+
+env:
+  RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Resend Domain Verification
+        id: domains
+        continue-on-error: true
+        run: |
+          if [ -z "$RESEND_API_KEY" ]; then
+            echo "status=no_key" >> $GITHUB_OUTPUT
+            echo "⚠️ RESEND_API_KEY not set in GitHub Secrets — skipping API checks"
+            exit 0
+          fi
+
+          RESP=$(curl -sf --max-time 15 \
+            -H "Authorization: Bearer $RESEND_API_KEY" \
+            https://api.resend.com/domains 2>&1)
+
+          if [ $? -ne 0 ]; then
+            echo "status=api_error" >> $GITHUB_OUTPUT
+            echo "response=API call failed" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          echo "status=ok" >> $GITHUB_OUTPUT
+
+          # Check for unverified domains
+          UNVERIFIED=$(echo "$RESP" | python3 -c "
+          import json, sys
+          try:
+              data = json.load(sys.stdin)
+              domains = data.get('data', data) if isinstance(data, dict) else data
+              if isinstance(domains, list):
+                  bad = [d.get('name','?') for d in domains if d.get('status') != 'verified']
+                  print(','.join(bad) if bad else '')
+              else:
+                  print('')
+          except: print('parse_error')
+          " 2>/dev/null)
+
+          echo "unverified=$UNVERIFIED" >> $GITHUB_OUTPUT
+
+      - name: Check Resend API Key Validity
+        id: apikey
+        continue-on-error: true
+        run: |
+          if [ -z "$RESEND_API_KEY" ]; then
+            echo "valid=skipped" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          HTTP=$(curl -so /dev/null -w "%{http_code}" --max-time 10 \
+            -H "Authorization: Bearer $RESEND_API_KEY" \
+            https://api.resend.com/domains 2>/dev/null) || HTTP="000"
+          echo "code=$HTTP" >> $GITHUB_OUTPUT
+          [[ "$HTTP" == "200" ]] && echo "valid=yes" >> $GITHUB_OUTPUT || echo "valid=no" >> $GITHUB_OUTPUT
+
+      - name: Check MX Records
+        id: mx
+        run: |
+          # Verify superseller.agency has MX records (DNS-level check, no API key needed)
+          MX=$(dig +short MX superseller.agency 2>/dev/null || nslookup -type=mx superseller.agency 2>/dev/null | grep "mail exchanger" || echo "")
+          if [ -n "$MX" ]; then
+            echo "status=ok" >> $GITHUB_OUTPUT
+          else
+            echo "status=no_mx" >> $GITHUB_OUTPUT
+          fi
+          echo "records=$MX" >> $GITHUB_OUTPUT
+
+      - name: Generate Report
+        id: report
+        run: |
+          ISSUES=0
+
+          echo "## 📧 Email Delivery Check — $(date +%Y-%m-%d)"
+          echo ""
+
+          # API Key
+          if [[ "${{ steps.apikey.outputs.valid }}" == "skipped" ]]; then
+            echo "⚠️ RESEND_API_KEY not configured in GitHub Secrets — add it to enable full checks"
+          elif [[ "${{ steps.apikey.outputs.valid }}" == "yes" ]]; then
+            echo "- API Key: ✅ Valid"
+          else
+            echo "- API Key: ❌ Invalid (HTTP ${{ steps.apikey.outputs.code }})"
+            ISSUES=$((ISSUES + 1))
+          fi
+
+          # Domains
+          UNVERIFIED="${{ steps.domains.outputs.unverified }}"
+          if [ -n "$UNVERIFIED" ] && [ "$UNVERIFIED" != "" ] && [ "$UNVERIFIED" != "parse_error" ]; then
+            echo "- Unverified domains: ❌ $UNVERIFIED"
+            ISSUES=$((ISSUES + 1))
+          elif [[ "${{ steps.domains.outputs.status }}" == "ok" ]]; then
+            echo "- Domains: ✅ All verified"
+          fi
+
+          # MX Records
+          if [[ "${{ steps.mx.outputs.status }}" == "ok" ]]; then
+            echo "- MX Records: ✅ Present"
+          else
+            echo "- MX Records: ⚠️ No MX records found for superseller.agency"
+            ISSUES=$((ISSUES + 1))
+          fi
+
+          echo "issues=$ISSUES" >> $GITHUB_OUTPUT
+
+      - name: Create Issue on Failures
+        if: steps.report.outputs.issues != '0'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issues = '${{ steps.report.outputs.issues }}';
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `📧 Email Alert: ${issues} issue(s) — ${new Date().toISOString().slice(0,10)}`,
+              body: `Email delivery check found problems. Magic link auth and lead notifications may be affected.\n\nRun: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              labels: ['ops-alert', 'email']
+            });

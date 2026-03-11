@@ -1,0 +1,96 @@
+name: Video Pipeline Stuck Jobs
+
+on:
+  schedule:
+    - cron: '12 12 * * *'    # 6:12 AM CDT (UTC-6)
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check Worker Health & Job Status
+        id: worker
+        continue-on-error: true
+        run: |
+          RESP=$(curl -sf --max-time 15 http://172.245.56.50:3002/api/health 2>&1) || RESP="unreachable"
+          echo "health=$RESP" >> $GITHUB_OUTPUT
+
+          # Check for stuck/failed jobs via worker API
+          JOBS=$(curl -sf --max-time 15 "http://172.245.56.50:3002/api/jobs?status=failed&since=24h" 2>&1) || JOBS=""
+          echo "failed_jobs=$JOBS" >> $GITHUB_OUTPUT
+
+          ACTIVE=$(curl -sf --max-time 15 "http://172.245.56.50:3002/api/jobs?status=analyzing" 2>&1) || ACTIVE=""
+          echo "active_jobs=$ACTIVE" >> $GITHUB_OUTPUT
+
+      - name: Check BullMQ Queue Depth
+        id: queues
+        continue-on-error: true
+        run: |
+          # Query worker's queue stats endpoint
+          QSTATS=$(curl -sf --max-time 15 "http://172.245.56.50:3002/api/queue-stats" 2>&1) || QSTATS="unavailable"
+          echo "stats=$QSTATS" >> $GITHUB_OUTPUT
+
+      - name: Check R2 for Recent Outputs
+        id: r2
+        continue-on-error: true
+        run: |
+          # Verify R2 public URL is accessible (canary check)
+          HTTP=$(curl -so /dev/null -w "%{http_code}" --max-time 10 "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev" 2>/dev/null) || HTTP="000"
+          echo "r2_status=$HTTP" >> $GITHUB_OUTPUT
+
+      - name: Generate Report
+        id: report
+        run: |
+          ISSUES=0
+          DETAILS=""
+
+          # Worker reachability
+          if [[ "${{ steps.worker.outputs.health }}" == "unreachable" ]]; then
+            DETAILS="$DETAILS\n- ❌ Worker unreachable at 172.245.56.50:3002"
+            ISSUES=$((ISSUES + 1))
+          fi
+
+          # R2 storage
+          if [[ "${{ steps.r2.outputs.r2_status }}" != "200" && "${{ steps.r2.outputs.r2_status }}" != "403" ]]; then
+            DETAILS="$DETAILS\n- ⚠️ R2 public URL returned HTTP ${{ steps.r2.outputs.r2_status }}"
+            ISSUES=$((ISSUES + 1))
+          fi
+
+          echo "issues=$ISSUES" >> $GITHUB_OUTPUT
+
+          echo "## 🎬 Video Pipeline Check — $(date +%Y-%m-%d)"
+          echo ""
+          if [ "$ISSUES" -eq 0 ]; then
+            echo "All systems operational ✅"
+          else
+            echo "$ISSUES issue(s) found:"
+            echo -e "$DETAILS"
+          fi
+          echo ""
+          echo "### Worker Health"
+          echo '```'
+          echo "${{ steps.worker.outputs.health }}" | head -20
+          echo '```'
+          echo ""
+          echo "### Queue Stats"
+          echo '```'
+          echo "${{ steps.queues.outputs.stats }}" | head -20
+          echo '```'
+
+      - name: Create Issue on Failures
+        if: steps.report.outputs.issues != '0'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issues = '${{ steps.report.outputs.issues }}';
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🎬 Video Pipeline: ${issues} issue(s) — ${new Date().toISOString().slice(0,10)}`,
+              body: `Daily video pipeline check found problems.\n\nRun: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              labels: ['ops-alert', 'video-pipeline']
+            });
