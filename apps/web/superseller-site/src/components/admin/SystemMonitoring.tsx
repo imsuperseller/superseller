@@ -1,148 +1,244 @@
-import React, { useState, useEffect } from 'react';
+'use client';
+
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card-enhanced';
 import { Badge } from '@/components/ui/badge-enhanced';
 import { Progress } from '@/components/ui/progress';
 
-interface SystemMetrics {
+interface PM2Process {
+  name: string;
+  status: string;
   cpu: number;
-  memory: number;
-  disk: number;
-  network: number;
+  memory: string;
   uptime: string;
-  alerts: number;
+  restarts: number;
+  pid: number;
+}
+
+interface DockerContainer {
+  name: string;
+  status: string;
+  image: string;
+  ports: string;
+  state: 'running' | 'stopped' | 'error';
+}
+
+interface SystemData {
+  metrics: {
+    cpu: number;
+    memory: number;
+    memoryUsedGb: string;
+    memoryTotalGb: string;
+    disk: number;
+    diskUsedGb: string;
+    diskTotalGb: string;
+    uptime: string;
+    loadAvg: number[];
+    hostname: string;
+    workerStatus: 'online' | 'offline';
+    workerLatencyMs: number;
+  };
+  pm2: PM2Process[];
+  docker: DockerContainer[];
+  alerts: string[];
+  fetchedAt: string;
 }
 
 export default function SystemMonitoring() {
-  const [metrics, setMetrics] = useState<SystemMetrics>({
-    cpu: 45,
-    memory: 67,
-    disk: 23,
-    network: 12,
-    uptime: '15 days, 8 hours',
-    alerts: 2
-  });
+  const [data, setData] = useState<SystemData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      const res = await fetch('/api/admin/system-monitoring', { cache: 'no-store' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json = await res.json();
+      setData(json);
+      setError(null);
+    } catch (e: any) {
+      setError(e.message || 'Failed to fetch');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+    const interval = setInterval(fetchData, 30000);
+    return () => clearInterval(interval);
+  }, [fetchData]);
 
   const getUsageColor = (usage: number) => {
-    if (usage < 50) return 'text-green-600';
-    if (usage < 80) return 'text-yellow-600';
-    return 'text-red-600';
+    if (usage < 50) return 'text-green-400';
+    if (usage < 80) return 'text-yellow-400';
+    return 'text-red-400';
   };
 
-  const getUsageStatus = (usage: number) => {
+  const getUsageBadge = (usage: number) => {
+    if (usage < 50) return 'bg-green-500/10 text-green-400 border-green-500/20';
+    if (usage < 80) return 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20';
+    return 'bg-red-500/10 text-red-400 border-red-500/20';
+  };
+
+  const getUsageLabel = (usage: number) => {
     if (usage < 50) return 'Good';
     if (usage < 80) return 'Warning';
     return 'Critical';
   };
 
+  const getStateColor = (state: string) => {
+    if (state === 'running' || state === 'online') return 'bg-green-500/10 text-green-400 border-green-500/20';
+    if (state === 'stopped' || state === 'stopping') return 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20';
+    return 'bg-red-500/10 text-red-400 border-red-500/20';
+  };
+
+  if (loading && !data) {
+    return (
+      <div className="space-y-6">
+        <h2 className="text-3xl font-black uppercase tracking-tighter text-white">System Monitoring</h2>
+        <div className="text-slate-400 animate-pulse">Loading real-time metrics from RackNerd...</div>
+      </div>
+    );
+  }
+
+  if (error && !data) {
+    return (
+      <div className="space-y-6">
+        <h2 className="text-3xl font-black uppercase tracking-tighter text-white">System Monitoring</h2>
+        <div className="text-red-400">Error: {error}</div>
+        <button onClick={fetchData} className="px-4 py-2 bg-white/10 rounded-xl text-white text-sm">Retry</button>
+      </div>
+    );
+  }
+
+  const m = data!.metrics;
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold tracking-tight">System Monitoring</h2>
-        <Badge variant={metrics.alerts > 0 ? 'destructive' : 'default'}>
-          {metrics.alerts} Alerts
-        </Badge>
+        <div>
+          <h2 className="text-3xl font-black uppercase tracking-tighter text-white">System Monitoring</h2>
+          <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold mt-1">
+            {m.hostname} &middot; Worker {m.workerStatus} ({m.workerLatencyMs}ms)
+            {data?.fetchedAt && ` \u00b7 ${new Date(data.fetchedAt).toLocaleTimeString()}`}
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          {loading && <span className="text-[10px] text-cyan-400 animate-pulse uppercase tracking-widest">Refreshing...</span>}
+          <Badge variant={data!.alerts.length > 0 ? 'destructive' : 'default'}>
+            {data!.alerts.length} Alert{data!.alerts.length !== 1 ? 's' : ''}
+          </Badge>
+          <button onClick={fetchData} className="px-3 py-1.5 bg-white/5 border border-white/10 rounded-xl text-slate-400 hover:text-white text-xs font-bold uppercase tracking-widest transition-all">
+            Refresh
+          </button>
+        </div>
       </div>
-      
+
+      {/* Resource Gauges */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              CPU Usage
-              <Badge className={getUsageColor(metrics.cpu)}>
-                {getUsageStatus(metrics.cpu)}
-              </Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{metrics.cpu}%</div>
-            <Progress value={metrics.cpu} className="w-full mt-2" />
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              Memory Usage
-              <Badge className={getUsageColor(metrics.memory)}>
-                {getUsageStatus(metrics.memory)}
-              </Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{metrics.memory}%</div>
-            <Progress value={metrics.memory} className="w-full mt-2" />
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              Disk Usage
-              <Badge className={getUsageColor(metrics.disk)}>
-                {getUsageStatus(metrics.disk)}
-              </Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{metrics.disk}%</div>
-            <Progress value={metrics.disk} className="w-full mt-2" />
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              Network Usage
-              <Badge className={getUsageColor(metrics.network)}>
-                {getUsageStatus(metrics.network)}
-              </Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{metrics.network}%</div>
-            <Progress value={metrics.network} className="w-full mt-2" />
-          </CardContent>
-        </Card>
+        {[
+          { label: 'CPU Usage', value: m.cpu, detail: `Load: ${m.loadAvg.map(l => l.toFixed(2)).join(', ')}` },
+          { label: 'Memory', value: m.memory, detail: `${m.memoryUsedGb} / ${m.memoryTotalGb} GB` },
+          { label: 'Disk', value: m.disk, detail: `${m.diskUsedGb} / ${m.diskTotalGb} GB` },
+          { label: 'Uptime', value: -1, detail: m.uptime },
+        ].map(item => (
+          <Card key={item.label}>
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between text-sm">
+                {item.label}
+                {item.value >= 0 && (
+                  <span className={`px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest border ${getUsageBadge(item.value)}`}>
+                    {getUsageLabel(item.value)}
+                  </span>
+                )}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {item.value >= 0 ? (
+                <>
+                  <div className={`text-2xl font-black ${getUsageColor(item.value)}`}>{item.value}%</div>
+                  <Progress value={item.value} className="w-full mt-2" />
+                  <p className="text-[10px] text-slate-500 mt-1">{item.detail}</p>
+                </>
+              ) : (
+                <div className="text-2xl font-black text-cyan-400">{item.detail}</div>
+              )}
+            </CardContent>
+          </Card>
+        ))}
       </div>
-      
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
+
+      {/* Alerts */}
+      {data!.alerts.length > 0 && (
+        <Card className="border-red-500/20">
           <CardHeader>
-            <CardTitle>System Information</CardTitle>
+            <CardTitle className="text-red-400 text-sm">Active Alerts</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2">
-            <div className="flex justify-between">
-              <span>Uptime:</span>
-              <span>{metrics.uptime}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Active Alerts:</span>
-              <span>{metrics.alerts}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Last Backup:</span>
-              <span>2025-08-18 17:00:00</span>
-            </div>
+          <CardContent>
+            <ul className="space-y-1">
+              {data!.alerts.map((alert, i) => (
+                <li key={i} className="text-sm text-red-300 flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
+                  {alert}
+                </li>
+              ))}
+            </ul>
           </CardContent>
         </Card>
-        
+      )}
+
+      <div className="grid gap-6 md:grid-cols-2">
+        {/* PM2 Processes */}
         <Card>
           <CardHeader>
-            <CardTitle>Security Status</CardTitle>
+            <CardTitle className="text-sm">PM2 Processes ({data!.pm2.length})</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2">
-            <div className="flex justify-between">
-              <span>Firewall:</span>
-              <Badge className="bg-green-500">Active</Badge>
-            </div>
-            <div className="flex justify-between">
-              <span>SSL Certificate:</span>
-              <Badge className="bg-green-500">Valid</Badge>
-            </div>
-            <div className="flex justify-between">
-              <span>Updates:</span>
-              <Badge className="bg-green-500">Up to Date</Badge>
-            </div>
+          <CardContent>
+            {data!.pm2.length === 0 ? (
+              <p className="text-slate-500 text-sm">No PM2 data available (diagnostics endpoint may not be exposed)</p>
+            ) : (
+              <div className="space-y-3">
+                {data!.pm2.map((proc) => (
+                  <div key={proc.name} className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5">
+                    <div>
+                      <p className="text-sm font-bold text-white">{proc.name}</p>
+                      <p className="text-[10px] text-slate-500">PID {proc.pid} &middot; {proc.memory} &middot; {proc.restarts} restarts</p>
+                    </div>
+                    <span className={`px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest border ${getStateColor(proc.status)}`}>
+                      {proc.status}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Docker Containers */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm">Docker Containers ({data!.docker.length})</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {data!.docker.length === 0 ? (
+              <p className="text-slate-500 text-sm">No Docker data available</p>
+            ) : (
+              <div className="space-y-3">
+                {data!.docker.map((container) => (
+                  <div key={container.name} className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5">
+                    <div>
+                      <p className="text-sm font-bold text-white">{container.name}</p>
+                      <p className="text-[10px] text-slate-500">{container.image} &middot; :{container.ports}</p>
+                    </div>
+                    <span className={`px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest border ${getStateColor(container.state)}`}>
+                      {container.state}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

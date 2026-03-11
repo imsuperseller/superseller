@@ -278,6 +278,53 @@ export const contentActors = pgTable("content_actors", {
     roleIdx: index("idx_content_actors_role").on(table.tenantId, table.role),
 }));
 
+// --- Follower Outreach: Baseline + Daily Delta ---
+export const followerSnapshots = pgTable("follower_snapshots", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    accountId: text("account_id").notNull(), // e.g. "shai-personal-brand"
+    platform: text("platform").notNull(), // "instagram" | "facebook"
+    sourceHandle: text("source_handle").notNull(), // username or page identifier we scraped FROM
+    followerId: text("follower_id"), // platform user ID if available
+    followerUsername: text("follower_username"),
+    followerName: text("follower_name"),
+    profileUrl: text("profile_url"),
+    profilePicUrl: text("profile_pic_url"),
+    followerCount: integer("follower_count"),
+    raw: jsonb("raw").default({}),
+    scrapedAt: timestamp("scraped_at", { withTimezone: true }).notNull().defaultNow(),
+    // Research pipeline (FOLLOWER_OUTREACH_PIPELINE_SPEC.md)
+    profileBio: text("profile_bio"),
+    researchStatus: text("research_status").default("pending"), // pending | done | skipped
+    skipReason: text("skip_reason"),
+    individualResearch: jsonb("individual_research"),
+    fitScore: integer("fit_score"),
+    behaviorScore: integer("behavior_score"),
+    timingScore: integer("timing_score"),
+    prospectScore: integer("prospect_score"),
+    prospectReasons: jsonb("prospect_reasons"),
+    warmthTier: text("warmth_tier"),
+    researchedAt: timestamp("researched_at", { withTimezone: true }),
+}, (table) => ({
+    accountPlatformIdx: index("idx_follower_snapshots_account_platform").on(table.accountId, table.platform),
+    uniqueFollower: index("idx_follower_snapshots_unique").on(table.accountId, table.platform, table.followerId),
+    scrapedIdx: index("idx_follower_snapshots_scraped").on(table.scrapedAt),
+    researchStatusIdx: index("idx_follower_snapshots_research_status").on(table.researchStatus),
+}));
+
+// --- Audience Insights: Aggregate research per account+platform ---
+export const audienceInsights = pgTable("audience_insights", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    accountId: text("account_id").notNull(),
+    platform: text("platform").notNull(),
+    scrapedAt: timestamp("scraped_at", { withTimezone: true }),
+    segments: jsonb("segments"),
+    topProducts: jsonb("top_products"),
+    messagingAngles: jsonb("messaging_angles"),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+}, (table) => ({
+    accountPlatformIdx: index("idx_audience_insights_account_platform").on(table.accountId, table.platform),
+}));
+
 // --- Instagram Autopilot: Competitor Ad Research ---
 export const competitorAds = pgTable("competitor_ads", {
     id: uuid("id").primaryKey().defaultRandom(),
@@ -362,6 +409,34 @@ export const promptConfigs = pgTable("prompt_configs", {
 }, (table) => ({
     serviceKeyVersion: uniqueIndex("prompt_config_service_key_version").on(table.service, table.promptKey, table.version),
     lookupIdx: index("idx_prompt_config_lookup").on(table.service, table.promptKey),
+}));
+
+// --- Unified Notification Log ---
+// Tracks all system notifications (health, cookie, ClaudeClaw, approvals, etc.)
+// with correlation IDs for grouping related events and status tracking.
+export const notificationLog = pgTable("notification_log", {
+    id: integer("id").primaryKey(), // serial in SQL
+    correlationId: uuid("correlation_id").defaultRandom(),
+    source: text("source").notNull(), // health_monitor | cookie_monitor | claudeclaw | approval_service | scheduler | system
+    type: text("type").notNull(), // alert | info | action_required | action_taken | error | success
+    title: text("title").notNull(),
+    body: text("body").notNull(),
+    metadata: jsonb("metadata").default({}),
+    status: text("status").notNull().default("sent"), // sent | delivered | read | handled | failed
+    sentVia: text("sent_via"), // whatsapp | email | admin_dashboard
+    sentTo: text("sent_to"),
+    relatedEntityType: text("related_entity_type"), // service | customer | job | session
+    relatedEntityId: text("related_entity_id"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    handledAt: timestamp("handled_at", { withTimezone: true }),
+    handledBy: text("handled_by"), // auto | user | claudeclaw
+}, (table) => ({
+    sourceIdx: index("idx_notification_log_source").on(table.source),
+    typeIdx: index("idx_notification_log_type").on(table.type),
+    statusIdx: index("idx_notification_log_status").on(table.status),
+    createdIdx: index("idx_notification_log_created").on(table.createdAt),
+    correlationIdx: index("idx_notification_log_correlation").on(table.correlationId),
+    entityIdx: index("idx_notification_log_entity").on(table.relatedEntityType, table.relatedEntityId),
 }));
 
 export const systemSettings = pgTable("system_settings", {

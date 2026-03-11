@@ -1,8 +1,8 @@
 ---
 name: admin-portal
 description: >-
-  SuperSeller AI admin dashboard at admin.superseller.agency. Covers the 8-tab admin UI, magic-link auth,
-  31 admin components, 23 API routes, CRM, system monitoring, treasury, workflow management,
+  SuperSeller AI admin dashboard at admin.superseller.agency. Covers the 9-tab admin UI, magic-link auth,
+  32 admin components, 25 API routes, CRM, system monitoring, treasury, workflow management,
   and AI agent configuration. Use when building admin features, adding admin tabs, modifying
   admin API routes, or working on admin.superseller.agency. Not for customer dashboard (see customer-journey),
   video pipeline, or public website pages.
@@ -43,21 +43,22 @@ admin.superseller.agency → /admin/page.tsx → verifySession() → AdminDashbo
                                                              ↓
                                                     AdminLayout.tsx (sidebar + header)
                                                              ↓
-                                                    8 Tab Components
+                                                    9 Tab Components
 ```
 
-## Admin Tabs (8 Primary)
+## Admin Tabs (9 — In-Page, AdminDashboard.tsx)
 
-| Tab | Route | Component | Purpose |
-|-----|-------|-----------|---------|
-| Dashboard | `/admin` | DashboardOverview.tsx | KPI overview, metrics |
-| Clients | `/admin/clients` | CustomerManagement.tsx | CRM, customer timeline |
-| Projects | `/admin/projects` | ProjectManagement.tsx | ServiceInstance management |
-| Analytics | `/admin/analytics` | BusinessIntelligence.tsx | Revenue, LTV, churn |
-| Workflows | `/admin/workflows` | WorkflowManagement.tsx | n8n/Antigravity state |
-| Fulfillment | `/admin/fulfillment` | (fulfillment queue) | Service delivery queue |
-| Settings | `/admin/settings` | (settings) | Configuration |
-| System | `/admin/system` | SystemMonitoring.tsx | Health, logs, alerts |
+| Tab | Component | Purpose |
+|-----|-----------|---------|
+| Progress | ProgressHub | Pulse, costs, pipeline, products |
+| AI Agents | AIAgentManagement | Agent config |
+| Customers | CustomerManagement | CRM |
+| **Audiences** | AudienceInsightsTab | Follower outreach, audience insights, prospects |
+| FB Bot | MarketplaceManagement | FB Marketplace customers |
+| Workflows | WorkflowManagement | n8n/Antigravity |
+| Templates | WorkflowTemplatesManagement | Workflow templates |
+| N8N Mission | N8nMaintenanceControl | N8n control |
+| System | SystemMonitoring | Health, alerts |
 
 ## Key Files
 
@@ -87,6 +88,9 @@ admin.superseller.agency → /admin/page.tsx → verifySession() → AdminDashbo
 ### Infrastructure
 - N8nMaintenanceControl, WorkflowManagement, WorkflowTemplatesManagement
 - AIAgentManagement
+
+### Audience & Follower Outreach
+- AudienceInsightsTab — segments, top products, messaging angles, prospects list
 
 ### Advanced
 - EcosystemMap, LaunchControlCenter, NewProductWizard
@@ -118,6 +122,8 @@ admin.superseller.agency → /admin/page.tsx → verifySession() → AdminDashbo
 | `/api/admin/seed` | Data seeding |
 | `/api/admin/vault` | Credential vault |
 | `/api/admin/frontdesk` | FrontDesk config |
+| `/api/admin/followers` | Follower snapshots (follower_snapshots, account scoped) |
+| `/api/admin/audience-insights` | Audience insights (audience_insights, account scoped) |
 
 ## Adding a New Admin Tab
 
@@ -140,6 +146,8 @@ admin.superseller.agency → /admin/page.tsx → verifySession() → AdminDashbo
 | Testimonial | Social proof management |
 | service_health | System Monitor |
 | alertRule / alertHistory | Alert management |
+| follower_snapshots | Follower outreach (Drizzle/worker, read via $queryRaw) |
+| audience_insights | Aggregate audience segments (Drizzle/worker, read via $queryRaw) |
 
 ## Error-Cause-Fix
 

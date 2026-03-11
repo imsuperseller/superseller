@@ -11,6 +11,7 @@ import { query } from "../db/client";
 import { redisConnection } from "../queue/connection";
 import { logger } from "../utils/logger";
 import { sendText, phoneToChatId } from "./waha-client";
+import { logNotification } from "./notification-log";
 
 // ─── Types ───
 
@@ -224,7 +225,7 @@ async function processResult(result: HealthCheckResult): Promise<void> {
 
     if (result.status === "ok") {
         if (state.consecutiveFailures >= ESCALATION_THRESHOLD) {
-            await sendAlert(`*${result.service}* recovered (was down for ${state.consecutiveFailures} checks)`);
+            await sendAlert(`*${result.service}* recovered (was down for ${state.consecutiveFailures} checks)`, result.service);
         }
         state.consecutiveFailures = 0;
         state.lastStatus = "ok";
@@ -237,7 +238,8 @@ async function processResult(result: HealthCheckResult): Promise<void> {
             await sendAlert(
                 `*${result.service}* is ${result.status}` +
                 (result.details ? ` — ${JSON.stringify(result.details)}` : "") +
-                ` (${state.consecutiveFailures} consecutive failures)`
+                ` (${state.consecutiveFailures} consecutive failures)`,
+                result.service
             );
             state.lastAlertAt = now;
         }
@@ -247,20 +249,21 @@ async function processResult(result: HealthCheckResult): Promise<void> {
     alertStates.set(result.service, state);
 }
 
-async function sendAlert(message: string): Promise<void> {
-    const phone = config.healthMonitor?.alertPhone;
-    if (!phone) return;
-
-    const chatId = phoneToChatId(phone);
-    // Use 'personal' session since superseller-ops is not authenticated
-    const alertSession = "personal";
-
-    try {
-        await sendText(chatId, `🔴 *Health Alert*\n${message}`, { session: alertSession });
-        logger.warn({ msg: "Health alert sent", message });
-    } catch (err: any) {
-        logger.error({ msg: "Failed to send health alert", error: err.message });
-    }
+async function sendAlert(message: string, service?: string): Promise<void> {
+    // Log to unified notification system (handles WhatsApp send internally)
+    const isRecovery = message.includes("recovered");
+    await logNotification({
+        source: "health_monitor",
+        type: isRecovery ? "success" : "alert",
+        title: service ? `${service} ${isRecovery ? "recovered" : "issue"}` : "Health Alert",
+        body: message,
+        metadata: { service },
+        relatedEntityType: "service",
+        relatedEntityId: service,
+        sendViaWhatsapp: true,
+        whatsappSession: "personal",
+    });
+    logger.warn({ msg: "Health alert sent via notification-log", message });
 }
 
 // ─── Public API ───
