@@ -1,0 +1,106 @@
+name: Morning Ops Briefing
+
+on:
+  schedule:
+    - cron: '17 14 * * *'   # 8:17 AM CDT (UTC-6) / 9:17 AM EDT
+  workflow_dispatch:          # Manual trigger
+
+jobs:
+  briefing:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 10
+
+      - name: Check Worker Health
+        id: worker
+        continue-on-error: true
+        run: |
+          RESP=$(curl -sf --max-time 10 http://172.245.56.50:3002/api/health 2>&1) && echo "status=healthy" >> $GITHUB_OUTPUT || echo "status=unhealthy" >> $GITHUB_OUTPUT
+          echo "response=$RESP" >> $GITHUB_OUTPUT
+
+      - name: Check Web Health
+        id: web
+        continue-on-error: true
+        run: |
+          RESP=$(curl -sf --max-time 10 https://superseller.agency/api/health 2>&1) && echo "status=healthy" >> $GITHUB_OUTPUT || echo "status=unhealthy" >> $GITHUB_OUTPUT
+          echo "response=$RESP" >> $GITHUB_OUTPUT
+
+      - name: Check Ollama
+        id: ollama
+        continue-on-error: true
+        run: |
+          curl -sf --max-time 10 http://172.245.56.50:11434/api/tags > /dev/null 2>&1 && echo "status=healthy" >> $GITHUB_OUTPUT || echo "status=unhealthy" >> $GITHUB_OUTPUT
+
+      - name: Check WAHA
+        id: waha
+        continue-on-error: true
+        run: |
+          curl -sf --max-time 10 http://172.245.56.50:3000/api/sessions > /dev/null 2>&1 && echo "status=healthy" >> $GITHUB_OUTPUT || echo "status=unhealthy" >> $GITHUB_OUTPUT
+
+      - name: Check FB Bot
+        id: fbbot
+        continue-on-error: true
+        run: |
+          curl -sf --max-time 10 http://172.245.56.50:8082/health > /dev/null 2>&1 && echo "status=healthy" >> $GITHUB_OUTPUT || echo "status=unhealthy" >> $GITHUB_OUTPUT
+
+      - name: Recent Commits
+        id: commits
+        run: |
+          {
+            echo 'log<<EOF'
+            git log --oneline -5
+            echo 'EOF'
+          } >> $GITHUB_OUTPUT
+
+      - name: Uncommitted Changes
+        id: gitstat
+        run: |
+          CHANGES=$(git status --porcelain | wc -l | tr -d ' ')
+          echo "count=$CHANGES" >> $GITHUB_OUTPUT
+
+      - name: Generate Briefing
+        run: |
+          WORKER_ICON=$([[ "${{ steps.worker.outputs.status }}" == "healthy" ]] && echo "✅" || echo "❌")
+          WEB_ICON=$([[ "${{ steps.web.outputs.status }}" == "healthy" ]] && echo "✅" || echo "❌")
+          OLLAMA_ICON=$([[ "${{ steps.ollama.outputs.status }}" == "healthy" ]] && echo "✅" || echo "❌")
+          WAHA_ICON=$([[ "${{ steps.waha.outputs.status }}" == "healthy" ]] && echo "✅" || echo "❌")
+          FBBOT_ICON=$([[ "${{ steps.fbbot.outputs.status }}" == "healthy" ]] && echo "✅" || echo "❌")
+
+          echo "## ☀️ Morning Ops Briefing — $(date +%Y-%m-%d)"
+          echo ""
+          echo "### Services"
+          echo "| Service | Status |"
+          echo "|---------|--------|"
+          echo "| Worker (RackNerd) | $WORKER_ICON |"
+          echo "| Web (Vercel) | $WEB_ICON |"
+          echo "| Ollama | $OLLAMA_ICON |"
+          echo "| WAHA | $WAHA_ICON |"
+          echo "| FB Bot | $FBBOT_ICON |"
+          echo ""
+          echo "### Recent Commits"
+          echo '```'
+          echo "${{ steps.commits.outputs.log }}"
+          echo '```'
+          echo ""
+          echo "### Uncommitted Changes: ${{ steps.gitstat.outputs.count }} files"
+
+      - name: Create Issue on Failure
+        if: steps.worker.outputs.status == 'unhealthy' || steps.web.outputs.status == 'unhealthy'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const worker = '${{ steps.worker.outputs.status }}';
+            const web = '${{ steps.web.outputs.status }}';
+            const issues = [];
+            if (worker === 'unhealthy') issues.push('Worker (RackNerd)');
+            if (web === 'unhealthy') issues.push('Web (Vercel)');
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `⚠️ Ops Alert: ${issues.join(', ')} down — ${new Date().toISOString().slice(0,10)}`,
+              body: `Morning ops briefing detected service failures.\n\n**Down:** ${issues.join(', ')}\n\nCheck GitHub Actions run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              labels: ['ops-alert']
+            });

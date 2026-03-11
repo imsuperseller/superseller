@@ -1,0 +1,97 @@
+name: Daily Doc Drift Scan
+
+on:
+  schedule:
+    - cron: '3 15 * * *'     # 9:03 AM CDT (UTC-6)
+  workflow_dispatch:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Scan for doc contradictions
+        id: scan
+        run: |
+          CONFLICTS=""
+          COUNT=0
+
+          # 1. Check if PRODUCT_STATUS.md products match what's referenced in CLAUDE.md
+          # Look for services marked deprecated in CLAUDE.md but active elsewhere
+          if grep -q "n8n.*primary" CLAUDE.md 2>/dev/null; then
+            CONFLICTS="$CONFLICTS\n- CLAUDE.md says n8n is primary (should be backup/Antigravity primary)"
+            COUNT=$((COUNT + 1))
+          fi
+
+          # 2. Check pricing consistency — canonical: Starter $79, Pro $149, Team $299
+          for f in $(find . -name "*.ts" -o -name "*.tsx" -o -name "*.md" | grep -v node_modules | grep -v ".git/"); do
+            # Look for old pricing ($299 starter or $699/$1499 plans)
+            if grep -qE '\$699|\$1,?499|\$1499' "$f" 2>/dev/null; then
+              CONFLICTS="$CONFLICTS\n- $f contains old pricing (\$699/\$1499 — canonical is \$79/\$149/\$299)"
+              COUNT=$((COUNT + 1))
+            fi
+          done
+
+          # 3. Check DATABASE_URL references — should be PostgreSQL only, no Firestore as primary
+          if grep -q "Firestore.*primary\|primary.*Firestore" docs/INFRA_SSOT.md 2>/dev/null; then
+            CONFLICTS="$CONFLICTS\n- INFRA_SSOT.md references Firestore as primary (should be PostgreSQL)"
+            COUNT=$((COUNT + 1))
+          fi
+
+          # 4. Check for "Stripe" listed as active payment processor (should be PayPal)
+          if grep -qiE "stripe.*(active|current|primary)" docs/INFRA_SSOT.md CLAUDE.md brain.md 2>/dev/null; then
+            CONFLICTS="$CONFLICTS\n- Doc lists Stripe as active payment (migrated to PayPal Feb 2026)"
+            COUNT=$((COUNT + 1))
+          fi
+
+          # 5. Verify WAHA URL consistency across docs
+          WAHA_URLS=$(grep -roh "172\.245\.56\.50:[0-9]*" docs/INFRA_SSOT.md CLAUDE.md 2>/dev/null | sort -u)
+          WAHA_3000=$(echo "$WAHA_URLS" | grep ":3000" | wc -l)
+          if [ "$WAHA_3000" -eq 0 ]; then
+            CONFLICTS="$CONFLICTS\n- WAHA URL (172.245.56.50:3000) missing from infrastructure docs"
+            COUNT=$((COUNT + 1))
+          fi
+
+          # 6. Check worker port consistency (should be 3002 on RackNerd)
+          if grep -q "worker.*:3001.*RackNerd\|RackNerd.*:3001.*worker" docs/INFRA_SSOT.md 2>/dev/null; then
+            CONFLICTS="$CONFLICTS\n- INFRA_SSOT.md has worker on port 3001 for RackNerd (should be 3002)"
+            COUNT=$((COUNT + 1))
+          fi
+
+          # 7. Check for QuickBooks listed as active (cancelled Mar 8, 2026)
+          if grep -qiE "quickbooks.*(active|running|configured)" docs/INFRA_SSOT.md CLAUDE.md 2>/dev/null | grep -v "CANCEL\|cancelled\|removed"; then
+            CONFLICTS="$CONFLICTS\n- QuickBooks referenced as active (cancelled Mar 8, 2026)"
+            COUNT=$((COUNT + 1))
+          fi
+
+          # 8. Check date freshness — docs claiming "February 2026" as current
+          STALE_DATES=$(grep -rn "Current.*February 2026\|Updated.*February 2026" brain.md CLAUDE.md docs/INFRA_SSOT.md PRODUCT_STATUS.md 2>/dev/null || true)
+          if [ -n "$STALE_DATES" ]; then
+            CONFLICTS="$CONFLICTS\n- Stale date references (still says February 2026):\n$(echo "$STALE_DATES" | sed 's/^/  /')"
+            COUNT=$((COUNT + 1))
+          fi
+
+          echo "count=$COUNT" >> $GITHUB_OUTPUT
+
+          if [ "$COUNT" -eq 0 ]; then
+            echo "## 📄 Doc Drift Scan — $(date +%Y-%m-%d): Clean ✅"
+          else
+            echo "## 📄 Doc Drift Scan — $(date +%Y-%m-%d): $COUNT conflicts found"
+            echo -e "$CONFLICTS"
+          fi
+
+      - name: Create Issue on Drift
+        if: steps.scan.outputs.count != '0'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const count = '${{ steps.scan.outputs.count }}';
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `📄 Doc Drift: ${count} conflict(s) — ${new Date().toISOString().slice(0,10)}`,
+              body: `Daily doc drift scan found ${count} contradictions across documentation.\n\nCheck the workflow run for details: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              labels: ['doc-drift']
+            });

@@ -1,0 +1,76 @@
+name: Stale Reference Cleanup Scan
+
+on:
+  schedule:
+    - cron: '22 17 * * 3'    # Wednesday 11:22 AM CDT (UTC-6)
+  workflow_dispatch:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Scan for stale references
+        id: scan
+        run: |
+          ISSUES=""
+          COUNT=0
+
+          # 1. airtable.com references (should only be in archived/historical context)
+          AIRTABLE=$(grep -rn "airtable\.com" --include="*.ts" --include="*.tsx" --include="*.js" --include="*.jsx" . 2>/dev/null | grep -v node_modules | grep -v ".git/" || true)
+          if [ -n "$AIRTABLE" ]; then
+            ISSUES="$ISSUES\n### airtable.com (deprecated)\n\`\`\`\n$AIRTABLE\n\`\`\`\n"
+            COUNT=$((COUNT + $(echo "$AIRTABLE" | wc -l)))
+          fi
+
+          # 2. QuickBooks references (cancelled — should be removed except DECISIONS.md)
+          QB=$(grep -rni "quickbooks" --include="*.ts" --include="*.tsx" --include="*.js" --include="*.json" . 2>/dev/null | grep -v node_modules | grep -v ".git/" | grep -v DECISIONS.md | grep -v progress.md | grep -v findings.md || true)
+          if [ -n "$QB" ]; then
+            ISSUES="$ISSUES\n### QuickBooks (cancelled)\n\`\`\`\n$QB\n\`\`\`\n"
+            COUNT=$((COUNT + $(echo "$QB" | wc -l)))
+          fi
+
+          # 3. Stripe in non-schema files (migrated to PayPal)
+          STRIPE=$(grep -rn "stripe" --include="*.ts" --include="*.tsx" --include="*.js" . 2>/dev/null | grep -v node_modules | grep -v ".git/" | grep -v schema.prisma | grep -v schema.ts | grep -v DECISIONS.md | grep -v CLAUDE.md | grep -v brain.md | grep -v INFRA_SSOT.md | grep -v progress.md | grep -v findings.md | grep -vi "stripe\*" | grep -i "stripe" || true)
+          if [ -n "$STRIPE" ]; then
+            ISSUES="$ISSUES\n### Stripe (migrated to PayPal)\n\`\`\`\n$STRIPE\n\`\`\`\n"
+            COUNT=$((COUNT + $(echo "$STRIPE" | wc -l)))
+          fi
+
+          # 4. Firestore outside FB Bot (deprecated)
+          FIRESTORE=$(grep -rn "firestore\|Firestore" --include="*.ts" --include="*.tsx" --include="*.js" . 2>/dev/null | grep -v node_modules | grep -v ".git/" | grep -v "platforms/marketplace" | grep -v "fb-marketplace" | grep -v DECISIONS.md | grep -v CLAUDE.md | grep -v brain.md | grep -v progress.md | grep -v findings.md || true)
+          if [ -n "$FIRESTORE" ]; then
+            ISSUES="$ISSUES\n### Firestore (deprecated outside FB Bot)\n\`\`\`\n$FIRESTORE\n\`\`\`\n"
+            COUNT=$((COUNT + $(echo "$FIRESTORE" | wc -l)))
+          fi
+
+          # 5. Webflow (fully retired)
+          WEBFLOW=$(grep -rn "webflow\|Webflow" --include="*.ts" --include="*.tsx" --include="*.js" --include="*.json" . 2>/dev/null | grep -v node_modules | grep -v ".git/" | grep -v DECISIONS.md | grep -v progress.md | grep -v findings.md || true)
+          if [ -n "$WEBFLOW" ]; then
+            ISSUES="$ISSUES\n### Webflow (retired)\n\`\`\`\n$WEBFLOW\n\`\`\`\n"
+            COUNT=$((COUNT + $(echo "$WEBFLOW" | wc -l)))
+          fi
+
+          echo "count=$COUNT" >> $GITHUB_OUTPUT
+          if [ "$COUNT" -eq 0 ]; then
+            echo "## 🧹 Stale Reference Scan — $(date +%Y-%m-%d): Clean ✅"
+          else
+            echo "## 🧹 Stale Reference Scan — $(date +%Y-%m-%d): $COUNT stale references found"
+            echo -e "$ISSUES"
+          fi
+
+      - name: Create Issue on Findings
+        if: steps.scan.outputs.count != '0'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const count = '${{ steps.scan.outputs.count }}';
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🧹 Stale References: ${count} found — ${new Date().toISOString().slice(0,10)}`,
+              body: `Weekly stale reference scan found ${count} references to deprecated services in code files.\n\nCheck the workflow run for details: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              labels: ['tech-debt']
+            });
