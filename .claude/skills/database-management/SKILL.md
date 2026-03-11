@@ -45,6 +45,28 @@ Use when working on database schema, migrations, ORM queries, or data consistenc
 | video_jobs | — | `videoJobs` | Worker-only but web reads via API proxy |
 | usage_events | `model UsageEvent` | `usageEvents` | type column: Prisma uses `type`, DB column is `event_type` |
 
+### Web-Only Tables (Prisma only — worker does NOT touch)
+These tables are managed exclusively by the web app via Prisma. The worker has no Drizzle schema for them. Safe to migrate with raw SQL or `prisma db push` without Drizzle impact.
+
+| Table | Prisma Model | Purpose |
+|-------|-------------|---------|
+| Project | `model Project` | Admin project CRUD |
+| ProjectMilestone | `model ProjectMilestone` | Project milestones |
+| ProjectTask | `model ProjectTask` | Project tasks |
+| AuditTemplate | `model AuditTemplate` | Business playbook templates |
+| AuditSection | `model AuditSection` | Template sections |
+| AuditItem | `model AuditItem` | Individual audit questions |
+| AuditInstance | `model AuditInstance` | Per-customer audit instance |
+| AuditResponse | `model AuditResponse` | Per-question answers + status |
+| CiRun | `model CiRun` | CI pipeline runs |
+| ServiceInstance | `model ServiceInstance` | Service activation records |
+| Subscription | `model Subscription` | Revenue/billing |
+| Payment | `model Payment` | Financial records |
+| Lead | `model Lead` | CRM leads |
+| alertRule | `model AlertRule` | Alert rule definitions |
+| alertHistory | `model AlertHistory` | Fired alert history |
+| service_health | raw SQL | Health check results |
+
 ### Database Connection
 ```
 DATABASE_URL=postgresql://user:pass@host:5432/superseller

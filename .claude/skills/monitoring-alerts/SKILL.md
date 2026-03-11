@@ -49,7 +49,7 @@ Persist to service_health table
         ↓
 Alert Engine (evaluate thresholds → fire alerts → cooldown)
         ↓
-Channels: Email (Resend) + Audit Log (PostgreSQL)
+Channels: Email (Resend) + WhatsApp (WAHA) + Audit Log (PostgreSQL)
 ```
 
 ## Key Files
@@ -90,19 +90,29 @@ Channels: Email (Resend) + Audit Log (PostgreSQL)
 |---------|-------|-------|
 | Prisma Migration | Counts rolled-back from `_prisma_migrations` | Degraded if any rollbacks |
 
-## Alert Rules (9 Defaults)
+## Alert Rules (10 Defaults)
 
 | Rule | Condition | Cooldown | Channels |
 |------|-----------|----------|----------|
-| PostgreSQL down | 2 failures | 15 min | email + audit |
-| Worker down | 2 failures | 15 min | email + audit |
-| Kie.ai down | 3 failures | 30 min | audit |
+| PostgreSQL down | 2 failures | 15 min | email + whatsapp + audit |
+| Worker down | 2 failures | 15 min | email + whatsapp + audit |
+| Kie.ai down | 3 failures | 30 min | email + whatsapp + audit |
 | Gemini down | 3 failures | 30 min | audit |
-| PayPal down | 3 failures | 30 min | audit |
+| PayPal down | 2 failures | 15 min | email + whatsapp + audit |
 | Ollama down | 3 failures | 60 min | audit |
 | n8n down | 5 failures | 120 min | audit |
 | PostgreSQL slow | >2000ms | 30 min | audit |
 | Worker slow | >5000ms | 30 min | audit |
+| PayPal slow | >5000ms | 60 min | audit |
+
+## WhatsApp Channel (WAHA)
+
+- **Transport**: HTTP POST to `http://172.245.56.50:3000/api/sendText` via WAHA on VPS
+- **Auth**: `X-Api-Key` header with `WAHA_API_KEY` env var
+- **Recipient**: `ADMIN_WHATSAPP` env var (default: `14695885133@c.us`)
+- **Best-effort**: 5s timeout, silent fail — WhatsApp alerts never block the alert pipeline
+- **Message format**: Severity emoji + bold severity + message + service ID + timestamp
+- **Bulk enable**: `enableWhatsAppForCriticalRules()` adds WhatsApp to all `service_down` rules that don't have it
 
 ## Database Tables
 
