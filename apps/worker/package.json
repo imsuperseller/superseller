@@ -5,7 +5,9 @@
     "scripts": {
         "dev": "tsx watch src/index.ts",
         "build": "tsc",
-        "start": "node dist/src/index.js"
+        "start": "node dist/src/index.js",
+        "test": "vitest --run",
+        "test:watch": "vitest"
     },
     "dependencies": {
         "@anthropic-ai/claude-agent-sdk": "^0.2.55",
@@ -47,6 +49,7 @@
         "@types/node": "^20.0.0",
         "@types/pg": "^8.16.0",
         "tsx": "^4.0.0",
-        "typescript": "^5.0.0"
+        "typescript": "^5.0.0",
+        "vitest": "^4.0.18"
     }
 }
