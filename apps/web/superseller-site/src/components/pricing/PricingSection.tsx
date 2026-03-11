@@ -201,17 +201,13 @@ function PricingCard({ plan, index }: { plan: PricingPlan; index: number }) {
         {/* Features with staggered checkmarks */}
         <ul className="space-y-3 mb-8 flex-1">
           {features.map((feature, i) => (
-            <motion.li
+            <li
               key={i}
               className="flex items-start gap-3 text-sm text-[var(--superseller-text-secondary)]"
-              initial={{ opacity: 0, x: -8 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.3, delay: 0.4 + i * 0.05 }}
             >
               <Check className="w-4 h-4 text-green-400 shrink-0 mt-0.5" />
               <span>{feature}</span>
-            </motion.li>
+            </li>
           ))}
         </ul>
 
