@@ -250,21 +250,14 @@ Age 40-55, married with active mortgage, NIS 10K-15K/month income, Hebrew-speaki
 
 ## 7. Rensto Online Directory
 
-> **NOTE**: This is NOT an external customer — it's an internal SuperSeller product/asset. Rensto LLC = SuperSeller Agency (same legal entity). Included here for completeness since the codebase lives at repo root.
+> **NOTE**: Rensto is a SEPARATE BUSINESS under the same legal entity. Codebase lives at `~/rensto - online directory/` (NOT in this repo). Included here for reference only.
 
 | Field | Details |
 |-------|---------|
-| **Type** | Premium contractor directory with pricing transparency scoring |
-| **Domain** | [rensto.com](https://rensto.com) (repurposed to show automation platform messaging) |
-| **Stack** | Next.js 14 + TypeScript + Tailwind + PostgreSQL |
-| **Data** | 500 contractors scraped across 5 metros (Dallas, Austin, Phoenix, Charlotte, Nashville/Denver) |
-
-### Status
-**Dormant**. Codebase exists, domain repurposed. No active customers, no active data pipeline, admin dashboard is mock data.
-
-**Revenue model** (planned, never launched): Lead gen $100-200/lead, premium listings $149/mo, verification badges $49-79/mo.
-
-**Decision needed**: Kill the directory product or relaunch. Current state is dead weight in the repo.
+| **Type** | Premium contractor directory (separate business from SuperSeller AI) |
+| **Domain** | [rensto.com](https://rensto.com) |
+| **Codebase** | `~/rensto - online directory/` — separate repo, NOT inside SuperSeller |
+| **Relationship** | Same legal entity. Rensto contractors = SuperSeller AI prospects (one-way data flow). No shared code. |
 
 ---
 

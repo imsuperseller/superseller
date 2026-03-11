@@ -362,8 +362,8 @@ scripts/simple-add-notion-fields.js
 scripts/sync-workflow-templates-to-notion.js
 scripts/bmad/bmad-smart-data-population.js
 scripts/build-email-automation-system.js
-scripts/create-rensto-system-corrected.js
-scripts/document-all-rensto-implementations.js
+scripts/create-rensto-system-corrected.js     # legacy cleanup script
+scripts/document-all-rensto-implementations.js # legacy cleanup script
 scripts/workflow-organization-and-migration.js
 scripts/cleanup_duplicates.js
 scripts/notion_deep_investigation.js

@@ -55,8 +55,8 @@ brain.md, CLAUDE.md, *.md (root)  → Project 7 (Strategy & Docs)
 - **Type**: Customer-specific site/content
 
 ### Rensto Online Directory
-- **Path**: `rensto - online directory/`
-- **Type**: Directory listing site
+- **Path**: `~/rensto - online directory/` (SEPARATE repo, NOT inside SuperSeller)
+- **Type**: Separate business — contractor directory. Rensto contractors = SuperSeller prospects.
 
 ---
 

@@ -320,7 +320,7 @@ HTTP status codes: `400` (bad input), `401` (unauthorized), `403` (forbidden), `
 | `PAYMENT.SALE.COMPLETED` | Reset monthly credits |
 | `BILLING.SUBSCRIPTION.CANCELLED` | Suspend service |
 
-> **Note**: DB columns still named `stripe*` (e.g., `stripeSessionId`) but store PayPal IDs. Stripe keys preserved dormant for rensto.com.
+> **Note**: DB columns still named `stripe*` (e.g., `stripeSessionId`) but store PayPal IDs. Stripe deprecated — PayPal is primary.
 
 ---
 

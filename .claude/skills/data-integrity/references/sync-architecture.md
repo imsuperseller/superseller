@@ -48,7 +48,7 @@ PostgreSQL (SSOT)
 ## Conflict Resolution
 
 1. **Postgres vs Aitable**: Postgres wins. Aitable is a read-only mirror.
-2. **Postgres vs PayPal**: PayPal owns billing lifecycle. Postgres mirrors for fast queries. (Stripe dormant, reserved for rensto.com.)
+2. **Postgres vs PayPal**: PayPal owns billing lifecycle. Postgres mirrors for fast queries. (Stripe deprecated.)
 3. **Prisma vs Drizzle**: Neither "wins" — both must match the DB. Schema Sentinel enforces this.
 4. **Postgres vs Redis**: Postgres is truth. Redis is ephemeral. On Redis loss, rebuild queue from Postgres job statuses.
 

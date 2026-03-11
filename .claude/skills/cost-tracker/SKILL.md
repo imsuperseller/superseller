@@ -56,7 +56,7 @@ negativeTrigger:
 | Resend | Email | $0.001 | Per email |
 | R2 | Upload | $0.0001 | Per operation |
 | R2 | Storage | $0.015/GB/mo | Monthly |
-| PayPal | Transaction | 2.9% + $0.30 | Per payment (Stripe dormant, reserved for rensto.com) |
+| PayPal | Transaction | 2.9% + $0.30 | Per payment |
 | Ollama | Embeddings | $0.00 | Self-hosted |
 
 ## Key Files

@@ -21,9 +21,6 @@ function getToken(): string {
 /** SuperSeller AI Services Agreement — the default template for all products */
 export const TEMPLATES = {
   services: "99de20b5-2bb9-4439-9532-e00902fe6824",
-  // Legacy Rensto templates (keep for reference, don't use for new contracts)
-  rensto_automation: "cc270143-c63a-482e-9f5b-8d9c0dbe01a2",
-  rensto_standard: "69216056-6003-4b7c-9321-c00c060d0e9d",
 };
 
 interface Signer {
