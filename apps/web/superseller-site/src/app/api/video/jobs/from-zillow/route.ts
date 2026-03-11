@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifySession } from "@/lib/auth";
 import { CreditService } from "@/lib/credits";
 
-const WORKER_URL = process.env.VIDEO_WORKER_URL || "";
+const WORKER_URL = process.env.VIDEO_WORKER_URL || "http://172.245.56.50:3002";
 const VIDEO_CREDIT_COST = parseInt(process.env.VIDEO_CREDIT_COST || "50", 10);
 
 /** POST /api/video/jobs/from-zillow — create video from Zillow URL. Requires auth + credits. */

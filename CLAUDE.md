@@ -120,7 +120,7 @@ npm run db:push          # Push schema to DB
 npm run test:credits     # Credit system test
 npm run test:e2e         # Playwright E2E tests
 ```
-**Deploy**: `git push` auto-deploys `api.superseller.agency`. For `superseller.agency`: run `vercel --prod` from **repo root** (NOT from `apps/web/superseller-site/` — Vercel project has rootDirectory configured). See `VERCEL_PROJECT_MAP.md`.
+**Deploy**: `git push` auto-deploys both `api.superseller.agency` (deploy-api.yml) and `superseller.agency` (deploy-main-site.yml). Manual fallback: `vercel --prod` from **repo root** (NOT from `apps/web/superseller-site/`). See `VERCEL_PROJECT_MAP.md`.
 
 ### Worker (apps/worker)
 ```bash

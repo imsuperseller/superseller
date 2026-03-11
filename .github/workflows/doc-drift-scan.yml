@@ -5,6 +5,10 @@ on:
     - cron: '3 15 * * *'     # 9:03 AM CDT (UTC-6)
   workflow_dispatch:
 
+permissions:
+  issues: write
+  contents: read
+
 jobs:
   scan:
     runs-on: ubuntu-latest

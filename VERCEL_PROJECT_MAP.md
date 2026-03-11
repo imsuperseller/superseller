@@ -47,7 +47,8 @@
 
 **Current**: Push to main deploys both api.superseller.agency (deploy-api.yml) and superseller.agency (deploy-main-site.yml). Option B in effect.
 
-**Options** (choose when ready):
-- **A**: Add superseller.agency to api-superseller-site (one project, two domains) — single deploy on push
-- **B**: Enable Git deploy for superseller-site so both projects deploy on push
-- **C**: Keep manual; document in runbook (current)
+**GitHub secrets required**:
+- `VERCEL_TOKEN` — Vercel API token
+- `VERCEL_ORG_ID` — `team_a1gxSHNFg8Pp7qxoUN69QkVl`
+- `API_PROJECT_ID` — api-rensto-site project ID (for deploy-api.yml)
+- `MAIN_PROJECT_ID` — `prj_AKC4gUSm2EWNj3RR8Cou4cILHYxp` (for deploy-main-site.yml)

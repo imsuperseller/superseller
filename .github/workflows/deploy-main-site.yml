@@ -1,0 +1,37 @@
+name: Deploy Main Site (superseller.agency)
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'apps/web/superseller-site/**'
+      - '.github/workflows/deploy-main-site.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Vercel CLI
+        run: npm i -g vercel@32
+
+      - name: Pull Vercel env (Production)
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          vercel pull --yes --environment=production --token "$VERCEL_TOKEN" || true
+
+      - name: Deploy to Vercel (Production)
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.MAIN_PROJECT_ID }}
+        run: |
+          vercel deploy --prod --token "$VERCEL_TOKEN" --yes

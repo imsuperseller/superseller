@@ -5,6 +5,9 @@ on:
     - cron: '33 16 * * 2'    # Tuesday 10:33 AM CDT
   workflow_dispatch:
 
+permissions:
+  issues: write
+
 jobs:
   check:
     runs-on: ubuntu-latest

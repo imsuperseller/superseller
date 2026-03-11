@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { verifySession } from "@/lib/auth";
 
-const WORKER_URL = process.env.VIDEO_WORKER_URL || "";
+const WORKER_URL = process.env.VIDEO_WORKER_URL || "http://172.245.56.50:3002";
 
 export async function GET() {
     const session = await verifySession();

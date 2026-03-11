@@ -5,6 +5,9 @@ on:
     - cron: '47 14 * * *'    # Daily 8:47 AM CDT
   workflow_dispatch:
 
+permissions:
+  issues: write
+
 jobs:
   check:
     runs-on: ubuntu-latest

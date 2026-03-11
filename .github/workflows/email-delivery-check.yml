@@ -5,6 +5,9 @@ on:
     - cron: '51 16 * * *'    # Daily 10:51 AM CDT
   workflow_dispatch:
 
+permissions:
+  issues: write
+
 env:
   RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
 

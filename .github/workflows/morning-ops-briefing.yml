@@ -5,6 +5,10 @@ on:
     - cron: '17 14 * * *'   # 8:17 AM CDT (UTC-6) / 9:17 AM EDT
   workflow_dispatch:          # Manual trigger
 
+permissions:
+  issues: write
+  contents: read
+
 jobs:
   briefing:
     runs-on: ubuntu-latest

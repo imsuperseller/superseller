@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifySession } from "@/lib/auth";
 import { CreditService } from "@/lib/credits";
 
-const WORKER_URL = process.env.VIDEO_WORKER_URL || "";
+const WORKER_URL = process.env.VIDEO_WORKER_URL || "http://172.245.56.50:3002";
 const REGEN_CREDIT_COST_PER_CLIP = parseInt(process.env.REGEN_CREDIT_COST || "10", 10);
 
 /** POST /api/video/jobs/[id]/regenerate — regenerate selected clips. Requires auth + credits. */
