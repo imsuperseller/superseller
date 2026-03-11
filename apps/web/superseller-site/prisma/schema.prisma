@@ -259,6 +259,8 @@ model ServiceInstance {
   activatedAt        DateTime?
   updatedAt          DateTime  @updatedAt
   tenantId           String?   @db.Uuid
+  projectId          String?
+  project            Project?  @relation("ServiceInstanceProject", fields: [projectId], references: [id])
 }
 
 /// Recurring subscriptions (WhatsApp, care plan, lead gen, content AI)
@@ -485,6 +487,8 @@ model WhatsAppInstance {
   createdAt      DateTime  @default(now())
   activatedAt    DateTime?
   updatedAt      DateTime  @updatedAt
+  projectId      String?
+  project        Project?  @relation("WhatsAppInstanceProject", fields: [projectId], references: [id])
 }
 
 /// Individual WhatsApp messages with speed-to-lead tracking
@@ -1382,4 +1386,158 @@ enum UserRole {
 enum BillingInterval {
   month
   year
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PROJECT + AUDIT SYSTEM (Admin Command Center)
+// ═══════════════════════════════════════════════════════════════
+
+/// A tracked unit of work — internal project, customer engagement, infra initiative, or external repo/site.
+model Project {
+  id              String    @id @default(cuid())
+  name            String
+  description     String?
+  /// internal | customer | infrastructure | external
+  type            String    @default("internal")
+  /// planning | in_progress | verification | completed | blocked
+  status          String    @default("planning")
+  /// 0–100
+  progress        Int       @default(0)
+  /// business pillar label (e.g. "Marketplace", "VideoForge", "Infrastructure")
+  pillar          String?
+  owner           String?
+  githubRepo      String?
+  vercelProjectId String?
+  startDate       DateTime?
+  dueDate         DateTime?
+  /// Free-form JSON for external IDs, tags, or phase-specific metadata
+  metadata        Json?
+  outlookEventId  String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @default(now()) @updatedAt
+
+  milestones         ProjectMilestone[]
+  tasks              ProjectTask[]
+  auditInstances     AuditInstance[]
+  serviceInstances   ServiceInstance[]  @relation("ServiceInstanceProject")
+  whatsAppInstances  WhatsAppInstance[] @relation("WhatsAppInstanceProject")
+
+  @@index([type])
+  @@index([status])
+}
+
+/// A named checkpoint within a Project.
+model ProjectMilestone {
+  id        String    @id @default(cuid())
+  projectId String
+  title     String
+  dueDate   DateTime?
+  /// pending | complete | overdue
+  status    String    @default("pending")
+  order     Int       @default(0)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+
+  project   Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+}
+
+/// An actionable task within a Project.
+model ProjectTask {
+  id          String   @id @default(cuid())
+  projectId   String
+  title       String
+  description String?
+  /// todo | in_progress | done | blocked
+  status      String   @default("todo")
+  assignee    String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+}
+
+/// Defines a reusable playbook — e.g. "SuperSeller New Business Audit" or "Rensto City Launch".
+model AuditTemplate {
+  id          String         @id @default(cuid())
+  name        String
+  description String?
+  version     String         @default("1.0")
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @default(now()) @updatedAt
+
+  sections    AuditSection[]
+  instances   AuditInstance[]
+}
+
+/// A section within an AuditTemplate (e.g., "Business Fundamentals").
+model AuditSection {
+  id         String        @id @default(cuid())
+  templateId String
+  title      String
+  order      Int           @default(0)
+  createdAt  DateTime      @default(now())
+
+  template   AuditTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  items      AuditItem[]
+
+  @@index([templateId])
+}
+
+/// A single question or checklist item within an AuditSection.
+model AuditItem {
+  id          String         @id @default(cuid())
+  sectionId   String
+  question    String
+  /// Freeform hint to help the responder answer
+  hint        String?
+  /// Optional: maps to a SuperSeller product for auto-suggest (Phase 6+)
+  productTag  String?
+  order       Int            @default(0)
+  createdAt   DateTime       @default(now())
+
+  section     AuditSection   @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  responses   AuditResponse[]
+
+  @@index([sectionId])
+}
+
+/// One run of an AuditTemplate for a specific Project/customer.
+model AuditInstance {
+  id         String         @id @default(cuid())
+  templateId String
+  projectId  String?
+  /// Label for this engagement (e.g. "UAD Onboarding — March 2026")
+  label      String?
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @default(now()) @updatedAt
+
+  template   AuditTemplate  @relation(fields: [templateId], references: [id])
+  project    Project?       @relation(fields: [projectId], references: [id])
+  responses  AuditResponse[]
+
+  @@index([templateId])
+  @@index([projectId])
+}
+
+/// One answer to one AuditItem within an AuditInstance.
+model AuditResponse {
+  id         String        @id @default(cuid())
+  instanceId String
+  itemId     String
+  /// pending | complete | na
+  status     String        @default("pending")
+  answer     String?
+  notes      String?
+  updatedAt  DateTime      @default(now()) @updatedAt
+
+  instance   AuditInstance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+  item       AuditItem     @relation(fields: [itemId], references: [id])
+
+  @@unique([instanceId, itemId])
+  @@index([instanceId])
 }
