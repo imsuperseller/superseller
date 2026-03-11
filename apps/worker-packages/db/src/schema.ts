@@ -15,75 +15,83 @@ export const jobStatusEnum = [
 
 export const clipStatusEnum = ["queued", "generating", "done", "failed"] as const;
 
-// Multi-Tenancy
-export const tenants = pgTable("tenants", {
+// ──────────────────────────────────────────────────────────────────────
+// WARNING: These Drizzle table definitions are NOT used at runtime.
+// The worker uses raw SQL via db/client.ts (pg Pool).
+// These exist as documentation / type reference only.
+//
+// ACTUAL DB table names are PascalCase (Prisma-created):
+//   "Tenant" (not "tenants"), "TenantUser" (not "tenant_users"), "User" (not "users")
+// ACTUAL DB columns are camelCase (e.g. "businessName", "emailVerified").
+//
+// The definitions below reference the ACTUAL DB table/column names.
+// ──────────────────────────────────────────────────────────────────────
+
+// Multi-Tenancy — Actual DB table: "Tenant" (PascalCase, camelCase columns)
+export const tenants = pgTable("Tenant", {
     id: uuid("id").primaryKey().defaultRandom(),
     name: text("name").notNull(),
     slug: text("slug").notNull().unique(),
     status: text("status").notNull().default("active"),
     plan: jsonb("plan"),
     settings: jsonb("settings"),
-    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
-}, (table) => ({
-    slugIdx: uniqueIndex("idx_tenants_slug").on(table.slug),
-    statusIdx: index("idx_tenants_status").on(table.status),
-}));
+    createdAt: timestamp("createdAt").notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt").notNull().defaultNow(),
+});
 
-export const tenantUsers = pgTable("tenant_users", {
-    tenantId: uuid("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
-    userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+// Actual DB table: "TenantUser" (PascalCase, camelCase columns)
+export const tenantUsers = pgTable("TenantUser", {
+    tenantId: uuid("tenantId").notNull().references(() => tenants.id, { onDelete: "cascade" }),
+    userId: text("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
     role: text("role").notNull().default("user"),
 }, (table) => ({
     pk: primaryKey({ columns: [table.tenantId, table.userId] }),
 }));
 
-// Tables
-export const users = pgTable("users", {
-    id: uuid("id").primaryKey().defaultRandom(),
+// Actual DB table: "User" (PascalCase, camelCase columns, id is TEXT not UUID)
+export const users = pgTable("User", {
+    id: text("id").primaryKey(), // text, not uuid — Prisma uses gen_random_uuid()::text
     email: text("email").notNull().unique(),
     name: text("name"),
     phone: text("phone"),
     image: text("image"),
-    dashboardToken: text("dashboard_token").unique(),
+    dashboardToken: text("dashboardToken").unique(),
 
     // Business Profile
-    businessName: text("business_name"),
-    businessType: text("business_type"),
-    businessSize: text("business_size"),
-    revenueRange: text("revenue_range"),
+    businessName: text("businessName"),
+    businessType: text("businessType"),
+    businessSize: text("businessSize"),
+    revenueRange: text("revenueRange"),
 
     // Account Status
     status: text("status").notNull().default("active"),
     role: text("role").notNull().default("USER"),
-    // Aligned with Prisma: Boolean? — DB column is `boolean`, not timestamp
-    emailVerified: boolean("email_verified"),
+    emailVerified: boolean("emailVerified"),
 
     // Service Access & Entitlements
-    activeServices: jsonb("active_services"),
+    activeServices: jsonb("activeServices"),
     entitlements: jsonb("entitlements"),
 
     // Billing
-    stripeCustomerId: text("stripe_customer_id"),
+    stripeCustomerId: text("stripeCustomerId"),
+    defaultPaymentMethodId: text("defaultPaymentMethodId"),
+    billingAddress: jsonb("billingAddress"),
 
     // Preferences & Metrics
     preferences: jsonb("preferences").default({}),
-    metrics: jsonb("metrics"), // { totalLeads, totalMessages, totalBookings, lastActivityAt }
+    metrics: jsonb("metrics"),
 
     // Acquisition
     source: text("source"),
-    referrerId: text("referrer_id"),
-    qualificationScore: integer("qualification_score"),
-    qualificationTier: text("qualification_tier"),
+    referrerId: text("referrerId"),
+    qualificationScore: integer("qualificationScore"),
+    qualificationTier: text("qualificationTier"),
 
     // Timestamps
-    lastLoginAt: timestamp("last_login_at", { withTimezone: true }),
-    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
-}, (table) => ({
-    emailIdx: uniqueIndex("idx_users_email").on(table.email),
-    tokenIdx: uniqueIndex("idx_users_token").on(table.dashboardToken),
-}));
+    lastLoginAt: timestamp("lastLoginAt"),
+    createdAt: timestamp("createdAt").notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt").notNull().defaultNow(),
+});
 
 export const stripeCustomers = pgTable("stripe_customers", {
     userId: uuid("user_id").primaryKey().references(() => users.id),
@@ -91,9 +99,9 @@ export const stripeCustomers = pgTable("stripe_customers", {
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
+// Actual DB: entitlements — PK is user_id (text), NO separate id column
 export const entitlementsTable = pgTable("entitlements", {
-    id: uuid("id").primaryKey().defaultRandom(),
-    userId: uuid("user_id").notNull().unique().references(() => users.id),
+    userId: text("user_id").primaryKey(), // text PK, not uuid — stores both UUIDs and slugs like "superseller-admin"
     creditsBalance: integer("credits_balance").notNull().default(0),
     plan: text("plan").notNull().default("starter"), // starter | pro | team
     status: text("status").notNull().default("active"), // active | past_due | canceled
@@ -182,15 +190,19 @@ export const assetsRelations = relations(assets, ({ one }) => ({
     }),
 }));
 
+// Actual DB: usage_events — user_id is TEXT (not uuid), matches "User".id type
 export const usageEvents = pgTable("usage_events", {
     id: uuid("id").primaryKey().defaultRandom(),
-    userId: uuid("user_id").notNull().references(() => users.id),
-    jobId: uuid("job_id"),
-    type: text("event_type").notNull(), // debit | refund | topup | grant | reset
+    userId: text("user_id").notNull(), // text, not uuid — references "User".id which is text
+    videoJobId: uuid("video_job_id"), // legacy FK to video_jobs — used by 001_initial_schema
+    jobId: uuid("job_id"), // newer FK to video_jobs
+    type: text("event_type").notNull(), // debit | refund | topup | grant | reset | credit_debit | credit_refund
     amount: integer("credits_used").default(0), // Positive for topup/refund, negative for debit
-    modelId: text("model_id"), // FK into LlmModelConfig
+    apiCost: numeric("api_cost"), // legacy cost tracking (decimal 8,4)
+    stripeMeterEventId: text("stripe_meter_event_id"), // legacy Stripe metering
+    modelId: text("model_id"),
     costUsd: doublePrecision("cost_usd"), // actual cost in USD
-    tokensUsed: integer("tokens_used"), // total tokens (input + output)
+    tokensUsed: integer("tokens_used"),
     metadata: jsonb("metadata"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 }, (table) => ({

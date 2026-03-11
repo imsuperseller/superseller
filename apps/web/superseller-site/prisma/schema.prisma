@@ -979,9 +979,10 @@ model N8nAgentMemory {
 
 /// User account entitlements (credits, usage limits)
 /// SSOT: Aligned with Drizzle entitlementsTable and CreditService
+/// Credit entitlements per user. PK is user_id (text), no separate id column.
+/// Actual DB: entitlements(user_id TEXT PK, credits_balance, plan, status, reset_at, updated_at)
 model Entitlement {
-  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  userId         String    @unique @map("user_id") @db.Uuid
+  userId         String    @id @map("user_id")
   creditsBalance Int       @default(0) @map("credits_balance")
   plan           String    @default("starter") @db.VarChar(50)
   status         String    @default("active") @db.VarChar(50)
@@ -991,11 +992,13 @@ model Entitlement {
   @@map("entitlements")
 }
 
-/// Precise usage events for auditing and billing
-/// SSOT: Aligned with Drizzle usageEvents and CreditService
+/// Precise usage events for auditing and billing.
+/// Actual DB columns: id(uuid), user_id(text), video_job_id(uuid), event_type(varchar),
+/// credits_used(int), api_cost(numeric), stripe_meter_event_id(varchar), created_at(timestamptz),
+/// metadata(jsonb), job_id(uuid), model_id(text), cost_usd(float8), tokens_used(int), amount(numeric), type(text)
 model UsageEvent {
   id                    String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  userId                String    @map("user_id") @db.Uuid
+  userId                String    @map("user_id")
   video_job_id          String?   @db.Uuid
   type                  String    @map("event_type") @db.VarChar(50)
   amount                Int?      @default(1) @map("credits_used")

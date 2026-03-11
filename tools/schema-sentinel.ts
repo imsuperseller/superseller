@@ -75,8 +75,9 @@ function parsePrisma(content: string): ModelDef[] {
             let fieldType = fieldMatch[2];
             const optional = !!fieldMatch[3];
 
-            // Skip relation fields (capitalized type with no @db)
-            if (fieldType[0] === fieldType[0].toUpperCase() && !trimmed.includes("@db.") && !["String", "Int", "Float", "Boolean", "DateTime", "Json", "BigInt", "Decimal", "Bytes"].includes(fieldType)) {
+            // Skip relation fields (capitalized type with no @db), but keep known enums
+            const knownEnums = ["UserRole", "BillingInterval"];
+            if (fieldType[0] === fieldType[0].toUpperCase() && !trimmed.includes("@db.") && !["String", "Int", "Float", "Boolean", "DateTime", "Json", "BigInt", "Decimal", "Bytes", ...knownEnums].includes(fieldType)) {
                 continue;
             }
 
@@ -151,6 +152,8 @@ const TYPE_MAP: Record<string, string[]> = {
     "Json": ["jsonb", "json"],
     "BigInt": ["bigint"],
     "Decimal": ["numeric"],
+    // Enum types are stored as text in PostgreSQL
+    "UserRole": ["text"],
 };
 
 function areTypesCompatible(prismaType: string, drizzleType: string): boolean {
