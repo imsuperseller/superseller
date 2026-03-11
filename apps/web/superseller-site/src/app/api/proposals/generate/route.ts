@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
       console.error('[Proposals] Postgres save failed:', pgError);
     }
     await auditAgent.log({
-      service: 'firebase',
+      service: 'other',
       action: 'proposal_generated',
       status: 'success',
       details: { proposalId: finalProposal.id, client: clientInfo.company, recordId: savedProposal.recordId },

@@ -1,4 +1,4 @@
-const { getPendingSchedule, getClientData, updateScheduleStatus, logPostRun } = require("./lib/firebase");
+const { getPendingSchedule, getClientData, updateScheduleStatus, logPostRun } = require("./lib/db");
 const { executePosting } = require("./lib/engine");
 const fs = require("fs");
 const path = require("path");
@@ -27,7 +27,7 @@ async function main() {
     fs.writeFileSync(LOCK_FILE, process.pid.toString());
     process.on("exit", () => { try { fs.unlinkSync(LOCK_FILE); } catch (e) { } });
 
-    console.log("SuperSeller AI SaaS Orchestrator Started — Monitoring Firestore Queue...");
+    console.log("SuperSeller AI SaaS Orchestrator Started — Monitoring Postgres Queue...");
 
     while (true) {
         try {

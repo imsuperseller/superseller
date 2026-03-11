@@ -1,93 +1,61 @@
-import { initializeApp, cert, getApps } from 'firebase-admin/app';
-import { getFirestore } from 'firebase-admin/firestore';
-import * as fs from 'fs';
-import * as path from 'path';
 import * as dotenv from 'dotenv';
+import pg from 'pg';
 
-// 1. Initialize Firebase
-const serviceAccountPath = process.env.FIREBASE_SERVICE_ACCOUNT_PATH;
-const databaseURL = process.env.FIREBASE_DATABASE_URL;
+dotenv.config();
 
-if (!serviceAccountPath) {
-    console.error("FIREBASE_SERVICE_ACCOUNT_PATH is required in .env");
-    process.exit(1);
-}
+const { Pool } = pg;
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
-let app;
-
-if (getApps().length === 0) {
-    if (fs.existsSync(serviceAccountPath)) {
-        try {
-            const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, 'utf8'));
-            if (serviceAccount.private_key) {
-                serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
-            }
-            app = initializeApp({
-                credential: cert(serviceAccount),
-                projectId: 'superseller'
-            });
-            console.log("✅ Authenticated with provided service account");
-        } catch (e) {
-            console.error("Failed to parse service account JSON", e);
-            process.exit(1);
-        }
-    } else {
-        console.log("❌ Service account file not found at: " + serviceAccountPath);
-        process.exit(1);
-    }
-} else {
-    app = getApps()[0];
-}
-
-const db = getFirestore(app);
-
-// 2. Define The Master Configs (The "Source of Truth")
-const CONFIGS = [
-    {
-        id: 'uad', // Matches ?product=uad
-        tableId: '6T8jI35R2tX1Mni9', // UAD Garage Door Table
-        flowType: 'IMAGE',
-        modelName: 'flux-pro-1.1',
-        prompts: [
-            "A hyper-realistic photo of a modern garage door, sleek aluminum finish, morning sunlight",
-            "A cozy suburban home with a wooden carriage-style garage door, warm evening lighting"
-        ],
-        technical: {
-            profileId: 'Profile_UAD_123', // Example ID
-            videoSuffix: '_garage'
-        }
+const CLIENTS = [
+  {
+    id: 'uad',
+    category: 'Property for Rent',
+    config: {
+      tableId: '6T8jI35R2tX1Mni9',
+      flowType: 'IMAGE',
+      modelName: 'flux-pro-1.1',
+      prompts: [
+        "A hyper-realistic photo of a modern garage door, sleek aluminum finish, morning sunlight",
+        "A cozy suburban home with a wooden carriage-style garage door, warm evening lighting",
+      ],
+      technical: { profileId: 'Profile_UAD_123', videoSuffix: '_garage' },
     },
-    {
-        id: 'missparty', // Matches ?product=missparty
-        tableId: 'lOkdHmJ3IHnz4cPR', // missParty Bounce House Table
-        flowType: 'VIDEO',
-        modelName: 'bytedance/v1-pro-fast-image-to-video',
-        prompts: [
-            "A cinematic video of a beautiful white inflatable bounce house in a sunny backyard, children joyfully bouncing inside, gentle camera movement"
-        ],
-        technical: {
-            profileId: 'Profile_MissParty_456', // Example ID
-            videoSuffix: '_bounce'
-        }
-    }
+    secrets: {}, // populate with actual creds when deploying
+  },
+  {
+    id: 'missparty',
+    category: 'Property for Rent',
+    config: {
+      tableId: 'lOkdHmJ3IHnz4cPR',
+      flowType: 'VIDEO',
+      modelName: 'bytedance/v1-pro-fast-image-to-video',
+      prompts: [
+        "A cinematic video of a beautiful white inflatable bounce house in a sunny backyard, children joyfully bouncing inside, gentle camera movement",
+      ],
+      technical: { profileId: 'Profile_MissParty_456', videoSuffix: '_bounce' },
+    },
+    secrets: {},
+  },
 ];
 
-// 3. Seed Function
 async function seedConfigs() {
-    console.log("🚀 Seeding Marketplace Configs...");
-    const batch = db.batch();
+  console.log("Seeding marketplace_clients...");
 
-    for (const config of CONFIGS) {
-        const ref = db.collection('marketplace_configs').doc(config.id);
-        batch.set(ref, {
-            ...config,
-            updatedAt: new Date()
-        }, { merge: true });
-        console.log(`Prepared: ${config.id} (${config.flowType})`);
-    }
+  for (const client of CLIENTS) {
+    await pool.query(
+      `INSERT INTO marketplace_clients (id, category, config, secrets)
+       VALUES ($1, $2, $3, $4)
+       ON CONFLICT (id) DO UPDATE SET
+         category = EXCLUDED.category,
+         config = EXCLUDED.config,
+         updated_at = NOW()`,
+      [client.id, client.category, JSON.stringify(client.config), JSON.stringify(client.secrets)]
+    );
+    console.log(`  + ${client.id} (${client.config.flowType})`);
+  }
 
-    await batch.commit();
-    console.log("✅ Successfully seeded marketplace_configs!");
+  console.log("Done.");
+  await pool.end();
 }
 
 seedConfigs().catch(console.error);

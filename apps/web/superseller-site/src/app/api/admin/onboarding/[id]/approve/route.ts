@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import { getStorageAdmin } from '@/lib/firebase-admin';
 import prisma from '@/lib/prisma';
 import * as dbAdmin from '@/lib/db/admin';
 import { verifySession } from '@/lib/auth';
+
 export async function POST(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
@@ -22,7 +22,7 @@ export async function POST(
         const onboardingData = pgOnboarding as any;
         const clientId = onboardingData.createdByUid || onboardingData.userId || id;
 
-        // 1. Create/update client record in Postgres
+        // Create/update client record in Postgres
         await prisma.user.upsert({
             where: { id: clientId },
             create: {
@@ -36,25 +36,6 @@ export async function POST(
                 status: 'active',
             },
         });
-
-        // 2. Handle secrets if they exist in Firebase Storage
-        if (onboardingData.secretsPath) {
-            try {
-                const storage = getStorageAdmin().bucket();
-                const sourceFile = storage.file(onboardingData.secretsPath);
-                const [exists] = await sourceFile.exists();
-                if (exists) {
-                    const [content] = await sourceFile.download();
-                    const secretsData = JSON.parse(content.toString());
-
-                    // Store in Postgres vault
-                    const { setVaultItem } = await import('@/lib/db/admin');
-                    await setVaultItem('client_secrets', clientId, JSON.stringify(secretsData));
-                }
-            } catch (storageErr) {
-                console.warn('Failed to migrate secrets from storage:', storageErr);
-            }
-        }
 
         await dbAdmin.updateOnboardingRequest(id, {
             status: 'approved',

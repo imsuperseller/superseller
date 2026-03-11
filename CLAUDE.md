@@ -27,7 +27,7 @@
 > - Both use the same `DATABASE_URL`. Shared tables like `User` must be manually synced.
 
 > [!WARNING]
-> **Deprecated (DO NOT USE)**: Firestore (except FB Bot posting schedule), Airtable.com, Stripe, Webflow, BMAD, QuickBooks. **n8n** = backup only (Antigravity is primary). DB `stripe*` columns store PayPal IDs.
+> **Deprecated (DO NOT USE)**: Firebase/Firestore (fully removed Mar 2026 — FB Bot migrated to Postgres), Airtable.com, Stripe, Webflow, BMAD, QuickBooks. **n8n** = backup only (Antigravity is primary). DB `stripe*` columns store PayPal IDs.
 
 > [!CAUTION]
 > **Content Extraction Rule (NEVER invent content)**:
@@ -60,7 +60,7 @@
 
 **Store in PostgreSQL**: Service instances, customers, payments, leads, fulfillment.  
 **Use Redis**: Sessions, rate limits, BullMQ job queues.  
-**Retired**: Firestore mostly removed Feb 2026. **Exception**: FB Marketplace Bot still uses Firestore (`platforms/marketplace/saas-engine/lib/firebase.js`) — pending Postgres migration. Airtable.com retired. **Aitable.ai** for dashboards only. `firebase-admin` kept for Storage only (onboarding secrets).
+**Retired**: Firebase/Firestore fully removed Mar 2026 (FB Bot migrated to Postgres `marketplace_clients`/`marketplace_schedules`/`marketplace_runs` tables). Airtable.com retired. **Aitable.ai** for dashboards only.
 
 **Active production n8n workflows (DO NOT disable)**: Telnyx voice lead analysis UAD (U6EZ2iLQ4zCGg31H), Telnyx voice lead analysis MissParty (9gfvZo9sB4b3pMWQ). These are **Telnyx voice call pipelines**, not FB Bot workflows. The FB Marketplace Bot runs on Antigravity (webhook-server + fb-scheduler on PM2).
 

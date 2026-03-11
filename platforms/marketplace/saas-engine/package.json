@@ -8,8 +8,8 @@
         "cors": "^2.8.6",
         "dotenv": "^16.6.1",
         "express": "^4.18.2",
-        "firebase-admin": "^12.7.0",
         "gologin": "^1.0.58",
+        "pg": "^8.13.0",
         "puppeteer-core": "^21.11.0"
     }
 }
