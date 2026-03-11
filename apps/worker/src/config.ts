@@ -130,6 +130,9 @@ export const config = {
         sessionTtlDays: parseInt(optional("CLAUDECLAW_SESSION_TTL_DAYS", "7")),
         // Bot's own WhatsApp JID for group mention detection (e.g. "14695885133")
         botJid: optional("CLAUDECLAW_BOT_JID", "14695885133"),
+        // Phone numbers of all WAHA sessions — messages FROM these numbers are bot responses,
+        // not humans. Prevents cross-session feedback loops (personal ↔ business ping-pong).
+        wahaSessionPhones: (process.env.CLAUDECLAW_WAHA_SESSION_PHONES || "14695885133,12144362102").split(",").filter(Boolean),
     },
 
     wahaSessions: {

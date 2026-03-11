@@ -66,7 +66,7 @@ const KNOWN_BAD_VALUES: Array<{ value: string; reason: string }> = [
 
 /** FB bot must use UAD's Telnyx key, not SuperSeller's */
 const UAD_TELNYX_PREFIX = "KEY019B52B283";
-const SUPERSELLER_TELNYX_PREFIX = "KEY019CACA6A";
+const SUPERSELLER_TELNYX_PREFIX = "KEY019CDA945";
 
 const FETCH_TIMEOUT_MS = 10_000;
 const ALERT_PHONE = config.healthMonitor.alertPhone || "14695885133";
@@ -151,7 +151,21 @@ function checkCrossFileConsistency(): SentinelIssue[] {
     const wVal = workerVars[key];
     const fVal = fbBotVars[key];
     if (!wVal || !fVal) continue;
-    if (wVal !== fVal) {
+
+    // Normalize DATABASE_URL: postgres:// vs postgresql:// are equivalent,
+    // and localhost vs 172.245.56.50 both point to the same RackNerd machine.
+    let wNorm = wVal;
+    let fNorm = fVal;
+    if (key === "DATABASE_URL") {
+      const normDbUrl = (url: string) =>
+        url
+          .replace(/^postgresql:\/\//, "postgres://")
+          .replace(/localhost/g, "172.245.56.50");
+      wNorm = normDbUrl(wVal);
+      fNorm = normDbUrl(fVal);
+    }
+
+    if (wNorm !== fNorm) {
       issues.push({
         severity: "critical",
         file: `${workerFile} vs ${fbBotFile}`,
@@ -171,13 +185,16 @@ function checkCrossFileConsistency(): SentinelIssue[] {
 async function checkCredentialLiveness(): Promise<SentinelIssue[]> {
   const issues: SentinelIssue[] = [];
 
-  // Kie.ai balance check
+  // Kie.ai liveness check — use the probe endpoint (recordInfo with dummy taskId)
+  // A valid key returns 200 (with error body for unknown task), an invalid key returns 401/403.
   try {
-    const res = await fetch(`${config.kie.baseUrl}/v1/user/balance`, {
+    const res = await fetch(`${config.kie.baseUrl}/v1/jobs/recordInfo?taskId=probe-credential-sentinel`, {
       headers: { Authorization: `Bearer ${config.kie.apiKey}` },
       signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
     });
-    if (!res.ok) {
+    // 404 is OK — means key is valid but task doesn't exist (expected).
+    // Only flag 401/403 as credential issues.
+    if (res.status === 401 || res.status === 403) {
       issues.push({
         severity: "critical",
         file: "worker .env",

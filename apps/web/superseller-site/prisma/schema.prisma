@@ -1142,6 +1142,28 @@ model LandingPage {
   @@map("landing_pages")
 }
 
+/// Prospect intelligence report — auto-generated competitor analysis used as lead magnet.
+model ProspectReport {
+  id                 String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug               String   @unique
+  active             Boolean  @default(true)
+  businessName       String
+  vertical           String
+  location           String?
+  summary            Json?
+  adIds              Json?
+  ctaType            String   @default("whatsapp")
+  ctaUrl             String?
+  ctaText            String   @default("Get Your Custom Strategy")
+  recommendedProduct String?
+  views              Int      @default(0)
+  leadsCaptured      Int      @default(0)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @default(now()) @updatedAt
+
+  @@map("prospect_reports")
+}
+
 /// Marketplace customer profile (1 per user, manages multiple products)
 model MarketplaceCustomer {
   id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid

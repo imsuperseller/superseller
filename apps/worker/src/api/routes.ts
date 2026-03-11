@@ -639,6 +639,17 @@ async function handleClaudeClawWebhook(req: Request, res: Response, mode: "perso
             return res.json({ status: "ignored", reason: "own_message" });
         }
 
+        // Prevent cross-session feedback loops: ignore messages from other WAHA session phones.
+        // When the personal session (14695885133) receives a response from the business session
+        // (12144362102) or vice versa, it's ClaudeClaw talking to itself — not a human.
+        const wahaPhones = (appConfig.claudeclaw.wahaSessionPhones || []) as string[];
+        if (wahaPhones.length > 0 && chatId) {
+            const senderPhone = chatId.replace("@c.us", "").replace("@s.whatsapp.net", "");
+            if (wahaPhones.includes(senderPhone)) {
+                return res.json({ status: "ignored", reason: "cross_session_bot" });
+            }
+        }
+
         // Group messages: route to group agent if registered, otherwise ignore
         if (chatId && chatId.includes("@g.us")) {
             const { isRegisteredGroup } = await import("../services/group-agent");
