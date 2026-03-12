@@ -2,16 +2,19 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { t, type CompeteLocale } from "./compete-i18n";
 
 interface Props {
   tenantSlug: string;
+  locale: CompeteLocale;
 }
 
-export default function CompeteLogin({ tenantSlug }: Props) {
+export default function CompeteLogin({ tenantSlug, locale }: Props) {
   const [email, setEmail] = useState("");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const isRTL = locale === "he";
 
   const displayName = tenantSlug
     .split("-")
@@ -33,13 +36,13 @@ export default function CompeteLogin({ tenantSlug }: Props) {
       });
       const data = await res.json();
       if (!res.ok) {
-        const msg = data.message || data.error || "שגיאה בשליחת הקישור";
+        const msg = data.message || data.error || t("errorSending", locale);
         setError(msg);
         return;
       }
       setSent(true);
     } catch {
-      setError("שגיאת רשת. נסו שוב.");
+      setError(t("networkError", locale));
     } finally {
       setSending(false);
     }
@@ -47,7 +50,7 @@ export default function CompeteLogin({ tenantSlug }: Props) {
 
   return (
     <div
-      dir="rtl"
+      dir={isRTL ? "rtl" : "ltr"}
       className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden"
       style={{ background: "var(--superseller-bg-primary)" }}
     >
@@ -101,13 +104,13 @@ export default function CompeteLogin({ tenantSlug }: Props) {
                   className="text-2xl font-black mb-2"
                   style={{ color: "var(--superseller-text-primary)" }}
                 >
-                  בדקו את המייל
+                  {t("checkEmail", locale)}
                 </h1>
                 <p
                   className="text-sm mb-1"
                   style={{ color: "var(--superseller-text-secondary)" }}
                 >
-                  שלחנו קישור כניסה ל-
+                  {t("sentLinkTo", locale)}
                 </p>
                 <p
                   className="text-sm font-bold mb-6"
@@ -119,7 +122,7 @@ export default function CompeteLogin({ tenantSlug }: Props) {
                   className="text-[11px]"
                   style={{ color: "var(--superseller-text-muted)" }}
                 >
-                  הקישור תקף ל-24 שעות. לא קיבלתם? בדקו ספאם.
+                  {t("linkValid", locale)}
                 </p>
               </>
             ) : (
@@ -128,13 +131,13 @@ export default function CompeteLogin({ tenantSlug }: Props) {
                   className="text-2xl font-black mb-1"
                   style={{ color: "var(--superseller-text-primary)" }}
                 >
-                  מחקר מתחרים
+                  {t("competitorResearch", locale)}
                 </h1>
                 <p
                   className="text-sm mb-1"
                   style={{ color: "var(--superseller-text-secondary)" }}
                 >
-                  גישה מאובטחת ל-
+                  {t("secureAccess", locale)}
                   <span
                     className="font-bold"
                     style={{ color: "var(--superseller-cyan)" }}
@@ -146,7 +149,7 @@ export default function CompeteLogin({ tenantSlug }: Props) {
                   className="text-[11px] mb-6"
                   style={{ color: "var(--superseller-text-muted)" }}
                 >
-                  הזינו את המייל שלכם לקבלת קישור כניסה
+                  {t("enterEmail", locale)}
                 </p>
 
                 <input
@@ -178,7 +181,7 @@ export default function CompeteLogin({ tenantSlug }: Props) {
                   disabled={sending || !email.includes("@")}
                   className="superseller-btn-3d-primary w-full py-3 rounded-xl font-bold text-[15px] disabled:opacity-20 cursor-pointer"
                 >
-                  {sending ? "שולח..." : "שלחו לי קישור"}
+                  {sending ? t("sending", locale) : t("sendLink", locale)}
                 </button>
               </>
             )}
