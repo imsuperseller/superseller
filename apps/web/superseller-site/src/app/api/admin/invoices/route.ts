@@ -74,11 +74,14 @@ export async function POST(request: NextRequest) {
         tenantSlug,
         invoiceNumber
       );
-      if (url) {
+      if (typeof url === "string") {
         return NextResponse.json({ url, invoiceNumber });
       }
-      // R2 failed — still return JSON with a fallback download
-      console.warn("[invoices] R2 upload failed, returning direct download");
+      // R2 failed — return error details for debugging
+      const r2err = typeof url === "object" ? url.error : "unknown";
+      console.warn("[invoices] R2 failed:", r2err);
+      // Temporarily return error in response for debugging
+      return NextResponse.json({ invoiceNumber, r2Error: r2err, fallback: "download" });
     }
 
     // Return PDF as direct download
@@ -103,7 +106,7 @@ async function uploadInvoiceToR2(
   buffer: Buffer,
   tenantSlug: string,
   invoiceNumber: string
-): Promise<string | null> {
+): Promise<string | { error: string }> {
   try {
     const accountId =
       process.env.R2_ACCOUNT_ID || process.env.CLOUDFLARE_R2_ACCOUNT_ID;
@@ -114,8 +117,7 @@ async function uploadInvoiceToR2(
       process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY;
 
     if (!accountId || !accessKeyId || !secretAccessKey) {
-      console.warn("[invoices] R2 credentials not configured");
-      return null;
+      return { error: `R2 creds missing: acct=${!!accountId} key=${!!accessKeyId} secret=${!!secretAccessKey}` };
     }
 
     const s3 = new S3Client({
@@ -140,7 +142,6 @@ async function uploadInvoiceToR2(
       process.env.R2_PUBLIC_DOMAIN || "https://videos.superseller.agency";
     return `${publicDomain}/${key}`;
   } catch (err: any) {
-    console.error("[invoices] R2 upload failed:", err?.name, err?.message, err?.Code, JSON.stringify({ endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`, bucket: "zillow-to-video-finals" }));
-    return null;
+    return { error: `R2 upload error: ${err?.name}: ${err?.message}` };
   }
 }
