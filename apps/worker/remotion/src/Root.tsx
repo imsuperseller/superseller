@@ -306,7 +306,7 @@ export const RemotionRoot: React.FC = () => {
                 width={1920}
                 height={1080}
                 fps={FPS}
-                durationInFrames={sec(18)}
+                durationInFrames={sec(24)}
                 defaultProps={{
                     photos: [
                         { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/portfolio/upscaled/gallery_blonde-highlights.jpg", label: "Sun-Kissed Highlights" },
@@ -315,6 +315,11 @@ export const RemotionRoot: React.FC = () => {
                         { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/portfolio/upscaled/gallery_blonde-transformation.jpg", label: "Blonde Transformation" },
                         { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/portfolio/upscaled/gallery_color-change.jpg", label: "Color Change" },
                         { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/portfolio/upscaled/gallery_platinum-result.jpg", label: "Platinum" },
+                    ],
+                    motionClips: [
+                        { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/motion/blonde-highlights-motion.mp4", label: "Highlights Motion" },
+                        { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/motion/blonde-transformation-motion.mp4", label: "Transformation Motion" },
+                        { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/motion/platinum-result-motion.mp4", label: "Platinum Motion" },
                     ],
                     businessName: "Hair Approach",
                     tagline: "Dallas Premium Hair Salon",
@@ -329,7 +334,7 @@ export const RemotionRoot: React.FC = () => {
                 width={1080}
                 height={1920}
                 fps={FPS}
-                durationInFrames={sec(18)}
+                durationInFrames={sec(24)}
                 defaultProps={{
                     photos: [
                         { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/portfolio/upscaled/gallery_blonde-highlights.jpg", label: "Sun-Kissed Highlights" },
@@ -338,6 +343,11 @@ export const RemotionRoot: React.FC = () => {
                         { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/portfolio/upscaled/gallery_blonde-transformation.jpg", label: "Blonde Transformation" },
                         { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/portfolio/upscaled/gallery_color-change.jpg", label: "Color Change" },
                         { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/portfolio/upscaled/gallery_platinum-result.jpg", label: "Platinum" },
+                    ],
+                    motionClips: [
+                        { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/motion/blonde-highlights-motion.mp4", label: "Highlights Motion" },
+                        { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/motion/blonde-transformation-motion.mp4", label: "Transformation Motion" },
+                        { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/motion/platinum-result-motion.mp4", label: "Platinum Motion" },
                     ],
                     businessName: "Hair Approach",
                     tagline: "Dallas Premium Hair Salon",

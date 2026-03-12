@@ -5,6 +5,11 @@ export const HairShowreelPropsSchema = z.object({
         url: z.string(),
         label: z.string().optional(),
     })),
+    motionClips: z.array(z.object({
+        url: z.string(),
+        label: z.string().optional(),
+    })).default([]),
+    audioUrl: z.string().optional(),
     businessName: z.string().default("Hair Approach"),
     tagline: z.string().default("Dallas Premium Hair Salon"),
     accentColor: z.string().default("#C9A96E"),
