@@ -366,8 +366,15 @@ export async function generateImageKie(request: KieImageRequest): Promise<{ url:
         aspect_ratio: request.aspect_ratio || "1:1",
     };
 
+    if (request.image_urls?.length) {
+        // Recraft models use "image" (singular URL), others use "image_urls" (array)
+        if (request.model?.startsWith("recraft/")) {
+            input.image = request.image_urls[0];
+        } else {
+            input.image_urls = request.image_urls;
+        }
+    }
     if (request.model === "seedream/4.5-edit") {
-        input.image_urls = request.image_urls;
         input.quality = request.quality || "basic";
     } else {
         input.resolution = request.resolution || "1K";

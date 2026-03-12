@@ -6,6 +6,8 @@ import { CrewDemoComposition } from "./CrewDemoComposition";
 import { CrewDemoV2Composition } from "./CrewDemoV2Composition";
 import { CrewDemoV3Composition } from "./CrewDemoV3Composition";
 import { PropertyTourPropsSchema } from "./types/composition-props";
+import { HairShowreelComposition } from "./HairShowreelComposition";
+import { SocialMockupComposition } from "./SocialMockupComposition";
 import { FPS, calculateTotalDuration, sec } from "./config/timing";
 
 const DEFAULT_PROPS = {
@@ -295,6 +297,110 @@ export const RemotionRoot: React.FC = () => {
                         { layout: "scale-impact" as const, headline: "Production at Scale", counterValue: 50, counterUnit: "Credits / Video" },
                         { layout: "cta-outro" as const, headline: "Hire Forge — 50 Credits/Video" },
                     ],
+                }}
+            />
+            {/* ─── Hair Approach Showreel ─────────────────────── */}
+            <Composition
+                id="HairShowreel-16x9"
+                component={HairShowreelComposition}
+                width={1920}
+                height={1080}
+                fps={FPS}
+                durationInFrames={sec(18)}
+                defaultProps={{
+                    photos: [
+                        { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/portfolio/upscaled/gallery_blonde-highlights.jpg", label: "Sun-Kissed Highlights" },
+                        { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/portfolio/upscaled/gallery_client-waves.jpg", label: "Beach Waves" },
+                        { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/portfolio/upscaled/gallery_brunette-result.jpg", label: "Rich Brunette" },
+                        { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/portfolio/upscaled/gallery_blonde-transformation.jpg", label: "Blonde Transformation" },
+                        { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/portfolio/upscaled/gallery_color-change.jpg", label: "Color Change" },
+                        { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/portfolio/upscaled/gallery_platinum-result.jpg", label: "Platinum" },
+                    ],
+                    businessName: "Hair Approach",
+                    tagline: "Dallas Premium Hair Salon",
+                    accentColor: "#C9A96E",
+                    bgColor: "#1a1a1a",
+                    ctaText: "Book Your Transformation",
+                }}
+            />
+            <Composition
+                id="HairShowreel-9x16"
+                component={HairShowreelComposition}
+                width={1080}
+                height={1920}
+                fps={FPS}
+                durationInFrames={sec(18)}
+                defaultProps={{
+                    photos: [
+                        { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/portfolio/upscaled/gallery_blonde-highlights.jpg", label: "Sun-Kissed Highlights" },
+                        { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/portfolio/upscaled/gallery_client-waves.jpg", label: "Beach Waves" },
+                        { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/portfolio/upscaled/gallery_brunette-result.jpg", label: "Rich Brunette" },
+                        { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/portfolio/upscaled/gallery_blonde-transformation.jpg", label: "Blonde Transformation" },
+                        { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/portfolio/upscaled/gallery_color-change.jpg", label: "Color Change" },
+                        { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/portfolio/upscaled/gallery_platinum-result.jpg", label: "Platinum" },
+                    ],
+                    businessName: "Hair Approach",
+                    tagline: "Dallas Premium Hair Salon",
+                    accentColor: "#C9A96E",
+                    bgColor: "#1a1a1a",
+                    ctaText: "Book Your Transformation",
+                }}
+            />
+
+            {/* ─── Social Mockups (Hair Approach) ────────────── */}
+            <Composition
+                id="SocialMockup-Result"
+                component={SocialMockupComposition}
+                width={1920}
+                height={1080}
+                fps={1}
+                durationInFrames={30}
+                defaultProps={{
+                    postImageUrl: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/portfolio/upscaled/gallery_blonde-highlights.jpg",
+                    postCaption: "Sun-kissed highlights for summer. Balayage is all about that natural, lived-in glow. DM to book your transformation.",
+                    postType: "result" as const,
+                    accountName: "hairapproach",
+                    accentColor: "#C9A96E",
+                    bgColor: "#1a1a1a",
+                    phonePosition: "left" as const,
+                    headline: "Your Instagram, Elevated",
+                    subheadline: "AI-powered content that books appointments",
+                }}
+            />
+            <Composition
+                id="SocialMockup-Tip"
+                component={SocialMockupComposition}
+                width={1920}
+                height={1080}
+                fps={1}
+                durationInFrames={30}
+                defaultProps={{
+                    postImageUrl: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/portfolio/upscaled/gallery_brunette-result.jpg",
+                    postCaption: "Pro tip: Always use a heat protectant before styling. Your hair will thank you. #hairtips #salonlife #dallashair",
+                    postType: "tip" as const,
+                    accountName: "hairapproach",
+                    accentColor: "#C9A96E",
+                    bgColor: "#1a1a1a",
+                    phonePosition: "right" as const,
+                    headline: "Content That Converts",
+                    subheadline: "Professional posts, zero effort",
+                }}
+            />
+            <Composition
+                id="SocialMockup-Transform"
+                component={SocialMockupComposition}
+                width={1920}
+                height={1080}
+                fps={1}
+                durationInFrames={30}
+                defaultProps={{
+                    postImageUrl: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/portfolio/upscaled/gallery_platinum-result.jpg",
+                    postCaption: "From brassy to icy platinum. This transformation took 2 sessions and the results speak for themselves.",
+                    postType: "result" as const,
+                    accountName: "hairapproach",
+                    accentColor: "#C9A96E",
+                    bgColor: "#1a1a1a",
+                    phonePosition: "center" as const,
                 }}
             />
         </>

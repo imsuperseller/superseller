@@ -370,7 +370,30 @@ export function LandingPageClient({ page }: { page: LandingPage & { brand: Brand
           style={{ backgroundColor: isDark ? "#111111" : primary }}
           className="relative pb-20 pt-12 px-6 text-white overflow-hidden"
         >
-          {/* Premium animated gradient background */}
+          {/* Video hero for hair-approach */}
+          {page.slug === "hair-approach" ? (
+            <div className="absolute inset-0 overflow-hidden">
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                poster="https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/portfolio/upscaled/gallery_blonde-highlights.jpg"
+                className="absolute inset-0 w-full h-full object-cover"
+                style={{ filter: "brightness(0.5)" }}
+                onError={(e) => {
+                  (e.target as HTMLVideoElement).style.display = "none";
+                }}
+              >
+                <source
+                  src="https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/showreel/master-16x9.mp4"
+                  type="video/mp4"
+                />
+              </video>
+              <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/60" />
+            </div>
+          ) : (
+          /* Premium animated gradient background */
           <div className="absolute inset-0">
             <div
               className="absolute inset-0 opacity-20"
@@ -389,6 +412,7 @@ export function LandingPageClient({ page }: { page: LandingPage & { brand: Brand
               }
             `}</style>
           </div>
+          )}
 
           <motion.div
             className="max-w-4xl mx-auto flex flex-col items-center text-center relative z-10"
@@ -789,6 +813,60 @@ export function LandingPageClient({ page }: { page: LandingPage & { brand: Brand
                 ))}
               </div>
             </motion.div>
+          </section>
+        )}
+
+        {/* ============================================================= */}
+        {/* SOCIAL MOCKUPS — Hair Approach only                             */}
+        {/* ============================================================= */}
+        {page.slug === "hair-approach" && (
+          <section className="py-20 px-4" style={{ backgroundColor: "#0a0a0a" }}>
+            <div className="max-w-6xl mx-auto">
+              <motion.h2
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                className="text-3xl md:text-4xl font-bold text-center mb-4"
+                style={{
+                  fontFamily: "var(--lp-font-heading)",
+                  color: "#C9A96E",
+                }}
+              >
+                What Your Social Media Could Look Like
+              </motion.h2>
+              <motion.p
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                className="text-center text-gray-400 mb-12 text-lg"
+              >
+                AI-crafted content that books appointments — zero effort from you
+              </motion.p>
+              <motion.div
+                variants={staggerContainer}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                className="grid grid-cols-1 md:grid-cols-3 gap-6"
+              >
+                {[
+                  "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/mockups/mockup-1.png",
+                  "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/mockups/mockup-2.png",
+                  "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/mockups/mockup-3.png",
+                ].map((url, i) => (
+                  <motion.div key={i} variants={scaleIn}>
+                    <img
+                      src={url}
+                      alt={`Social media mockup ${i + 1}`}
+                      className="w-full rounded-lg shadow-2xl"
+                      loading="lazy"
+                    />
+                  </motion.div>
+                ))}
+              </motion.div>
+            </div>
           </section>
         )}
 
