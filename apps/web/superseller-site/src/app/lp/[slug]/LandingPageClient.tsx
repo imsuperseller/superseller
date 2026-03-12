@@ -327,6 +327,20 @@ export function LandingPageClient({ page }: { page: LandingPage & { brand: Brand
           style={{ backgroundColor: isDark ? "#111111" : primary }}
           className="relative pb-20 pt-12 px-6 text-white overflow-hidden"
         >
+          {/* Video background when heroMediaUrl points to a video */}
+          {page.heroMediaUrl && /\.(mp4|webm|mov)$/i.test(page.heroMediaUrl) && (
+            <>
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="absolute inset-0 w-full h-full object-cover"
+                src={page.heroMediaUrl}
+              />
+              <div className="absolute inset-0 bg-black/50" />
+            </>
+          )}
           {/* Subtle animated gradient overlay */}
           <div
             className="absolute inset-0 opacity-20"
