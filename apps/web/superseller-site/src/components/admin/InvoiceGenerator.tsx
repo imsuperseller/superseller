@@ -12,6 +12,7 @@ interface Tenant {
   id: string;
   slug: string;
   name: string;
+  emails?: string[];
 }
 
 const PRESET_ITEMS: Record<string, LineItem[]> = {
@@ -43,7 +44,8 @@ export default function InvoiceGenerator() {
     fetch("/api/admin/customers")
       .then((r) => r.json())
       .then((data) => {
-        if (data.tenants) setTenants(data.tenants);
+        if (data.customers) setTenants(data.customers);
+        else if (data.tenants) setTenants(data.tenants);
       })
       .catch(() => {});
   }, []);
@@ -55,6 +57,7 @@ export default function InvoiceGenerator() {
     const t = tenants.find((t) => t.slug === selectedTenant);
     if (t) {
       setCustomerName(t.name);
+      if (t.emails?.[0]) setCustomerEmail(t.emails[0]);
     }
   }, [selectedTenant, tenants]);
 
