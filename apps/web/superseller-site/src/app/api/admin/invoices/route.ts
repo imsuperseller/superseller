@@ -137,7 +137,7 @@ async function uploadInvoiceToR2(
     );
 
     const publicDomain =
-      process.env.R2_PUBLIC_DOMAIN || "https://videos.superseller.agency";
+      (process.env.R2_PUBLIC_DOMAIN || "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev").trim();
     return `${publicDomain}/${key}`;
   } catch (err) {
     console.error("[invoices] R2 upload failed:", err);
