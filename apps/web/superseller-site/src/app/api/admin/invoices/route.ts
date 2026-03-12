@@ -74,14 +74,11 @@ export async function POST(request: NextRequest) {
         tenantSlug,
         invoiceNumber
       );
-      if (typeof url === "string") {
+      if (url) {
         return NextResponse.json({ url, invoiceNumber });
       }
-      // R2 failed — return error details for debugging
-      const r2err = typeof url === "object" ? url.error : "unknown";
-      console.warn("[invoices] R2 failed:", r2err);
-      // Temporarily return error in response for debugging
-      return NextResponse.json({ invoiceNumber, r2Error: r2err, fallback: "download" });
+      // R2 failed — fall through to direct download
+      console.warn("[invoices] R2 upload failed, returning direct download");
     }
 
     // Return PDF as direct download
@@ -106,18 +103,19 @@ async function uploadInvoiceToR2(
   buffer: Buffer,
   tenantSlug: string,
   invoiceNumber: string
-): Promise<string | { error: string }> {
+): Promise<string | null> {
   try {
     const accountId =
-      process.env.R2_ACCOUNT_ID || process.env.CLOUDFLARE_R2_ACCOUNT_ID;
+      (process.env.R2_ACCOUNT_ID || process.env.CLOUDFLARE_R2_ACCOUNT_ID || "").trim();
     const accessKeyId =
-      process.env.R2_ACCESS_KEY_ID || process.env.CLOUDFLARE_R2_ACCESS_KEY_ID;
+      (process.env.R2_ACCESS_KEY_ID || process.env.CLOUDFLARE_R2_ACCESS_KEY_ID || "").trim();
     const secretAccessKey =
-      process.env.R2_SECRET_ACCESS_KEY ||
-      process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY;
+      (process.env.R2_SECRET_ACCESS_KEY ||
+      process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY || "").trim();
 
     if (!accountId || !accessKeyId || !secretAccessKey) {
-      return { error: `R2 creds missing: acct=${!!accountId} key=${!!accessKeyId} secret=${!!secretAccessKey}` };
+      console.warn("[invoices] R2 credentials not configured");
+      return null;
     }
 
     const s3 = new S3Client({
@@ -141,7 +139,8 @@ async function uploadInvoiceToR2(
     const publicDomain =
       process.env.R2_PUBLIC_DOMAIN || "https://videos.superseller.agency";
     return `${publicDomain}/${key}`;
-  } catch (err: any) {
-    return { error: `R2 upload error: ${err?.name}: ${err?.message}` };
+  } catch (err) {
+    console.error("[invoices] R2 upload failed:", err);
+    return null;
   }
 }
