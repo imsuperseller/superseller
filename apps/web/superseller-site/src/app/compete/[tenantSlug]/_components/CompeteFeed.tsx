@@ -128,7 +128,7 @@ export default function CompeteFeed({ tenantSlug, userName, locale }: Props) {
   if (loading) {
     return (
       <div dir={isRTL ? "rtl" : "ltr"} className="min-h-screen flex flex-col items-center justify-center" style={{ background: THEME.bg }}>
-        <div className="w-10 h-10 rounded-full border-2 border-transparent animate-spin" style={{ borderTopColor: "var(--superseller-cyan)", borderRightColor: "var(--superseller-orange)" }} />
+        <div className="w-10 h-10 rounded-full border-2 border-transparent animate-spin" style={{ borderTopColor: GOLD.light, borderRightColor: GOLD.warm }} />
         <p className="text-sm mt-5" style={{ color: THEME.textMuted }}>{t("loading", locale)}</p>
       </div>
     );
@@ -137,7 +137,7 @@ export default function CompeteFeed({ tenantSlug, userName, locale }: Props) {
   if (error) {
     return (
       <div dir={isRTL ? "rtl" : "ltr"} className="min-h-screen flex items-center justify-center px-4" style={{ background: THEME.bg }}>
-        <div className="superseller-card rounded-2xl p-8 max-w-md w-full text-center" style={{ borderColor: "rgba(220,38,38,0.2)" }}>
+        <div className="rounded-2xl p-8 max-w-md w-full text-center" style={{ background: THEME.bgCard, border: "1px solid rgba(220,38,38,0.2)" }}>
           <p className="font-semibold" style={{ color: "#ef4444" }}>{error}</p>
         </div>
       </div>
@@ -160,7 +160,7 @@ export default function CompeteFeed({ tenantSlug, userName, locale }: Props) {
     return (
       <div dir={isRTL ? "rtl" : "ltr"} className="min-h-screen" style={{ background: THEME.bg }}>
         <div className="sticky top-0 z-20 px-4 py-3 flex items-center justify-between backdrop-blur-xl" style={{ background: "rgba(13,27,46,0.9)", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
-          <button onClick={() => setShowHistory(false)} className="superseller-btn-3d-neon flex items-center gap-2 text-sm font-bold px-4 py-2 rounded-xl cursor-pointer">
+          <button onClick={() => setShowHistory(false)} className="flex items-center gap-2 text-sm font-bold px-4 py-2 rounded-xl cursor-pointer transition-all duration-300 hover:brightness-110" style={{ background: GOLD.dimmer, color: GOLD.primary, border: `1px solid ${GOLD.border}` }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d={isRTL ? "M19 12H5M12 19l-7-7 7-7" : "M5 12H19M12 5l7 7-7 7"}/></svg>
             {t("back", locale)}
           </button>
@@ -203,17 +203,17 @@ export default function CompeteFeed({ tenantSlug, userName, locale }: Props) {
             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
           </div>
           <h2 className="text-3xl font-black mb-3" style={{ color: THEME.text }}>{t("done", locale)}</h2>
-          <p className="text-base mb-2" style={{ color: "var(--superseller-text-secondary)" }}>
+          <p className="text-base mb-2" style={{ color: THEME.textSecondary }}>
             {t("reviewed", locale)} <span className="font-black" style={{ color: GOLD.primary }}>{total}</span> {t("postsWord", locale)}
           </p>
           <div className="flex justify-center gap-6 mb-8">
             <span className="text-sm"><span className="font-black" style={{ color: GOLD.warm }}>{likedCount}</span> <span style={{ color: THEME.textMuted }}>{t("liked", locale)}</span></span>
-            <span className="text-sm"><span className="font-black" style={{ color: "var(--superseller-orange)" }}>{dislikedCount}</span> <span style={{ color: THEME.textMuted }}>{t("disliked", locale)}</span></span>
+            <span className="text-sm"><span className="font-black" style={{ color: THEME.pass }}>{dislikedCount}</span> <span style={{ color: THEME.textMuted }}>{t("disliked", locale)}</span></span>
           </div>
-          <button onClick={() => setShowHistory(true)} className="superseller-btn-3d-neon px-6 py-3 rounded-xl text-sm font-bold cursor-pointer">
+          <button onClick={() => setShowHistory(true)} className="px-6 py-3 rounded-xl text-sm font-bold cursor-pointer transition-all duration-300 hover:brightness-110 active:scale-[0.98]" style={{ background: GOLD.gradient, color: '#0e1225', boxShadow: GOLD.glow }}>
             {t("viewRatings", locale)}
           </button>
-          <p className="mt-8 text-[9px] tracking-[0.2em] uppercase" style={{ color: "var(--superseller-text-muted)", opacity: 0.2 }}>SuperSeller AI</p>
+          <p className="mt-8 text-[9px] tracking-[0.2em] uppercase" style={{ color: THEME.textMuted, opacity: 0.2 }}>SuperSeller AI</p>
         </motion.div>
       </div>
     );
@@ -246,7 +246,7 @@ export default function CompeteFeed({ tenantSlug, userName, locale }: Props) {
               <span className="text-[12px] font-black" style={{ color: THEME.pass }}>{dislikedCount}</span>
             </div>
             {reviewed > 0 && (
-              <button onClick={() => setShowHistory(true)} className="superseller-btn-3d-neon text-[11px] font-bold px-3 py-1.5 rounded-full cursor-pointer">
+              <button onClick={() => setShowHistory(true)} className="text-[11px] font-bold px-3 py-1.5 rounded-full cursor-pointer transition-all duration-300 hover:brightness-110" style={{ background: GOLD.dimmer, color: GOLD.primary, border: `1px solid ${GOLD.border}` }}>
                 {t("history", locale)}
               </button>
             )}
@@ -270,12 +270,12 @@ export default function CompeteFeed({ tenantSlug, userName, locale }: Props) {
       <div className="flex-1 flex items-start justify-center px-4 pt-4 pb-6 relative">
         <div className="max-w-lg w-full relative">
           {currentIndex > 0 && (
-            <button onClick={goPrev} className={`absolute ${isRTL ? "-right-14" : "-left-14"} top-48 w-10 h-10 rounded-full flex items-center justify-center cursor-pointer backdrop-blur-md hover:bg-white/[0.06] transition-all duration-300 hidden lg:flex`} style={{ color: "var(--superseller-text-muted)", border: "1px solid rgba(255,255,255,0.06)" }}>
+            <button onClick={goPrev} className={`absolute ${isRTL ? "-right-14" : "-left-14"} top-48 w-10 h-10 rounded-full flex items-center justify-center cursor-pointer backdrop-blur-md hover:bg-white/[0.06] transition-all duration-300 hidden lg:flex`} style={{ color: THEME.textMuted, border: "1px solid rgba(255,255,255,0.06)" }}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d={isRTL ? "M9 18l6-6-6-6" : "M15 18l-6-6 6-6"}/></svg>
             </button>
           )}
           {currentIndex < pendingAds.length - 1 && (
-            <button onClick={goNext} className={`absolute ${isRTL ? "-left-14" : "-right-14"} top-48 w-10 h-10 rounded-full flex items-center justify-center cursor-pointer backdrop-blur-md hover:bg-white/[0.06] transition-all duration-300 hidden lg:flex`} style={{ color: "var(--superseller-text-muted)", border: "1px solid rgba(255,255,255,0.06)" }}>
+            <button onClick={goNext} className={`absolute ${isRTL ? "-left-14" : "-right-14"} top-48 w-10 h-10 rounded-full flex items-center justify-center cursor-pointer backdrop-blur-md hover:bg-white/[0.06] transition-all duration-300 hidden lg:flex`} style={{ color: THEME.textMuted, border: "1px solid rgba(255,255,255,0.06)" }}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d={isRTL ? "M15 18l-6-6 6-6" : "M9 18l6-6-6-6"}/></svg>
             </button>
           )}
@@ -313,8 +313,8 @@ export default function CompeteFeed({ tenantSlug, userName, locale }: Props) {
               <button
                 onClick={goNext}
                 disabled={currentIndex >= pendingAds.length - 1}
-                className="superseller-btn-3d-glass text-[11px] font-semibold px-4 py-2 rounded-full cursor-pointer disabled:opacity-20"
-                style={{ color: THEME.textMuted }}
+                className="text-[11px] font-semibold px-4 py-2 rounded-full cursor-pointer disabled:opacity-20 transition-all duration-300 hover:brightness-110"
+                style={{ color: THEME.textMuted, background: 'rgba(255,255,255,0.03)', border: `1px solid ${THEME.borderSubtle}` }}
               >
                 {t("skip", locale)} {isRTL ? "\u2190" : "\u2192"}
               </button>

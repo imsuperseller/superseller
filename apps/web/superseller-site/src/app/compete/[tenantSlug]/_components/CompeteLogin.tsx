@@ -161,7 +161,7 @@ export default function CompeteLogin({ tenantSlug, locale }: Props) {
                   placeholder="your@email.com"
                   className="superseller-input w-full text-center rounded-xl px-4 py-3 mb-3"
                   style={{
-                    color: "var(--superseller-text-primary)",
+                    color: THEME.text,
                     fontSize: "15px",
                   }}
                   autoFocus

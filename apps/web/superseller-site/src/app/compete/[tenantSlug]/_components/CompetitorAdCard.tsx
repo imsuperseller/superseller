@@ -158,9 +158,9 @@ export default function CompetitorAdCard({ ad, onRate, reviewerName, locale, com
   // ━━━ Compact / history card ━━━
   if (compact) {
     return (
-      <div className="superseller-card group rounded-2xl overflow-hidden cursor-pointer">
+      <div className="group rounded-2xl overflow-hidden cursor-pointer" style={{ background: THEME.bgCard, border: `1px solid ${GOLD.borderSubtle}` }}>
         {hasMedia && (
-          <div className="relative" style={{ background: "var(--superseller-bg-surface)" }}>
+          <div className="relative" style={{ background: THEME.bgSurface }}>
             {hasVideo ? (
               <video ref={videoRef} src={ad.videoUrl!} poster={!imageError ? ad.imageUrl ?? undefined : undefined} controls preload="metadata" className="w-full max-h-[200px] object-cover" onError={() => setVideoError(true)} />
             ) : (
@@ -244,7 +244,7 @@ export default function CompetitorAdCard({ ad, onRate, reviewerName, locale, com
 
         {/* ── Media / Text content ── */}
         {hasMedia ? (
-          <div className="relative mx-4 rounded-2xl overflow-hidden" style={{ background: "var(--superseller-bg-surface)" }}>
+          <div className="relative mx-4 rounded-2xl overflow-hidden" style={{ background: THEME.bgSurface }}>
             {hasVideo ? (
               <video ref={videoRef} src={ad.videoUrl!} poster={!imageError ? ad.imageUrl ?? undefined : undefined} controls preload="metadata" className="w-full max-h-[400px] object-cover" onError={() => setVideoError(true)} />
             ) : (
@@ -260,7 +260,7 @@ export default function CompetitorAdCard({ ad, onRate, reviewerName, locale, com
           <div className="relative mx-4 rounded-2xl overflow-hidden backdrop-blur-xl" style={{ background: "rgba(22,37,64,0.6)", border: "1px solid rgba(255,255,255,0.06)" }}>
             <div className="absolute top-0 right-0 w-40 h-40 rounded-full blur-3xl opacity-[0.06]" style={{ background: GOLD.primary }} />
             <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-[0.04]" style={{ background: THEME.pass }} />
-            <div className="h-[2px] w-full" style={{ background: "var(--superseller-gradient-brand)" }} />
+            <div className="h-[2px] w-full" style={{ background: GOLD.gradientShimmer }} />
             <div className="relative px-6 py-6" dir={isRTL ? "rtl" : "ltr"}>
               {ad.adTitle && (
                 <h3 className="text-lg font-extrabold leading-snug mb-3" style={{ color: THEME.text, letterSpacing: "-0.01em" }}>
@@ -360,7 +360,7 @@ export default function CompetitorAdCard({ ad, onRate, reviewerName, locale, com
           {!pendingLiked && (
             <button
               onClick={() => setShowFeedback(!showFeedback)}
-              className="flex items-center gap-1.5 mt-3 text-[11px] transition-all duration-300 hover:text-[var(--superseller-cyan)] py-1 cursor-pointer"
+              className="flex items-center gap-1.5 mt-3 text-[11px] transition-all duration-300 py-1 cursor-pointer"
               style={{ color: THEME.textMuted }}
             >
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -400,7 +400,8 @@ export default function CompetitorAdCard({ ad, onRate, reviewerName, locale, com
                     <button
                       onClick={() => handleRate(pendingLiked)}
                       disabled={saving || !note.trim()}
-                      className="w-full py-3 rounded-xl text-sm font-bold transition-all duration-300 disabled:opacity-30 cursor-pointer superseller-btn-3d-primary"
+                      className="w-full py-3 rounded-xl text-sm font-bold transition-all duration-300 disabled:opacity-30 cursor-pointer hover:brightness-110 active:scale-[0.98]"
+                      style={{ background: GOLD.gradient, color: '#0e1225', boxShadow: GOLD.glow }}
                     >
                       {locale === "he"
                         ? pendingLiked ? "שלח — אהבתי 💚" : "שלח — פאס ✕"
@@ -410,10 +411,8 @@ export default function CompetitorAdCard({ ad, onRate, reviewerName, locale, com
                     <button
                       onClick={handleSaveNote}
                       disabled={saving}
-                      className={`px-5 py-2 rounded-xl text-sm font-bold transition-all duration-300 disabled:opacity-20 cursor-pointer ${
-                        saved ? "" : "superseller-btn-3d-neon"
-                      }`}
-                      style={saved ? { background: "rgba(78,205,196,0.15)", color: GOLD.warm } : undefined}
+                      className="px-5 py-2 rounded-xl text-sm font-bold transition-all duration-300 disabled:opacity-20 cursor-pointer hover:brightness-110"
+                      style={saved ? { background: "rgba(208,178,90,0.15)", color: GOLD.warm } : { background: GOLD.dimmer, color: GOLD.primary, border: `1px solid ${GOLD.border}` }}
                     >
                       {saved ? t("saved", locale) : t("save", locale)}
                     </button>
