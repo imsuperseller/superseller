@@ -108,7 +108,8 @@ export function middleware(request: NextRequest) {
         path.startsWith('/lp/') ||
         path.startsWith('/compete/') ||
         path.startsWith('/report/') ||
-        path.startsWith('/discover')
+        path.startsWith('/discover') ||
+        path.startsWith('/analytics/')
     ) {
         const res = NextResponse.next();
         res.headers.set('x-pathname', path);
