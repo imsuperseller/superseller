@@ -213,12 +213,12 @@ export function HairApproachPage({ page }: { page: LandingPage & { brand: Brand 
             onMouseEnter={(e) => { e.currentTarget.style.background = GOLD; e.currentTarget.style.color = DARK; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = GOLD; }}
           >
-            Book Free Consultation
+            Let&rsquo;s Talk
           </a>
         </header>
 
         {/* ================================================================ */}
-        {/* HERO — Full viewport, left-aligned                               */}
+        {/* HERO — Personal demo intro                                       */}
         {/* ================================================================ */}
         <section className="relative min-h-screen flex items-center overflow-hidden">
           {/* Background photo */}
@@ -249,25 +249,25 @@ export function HairApproachPage({ page }: { page: LandingPage & { brand: Brand 
                 className="inline-block text-[0.65rem] font-bold tracking-[0.25em] uppercase px-5 py-2 rounded-sm mb-8"
                 style={{ color: GOLD, border: `1px solid ${GOLD_DIM}` }}
               >
-                Built Exclusively for Hair Approach
+                Built Exclusively for Deanna
               </span>
             </motion.div>
             <motion.h1
               variants={fadeUp}
-              className="text-[clamp(2.8rem,6.5vw,5.2rem)] font-black leading-[1.05] tracking-tight mb-6"
+              className="text-[clamp(2.4rem,5.5vw,4.5rem)] font-black leading-[1.05] tracking-tight mb-6"
               style={{ fontFamily: "'Playfair Display', serif" }}
             >
-              Your Instagram.<br />
+              30 Years of A-List Talent.<br />
               <span className="bg-gradient-to-r from-[#C9A96E] via-[#e8d48b] to-[#C9A96E] bg-[length:200%_auto] bg-clip-text text-transparent">
-                On Autopilot.
+                We Made It Digital.
               </span>
             </motion.h1>
-            <motion.p variants={fadeUp} className="text-base font-light leading-relaxed max-w-[600px] mb-10 text-[#9a9cb8]">
-              AI-powered content that showcases your best work, writes the captions, generates stunning visuals, and posts — without you lifting a finger.
+            <motion.p variants={fadeUp} className="text-base md:text-lg font-light leading-relaxed max-w-[600px] mb-10 text-[#9a9cb8]">
+              Deanna, we studied your work, enhanced your photos, built your showreel, analyzed your competition, and created sample content — all before this conversation even started. Scroll down to see everything.
             </motion.p>
             <motion.div variants={fadeUp} className="flex gap-4 flex-wrap">
               <a
-                href="#contact"
+                href="#whats-ready"
                 className="inline-flex items-center gap-2 px-8 py-4 font-bold text-xs tracking-[0.1em] uppercase rounded-full transition-all duration-300 hover:-translate-y-0.5"
                 style={{
                   background: `linear-gradient(135deg, ${GOLD} 0%, #e8d48b 50%, ${GOLD} 100%)`,
@@ -275,13 +275,13 @@ export function HairApproachPage({ page }: { page: LandingPage & { brand: Brand 
                   boxShadow: `0 4px 15px rgba(201,169,110,0.2)`,
                 }}
               >
-                Get Started Today <span>&rarr;</span>
+                See What We Built <span>&darr;</span>
               </a>
               <a
                 href="#showreel"
                 className="inline-flex items-center gap-2 px-8 py-4 font-semibold text-xs tracking-[0.1em] uppercase rounded-full transition-all duration-300 border border-white/12 backdrop-blur-sm bg-white/[0.03] hover:border-[#C9A96E]/30 hover:bg-[#C9A96E]/5 hover:-translate-y-px"
               >
-                Watch Showreel
+                Watch Your Showreel
               </a>
             </motion.div>
           </motion.div>
@@ -293,11 +293,11 @@ export function HairApproachPage({ page }: { page: LandingPage & { brand: Brand 
         </section>
 
         {/* ================================================================ */}
-        {/* MARQUEE                                                          */}
+        {/* MARQUEE — What we did                                            */}
         {/* ================================================================ */}
         <div className="py-5 overflow-hidden border-y border-white/5" style={{ background: DARK }}>
           <div className="flex gap-12 animate-[marquee_30s_linear_infinite] whitespace-nowrap">
-            {["AI Content Creation", "Professional Styling Photos", "Instagram Growth", "Automated Posting", "Branded Reels", "Social Strategy", "AI Content Creation", "Professional Styling Photos", "Instagram Growth", "Automated Posting", "Branded Reels", "Social Strategy"].map((item, i) => (
+            {["Photo Enhancement", "Branded Showreel", "Competition Analysis", "Content Mockups", "Instagram Strategy", "AI Upscaling", "Photo Enhancement", "Branded Showreel", "Competition Analysis", "Content Mockups", "Instagram Strategy", "AI Upscaling"].map((item, i) => (
               <div key={i} className="flex items-center gap-3 text-xs font-semibold tracking-[0.15em] uppercase text-white/50">
                 <span className="w-1.5 h-1.5 rounded-full" style={{ background: GOLD }} />
                 {item}
@@ -308,17 +308,17 @@ export function HairApproachPage({ page }: { page: LandingPage & { brand: Brand 
         </div>
 
         {/* ================================================================ */}
-        {/* YOUR WORK — Portfolio Gallery                                     */}
+        {/* WHAT'S READY — Enhanced Portfolio                                 */}
         {/* ================================================================ */}
-        <section className="py-24 px-[4%] relative overflow-hidden" style={{ background: BG }}>
+        <section id="whats-ready" className="py-24 px-[4%] relative overflow-hidden" style={{ background: BG }}>
           <div className="max-w-6xl mx-auto">
-            <Reveal><SectionTag>Your Work</SectionTag></Reveal>
+            <Reveal><SectionTag>What We Built</SectionTag></Reveal>
             <Reveal>
-              <SectionTitle white="Stunning Transformations." gold="Silent Instagram." />
+              <SectionTitle white="Your Photos." gold="Enhanced by AI." />
             </Reveal>
             <Reveal>
               <p className="text-base font-light leading-relaxed max-w-xl mb-12 text-[#9a9cb8]">
-                You create jaw-dropping color, cuts, and transformations every week. But your feed? Let&rsquo;s make it match your talent.
+                We took 6 of your best transformations, upscaled them to 2K+ resolution with AI, and enhanced the lighting and detail. These are ready for your feed right now.
               </p>
             </Reveal>
             <motion.div
@@ -358,17 +358,118 @@ export function HairApproachPage({ page }: { page: LandingPage & { brand: Brand 
         </section>
 
         {/* ================================================================ */}
-        {/* THE PROBLEM — Pain points                                        */}
+        {/* SHOWREEL VIDEO                                                   */}
+        {/* ================================================================ */}
+        <section id="showreel" className="py-24 px-[4%] relative overflow-hidden" style={{ background: DARK }}>
+          <div className="max-w-4xl mx-auto text-center">
+            <Reveal><SectionTag>Your Showreel</SectionTag></Reveal>
+            <Reveal>
+              <h2
+                className="text-3xl md:text-[2.8rem] font-black leading-[1.1] tracking-tight mb-4"
+                style={{ fontFamily: "'Playfair Display', serif" }}
+              >
+                We Made This <span className="bg-gradient-to-r from-[#C9A96E] via-[#e8d48b] to-[#C9A96E] bg-clip-text text-transparent">From Your Photos</span>
+              </h2>
+            </Reveal>
+            <Reveal>
+              <p className="text-base font-light leading-relaxed text-[#9a9cb8] mb-10 max-w-xl mx-auto">
+                A branded showreel built from your portfolio — with Ken Burns motion, your brand colors, and Playfair Display typography. Ready for Reels, Stories, or sharing with clients.
+              </p>
+            </Reveal>
+            <Reveal>
+              <div className="rounded-xl overflow-hidden border border-white/10 shadow-2xl">
+                <video
+                  controls
+                  playsInline
+                  preload="metadata"
+                  poster={PHOTOS.blondeHighlights}
+                  className="w-full"
+                >
+                  <source src={SHOWREEL} type="video/mp4" />
+                </video>
+              </div>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ================================================================ */}
+        {/* SAMPLE CONTENT — Social Mockups                                  */}
+        {/* ================================================================ */}
+        <section className="py-24 px-[4%] relative overflow-hidden" style={{ background: BG }}>
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+              {/* Left — mockups */}
+              <motion.div
+                className="grid grid-cols-2 gap-3"
+                variants={stagger}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+              >
+                <motion.div variants={scaleIn} className="col-span-2">
+                  <img src={MOCKUPS[0]} alt="Sample Instagram post — Result showcase" className="w-full rounded-lg" loading="lazy" />
+                </motion.div>
+                <motion.div variants={scaleIn}>
+                  <img src={MOCKUPS[1]} alt="Sample Instagram post — Expert tips" className="w-full rounded-lg" loading="lazy" />
+                </motion.div>
+                <motion.div variants={scaleIn}>
+                  <img src={MOCKUPS[2]} alt="Sample Instagram post — Transformation" className="w-full rounded-lg" loading="lazy" />
+                </motion.div>
+              </motion.div>
+              {/* Right — copy */}
+              <div>
+                <Reveal><SectionTag>Sample Content</SectionTag></Reveal>
+                <Reveal>
+                  <SectionTitle white="Posts We Created" gold="Using Your Work" />
+                </Reveal>
+                <Reveal>
+                  <p className="text-base font-light leading-relaxed text-[#9a9cb8] mb-8">
+                    These are sample Instagram posts we designed from your actual photos — with AI-written captions, strategic hashtags, and your brand styling. This is what your feed starts looking like from week one.
+                  </p>
+                </Reveal>
+                <motion.div
+                  className="space-y-3"
+                  variants={stagger}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                >
+                  {[
+                    "Created from your real portfolio photos",
+                    "Captions written for the Dallas beauty market",
+                    "Strategic hashtags for maximum local reach",
+                    "You approve everything via WhatsApp before it posts",
+                  ].map((item, i) => (
+                    <motion.div
+                      key={i}
+                      variants={fadeUp}
+                      className="flex items-center gap-3 px-5 py-3.5 rounded-lg border border-white/8"
+                      style={{ background: BG_CARD }}
+                    >
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill={GOLD} stroke="none">
+                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                      </svg>
+                      <span className="text-sm font-medium text-white/80">{item}</span>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ================================================================ */}
+        {/* COMPETITOR INTEL — What we researched                             */}
         {/* ================================================================ */}
         <section className="py-24 px-[4%] relative overflow-hidden" style={{ background: DARK }}>
           <div className="max-w-5xl mx-auto">
-            <Reveal><SectionTag>The Problem</SectionTag></Reveal>
+            <Reveal><SectionTag>Your Competition</SectionTag></Reveal>
             <Reveal>
-              <SectionTitle white="Your Work Speaks for Itself." gold="Your Instagram Doesn't." />
+              <SectionTitle white="We Analyzed 90 Posts" gold="From Dallas Stylists." />
             </Reveal>
             <Reveal>
               <p className="text-base font-light leading-relaxed max-w-xl mb-12 text-[#9a9cb8]">
-                You&rsquo;re booked solid with clients who love your work. But your social presence? Silent. Inconsistent. Invisible to the next client searching for a stylist in Dallas.
+                Before building anything, we studied what&rsquo;s working for other stylists in your market — what they post, how often, what gets engagement. We built you a live competitor intelligence dashboard you can access anytime.
               </p>
             </Reveal>
             <motion.div
@@ -379,9 +480,85 @@ export function HairApproachPage({ page }: { page: LandingPage & { brand: Brand 
               viewport={{ once: true, margin: "-60px" }}
             >
               {[
-                { icon: "scissors", title: "Beautiful Work, Zero Posts", desc: "You finish incredible transformations every day but never find time to photograph, edit, write captions, and post." },
-                { icon: "clock", title: "No Time Between Clients", desc: "Your chair is always full. Hiring a social media manager means another expense. Agencies charge thousands and still need your content." },
-                { icon: "chart", title: "Other Stylists Are Pulling Ahead", desc: "Other Dallas stylists post daily, build their brand online, and fill their books from Instagram. Every quiet day is a missed client." },
+                {
+                  icon: "search",
+                  title: "90 Competitor Posts Analyzed",
+                  desc: "We indexed real content from Dallas hair stylists — their posting frequency, content types, engagement patterns, and what drives bookings.",
+                },
+                {
+                  icon: "chart",
+                  title: "Live Intelligence Dashboard",
+                  desc: "Your own competitor analysis dashboard with real-time data. See what's working in your market and where the opportunities are.",
+                  link: "https://superseller.agency/compete/hair-approach",
+                  linkText: "View Your Dashboard →",
+                },
+                {
+                  icon: "report",
+                  title: "Content Strategy Report",
+                  desc: "A full report on your competitive landscape — organic content strategies, posting patterns, and recommendations tailored to your brand.",
+                  link: "https://superseller.agency/report/hair-approach-dallas",
+                  linkText: "View Your Report →",
+                },
+              ].map((item, i) => (
+                <motion.div
+                  key={i}
+                  variants={scaleIn}
+                  className="p-7 rounded-xl border border-white/8 transition-all duration-300 hover:border-white/15 hover:-translate-y-1"
+                  style={{ background: BG_CARD }}
+                >
+                  <div className="text-3xl mb-4">
+                    {item.icon === "search" ? (
+                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    ) : item.icon === "chart" ? (
+                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                    ) : (
+                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                    )}
+                  </div>
+                  <h3 className="font-bold text-lg mb-2">{item.title}</h3>
+                  <p className="text-sm leading-relaxed text-[#9a9cb8] mb-3">{item.desc}</p>
+                  {item.link && (
+                    <a
+                      href={item.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block text-sm font-semibold transition-colors duration-200 hover:underline"
+                      style={{ color: GOLD }}
+                    >
+                      {item.linkText}
+                    </a>
+                  )}
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </section>
+
+        {/* ================================================================ */}
+        {/* WHY — Personal pain points                                       */}
+        {/* ================================================================ */}
+        <section className="py-24 px-[4%] relative overflow-hidden" style={{ background: BG }}>
+          <div className="max-w-5xl mx-auto">
+            <Reveal><SectionTag>Why This Matters</SectionTag></Reveal>
+            <Reveal>
+              <SectionTitle white="Vidal Sassoon Trained. TV Credits." gold="542 Followers." />
+            </Reveal>
+            <Reveal>
+              <p className="text-base font-light leading-relaxed max-w-xl mb-12 text-[#9a9cb8]">
+                Deanna, you&rsquo;ve been trained by the best, you&rsquo;ve worked on Fox and ABC, and clients love you. But people searching for a stylist in Dallas right now don&rsquo;t know you exist. Your work deserves the audience it&rsquo;s missing.
+              </p>
+            </Reveal>
+            <motion.div
+              className="grid grid-cols-1 md:grid-cols-3 gap-5"
+              variants={stagger}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-60px" }}
+            >
+              {[
+                { icon: "scissors", title: "World-Class Skill, Quiet Feed", desc: "30+ years of experience, Vidal Sassoon & Toni & Guy training, but your Instagram doesn't tell that story. Every day without content is a client who finds someone else." },
+                { icon: "clock", title: "Your Chair Is Full — Your Feed Isn't", desc: "You're booked solid, which is exactly why you can't also be a content creator. You need someone — or something — doing it for you, using your actual work." },
+                { icon: "chart", title: "Dallas Stylists Are Posting Daily", desc: "We analyzed your market. Stylists with half your experience are filling books through Instagram because they post consistently. The gap between your talent and your presence is the opportunity." },
               ].map((pain, i) => (
                 <motion.div
                   key={i}
@@ -407,118 +584,17 @@ export function HairApproachPage({ page }: { page: LandingPage & { brand: Brand 
         </section>
 
         {/* ================================================================ */}
-        {/* WHAT WE BUILD — Social Mockups                                   */}
-        {/* ================================================================ */}
-        <section className="py-24 px-[4%] relative overflow-hidden" style={{ background: BG }}>
-          <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-              {/* Left — mockups */}
-              <motion.div
-                className="grid grid-cols-2 gap-3"
-                variants={stagger}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-              >
-                <motion.div variants={scaleIn} className="col-span-2">
-                  <img src={MOCKUPS[0]} alt="Social mockup — Result showcase" className="w-full rounded-lg" loading="lazy" />
-                </motion.div>
-                <motion.div variants={scaleIn}>
-                  <img src={MOCKUPS[1]} alt="Social mockup — Expert tips" className="w-full rounded-lg" loading="lazy" />
-                </motion.div>
-                <motion.div variants={scaleIn}>
-                  <img src={MOCKUPS[2]} alt="Social mockup — Transformation" className="w-full rounded-lg" loading="lazy" />
-                </motion.div>
-              </motion.div>
-              {/* Right — copy */}
-              <div>
-                <Reveal><SectionTag>The Transformation</SectionTag></Reveal>
-                <Reveal>
-                  <SectionTitle white="From Salon Chair to" gold="Scroll-Stopping Post" />
-                </Reveal>
-                <Reveal>
-                  <p className="text-base font-light leading-relaxed text-[#9a9cb8] mb-8">
-                    Our AI takes your best work and transforms it into professional Instagram content — complete with captions, hashtags, and optimal posting times.
-                  </p>
-                </Reveal>
-                <motion.div
-                  className="space-y-3"
-                  variants={stagger}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true }}
-                >
-                  {[
-                    "AI enhances lighting, composition, and color grading",
-                    "Writes captions optimized for the Dallas beauty market",
-                    "Generates strategic hashtag sets for maximum reach",
-                    "Sends to your WhatsApp for one-tap approval",
-                  ].map((item, i) => (
-                    <motion.div
-                      key={i}
-                      variants={fadeUp}
-                      className="flex items-center gap-3 px-5 py-3.5 rounded-lg border border-white/8"
-                      style={{ background: BG_CARD }}
-                    >
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill={GOLD} stroke="none">
-                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                      </svg>
-                      <span className="text-sm font-medium text-white/80">{item}</span>
-                    </motion.div>
-                  ))}
-                </motion.div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ================================================================ */}
-        {/* SHOWREEL VIDEO                                                   */}
-        {/* ================================================================ */}
-        <section id="showreel" className="py-24 px-[4%] relative overflow-hidden" style={{ background: DARK }}>
-          <div className="max-w-4xl mx-auto text-center">
-            <Reveal><SectionTag>Your Showreel</SectionTag></Reveal>
-            <Reveal>
-              <h2
-                className="text-3xl md:text-[2.8rem] font-black leading-[1.1] tracking-tight mb-4"
-                style={{ fontFamily: "'Playfair Display', serif" }}
-              >
-                Ready for Instagram Reels <span className="bg-gradient-to-r from-[#C9A96E] via-[#e8d48b] to-[#C9A96E] bg-clip-text text-transparent">&amp; Stories</span>
-              </h2>
-            </Reveal>
-            <Reveal>
-              <p className="text-base font-light leading-relaxed text-[#9a9cb8] mb-10 max-w-xl mx-auto">
-                A branded video showcasing your best work — ready to post, share with clients, or use in stories.
-              </p>
-            </Reveal>
-            <Reveal>
-              <div className="rounded-xl overflow-hidden border border-white/10 shadow-2xl">
-                <video
-                  controls
-                  playsInline
-                  preload="metadata"
-                  poster={PHOTOS.blondeHighlights}
-                  className="w-full"
-                >
-                  <source src={SHOWREEL} type="video/mp4" />
-                </video>
-              </div>
-            </Reveal>
-          </div>
-        </section>
-
-        {/* ================================================================ */}
         {/* HOW IT WORKS                                                     */}
         {/* ================================================================ */}
-        <section className="py-24 px-[4%] relative overflow-hidden" style={{ background: BG }}>
+        <section className="py-24 px-[4%] relative overflow-hidden" style={{ background: DARK }}>
           <div className="max-w-5xl mx-auto">
-            <Reveal><SectionTag>How It Works</SectionTag></Reveal>
+            <Reveal><SectionTag>What Happens Next</SectionTag></Reveal>
             <Reveal>
-              <SectionTitle white="Three Steps." gold="Fully Automated." />
+              <SectionTitle white="You Say Yes." gold="We Handle Everything." />
             </Reveal>
             <Reveal>
               <p className="text-base font-light leading-relaxed max-w-xl mb-16 text-[#9a9cb8]">
-                We connect, we build, we run. You approve from your phone and watch your Instagram grow.
+                Everything you&rsquo;ve seen on this page was built before we even spoke. Here&rsquo;s what happens when you&rsquo;re ready to start.
               </p>
             </Reveal>
             <motion.div
@@ -529,9 +605,9 @@ export function HairApproachPage({ page }: { page: LandingPage & { brand: Brand 
               viewport={{ once: true, margin: "-60px" }}
             >
               {[
-                { num: "01", title: "We Study Your Brand", desc: "We analyze your portfolio, style, colors, and clientele to build a content strategy that feels authentically you." },
-                { num: "02", title: "AI Creates Content", desc: "Every week, our AI generates scroll-stopping posts, reels, and stories — complete with captions and hashtags." },
-                { num: "03", title: "You Approve & Post", desc: "Content arrives on WhatsApp. One tap to approve. We post at optimal times. Your Instagram grows while you style." },
+                { num: "01", title: "Quick Call", desc: "15 minutes. We walk through what you've seen here, answer your questions, and customize the content strategy to your goals." },
+                { num: "02", title: "We Build Your Engine", desc: "We connect to your Instagram, set up your brand profile, and start generating content from your salon photos — every week, automatically." },
+                { num: "03", title: "Approve From Your Phone", desc: "Content arrives on WhatsApp. One tap to approve. We post at optimal times. You do hair — we do Instagram." },
               ].map((step, i) => (
                 <motion.div
                   key={i}
@@ -556,23 +632,23 @@ export function HairApproachPage({ page }: { page: LandingPage & { brand: Brand 
         {/* ================================================================ */}
         {/* WHAT'S INCLUDED                                                  */}
         {/* ================================================================ */}
-        <section className="py-24 px-[4%] relative overflow-hidden" style={{ background: DARK }}>
+        <section className="py-24 px-[4%] relative overflow-hidden" style={{ background: BG }}>
           <div className="max-w-5xl mx-auto text-center">
-            <Reveal><SectionTag>What&rsquo;s Included</SectionTag></Reveal>
+            <Reveal><SectionTag>Your Package</SectionTag></Reveal>
             <Reveal>
               <h2
                 className="text-3xl md:text-[2.8rem] font-black leading-[1.1] tracking-tight mb-4 max-w-xl mx-auto"
                 style={{ fontFamily: "'Playfair Display', serif" }}
               >
-                Everything Your Instagram{" "}
+                Everything{" "}
                 <span className="bg-gradient-to-r from-[#C9A96E] via-[#e8d48b] to-[#C9A96E] bg-clip-text text-transparent">
-                  Needs to Thrive
+                  Already in Motion
                 </span>
               </h2>
             </Reveal>
             <Reveal>
               <p className="text-base font-light leading-relaxed text-[#9a9cb8] mb-12 max-w-lg mx-auto">
-                A complete content engine. No add-ons, no surprises.
+                This is what&rsquo;s included from day one. No setup fees, no hidden costs.
               </p>
             </Reveal>
             <motion.div
@@ -589,9 +665,9 @@ export function HairApproachPage({ page }: { page: LandingPage & { brand: Brand 
                 "Strategic hashtag research",
                 "Branded Reels & Stories",
                 "Optimal posting schedule",
-                "Monthly performance report",
+                "Competitor intelligence dashboard",
                 "WhatsApp approval workflow",
-                "Dedicated content strategist",
+                "Monthly performance report",
               ].map((feature, i) => (
                 <motion.div
                   key={i}
@@ -612,23 +688,23 @@ export function HairApproachPage({ page }: { page: LandingPage & { brand: Brand 
         {/* ================================================================ */}
         {/* CONTACT / LEAD FORM                                              */}
         {/* ================================================================ */}
-        <section id="contact" className="py-24 px-[4%] relative overflow-hidden" style={{ background: BG }}>
+        <section id="contact" className="py-24 px-[4%] relative overflow-hidden" style={{ background: DARK }}>
           <div className="max-w-lg mx-auto text-center">
-            <Reveal><SectionTag>Get Started</SectionTag></Reveal>
+            <Reveal><SectionTag>Let&rsquo;s Talk</SectionTag></Reveal>
             <Reveal>
               <h2
                 className="text-3xl md:text-[2.4rem] font-black leading-[1.1] tracking-tight mb-4"
                 style={{ fontFamily: "'Playfair Display', serif" }}
               >
-                Ready to{" "}
+                Ready to Make Your Feed{" "}
                 <span className="bg-gradient-to-r from-[#C9A96E] via-[#e8d48b] to-[#C9A96E] bg-clip-text text-transparent">
-                  Transform Your Feed?
+                  Match Your Talent?
                 </span>
               </h2>
             </Reveal>
             <Reveal>
               <p className="text-base font-light leading-relaxed text-[#9a9cb8] mb-10">
-                Book your free consultation. We&rsquo;ll show you exactly what your Instagram could look like.
+                15-minute call. No pressure. We&rsquo;ll walk through everything you just saw and answer any questions.
               </p>
             </Reveal>
 
@@ -646,8 +722,8 @@ export function HairApproachPage({ page }: { page: LandingPage & { brand: Brand 
                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                     <polyline points="22 4 12 14.01 9 11.01" />
                   </svg>
-                  <h3 className="text-2xl font-bold mb-2">Thank you!</h3>
-                  <p className="text-[#9a9cb8]">We&rsquo;ll get back to you within 24 hours.</p>
+                  <h3 className="text-2xl font-bold mb-2">Thank you, Deanna!</h3>
+                  <p className="text-[#9a9cb8]">We&rsquo;ll be in touch within 24 hours.</p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -686,7 +762,7 @@ export function HairApproachPage({ page }: { page: LandingPage & { brand: Brand 
                       boxShadow: `0 4px 15px rgba(201,169,110,0.2)`,
                     }}
                   >
-                    {formState === "submitting" ? "Sending..." : "Book Free Consultation"}
+                    {formState === "submitting" ? "Sending..." : "Schedule a Call"}
                   </button>
                   <p className="text-xs text-center text-white/30 mt-3">
                     Your details are secure and will not be shared with third parties
