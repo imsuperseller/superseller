@@ -55,7 +55,7 @@ const scaleIn: Variants = {
 // ---------------------------------------------------------------------------
 function Reveal({ children, className }: { children: React.ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const inView = useInView(ref, { once: true, margin: "200px 0px -40px 0px" });
   return (
     <motion.div
       ref={ref}
