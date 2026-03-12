@@ -107,6 +107,7 @@ export function middleware(request: NextRequest) {
         path.startsWith('/app/') ||
         path.startsWith('/lp/') ||
         path.startsWith('/compete/') ||
+        path.startsWith('/onboard/') ||
         path.startsWith('/report/') ||
         path.startsWith('/discover') ||
         path.startsWith('/analytics/')
