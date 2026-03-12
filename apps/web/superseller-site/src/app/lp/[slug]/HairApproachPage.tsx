@@ -494,7 +494,7 @@ export function HairApproachPage({ page }: { page: LandingPage & { brand: Brand 
                   icon: "report",
                   title: "Content Strategy Report",
                   desc: "A full report on your competitive landscape — organic content strategies, posting patterns, and recommendations tailored to your brand.",
-                  link: "https://superseller.agency/report/hair-approach-dallas",
+                  link: "https://superseller.agency/compete/hair-approach",
                   linkText: "View Your Report →",
                 },
               ].map((item, i) => (
