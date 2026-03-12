@@ -11,37 +11,6 @@ import {
 import { MicroExpanderFAB } from "@/components/lp/MicroExpanderFAB";
 
 // ---------------------------------------------------------------------------
-// Hero video — fetches as blob to avoid Chrome media-element stall issues
-// ---------------------------------------------------------------------------
-function HeroVideo({ src }: { src: string }) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    fetch(src)
-      .then((r) => r.blob())
-      .then((blob) => {
-        if (cancelled || !videoRef.current) return;
-        videoRef.current.src = URL.createObjectURL(blob);
-        videoRef.current.play().catch(() => {});
-      })
-      .catch(() => {});
-    return () => { cancelled = true; };
-  }, [src]);
-
-  return (
-    <video
-      ref={videoRef}
-      autoPlay
-      muted
-      loop
-      playsInline
-      className="absolute inset-0 w-full h-full object-cover"
-    />
-  );
-}
-
-// ---------------------------------------------------------------------------
 // SVG Icons (no emoji per SuperSeller AI guidelines)
 // ---------------------------------------------------------------------------
 function PhoneIcon({ className }: { className?: string }) {
@@ -361,7 +330,15 @@ export function LandingPageClient({ page }: { page: LandingPage & { brand: Brand
           {/* Video background when heroMediaUrl points to a video */}
           {page.heroMediaUrl && /\.(mp4|webm|mov)$/i.test(page.heroMediaUrl) && (
             <>
-              <HeroVideo src={page.heroMediaUrl} />
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="auto"
+                className="absolute inset-0 w-full h-full object-cover"
+                src={page.heroMediaUrl}
+              />
               <div className="absolute inset-0 bg-black/50" />
             </>
           )}
