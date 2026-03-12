@@ -161,6 +161,7 @@ interface Sections {
   testimonials?: { name: string; content: string; savings?: string }[];
   credentials?: { label: string; value: string }[];
   differentiators?: { title: string; description: string }[];
+  gallery?: { url: string; alt: string }[];
   complianceFooter?: string;
 }
 
@@ -590,7 +591,7 @@ export function LandingPageClient({ page }: { page: LandingPage & { brand: Brand
         {/* STEPS — staggered slide-in with numbered timeline              */}
         {/* ============================================================= */}
         {sections.steps && sections.steps.length > 0 && (
-          <section className="max-w-2xl mx-auto px-6 py-20">
+          <section className="max-w-2xl mx-auto px-6 py-20 pb-28 sm:pb-20">
             <motion.div
               className="space-y-2"
               variants={staggerContainer}
@@ -687,6 +688,48 @@ export function LandingPageClient({ page }: { page: LandingPage & { brand: Brand
                         </span>
                       )}
                     </div>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          </section>
+        )}
+
+        {/* ============================================================= */}
+        {/* GALLERY — portfolio image grid                                  */}
+        {/* ============================================================= */}
+        {sections.gallery && sections.gallery.length > 0 && (
+          <section className={`py-20 px-6 ${isDark ? "bg-[#0d0d0d]" : "bg-slate-50"}`}>
+            <motion.div
+              className="max-w-4xl mx-auto"
+              variants={staggerContainer}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-60px" }}
+            >
+              <motion.h2
+                variants={fadeUp}
+                style={{ fontFamily: `var(--lp-font-heading)` }}
+                className={`text-2xl md:text-3xl font-black text-center mb-10 ${isDark ? "text-white" : "text-slate-900"}`}
+              >
+                {isRTL ? "מהעבודות שלנו" : "Our Work"}
+              </motion.h2>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+                {sections.gallery.map((img, i) => (
+                  <motion.div
+                    key={i}
+                    variants={scaleIn}
+                    className="relative aspect-square rounded-xl overflow-hidden group"
+                    whileHover={{ scale: 1.03 }}
+                    transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                  >
+                    <img
+                      src={img.url}
+                      alt={img.alt}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </motion.div>
                 ))}
               </div>
