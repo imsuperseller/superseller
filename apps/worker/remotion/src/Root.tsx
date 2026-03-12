@@ -306,7 +306,7 @@ export const RemotionRoot: React.FC = () => {
                 width={1920}
                 height={1080}
                 fps={FPS}
-                durationInFrames={sec(24)}
+                durationInFrames={sec(30)}
                 defaultProps={{
                     photos: [
                         { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/portfolio/upscaled/gallery_blonde-highlights.jpg", label: "Sun-Kissed Highlights" },
@@ -318,7 +318,10 @@ export const RemotionRoot: React.FC = () => {
                     ],
                     motionClips: [
                         { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/motion/blonde-highlights-motion.mp4", label: "Highlights Motion" },
+                        { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/motion/client-waves-motion.mp4", label: "Waves Motion" },
+                        { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/motion/brunette-result-motion.mp4", label: "Brunette Motion" },
                         { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/motion/blonde-transformation-motion.mp4", label: "Transformation Motion" },
+                        { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/motion/color-change-motion.mp4", label: "Color Change Motion" },
                         { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/motion/platinum-result-motion.mp4", label: "Platinum Motion" },
                     ],
                     businessName: "Hair Approach",
@@ -334,7 +337,7 @@ export const RemotionRoot: React.FC = () => {
                 width={1080}
                 height={1920}
                 fps={FPS}
-                durationInFrames={sec(24)}
+                durationInFrames={sec(30)}
                 defaultProps={{
                     photos: [
                         { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/portfolio/upscaled/gallery_blonde-highlights.jpg", label: "Sun-Kissed Highlights" },
@@ -346,7 +349,10 @@ export const RemotionRoot: React.FC = () => {
                     ],
                     motionClips: [
                         { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/motion/blonde-highlights-motion.mp4", label: "Highlights Motion" },
+                        { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/motion/client-waves-motion.mp4", label: "Waves Motion" },
+                        { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/motion/brunette-result-motion.mp4", label: "Brunette Motion" },
                         { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/motion/blonde-transformation-motion.mp4", label: "Transformation Motion" },
+                        { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/motion/color-change-motion.mp4", label: "Color Change Motion" },
                         { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/motion/platinum-result-motion.mp4", label: "Platinum Motion" },
                     ],
                     businessName: "Hair Approach",

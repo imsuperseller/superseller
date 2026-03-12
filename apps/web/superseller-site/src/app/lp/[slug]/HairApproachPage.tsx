@@ -21,7 +21,7 @@ const MOCKUPS = [
   `${R2}/hair-approach/mockups/mockup-2.png`,
   `${R2}/hair-approach/mockups/mockup-3.png`,
 ];
-const SHOWREEL = `${R2}/hair-approach/showreel/master-16x9.mp4?v=2`;
+const SHOWREEL = `${R2}/hair-approach/showreel/master-16x9.mp4?v=3`;
 
 // ---------------------------------------------------------------------------
 // Brand
