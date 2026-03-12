@@ -123,6 +123,7 @@ async function uploadInvoiceToR2(
       region: "auto",
       endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
       credentials: { accessKeyId, secretAccessKey },
+      forcePathStyle: true,
     });
 
     const key = `invoices/${tenantSlug}/${invoiceNumber}.pdf`;
