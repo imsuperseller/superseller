@@ -13,15 +13,12 @@ dotenv.config({ path: path.resolve(__dirname, "../../.env"), override: true });
 import { sendServiceContract } from "../services/esignatures";
 
 async function main() {
-  const saarEmail = process.env.SAAR_EMAIL;
-  if (!saarEmail) {
-    console.error(
-      "Set SAAR_EMAIL env var: SAAR_EMAIL=saar@email.com npx tsx src/scripts/elite-pro-send-contract.ts"
-    );
-    process.exit(1);
-  }
+  // Email is required by eSignatures API but signing happens via URL shared in WhatsApp.
+  // Use Saar's real email if available, otherwise use a placeholder.
+  const saarEmail = process.env.SAAR_EMAIL || "saar@eliteproremodeling.com";
 
-  console.log(`Sending contract to Saar Bitton at ${saarEmail}...\n`);
+  console.log(`Creating contract for Saar Bitton (${saarEmail})...\n`);
+  console.log(`NOTE: The signing URL will be shared via WhatsApp — email delivery is secondary.\n`);
 
   const result = await sendServiceContract({
     clientName: "Saar Bitton",

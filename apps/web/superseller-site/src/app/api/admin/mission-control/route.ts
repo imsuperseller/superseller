@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { verifySession } from '@/lib/auth';
+import prisma from '@/lib/prisma';
 
 type Status = 'green' | 'red' | 'amber' | 'blue' | 'gray';
 
@@ -264,24 +265,74 @@ export async function GET() {
       { name: 'Winner Studio', status: 'blue', detail: 'PAUSED', tooltip: 'AI avatar videos — Yossi (Mivnim)\nPaused: war in Israel, no parties\nNext window: Pesach April 2026' },
       { name: 'Lead Pages', status: 'amber', detail: 'design 5.2/10', tooltip: 'Dynamic /lp/[slug] pages\nInfra: 100% complete\nDesign: needs dark theme + glassmorphism' },
       { name: 'FrontDesk Voice', status: 'amber', detail: 'partial', tooltip: 'Telnyx AI voice assistant\nPhone: +14699299314\nVoice works, webhook migration pending' },
-      { name: 'Compete (Ad Intel)', status: 'green', detail: '63 ads cached', tooltip: 'Competitor ad intelligence feed\n63 competitor ads loaded for Elite Pro' },
+      { name: 'Compete (Ad Intel)', status: 'green', detail: `${biz.competitorAds || 0} ads cached`, tooltip: `Competitor ad intelligence feed\n${biz.competitorAds || 0} ads across all tenants\nRating page: /compete/[tenant-slug]` },
       { name: 'AgentForge', status: 'gray', detail: 'spec only', tooltip: 'AI research pipeline — code NOT started' },
       { name: 'Model Observatory', status: workerProbe.ok ? 'green' : 'amber', detail: '34+ models', tooltip: 'AI model registry and auto-selector\n34+ models across 8 categories' },
     ]
   });
 
-  // ─── 10. CUSTOMERS ───
-  categories.push({
-    key: 'customers', icon: '◉', label: 'CUSTOMERS',
-    items: [
-      { name: 'Miss Party (Michal)', status: fbBotProbe.ok ? 'green' : 'red', detail: fbBotProbe.ok ? 'posting' : 'BOT DOWN', tooltip: 'FB Marketplace bot — bouncy castles DFW\nRevenue: FREE\n3 posts/day' },
-      { name: 'UAD (David)', status: fbBotProbe.ok ? 'green' : 'red', detail: fbBotProbe.ok ? 'posting' : 'BOT DOWN', tooltip: 'FB Marketplace bot — garage doors DFW\nRevenue: % split on lead conversions' },
-      { name: 'Elite Pro Remodeling', status: 'red', detail: '$2k BLOCKED', tooltip: '$2,000/mo SIGNED but NOT started\nBlocked on: IG credentials, not yet paying\nContact: Saar Bitton, Mor Dayan' },
-      { name: 'Yoram (Insurance)', status: 'amber', detail: 'low priority', tooltip: 'Landing page / lead gen\nSite LIVE: yoramfriedman.co.il\nApify: empty (0 actors)' },
-      { name: 'Yossi (Mivnim)', status: 'blue', detail: 'PAUSED', tooltip: 'Winner Studio customer\nPaused: war in Israel\nNext: Pesach April 2026' },
-      { name: 'Shai Personal Brand', status: 'green', detail: 'internal', tooltip: '10K+ IG, 17.8K+ FB followers\nPortal: /portal/shai-personal-brand\nCompete: /compete/shai-personal-brand\nInternal tenant — no billing' },
-    ]
-  });
+  // ─── 10. CUSTOMERS (DB-driven) ───
+  const customerItems: MCNode[] = [];
+  try {
+    const tenants = await prisma.tenant.findMany({
+      include: { brand: true, competeAllowlist: { select: { email: true } } },
+      orderBy: { createdAt: 'asc' },
+    });
+    // Also count leads per tenant
+    const leadCounts = await prisma.lead.groupBy({
+      by: ['tenantId'],
+      _count: true,
+    });
+    const leadMap = new Map(leadCounts.map(l => [l.tenantId, l._count]));
+
+    for (const t of tenants) {
+      const settings = (t.settings as Record<string, any>) || {};
+      const contract = settings.contract || {};
+      const leads = leadMap.get(t.id) || 0;
+      const rate = contract.monthlyRate ? `$${contract.monthlyRate}/mo` : '';
+      const plan = contract.plan || '';
+
+      // Determine status from tenant.status + context
+      let status: Status = t.status === 'active' ? 'green' : t.status === 'paused' ? 'blue' : 'amber';
+      let detail = t.status;
+
+      // Check if they have services/subscriptions
+      const subs = await prisma.subscription.count({ where: { status: 'active' } });
+
+      customerItems.push({
+        name: t.name,
+        status,
+        detail: [rate, plan, `${leads} leads`].filter(Boolean).join(' · ') || detail,
+        tooltip: [
+          `Tenant: ${t.slug}`,
+          t.brand ? `Brand: ${t.brand.name}` : null,
+          rate ? `Contract: ${rate} (${plan})` : null,
+          `Leads: ${leads}`,
+          `Compete allowlist: ${t.competeAllowlist.length} emails`,
+          settings.phone ? `Phone: ${settings.phone}` : null,
+          settings.whatsappGroups?.clientGroup ? `WhatsApp: ${settings.whatsappGroups.clientGroup}` : null,
+        ].filter(Boolean).join('\n'),
+      });
+    }
+
+    // Add non-tenant customers (FB bot customers without tenant records)
+    if (!tenants.some(t => t.slug === 'missparty' || t.name.toLowerCase().includes('miss party'))) {
+      customerItems.push({ name: 'Miss Party (Michal)', status: fbBotProbe.ok ? 'green' : 'red', detail: fbBotProbe.ok ? 'FB bot posting' : 'BOT DOWN', tooltip: 'FB Marketplace bot — bouncy castles DFW\nRevenue: FREE\n3 posts/day\nNo tenant record yet' });
+    }
+    if (!tenants.some(t => t.slug === 'uad' || t.name.toLowerCase().includes('uad'))) {
+      customerItems.push({ name: 'UAD (David)', status: fbBotProbe.ok ? 'green' : 'red', detail: fbBotProbe.ok ? 'FB bot posting' : 'BOT DOWN', tooltip: 'FB Marketplace bot — garage doors DFW\nRevenue: % split on lead conversions\nNo tenant record yet' });
+    }
+    if (!tenants.some(t => t.name.toLowerCase().includes('yoram'))) {
+      customerItems.push({ name: 'Yoram (Insurance)', status: 'amber', detail: 'low priority', tooltip: 'Landing page / lead gen\nSite LIVE: yoramfriedman.co.il\nNo tenant record yet' });
+    }
+    if (!tenants.some(t => t.name.toLowerCase().includes('yossi') || t.name.toLowerCase().includes('mivnim'))) {
+      customerItems.push({ name: 'Yossi (Mivnim)', status: 'blue', detail: 'PAUSED', tooltip: 'Winner Studio customer\nPaused: war in Israel\nNext: Pesach April 2026\nNo tenant record yet' });
+    }
+  } catch (e) {
+    // Fallback if DB query fails
+    customerItems.push({ name: 'DB Error', status: 'red', detail: 'Failed to load customers', tooltip: String(e) });
+  }
+  categories.push({ key: 'customers', icon: '◉', label: 'CUSTOMERS', items: customerItems });
 
   // ─── 11. API KEYS & INTEGRATIONS ───
   const apiKeyItems: MCNode[] = [
@@ -372,10 +423,10 @@ export async function GET() {
     key: 'blockers', icon: '🚧', label: 'PENDING BLOCKERS',
     items: [
       { name: 'VideoForge Validation', status: 'red', detail: 'needs $1-2 test', tooltip: 'Quality fixes NEVER validated end-to-end\nRun 1 full test job (~$1-2 Kling credits)\nBlocker for selling to realtors' },
-      { name: 'Elite Pro IG Credentials', status: 'red', detail: 'waiting on Saar', tooltip: 'Need Meta App ID/Secret from Saar Bitton\nCannot request until he pays\n$2,000/mo waiting' },
+      { name: 'Elite Pro IG Credentials', status: 'amber', detail: 'Eliran providing access', tooltip: 'Saar activated Mar 13 — opened WhatsApp group\nEliran will provide IG login credentials\nNo longer blocked on Saar' },
       { name: 'BUSINESS_COVERAGE_INDEX', status: 'amber', detail: 'too abstract', tooltip: 'docs/BUSINESS_COVERAGE_INDEX.md is abstract, not a real navigation map\nEvery session loses context' },
       { name: 'Iron Dome Data Pipeline', status: 'red', detail: 'tables deleted', tooltip: '3 Aitable tables deleted in Mar 5 cleanup\nDashboard shows zeros/mock data\nNeed: Rebuild n8n → PostgreSQL pipeline' },
-      { name: 'Elite Pro Contract', status: 'red', detail: 'not sent', tooltip: 'eSignatures contract never sent to Saar\n$2,000/mo not activated\nTemplate: SuperSeller AI Services Agreement' },
+      { name: 'Elite Pro Contract', status: 'amber', detail: 'send now — Saar is ready', tooltip: 'eSignatures contract not yet sent\nSaar ACTIVATED Mar 13 — now is the time to send\n$2,000/mo ready to activate' },
       { name: 'PM2 Name Rename', status: 'amber', detail: 'tourreel → videoforge', tooltip: 'PM2 process still named "tourreel-worker"\nShould be "videoforge-worker" to match rebrand\nRequires: pm2 delete + pm2 start' },
     ]
   });
@@ -405,7 +456,7 @@ export async function GET() {
   // ─── 19. REVENUE & BILLING ───
   const revenueItems: MCNode[] = [
     { name: 'PayPal Checkout', status: process.env.PAYPAL_CLIENT_ID ? 'green' : 'red', detail: process.env.PAYPAL_CLIENT_ID ? 'active' : 'NOT CONFIGURED', tooltip: 'PayPal checkout (migrated from Stripe Feb 2026)\nDB columns keep stripe* names but store PayPal IDs' },
-    { name: 'Elite Pro (Saar)', status: 'red', detail: '$2K/mo NOT activated', tooltip: 'Saar Bitton — Elite Pro package\n$2,000/month contract not sent\nWaiting on IG credentials from Saar\nBlocked: needs eSignature contract' },
+    { name: 'Elite Pro (Saar)', status: 'amber', detail: '$2K/mo ACTIVATING', tooltip: 'Saar Bitton — Elite Pro package\n$2,000/month — send contract NOW\nSaar proactively engaged Mar 13\nEliran providing IG access\nTeam: Saar, Mor, Eliran, Noam, Shmuel' },
     { name: 'UAD Garage Doors', status: 'green', detail: 'active customer', tooltip: 'FB Marketplace Bot customer\nActive posting schedule\nTelnyx voice lead analysis live' },
     { name: 'MissParty', status: 'green', detail: 'active customer', tooltip: 'FB Marketplace Bot customer\nActive posting schedule\nTelnyx voice lead analysis live' },
     { name: 'Kedem Developments', status: 'amber', detail: 'pending', tooltip: 'Customer project in projects/customers/\nStatus: pending activation' },

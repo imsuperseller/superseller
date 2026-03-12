@@ -52,13 +52,13 @@ export default function ClientCRM() {
                 const mappedClients = data.clients.map((c: any) => ({
                     id: c.id,
                     name: c.name || c.id,
-                    email: c.email || (c.contact?.name ? `${c.contact.name}@example.com` : 'N/A'),
+                    email: c.email || 'N/A',
                     status: c.status || 'lead',
-                    revenue: c.totalRevenue || (c.tier === 'custom' ? 2497 : 0),
-                    healthScore: c.healthScore || 90, // Default to 90 if not set
+                    revenue: c.totalRevenue || 0,
+                    healthScore: c.healthScore ?? null,
                     activeEngines: c.activeWorkflows || 0,
                     lastActive: c.updatedAt ? new Date(c.updatedAt).toLocaleDateString() : 'N/A',
-                    responseTime: '1.2m' // Demo metric
+                    responseTime: c.avgResponseTime || 'N/A'
                 }));
                 // Sort by revenue so active customers come first
                 setClients(mappedClients.sort((a: any, b: any) => b.revenue - a.revenue));
@@ -311,8 +311,14 @@ export default function ClientCRM() {
                                         </td>
                                         <td className="px-8 py-6">
                                             <div className="flex items-center gap-2">
-                                                <div className={`w-2 h-2 rounded-full ${client.healthScore >= 70 ? 'bg-green-500' : 'bg-red-500'}`} />
-                                                <span className={`text-sm font-black ${getHealthColor(client.healthScore)}`}>{client.healthScore}%</span>
+                                                {client.healthScore != null ? (
+                                                    <>
+                                                        <div className={`w-2 h-2 rounded-full ${client.healthScore >= 70 ? 'bg-green-500' : 'bg-red-500'}`} />
+                                                        <span className={`text-sm font-black ${getHealthColor(client.healthScore)}`}>{client.healthScore}%</span>
+                                                    </>
+                                                ) : (
+                                                    <span className="text-sm font-black text-slate-600">N/A</span>
+                                                )}
                                             </div>
                                         </td>
                                         <td className="px-8 py-6 text-sm font-black text-white">

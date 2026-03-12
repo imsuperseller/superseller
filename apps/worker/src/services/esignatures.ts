@@ -35,7 +35,7 @@ interface SendContractOptions {
   title?: string;
   signers: Signer[];
   placeholderFields: Record<string, string>;
-  metadata?: Record<string, string>;
+  metadata?: string;
   sendReminders?: boolean;
   redirectUrl?: string;
 }
@@ -206,10 +206,7 @@ export async function sendServiceContract(params: ServiceContractParams): Promis
       monthly_fee: params.monthlyFee,
       payment_terms: params.paymentTerms,
     },
-    metadata: {
-      product: params.serviceName,
-      client: params.clientCompany,
-    },
+    metadata: `${params.serviceName} | ${params.clientCompany}`.slice(0, 199),
     redirectUrl: "https://superseller.agency/thank-you",
   });
 }

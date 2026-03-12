@@ -15,8 +15,8 @@ export async function GET(req: NextRequest) {
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     try {
+        // Real MRR from active subscriptions
         let grossMRR = 0;
-
         try {
             const agg = await prisma.subscription.aggregate({
                 _sum: { amount: true },
@@ -27,22 +27,73 @@ export async function GET(req: NextRequest) {
             grossMRR = 0;
         }
 
-        const platformExpenses = 1840;
-        const partnerRevShare = 3690;
-        const netProfit = grossMRR - platformExpenses - partnerRevShare;
+        // Real API expenses from api_expenses table
+        let monthExpenses = 0;
+        let todayExpenses = 0;
+        let totalExpenses = 0;
+        let totalCalls = 0;
+        try {
+            const monthResult: any[] = await prisma.$queryRaw`
+                SELECT COALESCE(SUM(cost), 0) as total, COUNT(*) as calls
+                FROM api_expenses
+                WHERE created_at >= date_trunc('month', CURRENT_DATE)
+            `;
+            monthExpenses = Number(monthResult[0]?.total || 0);
+
+            const todayResult: any[] = await prisma.$queryRaw`
+                SELECT COALESCE(SUM(cost), 0) as total
+                FROM api_expenses WHERE created_at >= CURRENT_DATE
+            `;
+            todayExpenses = Number(todayResult[0]?.total || 0);
+
+            const allTimeResult: any[] = await prisma.$queryRaw`
+                SELECT COALESCE(SUM(cost), 0) as total, COUNT(*) as calls
+                FROM api_expenses
+            `;
+            totalExpenses = Number(allTimeResult[0]?.total || 0);
+            totalCalls = Number(allTimeResult[0]?.calls || 0);
+        } catch { /* table may not be accessible via Prisma */ }
+
+        // Fixed infrastructure costs (real, documented)
+        const infraCosts = {
+            racknerd: 47 / 12, // $47/yr = ~$3.92/mo
+            vercel: 0,         // Hobby plan
+        };
+        const fixedMonthlyCost = infraCosts.racknerd + infraCosts.vercel;
+        const totalMonthlyCost = fixedMonthlyCost + monthExpenses;
+        const netProfit = grossMRR - totalMonthlyCost;
         const profitMargin = grossMRR > 0 ? (netProfit / grossMRR) * 100 : 0;
+
+        // Payment history
+        let recentPayments: any[] = [];
+        try {
+            recentPayments = await prisma.payment.findMany({
+                take: 10,
+                orderBy: { createdAt: 'desc' },
+                select: { id: true, amount: true, status: true, createdAt: true },
+            });
+        } catch {}
 
         return NextResponse.json({
             success: true,
             metrics: [
-                { label: 'Gross Revenue (MRR)', value: grossMRR, change: 12.5, trend: 'up', color: 'text-green-400' },
-                { label: 'Platform Expenses', value: platformExpenses, change: 4.2, trend: 'up', color: 'text-red-400' },
-                { label: 'Partner Rev Share', value: partnerRevShare, change: 14.8, trend: 'up', color: 'text-orange-400' },
-                { label: 'Net Profit Margin', value: profitMargin.toFixed(1), change: 2.1, trend: 'up', color: 'text-cyan-400' },
+                { label: 'Gross Revenue (MRR)', value: grossMRR, color: 'text-green-400' },
+                { label: 'API Expenses (Month)', value: Number(monthExpenses.toFixed(2)), color: 'text-red-400' },
+                { label: 'API Expenses (Today)', value: Number(todayExpenses.toFixed(2)), color: 'text-orange-400' },
+                { label: 'Fixed Infra (Month)', value: Number(fixedMonthlyCost.toFixed(2)), color: 'text-slate-400' },
+                { label: 'Net Profit Margin', value: grossMRR > 0 ? `${profitMargin.toFixed(1)}%` : 'N/A', color: 'text-cyan-400' },
             ],
+            expenses: {
+                apiToday: Number(todayExpenses.toFixed(2)),
+                apiMonth: Number(monthExpenses.toFixed(2)),
+                apiAllTime: Number(totalExpenses.toFixed(2)),
+                apiCalls: totalCalls,
+                infraMonthly: Number(fixedMonthlyCost.toFixed(2)),
+            },
+            recentPayments,
             projections: {
                 yearEnd: grossMRR * 12,
-                growthRate: '8.2%',
+                note: grossMRR === 0 ? 'No active subscriptions — $0 revenue' : undefined,
             },
         });
     } catch (error) {

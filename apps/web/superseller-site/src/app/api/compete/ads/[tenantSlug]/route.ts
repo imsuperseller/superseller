@@ -191,6 +191,24 @@ export async function PATCH(
     }
 
     const a = updated[0];
+
+    // Send WhatsApp notification to Shai when someone rates an ad
+    try {
+      const wahaUrl = process.env.WAHA_API_URL || `http://172.245.56.50:3000`;
+      const wahaKey = process.env.WAHA_API_KEY || '4fc7e008d7d24fc995475029effc8fa8';
+      const shaiPhone = '14695885133@c.us';
+      const verdict = a.liked === true ? '👍 LIKED' : a.liked === false ? '👎 DISLIKED' : '⏭️ SKIPPED';
+      const adPreview = (a.ad_title || a.ad_text || '').slice(0, 80);
+      const msg = `🏆 *Compete Rating — ${tenantSlug}*\n\n${verdict} by ${a.feedback_by || 'anonymous'}\n📝 ${a.feedback_note || 'No note'}\n📄 "${adPreview}..."`;
+
+      await fetch(`${wahaUrl}/api/sendText`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Api-Key': wahaKey },
+        body: JSON.stringify({ chatId: shaiPhone, text: msg, session: 'default' }),
+        signal: AbortSignal.timeout(5000),
+      }).catch(() => {}); // Don't block on notification failure
+    } catch { /* WhatsApp notification is best-effort */ }
+
     return NextResponse.json({
       ad: {
         id: a.id,
