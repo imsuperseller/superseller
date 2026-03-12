@@ -52,7 +52,7 @@ export function MicroExpanderFAB({
       target="_blank"
       rel="noopener noreferrer"
       className={cn(
-        "fixed bottom-6 z-50 flex h-14 items-center overflow-hidden rounded-full shadow-2xl",
+        "fixed bottom-10 z-50 flex h-14 items-center overflow-hidden rounded-full shadow-2xl",
         "font-semibold text-sm text-white cursor-pointer",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-400 focus-visible:ring-offset-2",
         isRTL ? "right-6" : "left-6",
