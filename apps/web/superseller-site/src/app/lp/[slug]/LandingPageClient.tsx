@@ -373,7 +373,7 @@ export function LandingPageClient({ page }: { page: LandingPage & { brand: Brand
           {/* Premium animated gradient background */}
           <div className="absolute inset-0">
             <div
-              className="absolute inset-0 opacity-30"
+              className="absolute inset-0 opacity-20"
               style={{
                 background: `radial-gradient(ellipse at 20% 50%, ${accent}, transparent 60%), radial-gradient(ellipse at 80% 20%, ${cta}, transparent 50%)`,
               }}
