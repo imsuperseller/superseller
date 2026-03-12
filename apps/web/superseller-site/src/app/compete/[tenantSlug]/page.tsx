@@ -20,12 +20,21 @@ async function getLocale(slug: string): Promise<CompeteLocale> {
 
 export default async function CompetePage({ params }: Props) {
   const { tenantSlug } = await params;
-  const [session, locale] = await Promise.all([
+  const [session, locale, landingPage] = await Promise.all([
     verifySession(),
     getLocale(tenantSlug),
+    prisma.landingPage.findFirst({
+      where: { slug: tenantSlug, active: true },
+      select: { id: true, heroHeadline: true },
+    }),
   ]);
 
+  // Allow public access when a landing page exists for this slug (prospect demo)
   if (!session.isValid || !session.email) {
+    if (landingPage) {
+      const userName = landingPage.heroHeadline || tenantSlug;
+      return <CompeteFeed tenantSlug={tenantSlug} userName={userName} locale={locale} />;
+    }
     return <CompeteLogin tenantSlug={tenantSlug} locale={locale} />;
   }
 

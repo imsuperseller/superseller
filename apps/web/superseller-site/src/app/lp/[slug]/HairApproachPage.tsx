@@ -314,7 +314,7 @@ export function HairApproachPage({ page }: { page: LandingPage & { brand: Brand 
           <div className="max-w-6xl mx-auto">
             <Reveal><SectionTag>What We Built</SectionTag></Reveal>
             <Reveal>
-              <SectionTitle white="Your Photos." gold="Enhanced by AI." />
+              <SectionTitle white="Your Photos." gold="Enhanced by Us and Our AI." />
             </Reveal>
             <Reveal>
               <p className="text-base font-light leading-relaxed max-w-xl mb-12 text-[#9a9cb8]">
@@ -376,19 +376,17 @@ export function HairApproachPage({ page }: { page: LandingPage & { brand: Brand 
                 A branded showreel built from your portfolio — with Ken Burns motion, your brand colors, and Playfair Display typography. Ready for Reels, Stories, or sharing with clients.
               </p>
             </Reveal>
-            <Reveal>
-              <div className="rounded-xl overflow-hidden border border-white/10 shadow-2xl">
-                <video
-                  controls
-                  playsInline
-                  preload="metadata"
-                  poster={PHOTOS.blondeHighlights}
-                  className="w-full"
-                >
-                  <source src={SHOWREEL} type="video/mp4" />
-                </video>
-              </div>
-            </Reveal>
+            <div className="rounded-xl overflow-hidden border border-white/10 shadow-2xl aspect-video">
+              <video
+                controls
+                playsInline
+                preload="metadata"
+                poster={PHOTOS.blondeHighlights}
+                className="w-full h-full object-cover"
+              >
+                <source src={SHOWREEL} type="video/mp4" />
+              </video>
+            </div>
           </div>
         </section>
 
@@ -634,51 +632,125 @@ export function HairApproachPage({ page }: { page: LandingPage & { brand: Brand 
         {/* ================================================================ */}
         <section className="py-24 px-[4%] relative overflow-hidden" style={{ background: BG }}>
           <div className="max-w-5xl mx-auto text-center">
-            <Reveal><SectionTag>Your Package</SectionTag></Reveal>
+            <Reveal><SectionTag>Packages</SectionTag></Reveal>
             <Reveal>
               <h2
                 className="text-3xl md:text-[2.8rem] font-black leading-[1.1] tracking-tight mb-4 max-w-xl mx-auto"
                 style={{ fontFamily: "'Playfair Display', serif" }}
               >
-                Everything{" "}
+                Pick Your{" "}
                 <span className="bg-gradient-to-r from-[#C9A96E] via-[#e8d48b] to-[#C9A96E] bg-clip-text text-transparent">
-                  Already in Motion
+                  Growth Plan
                 </span>
               </h2>
             </Reveal>
             <Reveal>
-              <p className="text-base font-light leading-relaxed text-[#9a9cb8] mb-12 max-w-lg mx-auto">
-                This is what&rsquo;s included from day one. No setup fees, no hidden costs.
+              <p className="text-base font-light leading-relaxed text-[#9a9cb8] mb-14 max-w-lg mx-auto">
+                No setup fees. No contracts. Cancel anytime. Every plan includes WhatsApp approval — nothing posts without your OK.
               </p>
             </Reveal>
             <motion.div
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+              className="grid grid-cols-1 md:grid-cols-3 gap-6"
               variants={stagger}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: "-60px" }}
             >
               {[
-                "16-20 Instagram posts/month",
-                "AI-enhanced photo styling",
-                "Professional caption writing",
-                "Strategic hashtag research",
-                "Branded Reels & Stories",
-                "Optimal posting schedule",
-                "Competitor intelligence dashboard",
-                "WhatsApp approval workflow",
-                "Monthly performance report",
-              ].map((feature, i) => (
+                {
+                  name: "Starter",
+                  price: "$500",
+                  desc: "Get your feed moving with consistent, professional content.",
+                  features: [
+                    "12 Instagram posts/month",
+                    "AI-enhanced photo styling",
+                    "Professional captions",
+                    "Strategic hashtag research",
+                    "WhatsApp approval workflow",
+                    "Monthly performance report",
+                  ],
+                  highlighted: false,
+                },
+                {
+                  name: "Growth",
+                  price: "$750",
+                  desc: "The full engine — posts, Reels, Stories, and competitor intel.",
+                  features: [
+                    "20 Instagram posts/month",
+                    "AI-enhanced photo styling",
+                    "Professional captions",
+                    "Branded Reels & Stories",
+                    "Competitor intelligence dashboard",
+                    "Optimal posting schedule",
+                    "WhatsApp approval workflow",
+                    "Monthly performance report",
+                  ],
+                  highlighted: true,
+                },
+                {
+                  name: "Premium",
+                  price: "$1,000",
+                  desc: "Everything in Growth plus video content and priority support.",
+                  features: [
+                    "Everything in Growth",
+                    "Branded showreel videos",
+                    "Video content for Reels",
+                    "Priority content turnaround",
+                    "Dedicated account manager",
+                    "Quarterly strategy review",
+                  ],
+                  highlighted: false,
+                },
+              ].map((plan, i) => (
                 <motion.div
                   key={i}
-                  variants={fadeUp}
-                  className="flex items-center gap-3 px-5 py-4 rounded-lg border border-white/8 text-left"
-                  style={{ background: BG_CARD }}
+                  variants={scaleIn}
+                  className={`relative p-8 rounded-xl border text-left transition-all duration-300 hover:-translate-y-1 ${plan.highlighted ? "border-[#C9A96E]/40" : "border-white/8"}`}
+                  style={{
+                    background: plan.highlighted
+                      ? `linear-gradient(135deg, ${BG_CARD} 0%, rgba(201,169,110,0.08) 100%)`
+                      : BG_CARD,
+                  }}
                 >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill={GOLD} stroke="none" className="flex-shrink-0">
-                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                  </svg>
-                  <span className="text-sm font-medium text-white/80">{feature}</span>
+                  {plan.highlighted && (
+                    <div
+                      className="absolute -top-3 left-1/2 -translate-x-1/2 text-[0.6rem] font-bold tracking-[0.2em] uppercase px-4 py-1 rounded-full"
+                      style={{ background: GOLD, color: DARK }}
+                    >
+                      Most Popular
+                    </div>
+                  )}
+                  <h3 className="font-bold text-lg mb-1">{plan.name}</h3>
+                  <div className="flex items-baseline gap-1 mb-3">
+                    <span
+                      className="text-4xl font-black"
+                      style={{ fontFamily: "'Playfair Display', serif", color: GOLD }}
+                    >
+                      {plan.price}
+                    </span>
+                    <span className="text-sm text-white/40">/mo</span>
+                  </div>
+                  <p className="text-sm text-[#9a9cb8] mb-6">{plan.desc}</p>
+                  <div className="space-y-3">
+                    {plan.features.map((f, j) => (
+                      <div key={j} className="flex items-center gap-2.5">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill={GOLD} stroke="none" className="flex-shrink-0">
+                          <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                        </svg>
+                        <span className="text-sm text-white/70">{f}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <a
+                    href="#contact"
+                    className="block mt-8 text-center py-3 rounded-full font-bold text-xs tracking-[0.1em] uppercase transition-all duration-300 hover:-translate-y-0.5"
+                    style={plan.highlighted
+                      ? { background: `linear-gradient(135deg, ${GOLD} 0%, #e8d48b 50%, ${GOLD} 100%)`, color: DARK }
+                      : { border: `1.5px solid ${GOLD}`, color: GOLD }
+                    }
+                  >
+                    Get Started
+                  </a>
                 </motion.div>
               ))}
             </motion.div>
