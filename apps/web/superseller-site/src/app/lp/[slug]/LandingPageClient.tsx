@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import type { LandingPage, Brand } from "@prisma/client";
 import {
   motion,
@@ -162,6 +162,7 @@ interface Sections {
   credentials?: { label: string; value: string }[];
   differentiators?: { title: string; description: string }[];
   gallery?: { url: string; alt: string }[];
+  heroImages?: string[];
   complianceFooter?: string;
 }
 
@@ -203,6 +204,48 @@ function CredentialCard({
       </motion.div>
       <div className="text-sm mt-2 font-medium opacity-60">{label}</div>
     </motion.div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Hero Slideshow — Ken Burns + crossfade for premium hero backgrounds
+// ---------------------------------------------------------------------------
+function HeroSlideshow({ images }: { images: string[] }) {
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    if (images.length <= 1) return;
+    const id = setInterval(() => setCurrent((i) => (i + 1) % images.length), 5000);
+    return () => clearInterval(id);
+  }, [images.length]);
+
+  return (
+    <div className="absolute inset-0 overflow-hidden">
+      {images.map((src, i) => (
+        <div
+          key={src}
+          className="absolute inset-0 transition-opacity duration-[2000ms] ease-in-out"
+          style={{ opacity: i === current ? 1 : 0 }}
+        >
+          <img
+            src={src}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{
+              objectPosition: "center 25%",
+              animation: i === current ? "kenburns 8s ease-in-out forwards" : "none",
+            }}
+          />
+        </div>
+      ))}
+      <div className="absolute inset-0 bg-black/40" />
+      <style>{`
+        @keyframes kenburns {
+          0% { transform: scale(1) translate(0, 0); }
+          100% { transform: scale(1.08) translate(-1%, -1%); }
+        }
+      `}</style>
+    </div>
   );
 }
 
@@ -327,8 +370,10 @@ export function LandingPageClient({ page }: { page: LandingPage & { brand: Brand
           style={{ backgroundColor: isDark ? "#111111" : primary }}
           className="relative pb-20 pt-12 px-6 text-white overflow-hidden"
         >
-          {/* Video background when heroMediaUrl points to a video */}
-          {page.heroMediaUrl && /\.(mp4|webm|mov)$/i.test(page.heroMediaUrl) && (
+          {/* Hero background: slideshow from heroImages, or video fallback */}
+          {(sections.heroImages as string[] | undefined)?.length ? (
+            <HeroSlideshow images={sections.heroImages as string[]} />
+          ) : page.heroMediaUrl && /\.(mp4|webm|mov)$/i.test(page.heroMediaUrl) ? (
             <>
               <video
                 autoPlay
@@ -341,7 +386,7 @@ export function LandingPageClient({ page }: { page: LandingPage & { brand: Brand
               />
               <div className="absolute inset-0 bg-black/30" />
             </>
-          )}
+          ) : null}
           {/* Subtle animated gradient overlay */}
           <div
             className="absolute inset-0 opacity-20"
