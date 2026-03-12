@@ -1605,3 +1605,41 @@ model ReviewRequest {
   @@index([tenantSlug])
   @@map("review_requests")
 }
+
+// ═══════════════════════════════════════════════════════════════
+// LANDING PAGE ANALYTICS
+// ═══════════════════════════════════════════════════════════════
+
+/// Individual page view event with metadata for analytics dashboard.
+model PageView {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug      String   // landing page slug
+  referrer  String?  // document.referrer
+  utmSource String?  @map("utm_source")
+  utmMedium String?  @map("utm_medium")
+  utmCampaign String? @map("utm_campaign")
+  userAgent String?  @map("user_agent")
+  ipHash    String?  @map("ip_hash") // SHA-256 hash, not raw IP
+  country   String?
+  device    String?  // "mobile" | "desktop" | "tablet"
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([slug, createdAt])
+  @@index([slug])
+  @@map("page_views")
+}
+
+/// Conversion events: form submissions, WhatsApp clicks, phone clicks, etc.
+model ConversionEvent {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug      String   // landing page slug
+  eventType String   @map("event_type") // "form_submit" | "whatsapp_click" | "phone_click" | "cta_click"
+  metadata  Json?    // extra data (e.g. which CTA, form field values)
+  ipHash    String?  @map("ip_hash")
+  userAgent String?  @map("user_agent")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([slug, createdAt])
+  @@index([slug, eventType])
+  @@map("conversion_events")
+}

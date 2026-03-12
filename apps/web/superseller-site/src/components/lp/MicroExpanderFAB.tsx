@@ -10,6 +10,7 @@ interface MicroExpanderFABProps {
   icon: React.ReactNode;
   className?: string;
   isRTL?: boolean;
+  onClick?: () => void;
 }
 
 /**
@@ -22,6 +23,7 @@ export function MicroExpanderFAB({
   icon,
   className,
   isRTL = false,
+  onClick,
 }: MicroExpanderFABProps) {
   const [isHovered, setIsHovered] = React.useState(false);
 
@@ -67,6 +69,7 @@ export function MicroExpanderFAB({
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       aria-label={text}
+      onClick={onClick}
     >
       <div className="flex h-14 w-14 shrink-0 items-center justify-center bg-green-500 hover:bg-green-600 transition-colors">
         <motion.div

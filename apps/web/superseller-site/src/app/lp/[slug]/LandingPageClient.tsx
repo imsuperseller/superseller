@@ -226,6 +226,31 @@ export function LandingPageClient({ page }: { page: LandingPage & { brand: Brand
   const primary = page.brand?.primaryColor || "#1e3a8a";
   const cta = page.brand?.ctaColor || "#f97316";
 
+  // Analytics tracking pixel — fire pageview on mount, track conversions
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    fetch("/api/analytics/track", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        slug: page.slug,
+        type: "pageview",
+        referrer: document.referrer || null,
+        utmSource: params.get("utm_source"),
+        utmMedium: params.get("utm_medium"),
+        utmCampaign: params.get("utm_campaign"),
+      }),
+    }).catch(() => {}); // fire-and-forget
+  }, [page.slug]);
+
+  function trackConversion(eventType: string, metadata?: Record<string, unknown>) {
+    fetch("/api/analytics/track", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ slug: page.slug, type: "conversion", eventType, metadata }),
+    }).catch(() => {});
+  }
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setFormState("submitting");
@@ -252,6 +277,7 @@ export function LandingPageClient({ page }: { page: LandingPage & { brand: Brand
       }
 
       setFormState("success");
+      trackConversion("form_submit");
       form.reset();
     } catch (err: unknown) {
       setErrorMsg(err instanceof Error ? err.message : "Something went wrong");
@@ -787,6 +813,7 @@ export function LandingPageClient({ page }: { page: LandingPage & { brand: Brand
             text={text.whatsappCTA}
             icon={<WhatsAppIcon />}
             isRTL={isRTL}
+            onClick={() => trackConversion("whatsapp_click")}
           />
         )}
       </div>
