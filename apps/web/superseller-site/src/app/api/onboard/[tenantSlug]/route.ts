@@ -59,7 +59,7 @@ export async function POST(
     // 2. Upsert TenantUser
     await prisma.$executeRawUnsafe(
       `INSERT INTO "TenantUser" ("tenantId", "userId", "role")
-       VALUES ($1, $2, $3)
+       VALUES ($1::uuid, $2, $3)
        ON CONFLICT ("tenantId", "userId") DO UPDATE SET "role" = $3`,
       tenant.id,
       userId,
@@ -88,7 +88,7 @@ export async function POST(
           COALESCE(settings, '{}'),
           '{soraCameos}',
           COALESCE(settings->'soraCameos', '{}') || $1::jsonb
-        ) WHERE id = $2`,
+        ) WHERE id = $2::uuid`,
         JSON.stringify({ [normalizedEmail]: { ...soraCameo, name: name.trim(), submittedAt: new Date().toISOString() } }),
         tenant.id,
       );
