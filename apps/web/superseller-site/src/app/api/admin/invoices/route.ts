@@ -140,8 +140,8 @@ async function uploadInvoiceToR2(
     const publicDomain =
       process.env.R2_PUBLIC_DOMAIN || "https://videos.superseller.agency";
     return `${publicDomain}/${key}`;
-  } catch (err) {
-    console.error("[invoices] R2 upload failed:", err);
+  } catch (err: any) {
+    console.error("[invoices] R2 upload failed:", err?.name, err?.message, err?.Code, JSON.stringify({ endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`, bucket: "zillow-to-video-finals" }));
     return null;
   }
 }
