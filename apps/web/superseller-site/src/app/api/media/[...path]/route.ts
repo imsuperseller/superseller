@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
-import type { Readable } from "stream";
 
 const BUCKET = "zillow-to-video-finals";
 
@@ -63,20 +62,13 @@ export async function GET(
     });
 
     const resp = await s3.send(cmd);
-    const body = resp.Body as Readable;
 
-    if (!body) {
+    if (!resp.Body) {
       return NextResponse.json({ error: "not found" }, { status: 404 });
     }
 
-    // Convert Node stream to Web ReadableStream
-    const webStream = new ReadableStream({
-      start(controller) {
-        body.on("data", (chunk: Buffer) => controller.enqueue(chunk));
-        body.on("end", () => controller.close());
-        body.on("error", (err: Error) => controller.error(err));
-      },
-    });
+    // S3 SDK v3 returns a Web ReadableStream on Vercel, Node Readable locally
+    const bodyBytes = await resp.Body.transformToByteArray();
 
     const status = range && resp.ContentRange ? 206 : 200;
 
@@ -93,7 +85,7 @@ export async function GET(
       headers["Content-Range"] = resp.ContentRange;
     }
 
-    return new Response(webStream, { status, headers });
+    return new Response(bodyBytes, { status, headers });
   } catch (err: unknown) {
     const code = (err as { name?: string }).name;
     if (code === "NoSuchKey") {
