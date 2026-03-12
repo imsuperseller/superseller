@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifySession } from "@/lib/auth";
 import { generateInvoicePdf, type InvoiceData } from "@/lib/services/invoice-pdf";
 import prisma from "@/lib/prisma";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 30;
@@ -104,8 +105,6 @@ async function uploadInvoiceToR2(
   invoiceNumber: string
 ): Promise<string | null> {
   try {
-    const { S3Client, PutObjectCommand } = await import("@aws-sdk/client-s3");
-
     const accountId =
       process.env.R2_ACCOUNT_ID || process.env.CLOUDFLARE_R2_ACCOUNT_ID;
     const accessKeyId =
