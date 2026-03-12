@@ -176,6 +176,7 @@ async function uploadBase64ToR2(
       region: "auto",
       endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
       credentials: { accessKeyId, secretAccessKey },
+      forcePathStyle: true,
     });
 
     const buffer = Buffer.from(base64Data, "base64");
