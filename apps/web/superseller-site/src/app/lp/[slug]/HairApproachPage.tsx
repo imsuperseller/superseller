@@ -198,17 +198,17 @@ export function HairApproachPage({ page }: { page: LandingPage & { brand: Brand 
         >
           <div className="flex items-center gap-2">
             <span
-              className="font-extrabold text-lg tracking-[0.12em] uppercase"
+              className="font-extrabold text-base sm:text-lg tracking-[0.12em] uppercase whitespace-nowrap"
               style={{ fontFamily: "'Playfair Display', serif", color: GOLD }}
             >
               Hair Approach
             </span>
-            <span className="text-white/40 text-sm mx-1">&times;</span>
-            <span className="font-bold text-sm tracking-[0.1em] uppercase text-white/80">SuperSeller</span>
+            <span className="hidden sm:inline text-white/40 text-sm mx-1">&times;</span>
+            <span className="hidden sm:inline font-bold text-sm tracking-[0.1em] uppercase text-white/80">SuperSeller</span>
           </div>
           <a
             href="#contact"
-            className="text-xs font-bold tracking-[0.1em] uppercase px-6 py-3 rounded-sm transition-all duration-300 hover:text-[#0a0c1a]"
+            className="text-[0.65rem] sm:text-xs font-bold tracking-[0.1em] uppercase px-3 sm:px-6 py-2 sm:py-3 rounded-sm transition-all duration-300 hover:text-[#0a0c1a] whitespace-nowrap"
             style={{ border: `1.5px solid ${GOLD}`, color: GOLD }}
             onMouseEnter={(e) => { e.currentTarget.style.background = GOLD; e.currentTarget.style.color = DARK; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = GOLD; }}
