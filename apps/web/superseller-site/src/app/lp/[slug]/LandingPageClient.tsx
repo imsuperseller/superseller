@@ -370,28 +370,18 @@ export function LandingPageClient({ page }: { page: LandingPage & { brand: Brand
           style={{ backgroundColor: isDark ? "#111111" : primary }}
           className="relative pb-20 pt-12 px-6 text-white overflow-hidden"
         >
-          {/* Video hero for hair-approach */}
+          {/* Premium hero background for hair-approach — upscaled photo slideshow */}
           {page.slug === "hair-approach" ? (
-            <div className="absolute inset-0 overflow-hidden">
-              <video
-                autoPlay
-                muted
-                loop
-                playsInline
-                poster="https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/portfolio/upscaled/gallery_blonde-highlights.jpg"
-                className="absolute inset-0 w-full h-full object-cover"
-                style={{ filter: "brightness(0.5)" }}
-                onError={(e) => {
-                  (e.target as HTMLVideoElement).style.display = "none";
-                }}
-              >
-                <source
-                  src="https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/showreel/master-16x9.mp4"
-                  type="video/mp4"
-                />
-              </video>
-              <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/60" />
-            </div>
+            <HeroSlideshow
+              images={[
+                "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/portfolio/upscaled/gallery_blonde-highlights.jpg",
+                "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/portfolio/upscaled/gallery_blonde-transformation.jpg",
+                "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/portfolio/upscaled/gallery_platinum-result.jpg",
+                "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/portfolio/upscaled/gallery_client-waves.jpg",
+                "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/portfolio/upscaled/gallery_brunette-result.jpg",
+                "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/portfolio/upscaled/gallery_color-change.jpg",
+              ]}
+            />
           ) : (
           /* Premium animated gradient background */
           <div className="absolute inset-0">
@@ -820,14 +810,14 @@ export function LandingPageClient({ page }: { page: LandingPage & { brand: Brand
         {/* SOCIAL MOCKUPS — Hair Approach only                             */}
         {/* ============================================================= */}
         {page.slug === "hair-approach" && (
-          <section className="py-20 px-4" style={{ backgroundColor: "#0a0a0a" }}>
-            <div className="max-w-6xl mx-auto">
+          <section className="py-20 px-6" style={{ backgroundColor: "#111" }}>
+            <div className="max-w-5xl mx-auto">
               <motion.h2
                 variants={fadeUp}
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true }}
-                className="text-3xl md:text-4xl font-bold text-center mb-4"
+                className="text-2xl md:text-3xl font-bold text-center mb-3"
                 style={{
                   fontFamily: "var(--lp-font-heading)",
                   color: "#C9A96E",
@@ -840,7 +830,7 @@ export function LandingPageClient({ page }: { page: LandingPage & { brand: Brand
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true }}
-                className="text-center text-gray-400 mb-12 text-lg"
+                className="text-center text-gray-400 mb-10 text-base"
               >
                 AI-crafted content that books appointments — zero effort from you
               </motion.p>
@@ -849,22 +839,54 @@ export function LandingPageClient({ page }: { page: LandingPage & { brand: Brand
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true }}
-                className="grid grid-cols-1 md:grid-cols-3 gap-6"
+                className="grid grid-cols-1 md:grid-cols-3 gap-4"
               >
                 {[
-                  "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/mockups/mockup-1.png",
-                  "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/mockups/mockup-2.png",
-                  "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/mockups/mockup-3.png",
-                ].map((url, i) => (
-                  <motion.div key={i} variants={scaleIn}>
+                  { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/mockups/mockup-1.png", label: "Result Showcase" },
+                  { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/mockups/mockup-2.png", label: "Expert Tips" },
+                  { url: "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/mockups/mockup-3.png", label: "Transformation" },
+                ].map((item, i) => (
+                  <motion.div
+                    key={i}
+                    variants={scaleIn}
+                    className="rounded-xl overflow-hidden border border-white/10 bg-white/5 hover:border-[#C9A96E]/30 transition-all duration-300"
+                    whileHover={{ y: -4, scale: 1.02 }}
+                  >
                     <img
-                      src={url}
-                      alt={`Social media mockup ${i + 1}`}
-                      className="w-full rounded-lg shadow-2xl"
+                      src={item.url}
+                      alt={`Social media mockup — ${item.label}`}
+                      className="w-full"
                       loading="lazy"
                     />
+                    <div className="px-4 py-3 text-center">
+                      <span className="text-sm font-medium text-white/60">{item.label}</span>
+                    </div>
                   </motion.div>
                 ))}
+              </motion.div>
+              {/* Showreel video as bonus deliverable */}
+              <motion.div
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                className="mt-12 max-w-2xl mx-auto"
+              >
+                <p className="text-center text-sm text-white/40 mb-4">Your branded showreel — ready for Instagram Reels & Stories</p>
+                <div className="rounded-xl overflow-hidden border border-white/10 shadow-2xl">
+                  <video
+                    controls
+                    playsInline
+                    preload="metadata"
+                    poster="https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/portfolio/upscaled/gallery_blonde-highlights.jpg"
+                    className="w-full"
+                  >
+                    <source
+                      src="https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/hair-approach/showreel/master-16x9.mp4"
+                      type="video/mp4"
+                    />
+                  </video>
+                </div>
               </motion.div>
             </div>
           </section>
