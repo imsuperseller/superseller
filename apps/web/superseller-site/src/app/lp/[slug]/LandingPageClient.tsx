@@ -370,30 +370,25 @@ export function LandingPageClient({ page }: { page: LandingPage & { brand: Brand
           style={{ backgroundColor: isDark ? "#111111" : primary }}
           className="relative pb-20 pt-12 px-6 text-white overflow-hidden"
         >
-          {/* Hero background: slideshow from heroImages, or video fallback */}
-          {(sections.heroImages as string[] | undefined)?.length ? (
-            <HeroSlideshow images={sections.heroImages as string[]} />
-          ) : page.heroMediaUrl && /\.(mp4|webm|mov)$/i.test(page.heroMediaUrl) ? (
-            <>
-              <video
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="auto"
-                className="absolute inset-0 w-full h-full object-cover"
-                src={page.heroMediaUrl}
-              />
-              <div className="absolute inset-0 bg-black/30" />
-            </>
-          ) : null}
-          {/* Subtle animated gradient overlay */}
-          <div
-            className="absolute inset-0 opacity-20"
-            style={{
-              background: `radial-gradient(ellipse at 50% 0%, ${accent}, transparent 70%)`,
-            }}
-          />
+          {/* Premium animated gradient background */}
+          <div className="absolute inset-0">
+            <div
+              className="absolute inset-0 opacity-30"
+              style={{
+                background: `radial-gradient(ellipse at 20% 50%, ${accent}, transparent 60%), radial-gradient(ellipse at 80% 20%, ${cta}, transparent 50%)`,
+              }}
+            />
+            <div
+              className="absolute inset-0 opacity-10"
+              style={{ animation: "shimmer 8s ease-in-out infinite alternate" }}
+            />
+            <style>{`
+              @keyframes shimmer {
+                0% { background: radial-gradient(ellipse at 30% 50%, rgba(255,255,255,0.08), transparent 60%); }
+                100% { background: radial-gradient(ellipse at 70% 50%, rgba(255,255,255,0.08), transparent 60%); }
+              }
+            `}</style>
+          </div>
 
           <motion.div
             className="max-w-4xl mx-auto flex flex-col items-center text-center relative z-10"
@@ -410,7 +405,7 @@ export function LandingPageClient({ page }: { page: LandingPage & { brand: Brand
               />
             )}
             <motion.h1
-              style={{ fontFamily: `var(--lp-font-heading)`, textShadow: "0 2px 12px rgba(0,0,0,0.6)" }}
+              style={{ fontFamily: `var(--lp-font-heading)` }}
               className="text-3xl md:text-5xl font-black mb-4 leading-tight max-w-3xl"
               variants={fadeUp}
             >
