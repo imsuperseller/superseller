@@ -113,7 +113,19 @@ export default function CompetitorAdCard({ ad, onRate, reviewerName, locale, com
   const hasMedia = hasVideo || hasImage;
   const analysis = ad.aiAnalysis;
 
+  const [pendingLiked, setPendingLiked] = useState<boolean | null>(null);
+  const [noteError, setNoteError] = useState(false);
+
   const handleRate = async (liked: boolean) => {
+    // Require a note before submitting
+    if (!note.trim()) {
+      setPendingLiked(liked);
+      setShowFeedback(true);
+      setNoteError(true);
+      return;
+    }
+    setNoteError(false);
+    setPendingLiked(null);
     setSaving(true);
     setSaved(false);
     try {
@@ -350,14 +362,16 @@ export default function CompetitorAdCard({ ad, onRate, reviewerName, locale, com
             </button>
           </div>
 
-          <button
-            onClick={() => setShowFeedback(!showFeedback)}
-            className="flex items-center gap-1.5 mt-3 text-[11px] transition-all duration-300 hover:text-[var(--superseller-cyan)] py-1 cursor-pointer"
-            style={{ color: "var(--superseller-text-muted)" }}
-          >
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            {showFeedback ? t("hide", locale) : localNote ? t("editNote", locale) : t("addNote", locale)}
-          </button>
+          {!pendingLiked && (
+            <button
+              onClick={() => setShowFeedback(!showFeedback)}
+              className="flex items-center gap-1.5 mt-3 text-[11px] transition-all duration-300 hover:text-[var(--superseller-cyan)] py-1 cursor-pointer"
+              style={{ color: "var(--superseller-text-muted)" }}
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              {showFeedback ? t("hide", locale) : localNote ? t("editNote", locale) : t("addNote", locale)}
+            </button>
+          )}
 
           <AnimatePresence>
             {showFeedback && (
@@ -369,25 +383,46 @@ export default function CompetitorAdCard({ ad, onRate, reviewerName, locale, com
                 className="overflow-hidden"
               >
                 <div className="mt-3 space-y-3">
+                  {noteError && !note.trim() && (
+                    <p className="text-[12px] font-semibold" style={{ color: "var(--superseller-orange)" }}>
+                      {locale === "he" ? "חובה לכתוב סיבה לפני שליחה" : "A reason is required before submitting"}
+                    </p>
+                  )}
                   <textarea
                     value={note}
-                    onChange={(e) => setNote(e.target.value)}
-                    placeholder={t("notePlaceholder", locale)}
+                    onChange={(e) => { setNote(e.target.value); if (e.target.value.trim()) setNoteError(false); }}
+                    placeholder={locale === "he" ? "למה? (חובה)" : "Why? (required)"}
                     rows={2}
                     maxLength={2000}
+                    autoFocus={!!pendingLiked}
                     className="superseller-input w-full text-sm resize-none rounded-xl px-4 py-3"
-                    style={{ color: "var(--superseller-text-primary)" }}
+                    style={{
+                      color: "var(--superseller-text-primary)",
+                      borderColor: noteError && !note.trim() ? "var(--superseller-orange)" : undefined,
+                    }}
                   />
-                  <button
-                    onClick={handleSaveNote}
-                    disabled={saving}
-                    className={`px-5 py-2 rounded-xl text-sm font-bold transition-all duration-300 disabled:opacity-20 cursor-pointer ${
-                      saved ? "" : "superseller-btn-3d-neon"
-                    }`}
-                    style={saved ? { background: "rgba(78,205,196,0.15)", color: "var(--superseller-teal)" } : undefined}
-                  >
-                    {saved ? t("saved", locale) : t("save", locale)}
-                  </button>
+                  {pendingLiked !== null ? (
+                    <button
+                      onClick={() => handleRate(pendingLiked)}
+                      disabled={saving || !note.trim()}
+                      className="w-full py-3 rounded-xl text-sm font-bold transition-all duration-300 disabled:opacity-30 cursor-pointer superseller-btn-3d-primary"
+                    >
+                      {locale === "he"
+                        ? pendingLiked ? "שלח — אהבתי 💚" : "שלח — פאס ✕"
+                        : pendingLiked ? "Submit — Liked 💚" : "Submit — Pass ✕"}
+                    </button>
+                  ) : (
+                    <button
+                      onClick={handleSaveNote}
+                      disabled={saving}
+                      className={`px-5 py-2 rounded-xl text-sm font-bold transition-all duration-300 disabled:opacity-20 cursor-pointer ${
+                        saved ? "" : "superseller-btn-3d-neon"
+                      }`}
+                      style={saved ? { background: "rgba(78,205,196,0.15)", color: "var(--superseller-teal)" } : undefined}
+                    >
+                      {saved ? t("saved", locale) : t("save", locale)}
+                    </button>
+                  )}
                 </div>
               </motion.div>
             )}
