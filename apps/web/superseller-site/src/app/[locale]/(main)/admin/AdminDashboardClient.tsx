@@ -35,7 +35,9 @@ import {
     Menu,
     X,
     ClipboardCheck,
-    GitBranch
+    GitBranch,
+    Swords,
+    Clapperboard
 } from 'lucide-react';
 import WorkflowManagement from '@/components/admin/WorkflowManagement';
 import AIAgentManagement from '@/components/admin/AIAgentManagement';
@@ -55,6 +57,8 @@ import CiDashboard from '@/components/admin/CiDashboard';
 import PortfolioDashboard from '@/components/admin/PortfolioDashboard';
 import MissionControl from '@/components/admin/MissionControl';
 import SuperSellerOps from '@/components/admin/SuperSellerOps';
+import CompetitorAdsTab from '@/components/admin/CompetitorAdsTab';
+import ContentActorsTab from '@/components/admin/ContentActorsTab';
 import { Skeleton } from '@/components/ui/skeleton-enhanced';
 import { Button } from '@/components/ui/button-enhanced';
 import { Badge } from '@/components/ui/badge-enhanced';
@@ -369,6 +373,8 @@ export default function AdminDashboardClient({
                                 { id: 'agents', label: 'AI Agents', icon: Bot },
                                 { id: 'support', label: 'Support Queue', icon: ShieldCheck },
                                 { id: 'launch', label: 'Launch Control', icon: Rocket },
+                                { id: 'comp-ads', label: 'Comp Ads', icon: Swords },
+                                { id: 'actors', label: 'Content Actors', icon: Clapperboard },
                                 { id: 'settings', label: 'Settings', icon: Settings },
                             ].map(item => (
                                 <li key={item.id}>
@@ -670,6 +676,28 @@ export default function AdminDashboardClient({
                         )}
                         {activeTab === 'portfolio' && (
                             <PortfolioDashboard />
+                        )}
+                        {activeTab === 'comp-ads' && (
+                            <div className="space-y-8">
+                                <div>
+                                    <h2 className="text-3xl font-black uppercase tracking-tighter text-white">
+                                        Competitor Ads
+                                    </h2>
+                                    <p className="text-slate-400 font-medium">Review scraped competitor ads — like, dislike, and add feedback.</p>
+                                </div>
+                                <CompetitorAdsTab />
+                            </div>
+                        )}
+                        {activeTab === 'actors' && (
+                            <div className="space-y-8">
+                                <div>
+                                    <h2 className="text-3xl font-black uppercase tracking-tighter text-white">
+                                        Content Actors
+                                    </h2>
+                                    <p className="text-slate-400 font-medium">Manage actors for AI video content — voice IDs, Sora cameos, and roles.</p>
+                                </div>
+                                <ContentActorsTab />
+                            </div>
                         )}
                     </div>
                 </main>
