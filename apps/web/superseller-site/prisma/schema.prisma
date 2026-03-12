@@ -1571,3 +1571,37 @@ model CiRun {
   @@index([projectId])
   @@index([createdAt])
 }
+
+/// Review request — sent to clients after appointments to collect Google/Yelp reviews.
+/// Flow: appointment done → API call → 2hr delayed send via WhatsApp + email.
+model ReviewRequest {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantSlug   String    @map("tenant_slug")
+  businessName String    @map("business_name")
+
+  // Client info
+  clientName  String  @map("client_name")
+  clientPhone String? @map("client_phone")
+  clientEmail String? @map("client_email")
+
+  // Review links
+  googleReviewUrl String? @map("google_review_url")
+  yelpReviewUrl   String? @map("yelp_review_url")
+
+  // Scheduling
+  scheduledFor DateTime  @map("scheduled_for")
+  status       String    @default("pending") // pending, sent, failed, cancelled
+  sentAt       DateTime? @map("sent_at")
+
+  // Delivery tracking
+  whatsappSent Boolean @default(false) @map("whatsapp_sent")
+  emailSent    Boolean @default(false) @map("email_sent")
+  errorLog     String? @map("error_log")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@index([status, scheduledFor])
+  @@index([tenantSlug])
+  @@map("review_requests")
+}
