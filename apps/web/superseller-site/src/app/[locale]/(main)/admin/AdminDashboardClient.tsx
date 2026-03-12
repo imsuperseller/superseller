@@ -37,7 +37,8 @@ import {
     ClipboardCheck,
     GitBranch,
     Swords,
-    Clapperboard
+    Clapperboard,
+    FileText
 } from 'lucide-react';
 import WorkflowManagement from '@/components/admin/WorkflowManagement';
 import AIAgentManagement from '@/components/admin/AIAgentManagement';
@@ -59,6 +60,7 @@ import MissionControl from '@/components/admin/MissionControl';
 import SuperSellerOps from '@/components/admin/SuperSellerOps';
 import CompetitorAdsTab from '@/components/admin/CompetitorAdsTab';
 import ContentActorsTab from '@/components/admin/ContentActorsTab';
+import InvoiceGenerator from '@/components/admin/InvoiceGenerator';
 import { Skeleton } from '@/components/ui/skeleton-enhanced';
 import { Button } from '@/components/ui/button-enhanced';
 import { Badge } from '@/components/ui/badge-enhanced';
@@ -375,6 +377,7 @@ export default function AdminDashboardClient({
                                 { id: 'launch', label: 'Launch Control', icon: Rocket },
                                 { id: 'comp-ads', label: 'Comp Ads', icon: Swords },
                                 { id: 'actors', label: 'Content Actors', icon: Clapperboard },
+                                { id: 'invoices', label: 'Invoices', icon: FileText },
                                 { id: 'settings', label: 'Settings', icon: Settings },
                             ].map(item => (
                                 <li key={item.id}>
@@ -697,6 +700,17 @@ export default function AdminDashboardClient({
                                     <p className="text-slate-400 font-medium">Manage actors for AI video content — voice IDs, Sora cameos, and roles.</p>
                                 </div>
                                 <ContentActorsTab />
+                            </div>
+                        )}
+                        {activeTab === 'invoices' && (
+                            <div className="space-y-8">
+                                <div>
+                                    <h2 className="text-3xl font-black uppercase tracking-tighter text-white">
+                                        Invoice Generator
+                                    </h2>
+                                    <p className="text-slate-400 font-medium">Generate branded PDF invoices for customers — store in R2 or download directly.</p>
+                                </div>
+                                <InvoiceGenerator />
                             </div>
                         )}
                     </div>
