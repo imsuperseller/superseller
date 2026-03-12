@@ -27,7 +27,7 @@ import { sendApprovalRequest } from "@/lib/services/social/approval-flow";
 import { createContentRecord } from "@/lib/services/social/aitable-sync";
 
 export const dynamic = "force-dynamic";
-export const maxDuration = 120; // 2 minutes — generating multiple posts
+export const maxDuration = 300; // 5 minutes — generating multiple posts in parallel
 
 interface ContentSlot {
   type: string;       // reel, carousel, story, post
@@ -94,9 +94,9 @@ export async function POST(request: NextRequest) {
         continue;
       }
 
-      // Generate each content slot
-      for (const slot of config.dailyContent) {
-        try {
+      // Generate all content slots in parallel
+      const slotResults = await Promise.allSettled(
+        config.dailyContent.map(async (slot) => {
           const topic = pickTopic(slot.topicPool, config.contentPillars);
           const aspectRatio = slot.aspectRatio || (slot.type === "story" || slot.type === "reel" ? "9:16" : "1:1");
 
@@ -192,15 +192,23 @@ export async function POST(request: NextRequest) {
             imageUrl,
           });
 
-          tenantResult.posts.push({
+          return {
             type: slot.type,
             postId: post.id,
             status: approvalResult.sent ? "sent_for_approval" : `approval_failed: ${approvalResult.error}`,
-          });
-        } catch (err) {
-          const msg = err instanceof Error ? err.message : String(err);
-          console.error(`[scheduled-gen] Error for ${tenant.slug}/${slot.type}:`, msg);
-          tenantResult.errors.push(`${slot.type}: ${msg}`);
+          };
+        })
+      );
+
+      // Collect results
+      for (let i = 0; i < slotResults.length; i++) {
+        const result = slotResults[i];
+        if (result.status === "fulfilled") {
+          tenantResult.posts.push(result.value);
+        } else {
+          const msg = result.reason instanceof Error ? result.reason.message : String(result.reason);
+          console.error(`[scheduled-gen] Error for ${tenant.slug}/${config.dailyContent[i].type}:`, msg);
+          tenantResult.errors.push(`${config.dailyContent[i].type}: ${msg}`);
         }
       }
 

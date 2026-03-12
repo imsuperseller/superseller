@@ -1,6 +1,6 @@
 /**
  * SocialHub — AI Image Generation
- * Primary: DALL-E 3 (OpenAI). Fallback: Kie.AI Flux 2 Pro.
+ * Primary: gpt-image-1 (OpenAI). Fallback chain: DALL-E 3 → Kie.AI Flux 2 Pro.
  */
 
 const KIE_API_BASE = "https://api.kie.ai/api/v1";
