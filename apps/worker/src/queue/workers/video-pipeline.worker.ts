@@ -1,6 +1,6 @@
 import { Worker, Job, UnrecoverableError } from "bullmq";
 import { redisConnection } from "../connection";
-import { VideoPipelineJobData, clipGenerationQueue } from "../queues";
+import { VideoPipelineJobData, clipGenerationQueue, remotionQueue, RemotionJobData } from "../queues";
 import { query, queryOne, transaction } from "../../db/client";
 import { TourRoom } from "../../types";
 import { logger } from "../../utils/logger";
@@ -1209,6 +1209,39 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
             } catch (notifErr: any) {
                 // Don't mask the original error if notification fails
                 logger.error({ msg: "Failed to send failure notification", jobId, error: notifErr.message });
+            }
+
+            // ── REMOTION FALLBACK ──
+            // If Kling/clip generation failed, fall back to Remotion (zero-cost, deterministic Ken Burns).
+            // Remotion produces a photo-based tour video — no AI clips, but 100% reliable.
+            const isClipFailure = err.message?.includes("Clip validation failed") ||
+                err.message?.includes("All clips failed") ||
+                err.message?.includes("code 402") ||
+                err.creditExhausted ||
+                err.message?.includes("Credits insufficient") ||
+                err.message?.includes("Kling") ||
+                err.message?.includes("Nano Banana");
+
+            if (isClipFailure && listingId) {
+                try {
+                    logger.info({ msg: "Triggering Remotion fallback", jobId, listingId, reason: err.message });
+                    await query(
+                        "UPDATE video_jobs SET status = 'remotion_fallback', error_message = $1 WHERE id = $2",
+                        [`Kling failed, falling back to Remotion: ${err.message}`, jobId]
+                    );
+                    await remotionQueue.add("remotion-fallback", {
+                        jobId,
+                        listingId,
+                        userId,
+                        aspectRatios: ["16x9"],
+                    } satisfies RemotionJobData);
+                    logger.info({ msg: "Remotion fallback job enqueued", jobId });
+                    // Don't throw — job is now in Remotion queue, not failed
+                    return;
+                } catch (fallbackErr: any) {
+                    logger.error({ msg: "Remotion fallback enqueue failed", jobId, error: fallbackErr.message });
+                    // Fall through to normal failure path
+                }
             }
 
             await query("UPDATE video_jobs SET status = 'failed', error_message = $1 WHERE id = $2", [err.message, jobId]);

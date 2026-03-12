@@ -11,6 +11,8 @@ import N8nMaintenanceControl from './N8nMaintenanceControl';
 import MarketplaceManagement from './MarketplaceManagement';
 import ProgressHub from './ProgressHub';
 import AudienceInsightsTab from './AudienceInsightsTab';
+import CompetitorAdsTab from './CompetitorAdsTab';
+import ContentActorsTab from './ContentActorsTab';
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('progress');
@@ -25,7 +27,7 @@ export default function AdminDashboard() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4 md:grid-cols-9 h-auto md:h-12 bg-white/5 border border-white/5 p-1 rounded-2xl">
+        <TabsList className="grid w-full grid-cols-4 md:grid-cols-11 h-auto md:h-12 bg-white/5 border border-white/5 p-1 rounded-2xl">
           <TabsTrigger value="progress" className="rounded-xl data-[state=active]:bg-cyan-500 data-[state=active]:text-black text-[10px] uppercase font-black tracking-widest">Progress</TabsTrigger>
           <TabsTrigger value="ai-agents" className="rounded-xl data-[state=active]:bg-white/10 text-[10px] uppercase font-black tracking-widest">AI Agents</TabsTrigger>
           <TabsTrigger value="customers" className="rounded-xl data-[state=active]:bg-white/10 text-[10px] uppercase font-black tracking-widest">Customers</TabsTrigger>
@@ -34,6 +36,8 @@ export default function AdminDashboard() {
           <TabsTrigger value="workflows" className="rounded-xl data-[state=active]:bg-white/10 text-[10px] uppercase font-black tracking-widest">Workflows</TabsTrigger>
           <TabsTrigger value="templates" className="rounded-xl data-[state=active]:bg-white/10 text-[10px] uppercase font-black tracking-widest">Templates</TabsTrigger>
           <TabsTrigger value="n8n-control" className="rounded-xl data-[state=active]:bg-cyan-500 data-[state=active]:text-black text-[10px] uppercase font-black tracking-widest">N8N Mission</TabsTrigger>
+          <TabsTrigger value="competitor-ads" className="rounded-xl data-[state=active]:bg-purple-500 data-[state=active]:text-black text-[10px] uppercase font-black tracking-widest">Comp Ads</TabsTrigger>
+          <TabsTrigger value="content-actors" className="rounded-xl data-[state=active]:bg-pink-500 data-[state=active]:text-black text-[10px] uppercase font-black tracking-widest">Actors</TabsTrigger>
           <TabsTrigger value="system" className="rounded-xl data-[state=active]:bg-white/10 text-[10px] uppercase font-black tracking-widest">System</TabsTrigger>
         </TabsList>
 
@@ -67,6 +71,14 @@ export default function AdminDashboard() {
 
         <TabsContent value="n8n-control" className="space-y-6">
           <N8nMaintenanceControl />
+        </TabsContent>
+
+        <TabsContent value="competitor-ads" className="space-y-6">
+          <CompetitorAdsTab />
+        </TabsContent>
+
+        <TabsContent value="content-actors" className="space-y-6">
+          <ContentActorsTab />
         </TabsContent>
 
         <TabsContent value="system" className="space-y-6">
