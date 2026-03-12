@@ -76,7 +76,8 @@ export async function POST(request: NextRequest) {
       if (url) {
         return NextResponse.json({ url, invoiceNumber });
       }
-      // Fall through to direct download if R2 upload fails
+      // R2 failed — still return JSON with a fallback download
+      console.warn("[invoices] R2 upload failed, returning direct download");
     }
 
     // Return PDF as direct download

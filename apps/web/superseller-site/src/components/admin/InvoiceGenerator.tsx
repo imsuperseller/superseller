@@ -105,16 +105,15 @@ export default function InvoiceGenerator() {
         }),
       });
 
-      if (storeInR2) {
+      const contentType = res.headers.get("content-type") || "";
+
+      if (contentType.includes("application/json")) {
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Generation failed");
         setResult(data);
-      } else {
-        if (!res.ok) {
-          const data = await res.json();
-          throw new Error(data.error || "Generation failed");
-        }
-        // Direct PDF download
+      } else if (contentType.includes("application/pdf")) {
+        // Direct PDF download (either user chose no R2, or R2 failed)
+        if (!res.ok) throw new Error("Generation failed");
         const blob = await res.blob();
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
@@ -123,6 +122,8 @@ export default function InvoiceGenerator() {
         a.click();
         URL.revokeObjectURL(url);
         setResult({ invoiceNumber: "Downloaded" });
+      } else {
+        throw new Error("Unexpected response from server");
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error");
