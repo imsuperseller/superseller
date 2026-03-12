@@ -107,7 +107,8 @@ export function middleware(request: NextRequest) {
         path.startsWith('/app/') ||
         path.startsWith('/lp/') ||
         path.startsWith('/compete/') ||
-        path.startsWith('/report/')
+        path.startsWith('/report/') ||
+        path.startsWith('/discover')
     ) {
         const res = NextResponse.next();
         res.headers.set('x-pathname', path);

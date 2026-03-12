@@ -26,10 +26,11 @@ async function getReportAds(slug: string) {
     const ads = await prisma.$queryRawUnsafe(
       `SELECT id, page_name, ad_text, image_url, start_date, meta
        FROM competitor_ads
-       WHERE tenant_id = $1
+       WHERE tenant_id = $1 OR tenant_id = $2
        ORDER BY start_date DESC
        LIMIT 20`,
-      `prospect-report-${slug}`
+      `prospect-report-${slug}`,
+      slug.replace(/-dallas$/, "")
     );
     return ads as Array<{
       id: string;
@@ -50,8 +51,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const report = await getReport(slug);
   if (!report) return {};
 
-  const title = `${report.businessName} — Competitor Ad Intelligence | SuperSeller AI`;
-  const description = `See what ads your competitors in ${report.vertical} are running, what's working, and where the gaps are.`;
+  const title = `${report.businessName} — Competitor Content Intelligence | SuperSeller AI`;
+  const description = `See what organic content your competitors in ${report.vertical} are posting, what's working, and where the opportunities are.`;
 
   return {
     title,

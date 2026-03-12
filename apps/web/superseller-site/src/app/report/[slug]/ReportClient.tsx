@@ -122,22 +122,22 @@ const scaleIn: Variants = {
 };
 
 // ---------------------------------------------------------------------------
-// Longevity Badge
+// Content Longevity Badge
 // ---------------------------------------------------------------------------
 function getLongevityTier(startDate: string | null): {
   label: string;
   color: string;
   bgColor: string;
 } {
-  if (!startDate) return { label: "New", color: "text-gray-400", bgColor: "bg-gray-800" };
+  if (!startDate) return { label: "New", color: "text-superseller-text-muted", bgColor: "bg-superseller-bg-card" };
   const days = Math.floor(
     (Date.now() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24)
   );
-  if (days >= 90) return { label: "Evergreen", color: "text-emerald-400", bgColor: "bg-emerald-950" };
-  if (days >= 60) return { label: "Winner", color: "text-blue-400", bgColor: "bg-blue-950" };
-  if (days >= 30) return { label: "Strong", color: "text-amber-400", bgColor: "bg-amber-950" };
-  if (days >= 14) return { label: "Promising", color: "text-purple-400", bgColor: "bg-purple-950" };
-  return { label: "New", color: "text-gray-400", bgColor: "bg-gray-800" };
+  if (days >= 90) return { label: "Evergreen", color: "text-emerald-400", bgColor: "bg-emerald-950/60" };
+  if (days >= 60) return { label: "Consistent", color: "text-superseller-blue", bgColor: "bg-superseller-bg-card" };
+  if (days >= 30) return { label: "Strong", color: "text-amber-400", bgColor: "bg-amber-950/60" };
+  if (days >= 14) return { label: "Trending", color: "text-purple-400", bgColor: "bg-purple-950/60" };
+  return { label: "New", color: "text-superseller-text-muted", bgColor: "bg-superseller-bg-card" };
 }
 
 // ---------------------------------------------------------------------------
@@ -201,16 +201,15 @@ export function ReportClient({
   const hasFindings = (summary.whatWorks?.length || 0) + (summary.patterns?.length || 0) + (summary.gaps?.length || 0) > 0;
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 antialiased overflow-x-hidden" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" />
+    <div className="min-h-screen bg-superseller-bg-primary text-superseller-text-primary antialiased overflow-x-hidden">
 
       {/* ================================================================= */}
       {/* HERO                                                              */}
       {/* ================================================================= */}
       <header className="relative pt-8 pb-16 px-6 overflow-hidden">
         {/* Background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-950/40 via-gray-950 to-gray-950" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] opacity-20 bg-blue-500 rounded-full blur-[120px]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-superseller-bg-surface via-superseller-bg-primary to-superseller-bg-primary" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] opacity-15" style={{ background: 'radial-gradient(ellipse, var(--superseller-cyan), transparent 70%)' }} />
 
         <motion.div
           className="max-w-4xl mx-auto relative z-10"
@@ -220,15 +219,15 @@ export function ReportClient({
         >
           {/* SuperSeller branding */}
           <motion.div variants={fadeUp} className="flex items-center gap-2 mb-8">
-            <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-superseller-orange flex items-center justify-center">
               <TargetIcon className="w-4 h-4 text-white" />
             </div>
-            <span className="text-sm font-semibold text-blue-400 tracking-wide uppercase">SuperSeller AI</span>
+            <span className="text-sm font-semibold text-superseller-text-accent tracking-wide uppercase">SuperSeller AI</span>
           </motion.div>
 
           {/* Vertical badge */}
           <motion.div variants={fadeUp}>
-            <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-blue-900/50 text-blue-300 border border-blue-800/50 mb-4">
+            <span className="superseller-badge-info mb-4 inline-block">
               {report.vertical}
               {report.location && ` / ${report.location}`}
             </span>
@@ -236,18 +235,18 @@ export function ReportClient({
 
           <motion.h1
             variants={fadeUp}
-            className="text-3xl md:text-5xl font-black leading-tight mb-4"
+            className="text-3xl md:text-5xl font-black leading-tight mb-4 tracking-[-0.02em]"
           >
-            <span className="text-white">{report.businessName}</span>
+            <span className="text-superseller-text-primary">{report.businessName}</span>
             <br />
-            <span className="text-blue-400">Competitor Ad Intelligence</span>
+            <span className="text-superseller-text-accent">Competitor Content Intelligence</span>
           </motion.h1>
 
           <motion.p
             variants={fadeUp}
-            className="text-lg text-gray-400 max-w-2xl"
+            className="text-lg text-superseller-text-secondary max-w-2xl leading-relaxed"
           >
-            We analyzed your competitors&apos; active Facebook and Instagram ads. Here&apos;s what they&apos;re running, what&apos;s working, and where you can win.
+            We analyzed your competitors&apos; organic content strategy across social platforms. Here&apos;s what&apos;s working for them, the patterns behind their best posts, and where you can win.
           </motion.p>
         </motion.div>
       </header>
@@ -262,23 +261,23 @@ export function ReportClient({
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-60px" }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-6"
+            className="grid grid-cols-1 md:grid-cols-3 gap-5"
           >
             {/* What Works */}
             {summary.whatWorks && summary.whatWorks.length > 0 && (
               <motion.div
                 variants={fadeUp}
-                className="bg-gray-900 border border-gray-800 rounded-2xl p-6 hover:border-emerald-800/50 transition-colors"
+                className="superseller-card hover:border-emerald-800/50 transition-all duration-300"
               >
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-950 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-950/60 backdrop-blur-sm flex items-center justify-center ring-1 ring-inset ring-emerald-500/20">
                     <TrendingUpIcon className="w-5 h-5 text-emerald-400" />
                   </div>
                   <h3 className="font-bold text-emerald-400">What Works</h3>
                 </div>
                 <ul className="space-y-3">
                   {summary.whatWorks.map((item, i) => (
-                    <li key={i} className="text-sm text-gray-300 flex gap-2">
+                    <li key={i} className="text-sm text-superseller-text-secondary flex gap-2">
                       <span className="text-emerald-500 mt-0.5 flex-shrink-0">--</span>
                       {item}
                     </li>
@@ -291,18 +290,18 @@ export function ReportClient({
             {summary.patterns && summary.patterns.length > 0 && (
               <motion.div
                 variants={fadeUp}
-                className="bg-gray-900 border border-gray-800 rounded-2xl p-6 hover:border-blue-800/50 transition-colors"
+                className="superseller-card hover:border-[var(--superseller-blue)]/50 transition-all duration-300"
               >
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-xl bg-blue-950 flex items-center justify-center">
-                    <TargetIcon className="w-5 h-5 text-blue-400" />
+                  <div className="w-10 h-10 rounded-xl bg-superseller-bg-surface backdrop-blur-sm flex items-center justify-center ring-1 ring-inset ring-white/10">
+                    <TargetIcon className="w-5 h-5 text-superseller-blue" />
                   </div>
-                  <h3 className="font-bold text-blue-400">Patterns</h3>
+                  <h3 className="font-bold text-superseller-blue">Patterns</h3>
                 </div>
                 <ul className="space-y-3">
                   {summary.patterns.map((item, i) => (
-                    <li key={i} className="text-sm text-gray-300 flex gap-2">
-                      <span className="text-blue-500 mt-0.5 flex-shrink-0">--</span>
+                    <li key={i} className="text-sm text-superseller-text-secondary flex gap-2">
+                      <span className="text-superseller-blue mt-0.5 flex-shrink-0">--</span>
                       {item}
                     </li>
                   ))}
@@ -314,17 +313,17 @@ export function ReportClient({
             {summary.gaps && summary.gaps.length > 0 && (
               <motion.div
                 variants={fadeUp}
-                className="bg-gray-900 border border-gray-800 rounded-2xl p-6 hover:border-amber-800/50 transition-colors"
+                className="superseller-card hover:border-amber-800/50 transition-all duration-300"
               >
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-xl bg-amber-950 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-xl bg-amber-950/60 backdrop-blur-sm flex items-center justify-center ring-1 ring-inset ring-amber-500/20">
                     <AlertCircleIcon className="w-5 h-5 text-amber-400" />
                   </div>
                   <h3 className="font-bold text-amber-400">Gaps &amp; Opportunities</h3>
                 </div>
                 <ul className="space-y-3">
                   {summary.gaps.map((item, i) => (
-                    <li key={i} className="text-sm text-gray-300 flex gap-2">
+                    <li key={i} className="text-sm text-superseller-text-secondary flex gap-2">
                       <span className="text-amber-500 mt-0.5 flex-shrink-0">--</span>
                       {item}
                     </li>
@@ -337,17 +336,17 @@ export function ReportClient({
       )}
 
       {/* ================================================================= */}
-      {/* TOP ADS GALLERY                                                   */}
+      {/* COMPETITOR CONTENT GALLERY                                        */}
       {/* ================================================================= */}
       {ads.length > 0 && (
         <section className="max-w-5xl mx-auto px-6 pb-16">
           <motion.h2
-            className="text-2xl font-bold mb-8 text-center"
+            className="text-2xl font-bold mb-8 text-center text-superseller-text-primary"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
           >
-            Top Competitor Ads ({ads.length})
+            Competitor Content ({ads.length} posts analyzed)
           </motion.h2>
 
           <motion.div
@@ -355,7 +354,7 @@ export function ReportClient({
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-40px" }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
           >
             {ads.map((ad) => {
               const tier = getLongevityTier(ad.start_date);
@@ -367,44 +366,44 @@ export function ReportClient({
                 <motion.div
                   key={ad.id}
                   variants={scaleIn}
-                  className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden hover:border-gray-700 transition-all group"
+                  className="superseller-card overflow-hidden hover:border-white/20 transition-all duration-300 !p-0"
                   whileHover={{ y: -4 }}
                 >
-                  {/* Ad Image */}
-                  <div className="aspect-video bg-gray-800 relative overflow-hidden">
+                  {/* Content Image */}
+                  <div className="aspect-video bg-superseller-bg-surface relative overflow-hidden">
                     {ad.image_url ? (
                       <img
                         src={ad.image_url}
-                        alt={`Ad by ${ad.page_name}`}
+                        alt={`Content by ${ad.page_name}`}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         loading="lazy"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
-                        <span className="text-gray-600 text-sm">No preview</span>
+                        <span className="text-superseller-text-muted text-sm">No preview</span>
                       </div>
                     )}
 
                     {/* Longevity badge */}
-                    <span className={`absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-semibold ${tier.color} ${tier.bgColor}`}>
+                    <span className={`absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-semibold backdrop-blur-sm ${tier.color} ${tier.bgColor}`}>
                       {tier.label}
                     </span>
 
                     {/* AI Score */}
                     {aiScore != null && (
-                      <span className="absolute top-3 left-3 px-2 py-1 rounded-full text-xs font-semibold text-blue-300 bg-blue-950/80 backdrop-blur-sm">
+                      <span className="absolute top-3 left-3 px-2 py-1 rounded-full text-xs font-semibold text-superseller-text-accent bg-superseller-bg-card/80 backdrop-blur-sm ring-1 ring-inset ring-white/10">
                         Score: {String(aiScore)}
                       </span>
                     )}
                   </div>
 
-                  {/* Ad Details */}
+                  {/* Content Details */}
                   <div className="p-4">
-                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                    <p className="text-xs font-semibold text-superseller-text-muted uppercase tracking-wider mb-2">
                       {ad.page_name}
                     </p>
                     {ad.ad_text && (
-                      <p className="text-sm text-gray-300 leading-relaxed">
+                      <p className="text-sm text-superseller-text-secondary leading-relaxed">
                         {ad.ad_text.length > 120
                           ? ad.ad_text.slice(0, 120) + "..."
                           : ad.ad_text}
@@ -423,17 +422,17 @@ export function ReportClient({
       {/* ================================================================= */}
       <section className="max-w-3xl mx-auto px-6 pb-16">
         <motion.div
-          className="bg-gradient-to-br from-blue-950 to-gray-900 border border-blue-800/30 rounded-2xl p-8 md:p-12 text-center"
+          className="superseller-card-neon text-center !p-8 md:!p-12"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-2xl md:text-3xl font-bold mb-4">
-            Want this intelligence for <span className="text-blue-400">YOUR</span> competitors?
+          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-superseller-text-primary">
+            Want this intelligence for <span className="text-superseller-text-accent">YOUR</span> competitors?
           </h2>
-          <p className="text-gray-400 mb-8 max-w-lg mx-auto">
-            We monitor competitor ads 24/7, analyze what&apos;s working, and deliver actionable insights so you can outperform them.
+          <p className="text-superseller-text-secondary mb-8 max-w-lg mx-auto">
+            We monitor competitor content 24/7, analyze what&apos;s working organically, and deliver actionable insights so you can outperform them.
           </p>
 
           {report.ctaType === "whatsapp" && safeCtaUrl ? (
@@ -441,7 +440,7 @@ export function ReportClient({
               href={safeCtaUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 px-8 py-4 bg-green-600 hover:bg-green-500 text-white font-bold rounded-xl text-lg transition-colors shadow-lg shadow-green-900/30"
+              className="superseller-btn-3d-primary inline-flex items-center gap-3 !px-8 !py-4 text-lg"
             >
               <WhatsAppIcon className="w-6 h-6" />
               {report.ctaText}
@@ -451,7 +450,7 @@ export function ReportClient({
               href={safeCtaUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl text-lg transition-colors shadow-lg shadow-blue-900/30"
+              className="superseller-btn-3d-accent inline-flex items-center gap-3 !px-8 !py-4 text-lg"
             >
               <ExternalLinkIcon className="w-5 h-5" />
               {report.ctaText}
@@ -459,7 +458,7 @@ export function ReportClient({
           ) : (
             <a
               href="#lead-capture"
-              className="inline-flex items-center gap-3 px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl text-lg transition-colors shadow-lg shadow-blue-900/30"
+              className="superseller-btn-3d-primary inline-flex items-center gap-3 !px-8 !py-4 text-lg"
             >
               {report.ctaText}
             </a>
@@ -472,7 +471,7 @@ export function ReportClient({
       {/* ================================================================= */}
       <section id="lead-capture" className="max-w-md mx-auto px-6 pb-20">
         <motion.div
-          className="bg-gray-900 border border-gray-800 rounded-2xl p-8"
+          className="superseller-card !p-8"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -487,11 +486,11 @@ export function ReportClient({
                 exit={{ opacity: 0 }}
                 className="text-center py-6"
               >
-                <div className="w-16 h-16 rounded-full bg-emerald-950 flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 rounded-full bg-emerald-950/60 backdrop-blur-sm flex items-center justify-center mx-auto mb-4 ring-1 ring-inset ring-emerald-500/20">
                   <ShieldCheckIcon className="w-8 h-8 text-emerald-400" />
                 </div>
-                <h3 className="text-xl font-bold mb-2">You&apos;re In</h3>
-                <p className="text-gray-400">We&apos;ll send your first competitor update soon.</p>
+                <h3 className="text-xl font-bold mb-2 text-superseller-text-primary">You&apos;re In</h3>
+                <p className="text-superseller-text-secondary">We&apos;ll send your first competitor update soon.</p>
               </motion.div>
             ) : (
               <motion.div
@@ -500,14 +499,14 @@ export function ReportClient({
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
               >
-                <h3 className="text-lg font-bold mb-1 text-center">Get Weekly Competitor Updates</h3>
-                <p className="text-sm text-gray-500 text-center mb-6">
-                  Free weekly digest of new ads, trends, and opportunities in your market.
+                <h3 className="text-lg font-bold mb-1 text-center text-superseller-text-primary">Get Weekly Content Updates</h3>
+                <p className="text-sm text-superseller-text-muted text-center mb-6">
+                  Free weekly digest of competitor content trends and organic opportunities in your market.
                 </p>
 
                 <form onSubmit={handleLeadSubmit} className="space-y-4">
                   <div>
-                    <label htmlFor="report-email" className="block text-sm font-medium text-gray-400 mb-1">
+                    <label htmlFor="report-email" className="block text-sm font-medium text-superseller-text-secondary mb-1">
                       Email *
                     </label>
                     <input
@@ -516,12 +515,12 @@ export function ReportClient({
                       name="email"
                       required
                       placeholder="you@company.com"
-                      className="w-full px-4 py-3 rounded-xl bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                      className="superseller-input w-full"
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="report-phone" className="block text-sm font-medium text-gray-400 mb-1">
+                    <label htmlFor="report-phone" className="block text-sm font-medium text-superseller-text-secondary mb-1">
                       Phone (optional)
                     </label>
                     <input
@@ -529,7 +528,7 @@ export function ReportClient({
                       id="report-phone"
                       name="phone"
                       placeholder="+1 (555) 000-0000"
-                      className="w-full px-4 py-3 rounded-xl bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                      className="superseller-input w-full"
                     />
                   </div>
 
@@ -551,12 +550,12 @@ export function ReportClient({
                     disabled={formState === "submitting"}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-base transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="superseller-btn-3d-primary w-full !py-3 text-base"
                   >
                     {formState === "submitting" ? "Subscribing..." : "Get Free Updates"}
                   </motion.button>
 
-                  <p className="text-xs text-gray-600 text-center">
+                  <p className="text-xs text-superseller-text-muted text-center">
                     No spam. Unsubscribe anytime. Your data stays private.
                   </p>
                 </form>
@@ -569,14 +568,14 @@ export function ReportClient({
       {/* ================================================================= */}
       {/* FOOTER                                                            */}
       {/* ================================================================= */}
-      <footer className="border-t border-gray-800 py-8 px-6 text-center">
+      <footer className="border-t border-white/10 py-8 px-6 text-center">
         <a
           href="https://superseller.agency"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-blue-400 transition-colors"
+          className="inline-flex items-center gap-2 text-sm text-superseller-text-muted hover:text-superseller-text-accent transition-colors duration-300"
         >
-          <div className="w-5 h-5 rounded bg-blue-600 flex items-center justify-center">
+          <div className="w-5 h-5 rounded bg-superseller-orange flex items-center justify-center">
             <TargetIcon className="w-3 h-3 text-white" />
           </div>
           Powered by SuperSeller AI

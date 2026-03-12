@@ -1,0 +1,867 @@
+"use client";
+
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+
+// ---------------------------------------------------------------------------
+// Types & Data
+// ---------------------------------------------------------------------------
+type BusinessType =
+  | "salon"
+  | "restaurant"
+  | "remodeling"
+  | "dental"
+  | "fitness"
+  | "realestate"
+  | "legal"
+  | "other";
+
+type Challenge =
+  | "new_clients"
+  | "online_presence"
+  | "reviews"
+  | "social_media"
+  | "retention"
+  | "time";
+
+type CurrentStack =
+  | "nothing"
+  | "website_only"
+  | "social_basic"
+  | "social_active"
+  | "full_marketing";
+
+interface DiscoveryState {
+  businessType: BusinessType | null;
+  businessName: string;
+  challenge: Challenge | null;
+  currentStack: CurrentStack | null;
+  name: string;
+  phone: string;
+  email: string;
+}
+
+const BUSINESS_TYPES: {
+  id: BusinessType;
+  label: string;
+  icon: string;
+  emoji?: never;
+}[] = [
+  { id: "salon", label: "Hair / Beauty Salon", icon: "scissors" },
+  { id: "restaurant", label: "Restaurant / Food", icon: "utensils" },
+  { id: "remodeling", label: "Remodeling / Contractor", icon: "hammer" },
+  { id: "dental", label: "Dental / Medical", icon: "heart" },
+  { id: "fitness", label: "Fitness / Wellness", icon: "dumbbell" },
+  { id: "realestate", label: "Real Estate", icon: "building" },
+  { id: "legal", label: "Legal / Professional", icon: "briefcase" },
+  { id: "other", label: "Something Else", icon: "star" },
+];
+
+const CHALLENGES: { id: Challenge; label: string; sub: string }[] = [
+  {
+    id: "new_clients",
+    label: "Getting New Clients",
+    sub: "I need more people walking through the door",
+  },
+  {
+    id: "online_presence",
+    label: "Online Presence",
+    sub: "My website / Google listing needs work",
+  },
+  {
+    id: "reviews",
+    label: "Reviews & Reputation",
+    sub: "I need more 5-star reviews on Google/Yelp",
+  },
+  {
+    id: "social_media",
+    label: "Social Media",
+    sub: "I know I should post more but don't have time",
+  },
+  {
+    id: "retention",
+    label: "Keeping Clients Coming Back",
+    sub: "People come once but don't return",
+  },
+  {
+    id: "time",
+    label: "I'm Drowning in Tasks",
+    sub: "Booking, follow-ups, marketing — it never ends",
+  },
+];
+
+const STACK_OPTIONS: { id: CurrentStack; label: string; sub: string }[] = [
+  {
+    id: "nothing",
+    label: "Almost Nothing",
+    sub: "I barely have a web presence",
+  },
+  {
+    id: "website_only",
+    label: "Just a Website",
+    sub: "I have a site but that's about it",
+  },
+  {
+    id: "social_basic",
+    label: "Some Social Media",
+    sub: "I post sometimes but not consistently",
+  },
+  {
+    id: "social_active",
+    label: "Active Social + Website",
+    sub: "I post regularly but want better results",
+  },
+  {
+    id: "full_marketing",
+    label: "Full Marketing Setup",
+    sub: "I want AI to take it to the next level",
+  },
+];
+
+// Maps business type + challenge to relevant capabilities we can showcase
+function getCapabilities(
+  biz: BusinessType | null,
+  challenge: Challenge | null,
+  stack: CurrentStack | null
+): { title: string; description: string }[] {
+  const caps: { title: string; description: string }[] = [];
+
+  // Universal capabilities
+  caps.push({
+    title: "AI Competitor Intelligence",
+    description:
+      "We analyze what your competitors are doing organically — what content works, their posting patterns, and where the gaps are that you can own.",
+  });
+
+  // Challenge-specific
+  if (challenge === "new_clients" || challenge === "online_presence") {
+    caps.push({
+      title: "AI-Powered Content Engine",
+      description:
+        "Professional social media content created by AI, tailored to your brand voice and industry. Posts, stories, and reels — all on autopilot.",
+    });
+  }
+  if (challenge === "reviews") {
+    caps.push({
+      title: "Automated Review Collection",
+      description:
+        "After every appointment, clients automatically receive a friendly review request via text or email — with direct links to Google and Yelp.",
+    });
+  }
+  if (challenge === "social_media" || challenge === "time") {
+    caps.push({
+      title: "AI Content Studio",
+      description:
+        "From idea to published post in seconds. AI generates on-brand content, schedules it, and publishes across all your platforms.",
+    });
+  }
+  if (challenge === "retention") {
+    caps.push({
+      title: "Smart Client Re-engagement",
+      description:
+        "AI detects when clients haven't visited in a while and sends personalized follow-ups via WhatsApp or email — keeping your chair full.",
+    });
+  }
+
+  // Business-type specific
+  if (biz === "salon" || biz === "dental" || biz === "fitness") {
+    caps.push({
+      title: "AI Video Showcase",
+      description:
+        "Professional before/after videos, transformation reels, and branded content — all generated by AI from your photos.",
+    });
+  }
+  if (biz === "remodeling" || biz === "realestate") {
+    caps.push({
+      title: "AI Property / Project Videos",
+      description:
+        "Turn project photos into cinematic video tours with AI — complete with branding, music, and professional transitions.",
+    });
+  }
+  if (biz === "restaurant") {
+    caps.push({
+      title: "Menu & Ambiance Videos",
+      description:
+        "AI-crafted food videos, seasonal specials content, and atmosphere reels that make people hungry and book a table.",
+    });
+  }
+
+  // Stack-specific
+  if (stack === "nothing" || stack === "website_only") {
+    caps.push({
+      title: "Complete Digital Presence Setup",
+      description:
+        "We build your entire online presence — branded landing page, Google Business optimization, social profiles, and booking integration.",
+    });
+  }
+
+  return caps.slice(0, 4); // Max 4 capabilities shown
+}
+
+// ---------------------------------------------------------------------------
+// Icon component (simple SVG icons)
+// ---------------------------------------------------------------------------
+function Icon({
+  name,
+  className,
+}: {
+  name: string;
+  className?: string;
+}) {
+  const cls = className || "w-6 h-6";
+  switch (name) {
+    case "scissors":
+      return (
+        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <circle cx="6" cy="6" r="3" />
+          <circle cx="6" cy="18" r="3" />
+          <line x1="20" y1="4" x2="8.12" y2="15.88" />
+          <line x1="14.47" y1="14.48" x2="20" y2="20" />
+          <line x1="8.12" y1="8.12" x2="12" y2="12" />
+        </svg>
+      );
+    case "utensils":
+      return (
+        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2" />
+          <path d="M7 2v20" />
+          <path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7" />
+        </svg>
+      );
+    case "hammer":
+      return (
+        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <path d="m15 12-8.5 8.5c-.83.83-2.17.83-3 0 0 0 0 0 0 0a2.12 2.12 0 0 1 0-3L12 9" />
+          <path d="M17.64 15 22 10.64" />
+          <path d="m20.91 11.7-1.25-1.25c-.6-.6-.93-1.4-.93-2.25v-.86L16.01 4.6a5.56 5.56 0 0 0-3.94-1.64H9l.92.82A6.18 6.18 0 0 1 12 8.4v1.56l2 2h2.47l2.26 1.91" />
+        </svg>
+      );
+    case "heart":
+      return (
+        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+        </svg>
+      );
+    case "dumbbell":
+      return (
+        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <path d="m6.5 6.5 11 11" />
+          <path d="m21 21-1-1" />
+          <path d="m3 3 1 1" />
+          <path d="m18 22 4-4" />
+          <path d="m2 6 4-4" />
+          <path d="m3 10 7-7" />
+          <path d="m14 21 7-7" />
+        </svg>
+      );
+    case "building":
+      return (
+        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <rect width="16" height="20" x="4" y="2" rx="2" ry="2" />
+          <path d="M9 22v-4h6v4" />
+          <path d="M8 6h.01" />
+          <path d="M16 6h.01" />
+          <path d="M12 6h.01" />
+          <path d="M12 10h.01" />
+          <path d="M12 14h.01" />
+          <path d="M16 10h.01" />
+          <path d="M16 14h.01" />
+          <path d="M8 10h.01" />
+          <path d="M8 14h.01" />
+        </svg>
+      );
+    case "briefcase":
+      return (
+        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <rect width="20" height="14" x="2" y="7" rx="2" ry="2" />
+          <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+        </svg>
+      );
+    case "star":
+      return (
+        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+        </svg>
+      );
+    case "sparkles":
+      return (
+        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+          <path d="M5 3v4" />
+          <path d="M19 17v4" />
+          <path d="M3 5h4" />
+          <path d="M17 19h4" />
+        </svg>
+      );
+    case "check":
+      return (
+        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+      );
+    case "target":
+      return (
+        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <circle cx="12" cy="12" r="10" />
+          <circle cx="12" cy="12" r="6" />
+          <circle cx="12" cy="12" r="2" />
+        </svg>
+      );
+    case "loader":
+      return (
+        <svg className={`${cls} animate-spin`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+        </svg>
+      );
+    case "zap":
+      return (
+        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+        </svg>
+      );
+    default:
+      return null;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Animation
+// ---------------------------------------------------------------------------
+const ease = [0.25, 0.1, 0.25, 1] as const;
+
+// ---------------------------------------------------------------------------
+// Component
+// ---------------------------------------------------------------------------
+export default function SmartDiscovery() {
+  const [step, setStep] = useState(0);
+  const [state, setState] = useState<DiscoveryState>({
+    businessType: null,
+    businessName: "",
+    challenge: null,
+    currentStack: null,
+    name: "",
+    phone: "",
+    email: "",
+  });
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+
+  const totalSteps = 5;
+
+  const advance = () => {
+    if (step < totalSteps - 1) {
+      setStep((s) => s + 1);
+    } else {
+      handleSubmit();
+    }
+  };
+
+  const handleSubmit = async () => {
+    setIsAnalyzing(true);
+    setSubmitError("");
+
+    try {
+      await fetch("/api/discover/intake", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          businessType: state.businessType,
+          businessName: state.businessName,
+          challenge: state.challenge,
+          currentStack: state.currentStack,
+          name: state.name,
+          phone: state.phone,
+          email: state.email,
+          source: "smart_discovery",
+          submittedAt: new Date().toISOString(),
+        }),
+      });
+    } catch {
+      // Don't block the experience if API fails
+      console.error("Intake submission failed");
+    }
+
+    // Simulate AI analysis delay
+    await new Promise((r) => setTimeout(r, 2200));
+    setIsAnalyzing(false);
+    setSubmitted(true);
+  };
+
+  const capabilities = getCapabilities(
+    state.businessType,
+    state.challenge,
+    state.currentStack
+  );
+
+  // ─── Analyzing Screen ───
+  if (isAnalyzing) {
+    return (
+      <div className="min-h-screen bg-superseller-bg-primary flex items-center justify-center px-4">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div
+            className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full blur-[120px] opacity-[0.12]"
+            style={{ background: "var(--superseller-cyan)" }}
+          />
+        </div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center relative z-10"
+        >
+          <div className="relative w-24 h-24 mx-auto mb-6">
+            <Icon name="loader" className="w-24 h-24 text-superseller-cyan opacity-20" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Icon name="sparkles" className="w-12 h-12 text-superseller-text-accent animate-pulse" />
+            </div>
+          </div>
+          <h2 className="text-2xl font-black text-superseller-text-primary mb-2">
+            AI is analyzing your market
+          </h2>
+          <p className="text-superseller-text-secondary">
+            Mapping competitors, identifying opportunities, personalizing recommendations...
+          </p>
+        </motion.div>
+      </div>
+    );
+  }
+
+  // ─── Results Screen ───
+  if (submitted) {
+    const bizLabel =
+      BUSINESS_TYPES.find((b) => b.id === state.businessType)?.label ||
+      "your business";
+
+    return (
+      <div className="min-h-screen bg-superseller-bg-primary text-superseller-text-primary px-4 py-8 overflow-x-hidden">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div
+            className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full blur-[120px] opacity-[0.08]"
+            style={{ background: "var(--superseller-cyan)" }}
+          />
+          <div
+            className="absolute bottom-1/4 right-1/4 w-[400px] h-[300px] rounded-full blur-[100px] opacity-[0.06]"
+            style={{ background: "var(--superseller-orange)" }}
+          />
+        </div>
+
+        <div className="max-w-2xl mx-auto relative z-10">
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease }}
+            className="text-center mb-10"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6" style={{ background: "rgba(78,205,196,0.1)", border: "1px solid rgba(78,205,196,0.2)" }}>
+              <Icon name="check" className="w-4 h-4 text-superseller-cyan" />
+              <span className="text-sm font-semibold text-superseller-cyan">Analysis Complete</span>
+            </div>
+            <h1 className="text-3xl md:text-4xl font-black mb-3 tracking-[-0.02em]">
+              {state.name ? `${state.name}, here's` : "Here's"} what we can do for{" "}
+              <span className="text-superseller-text-accent">
+                {state.businessName || bizLabel}
+              </span>
+            </h1>
+            <p className="text-superseller-text-secondary text-lg">
+              Based on your {bizLabel.toLowerCase()} and current setup, these are the highest-impact moves:
+            </p>
+          </motion.div>
+
+          {/* Capabilities Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-10">
+            {capabilities.map((cap, i) => (
+              <motion.div
+                key={cap.title}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 + i * 0.1, duration: 0.5, ease }}
+                className="superseller-card hover:border-white/20 transition-all duration-300"
+              >
+                <div className="flex items-start gap-3">
+                  <div
+                    className="w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center ring-1 ring-inset ring-white/10"
+                    style={{ background: "rgba(95,251,253,0.08)" }}
+                  >
+                    <Icon name="zap" className="w-5 h-5 text-superseller-text-accent" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-superseller-text-primary mb-1">
+                      {cap.title}
+                    </h3>
+                    <p className="text-sm text-superseller-text-secondary leading-relaxed">
+                      {cap.description}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* CTA */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.5, ease }}
+            className="superseller-card-neon text-center !p-8"
+          >
+            <h2 className="text-xl font-bold mb-2 text-superseller-text-primary">
+              Ready to see it in action?
+            </h2>
+            <p className="text-superseller-text-secondary mb-6">
+              We&apos;ll prepare a free competitor analysis and sample content for your business.
+            </p>
+            <a
+              href="https://wa.me/18184249911?text=Hi%20Shai%2C%20I%20just%20completed%20the%20SuperSeller%20discovery%20and%20I%27m%20interested%20in%20learning%20more"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="superseller-btn-3d-primary inline-flex items-center gap-3 !px-8 !py-4 text-lg"
+            >
+              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232" />
+              </svg>
+              Let&apos;s Talk
+            </a>
+          </motion.div>
+
+          {/* Footer */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8, duration: 0.5 }}
+            className="text-center mt-8"
+          >
+            <div className="flex items-center justify-center gap-2">
+              <div className="w-5 h-5 rounded bg-superseller-orange flex items-center justify-center">
+                <Icon name="target" className="w-3 h-3 text-white" />
+              </div>
+              <span className="text-xs text-superseller-text-muted">Powered by SuperSeller AI</span>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    );
+  }
+
+  // ─── Step Screens ───
+  return (
+    <div className="min-h-screen bg-superseller-bg-primary text-superseller-text-primary flex flex-col items-center justify-center px-4 py-8 relative overflow-hidden">
+      {/* Ambient glows */}
+      <div className="absolute top-0 right-1/4 w-[500px] h-[400px] rounded-full blur-[120px] opacity-[0.06] pointer-events-none" style={{ background: "var(--superseller-cyan)" }} />
+      <div className="absolute bottom-0 left-1/4 w-[400px] h-[300px] rounded-full blur-[100px] opacity-[0.04] pointer-events-none" style={{ background: "var(--superseller-orange)" }} />
+
+      <div className="w-full max-w-xl relative z-10">
+        {/* Progress */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-2">
+            <span className="superseller-badge-info text-xs">
+              Step {step + 1} of {totalSteps}
+            </span>
+            {step > 0 && (
+              <button
+                onClick={() => setStep((s) => s - 1)}
+                className="text-xs text-superseller-text-muted hover:text-superseller-text-accent transition-colors duration-300"
+              >
+                Back
+              </button>
+            )}
+          </div>
+          <div className="h-[3px] rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.04)" }}>
+            <motion.div
+              className="h-full rounded-full"
+              style={{ background: "var(--superseller-gradient-brand)" }}
+              animate={{ width: `${((step + 1) / totalSteps) * 100}%` }}
+              transition={{ duration: 0.4, ease }}
+            />
+          </div>
+        </div>
+
+        <AnimatePresence mode="wait">
+          {/* Step 0: Business Type */}
+          {step === 0 && (
+            <motion.div
+              key="step0"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3, ease }}
+              className="space-y-6"
+            >
+              <div className="text-center">
+                <h2 className="text-2xl md:text-3xl font-black mb-2">
+                  What kind of business do you run?
+                </h2>
+                <p className="text-superseller-text-secondary">
+                  We tailor everything to your industry
+                </p>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                {BUSINESS_TYPES.map((biz) => (
+                  <button
+                    key={biz.id}
+                    onClick={() => {
+                      setState((s) => ({ ...s, businessType: biz.id }));
+                      setTimeout(() => setStep(1), 250);
+                    }}
+                    className={`superseller-card !p-4 text-left flex items-center gap-3 transition-all duration-300 cursor-pointer ${
+                      state.businessType === biz.id
+                        ? "!border-[var(--superseller-cyan)] ring-1 ring-[var(--superseller-cyan)]/30"
+                        : "hover:border-white/20"
+                    }`}
+                  >
+                    <div
+                      className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors duration-300 ${
+                        state.businessType === biz.id
+                          ? "bg-superseller-cyan/20 text-superseller-text-accent"
+                          : "bg-white/5 text-superseller-text-muted"
+                      }`}
+                    >
+                      <Icon name={biz.icon} className="w-5 h-5" />
+                    </div>
+                    <span
+                      className={`text-sm font-bold ${
+                        state.businessType === biz.id
+                          ? "text-superseller-text-primary"
+                          : "text-superseller-text-secondary"
+                      }`}
+                    >
+                      {biz.label}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {/* Step 1: Business Name */}
+          {step === 1 && (
+            <motion.div
+              key="step1"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3, ease }}
+              className="space-y-6"
+            >
+              <div className="text-center">
+                <h2 className="text-2xl md:text-3xl font-black mb-2">
+                  What&apos;s your business called?
+                </h2>
+                <p className="text-superseller-text-secondary">
+                  So we can look up your competitors
+                </p>
+              </div>
+              <div className="space-y-4">
+                <input
+                  type="text"
+                  value={state.businessName}
+                  onChange={(e) =>
+                    setState((s) => ({ ...s, businessName: e.target.value }))
+                  }
+                  placeholder="e.g. Hair Approach, Joe's Pizza, Elite Remodeling"
+                  className="superseller-input w-full text-lg text-center"
+                  autoFocus
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && state.businessName.trim()) advance();
+                  }}
+                />
+                <button
+                  onClick={advance}
+                  disabled={!state.businessName.trim()}
+                  className="superseller-btn-3d-primary w-full !py-3 font-bold disabled:opacity-30 cursor-pointer"
+                >
+                  Continue
+                </button>
+              </div>
+            </motion.div>
+          )}
+
+          {/* Step 2: Challenge */}
+          {step === 2 && (
+            <motion.div
+              key="step2"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3, ease }}
+              className="space-y-6"
+            >
+              <div className="text-center">
+                <h2 className="text-2xl md:text-3xl font-black mb-2">
+                  What&apos;s your biggest challenge right now?
+                </h2>
+                <p className="text-superseller-text-secondary">
+                  Pick the one that keeps you up at night
+                </p>
+              </div>
+              <div className="space-y-3">
+                {CHALLENGES.map((ch) => (
+                  <button
+                    key={ch.id}
+                    onClick={() => {
+                      setState((s) => ({ ...s, challenge: ch.id }));
+                      setTimeout(() => setStep(3), 250);
+                    }}
+                    className={`superseller-card w-full text-left !p-4 transition-all duration-300 cursor-pointer ${
+                      state.challenge === ch.id
+                        ? "!border-[var(--superseller-cyan)] ring-1 ring-[var(--superseller-cyan)]/30"
+                        : "hover:border-white/20"
+                    }`}
+                  >
+                    <span className="font-bold text-superseller-text-primary block">
+                      {ch.label}
+                    </span>
+                    <span className="text-xs text-superseller-text-muted">
+                      {ch.sub}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {/* Step 3: Current Stack */}
+          {step === 3 && (
+            <motion.div
+              key="step3"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3, ease }}
+              className="space-y-6"
+            >
+              <div className="text-center">
+                <h2 className="text-2xl md:text-3xl font-black mb-2">
+                  Where are you today with marketing?
+                </h2>
+                <p className="text-superseller-text-secondary">
+                  No wrong answer — we meet you where you are
+                </p>
+              </div>
+              <div className="space-y-3">
+                {STACK_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.id}
+                    onClick={() => {
+                      setState((s) => ({ ...s, currentStack: opt.id }));
+                      setTimeout(() => setStep(4), 250);
+                    }}
+                    className={`superseller-card w-full text-left !p-4 transition-all duration-300 cursor-pointer ${
+                      state.currentStack === opt.id
+                        ? "!border-[var(--superseller-cyan)] ring-1 ring-[var(--superseller-cyan)]/30"
+                        : "hover:border-white/20"
+                    }`}
+                  >
+                    <span className="font-bold text-superseller-text-primary block">
+                      {opt.label}
+                    </span>
+                    <span className="text-xs text-superseller-text-muted">
+                      {opt.sub}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {/* Step 4: Contact Info */}
+          {step === 4 && (
+            <motion.div
+              key="step4"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3, ease }}
+              className="space-y-6"
+            >
+              <div className="text-center">
+                <h2 className="text-2xl md:text-3xl font-black mb-2">
+                  Almost done — where should we send your results?
+                </h2>
+                <p className="text-superseller-text-secondary">
+                  We&apos;ll prepare a free personalized analysis
+                </p>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-superseller-text-secondary mb-1">
+                    Your name
+                  </label>
+                  <input
+                    type="text"
+                    value={state.name}
+                    onChange={(e) =>
+                      setState((s) => ({ ...s, name: e.target.value }))
+                    }
+                    placeholder="First name"
+                    className="superseller-input w-full"
+                    autoFocus
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-superseller-text-secondary mb-1">
+                    Phone number *
+                  </label>
+                  <input
+                    type="tel"
+                    value={state.phone}
+                    onChange={(e) =>
+                      setState((s) => ({ ...s, phone: e.target.value }))
+                    }
+                    placeholder="+1 (555) 000-0000"
+                    className="superseller-input w-full"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-superseller-text-secondary mb-1">
+                    Email (optional)
+                  </label>
+                  <input
+                    type="email"
+                    value={state.email}
+                    onChange={(e) =>
+                      setState((s) => ({ ...s, email: e.target.value }))
+                    }
+                    placeholder="you@company.com"
+                    className="superseller-input w-full"
+                  />
+                </div>
+
+                {submitError && (
+                  <p className="text-sm text-red-400 text-center">
+                    {submitError}
+                  </p>
+                )}
+
+                <button
+                  onClick={handleSubmit}
+                  disabled={!state.phone.trim()}
+                  className="superseller-btn-3d-primary w-full !py-4 font-bold text-lg disabled:opacity-30 cursor-pointer"
+                >
+                  <span className="flex items-center justify-center gap-2">
+                    <Icon name="sparkles" className="w-5 h-5" />
+                    See What&apos;s Possible
+                  </span>
+                </button>
+
+                <p className="text-xs text-superseller-text-muted text-center">
+                  No spam. No obligations. Just a free analysis of your market.
+                </p>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* SuperSeller branding */}
+        <div className="flex items-center justify-center gap-2 mt-8">
+          <div className="w-5 h-5 rounded bg-superseller-orange flex items-center justify-center">
+            <Icon name="target" className="w-3 h-3 text-white" />
+          </div>
+          <span className="text-[10px] text-superseller-text-muted tracking-wider uppercase">
+            SuperSeller AI
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
