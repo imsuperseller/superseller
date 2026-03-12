@@ -38,6 +38,7 @@ interface SendContractOptions {
   metadata?: string;
   sendReminders?: boolean;
   redirectUrl?: string;
+  customWebhookUrl?: string;
 }
 
 interface SendContractResult {
@@ -65,6 +66,7 @@ export async function sendContract(options: SendContractOptions): Promise<SendCo
     metadata,
     sendReminders = true,
     redirectUrl,
+    customWebhookUrl,
   } = options;
 
   const token = getToken();
@@ -89,6 +91,7 @@ export async function sendContract(options: SendContractOptions): Promise<SendCo
   if (title) body.title = title;
   if (metadata) body.metadata = metadata;
   if (redirectUrl) body.redirect_url = redirectUrl;
+  if (customWebhookUrl) body.custom_webhook_url = customWebhookUrl;
 
   logger.info({ msg: "Sending contract for signature", templateId, signerCount: signers.length });
 
@@ -208,5 +211,6 @@ export async function sendServiceContract(params: ServiceContractParams): Promis
     },
     metadata: `${params.serviceName} | ${params.clientCompany}`.slice(0, 199),
     redirectUrl: "https://superseller.agency/thank-you",
+    customWebhookUrl: "https://superseller.agency/api/webhooks/esignatures",
   });
 }
