@@ -44,6 +44,11 @@ const nextConfig = {
       { source: '/apple-touch-icon.png', destination: '/superseller-logo.png' },
       { source: '/favicon-16x16.png', destination: '/superseller-logo.png' },
       { source: '/favicon-32x32.png', destination: '/superseller-logo.png' },
+      // Proxy R2 media through same-origin to avoid CORS issues with <video>
+      {
+        source: '/api/media/:path*',
+        destination: 'https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/:path*',
+      },
     ];
   },
 
