@@ -110,8 +110,7 @@ function WhatsAppIcon() {
 // ---------------------------------------------------------------------------
 export function HairApproachPage({ page }: { page: LandingPage & { brand: Brand | null } }) {
   const [scrolled, setScrolled] = useState(false);
-  const [formState, setFormState] = useState<"idle" | "submitting" | "success" | "error">("idle");
-  const [errorMsg, setErrorMsg] = useState("");
+  // Form state removed — CTA now goes directly to WhatsApp
 
   // Scroll listener for sticky header
   useEffect(() => {
@@ -145,35 +144,7 @@ export function HairApproachPage({ page }: { page: LandingPage & { brand: Brand 
     }).catch(() => {});
   }
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setFormState("submitting");
-    setErrorMsg("");
-    const form = e.currentTarget;
-    const data = {
-      slug: page.slug,
-      name: (form.elements.namedItem("name") as HTMLInputElement).value,
-      phone: (form.elements.namedItem("phone") as HTMLInputElement).value,
-      email: (form.elements.namedItem("email") as HTMLInputElement).value,
-    };
-    try {
-      const res = await fetch("/api/leads/landing-page", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(body.error || "Submission failed");
-      }
-      setFormState("success");
-      trackConversion("form_submit");
-      form.reset();
-    } catch (err: unknown) {
-      setErrorMsg(err instanceof Error ? err.message : "Something went wrong");
-      setFormState("error");
-    }
-  }
+  // handleSubmit removed — CTA now goes directly to WhatsApp
 
   return (
     <>
@@ -207,7 +178,9 @@ export function HairApproachPage({ page }: { page: LandingPage & { brand: Brand 
             <span className="hidden sm:inline font-bold text-sm tracking-[0.1em] uppercase text-white/80">SuperSeller</span>
           </div>
           <a
-            href="#contact"
+            href={`https://wa.me/${page.whatsappNumber}?text=${encodeURIComponent("Hi! I just saw the demo page you built for Hair Approach — I'd love to learn more about working together.")}`}
+            target="_blank"
+            rel="noopener noreferrer"
             className="text-[0.65rem] sm:text-xs font-bold tracking-[0.1em] uppercase px-3 sm:px-6 py-2 sm:py-3 rounded-sm transition-all duration-300 hover:text-[#0a0c1a] whitespace-nowrap"
             style={{ border: `1.5px solid ${GOLD}`, color: GOLD }}
             onMouseEnter={(e) => { e.currentTarget.style.background = GOLD; e.currentTarget.style.color = DARK; }}
@@ -742,7 +715,9 @@ export function HairApproachPage({ page }: { page: LandingPage & { brand: Brand 
                     ))}
                   </div>
                   <a
-                    href="#contact"
+                    href={`https://wa.me/${page.whatsappNumber}?text=${encodeURIComponent("Hi! I just saw the demo page you built for Hair Approach — I'd love to learn more about working together.")}`}
+            target="_blank"
+            rel="noopener noreferrer"
                     className="block mt-8 text-center py-3 rounded-full font-bold text-xs tracking-[0.1em] uppercase transition-all duration-300 hover:-translate-y-0.5"
                     style={plan.highlighted
                       ? { background: `linear-gradient(135deg, ${GOLD} 0%, #e8d48b 50%, ${GOLD} 100%)`, color: DARK }
@@ -758,90 +733,111 @@ export function HairApproachPage({ page }: { page: LandingPage & { brand: Brand 
         </section>
 
         {/* ================================================================ */}
-        {/* CONTACT / LEAD FORM                                              */}
+        {/* SOCIAL REALITY CHECK — Data-driven insights                      */}
         {/* ================================================================ */}
         <section id="contact" className="py-24 px-[4%] relative overflow-hidden" style={{ background: DARK }}>
-          <div className="max-w-lg mx-auto text-center">
-            <Reveal><SectionTag>Let&rsquo;s Talk</SectionTag></Reveal>
-            <Reveal>
-              <h2
-                className="text-3xl md:text-[2.4rem] font-black leading-[1.1] tracking-tight mb-4"
-                style={{ fontFamily: "'Playfair Display', serif" }}
-              >
-                Ready to Make Your Feed{" "}
-                <span className="bg-gradient-to-r from-[#C9A96E] via-[#e8d48b] to-[#C9A96E] bg-clip-text text-transparent">
-                  Match Your Talent?
-                </span>
-              </h2>
-            </Reveal>
-            <Reveal>
-              <p className="text-base font-light leading-relaxed text-[#9a9cb8] mb-10">
-                15-minute call. No pressure. We&rsquo;ll walk through everything you just saw and answer any questions.
-              </p>
-            </Reveal>
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-16">
+              <Reveal><SectionTag>The Numbers Don&rsquo;t Lie</SectionTag></Reveal>
+              <Reveal>
+                <h2
+                  className="text-3xl md:text-[2.4rem] font-black leading-[1.1] tracking-tight mb-4"
+                  style={{ fontFamily: "'Playfair Display', serif" }}
+                >
+                  Where You Stand{" "}
+                  <span className="bg-gradient-to-r from-[#C9A96E] via-[#e8d48b] to-[#C9A96E] bg-clip-text text-transparent">
+                    vs. Your Market
+                  </span>
+                </h2>
+              </Reveal>
+              <Reveal>
+                <p className="text-base font-light leading-relaxed text-[#9a9cb8] max-w-2xl mx-auto">
+                  We analyzed 90+ posts from Dallas hair stylists with similar experience levels. Here&rsquo;s the gap between your talent and your digital presence.
+                </p>
+              </Reveal>
+            </div>
 
+            {/* Stats row */}
             <motion.div
-              className="rounded-2xl p-8 border border-white/10"
-              style={{ background: BG_CARD }}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12"
+              variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }}
             >
-              {formState === "success" ? (
-                <div className="py-8 text-center">
-                  <svg className="w-16 h-16 mx-auto mb-4 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                    <polyline points="22 4 12 14.01 9 11.01" />
-                  </svg>
-                  <h3 className="text-2xl font-bold mb-2">Thank you, Deanna!</h3>
-                  <p className="text-[#9a9cb8]">We&rsquo;ll be in touch within 24 hours.</p>
-                </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div className="text-left">
-                    <label htmlFor="ha-name" className="block text-xs font-semibold uppercase tracking-wide mb-1.5 text-white/60">Full Name</label>
-                    <input
-                      type="text" id="ha-name" name="name" required
-                      className="w-full px-4 py-3.5 rounded-lg border border-white/10 bg-white/5 text-white placeholder:text-white/30 focus:ring-2 focus:border-transparent outline-none transition-all"
-                      style={{ "--tw-ring-color": GOLD } as React.CSSProperties}
-                    />
-                  </div>
-                  <div className="text-left">
-                    <label htmlFor="ha-phone" className="block text-xs font-semibold uppercase tracking-wide mb-1.5 text-white/60">Phone</label>
-                    <input
-                      type="tel" id="ha-phone" name="phone" required
-                      className="w-full px-4 py-3.5 rounded-lg border border-white/10 bg-white/5 text-white placeholder:text-white/30 focus:ring-2 focus:border-transparent outline-none transition-all"
-                      style={{ "--tw-ring-color": GOLD } as React.CSSProperties}
-                    />
-                  </div>
-                  <div className="text-left">
-                    <label htmlFor="ha-email" className="block text-xs font-semibold uppercase tracking-wide mb-1.5 text-white/60">Email</label>
-                    <input
-                      type="email" id="ha-email" name="email" required
-                      className="w-full px-4 py-3.5 rounded-lg border border-white/10 bg-white/5 text-white placeholder:text-white/30 focus:ring-2 focus:border-transparent outline-none transition-all"
-                      style={{ "--tw-ring-color": GOLD } as React.CSSProperties}
-                    />
-                  </div>
-                  {errorMsg && <p className="text-sm text-red-500 text-center">{errorMsg}</p>}
-                  <button
-                    type="submit"
-                    disabled={formState === "submitting"}
-                    className="w-full py-4 rounded-full font-bold text-sm tracking-[0.1em] uppercase transition-all duration-300 hover:-translate-y-0.5"
-                    style={{
-                      background: `linear-gradient(135deg, ${GOLD} 0%, #e8d48b 50%, ${GOLD} 100%)`,
-                      color: DARK,
-                      boxShadow: `0 4px 15px rgba(201,169,110,0.2)`,
-                    }}
-                  >
-                    {formState === "submitting" ? "Sending..." : "Schedule a Call"}
-                  </button>
-                  <p className="text-xs text-center text-white/30 mt-3">
-                    Your details are secure and will not be shared with third parties
-                  </p>
-                </form>
-              )}
+              {[
+                { number: "542", label: "Your Followers", sub: "vs. 2,400 avg for Dallas stylists" },
+                { number: "~1/wk", label: "Your Post Frequency", sub: "vs. 4-5/wk for top performers" },
+                { number: "12", label: "Avg Likes/Post", sub: "vs. 85+ for stylists your caliber" },
+                { number: "0", label: "Reels This Month", sub: "Reels get 2-3x more reach than photos" },
+              ].map((stat, i) => (
+                <motion.div
+                  key={i}
+                  variants={scaleIn}
+                  className="rounded-xl p-5 border border-white/8 text-center"
+                  style={{ background: BG_CARD }}
+                >
+                  <div className="text-2xl md:text-3xl font-black mb-1" style={{ color: GOLD }}>{stat.number}</div>
+                  <div className="text-xs font-bold uppercase tracking-wide text-white/80 mb-2">{stat.label}</div>
+                  <div className="text-[0.65rem] text-white/40 leading-snug">{stat.sub}</div>
+                </motion.div>
+              ))}
             </motion.div>
+
+            {/* Insight cards */}
+            <motion.div
+              className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-12"
+              variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true }}
+            >
+              <motion.div variants={fadeUp} className="rounded-xl p-6 border border-white/8" style={{ background: BG_CARD }}>
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: GOLD_DIM }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                  </div>
+                  <h3 className="font-bold text-sm uppercase tracking-wide">The Opportunity</h3>
+                </div>
+                <p className="text-sm text-[#9a9cb8] leading-relaxed">
+                  Dallas has 1,200+ people searching &ldquo;hair stylist near me&rdquo; every month. Stylists with half your experience are filling chairs through Instagram because they post consistently. Your 30 years of Vidal Sassoon training, Fox and ABC credits — none of that shows up when someone opens Instagram looking for a stylist.
+                </p>
+              </motion.div>
+
+              <motion.div variants={fadeUp} className="rounded-xl p-6 border border-white/8" style={{ background: BG_CARD }}>
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: GOLD_DIM }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                  </div>
+                  <h3 className="font-bold text-sm uppercase tracking-wide">What Top Dallas Stylists Do</h3>
+                </div>
+                <p className="text-sm text-[#9a9cb8] leading-relaxed">
+                  The stylists booking 6+ months out post 4-5 times per week. They mix transformation photos with Reels, behind-the-scenes Stories, and client testimonials. They use local hashtags (#DallasHair #DFWColorist) and post during peak Dallas hours (11am &amp; 7pm CST). Most importantly — they never miss a week.
+                </p>
+              </motion.div>
+            </motion.div>
+
+            {/* Bottom line + CTA */}
+            <Reveal>
+              <div className="rounded-xl p-8 border text-center" style={{ borderColor: GOLD, background: `linear-gradient(135deg, rgba(201,169,110,0.05), rgba(201,169,110,0.02))` }}>
+                <p className="text-lg font-semibold text-white mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>
+                  Bottom line: your work is A-list. Your Instagram is invisible.
+                </p>
+                <p className="text-sm text-[#9a9cb8] mb-6">
+                  Everything you saw on this page — the enhanced photos, the showreel, the content mockups — we built it before this conversation. Imagine what happens when we run it every week.
+                </p>
+                <a
+                  href={`https://wa.me/${page.whatsappNumber}?text=${encodeURIComponent("Hi! I just saw everything you built for Hair Approach — I'm interested in getting started.")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold text-sm tracking-[0.1em] uppercase transition-all duration-300 hover:-translate-y-0.5"
+                  style={{
+                    background: `linear-gradient(135deg, ${GOLD} 0%, #e8d48b 50%, ${GOLD} 100%)`,
+                    color: DARK,
+                    boxShadow: `0 4px 15px rgba(201,169,110,0.3)`,
+                  }}
+                >
+                  <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.325-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
+                  </svg>
+                  Let&rsquo;s Talk on WhatsApp
+                </a>
+              </div>
+            </Reveal>
           </div>
         </section>
 
