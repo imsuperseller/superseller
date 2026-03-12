@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import prisma from "@/lib/prisma";
 import { LandingPageClient } from "./LandingPageClient";
+import { HairApproachPage } from "./HairApproachPage";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -38,6 +39,10 @@ export default async function LandingPage({ params }: Props) {
   const { slug } = await params;
   const page = await getLandingPage(slug);
   if (!page) notFound();
+
+  if (slug === "hair-approach") {
+    return <HairApproachPage page={page} />;
+  }
 
   return <LandingPageClient page={page} />;
 }
