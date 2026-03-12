@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { t, type CompeteLocale } from "./compete-i18n";
+import { GOLD, THEME } from "./compete-theme";
 
 interface Props {
   tenantSlug: string;
@@ -52,16 +53,16 @@ export default function CompeteLogin({ tenantSlug, locale }: Props) {
     <div
       dir={isRTL ? "rtl" : "ltr"}
       className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden"
-      style={{ background: "var(--superseller-bg-primary)" }}
+      style={{ background: THEME.bg }}
     >
       {/* Ambient glow orbs */}
       <div
-        className="absolute top-1/4 right-1/4 w-[500px] h-[400px] rounded-full blur-[120px] opacity-[0.08]"
-        style={{ background: "var(--superseller-orange)" }}
+        className="absolute top-1/4 right-1/4 w-[500px] h-[400px] rounded-full blur-[120px] opacity-[0.07]"
+        style={{ background: GOLD.primary }}
       />
       <div
-        className="absolute bottom-1/4 left-1/4 w-[400px] h-[300px] rounded-full blur-[100px] opacity-[0.06]"
-        style={{ background: "var(--superseller-cyan)" }}
+        className="absolute bottom-1/4 left-1/4 w-[400px] h-[300px] rounded-full blur-[100px] opacity-[0.04]"
+        style={{ background: GOLD.warm }}
       />
 
       <motion.div
@@ -70,18 +71,18 @@ export default function CompeteLogin({ tenantSlug, locale }: Props) {
         transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
         className="relative max-w-sm w-full"
       >
-        <div className="superseller-card-gradient rounded-[24px] overflow-hidden">
+        <div className="rounded-[24px] overflow-hidden backdrop-blur-xl" style={{ background: THEME.bgCard, border: `1px solid ${GOLD.borderSubtle}` }}>
           <div
             className="h-[2px] w-full"
-            style={{ background: "var(--superseller-gradient-brand)" }}
+            style={{ background: GOLD.gradientShimmer }}
           />
           <div className="p-8 text-center">
             {/* Lock icon */}
             <div
               className="w-16 h-16 mx-auto mb-5 rounded-2xl flex items-center justify-center"
               style={{
-                background: "var(--superseller-gradient-primary)",
-                boxShadow: "var(--superseller-glow-primary)",
+                background: GOLD.gradient,
+                boxShadow: GOLD.glow,
               }}
             >
               <svg
@@ -102,25 +103,25 @@ export default function CompeteLogin({ tenantSlug, locale }: Props) {
               <>
                 <h1
                   className="text-2xl font-black mb-2"
-                  style={{ color: "var(--superseller-text-primary)" }}
+                  style={{ color: THEME.text }}
                 >
                   {t("checkEmail", locale)}
                 </h1>
                 <p
                   className="text-sm mb-1"
-                  style={{ color: "var(--superseller-text-secondary)" }}
+                  style={{ color: THEME.textSecondary }}
                 >
                   {t("sentLinkTo", locale)}
                 </p>
                 <p
                   className="text-sm font-bold mb-6"
-                  style={{ color: "var(--superseller-cyan)" }}
+                  style={{ color: GOLD.primary }}
                 >
                   {email}
                 </p>
                 <p
                   className="text-[11px]"
-                  style={{ color: "var(--superseller-text-muted)" }}
+                  style={{ color: THEME.textMuted }}
                 >
                   {t("linkValid", locale)}
                 </p>
@@ -129,25 +130,25 @@ export default function CompeteLogin({ tenantSlug, locale }: Props) {
               <>
                 <h1
                   className="text-2xl font-black mb-1"
-                  style={{ color: "var(--superseller-text-primary)" }}
+                  style={{ color: THEME.text }}
                 >
                   {t("competitorResearch", locale)}
                 </h1>
                 <p
                   className="text-sm mb-1"
-                  style={{ color: "var(--superseller-text-secondary)" }}
+                  style={{ color: THEME.textSecondary }}
                 >
                   {t("secureAccess", locale)}
                   <span
                     className="font-bold"
-                    style={{ color: "var(--superseller-cyan)" }}
+                    style={{ color: GOLD.primary }}
                   >
                     {displayName}
                   </span>
                 </p>
                 <p
                   className="text-[11px] mb-6"
-                  style={{ color: "var(--superseller-text-muted)" }}
+                  style={{ color: THEME.textMuted }}
                 >
                   {t("enterEmail", locale)}
                 </p>
@@ -179,7 +180,8 @@ export default function CompeteLogin({ tenantSlug, locale }: Props) {
                 <button
                   onClick={handleSend}
                   disabled={sending || !email.includes("@")}
-                  className="superseller-btn-3d-primary w-full py-3 rounded-xl font-bold text-[15px] disabled:opacity-20 cursor-pointer"
+                  className="w-full py-3 rounded-xl font-bold text-[15px] disabled:opacity-20 cursor-pointer transition-all duration-300 hover:brightness-110 active:scale-[0.98]"
+                  style={{ background: GOLD.gradient, color: '#0e1225', boxShadow: GOLD.glow }}
                 >
                   {sending ? t("sending", locale) : t("sendLink", locale)}
                 </button>
@@ -189,7 +191,7 @@ export default function CompeteLogin({ tenantSlug, locale }: Props) {
         </div>
         <p
           className="text-center mt-6 text-[9px] tracking-[0.2em] uppercase"
-          style={{ color: "var(--superseller-text-muted)", opacity: 0.3 }}
+          style={{ color: THEME.textMuted, opacity: 0.3 }}
         >
           SuperSeller AI
         </p>

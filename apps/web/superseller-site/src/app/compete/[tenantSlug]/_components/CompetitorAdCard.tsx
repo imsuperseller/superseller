@@ -3,6 +3,7 @@
 import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { t, type CompeteLocale } from "./compete-i18n";
+import { GOLD, THEME } from "./compete-theme";
 
 interface CompetitorAd {
   id: string;
@@ -169,12 +170,12 @@ export default function CompetitorAdCard({ ad, onRate, reviewerName, locale, com
         )}
         <div className="p-4">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-sm font-bold" style={{ color: "var(--superseller-text-primary)" }}>{ad.pageName}</span>
-            <span className="text-[11px] font-bold" style={{ color: localLiked ? "var(--superseller-teal)" : "var(--superseller-orange)" }}>
+            <span className="text-sm font-bold" style={{ color: THEME.text }}>{ad.pageName}</span>
+            <span className="text-[11px] font-bold" style={{ color: localLiked ? GOLD.warm : THEME.pass }}>
               {localLiked ? t("liked", locale) : t("disliked", locale)}
             </span>
           </div>
-          {localNote && <p className="text-[11px] mt-1" style={{ color: "var(--superseller-text-muted)" }}>{localNote}</p>}
+          {localNote && <p className="text-[11px] mt-1" style={{ color: THEME.textMuted }}>{localNote}</p>}
         </div>
       </div>
     );
@@ -186,46 +187,46 @@ export default function CompetitorAdCard({ ad, onRate, reviewerName, locale, com
       {/* Glow orb behind card */}
       <div
         className="absolute -inset-1 rounded-[28px] blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"
-        style={{ background: "linear-gradient(135deg, rgba(244,121,32,0.12), rgba(95,251,253,0.12))" }}
+        style={{ background: `linear-gradient(135deg, rgba(208,178,90,0.12), rgba(201,169,110,0.08))` }}
       />
 
       <div
-        className="superseller-card-neon relative rounded-[24px] overflow-hidden"
-        style={{ background: "var(--superseller-bg-card)" }}
+        className="relative rounded-[24px] overflow-hidden backdrop-blur-xl"
+        style={{ background: THEME.bgCard, border: `1px solid ${GOLD.borderSubtle}` }}
       >
-        <div className="h-[2px] w-full" style={{ background: "var(--superseller-gradient-brand)" }} />
+        <div className="h-[2px] w-full" style={{ background: GOLD.gradientShimmer }} />
 
         {/* ── Social header row ── */}
         <div className={`flex items-center gap-3 px-5 pt-5 pb-3`} dir={isRTL ? "rtl" : "ltr"}>
           <div
             className="w-12 h-12 rounded-full flex-shrink-0 flex items-center justify-center text-base font-black relative"
             style={{
-              background: "linear-gradient(135deg, var(--superseller-orange), var(--superseller-teal))",
+              background: GOLD.gradient,
               color: "#fff",
-              boxShadow: "0 0 20px rgba(244,121,32,0.25)",
+              boxShadow: GOLD.glow,
             }}
           >
             {ad.pageName?.charAt(0).toUpperCase() || "?"}
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <span className="text-[15px] font-bold truncate" style={{ color: "var(--superseller-text-primary)" }}>
+              <span className="text-[15px] font-bold truncate" style={{ color: THEME.text }}>
                 {ad.pageName || "Unknown"}
               </span>
               {tier && <span className={`${tier.badge} text-[10px] font-bold px-2 py-0.5`}>{tier.label}</span>}
             </div>
             <div className="flex items-center gap-2 mt-0.5">
               {ad.daysRunning != null && ad.daysRunning > 0 && (
-                <span className="text-[11px] font-semibold" style={{ color: "var(--superseller-cyan)" }}>
+                <span className="text-[11px] font-semibold" style={{ color: GOLD.primary }}>
                   {ad.daysRunning} {t("days", locale)}
                 </span>
               )}
-              {ad.startDate && <span className="text-[11px]" style={{ color: "var(--superseller-text-muted)" }}>{ad.startDate}</span>}
+              {ad.startDate && <span className="text-[11px]" style={{ color: THEME.textMuted }}>{ad.startDate}</span>}
               {score != null && (
                 <span
                   className="text-[10px] font-black px-1.5 py-0.5 rounded"
                   style={{
-                    color: score >= 7 ? "var(--superseller-teal)" : score >= 5 ? "var(--superseller-orange)" : "var(--superseller-text-muted)",
+                    color: score >= 7 ? GOLD.warm : score >= 5 ? THEME.pass : THEME.textMuted,
                     background: score >= 7 ? "rgba(78,205,196,0.12)" : score >= 5 ? "rgba(244,121,32,0.1)" : "rgba(148,163,184,0.08)",
                   }}
                 >
@@ -235,7 +236,7 @@ export default function CompetitorAdCard({ ad, onRate, reviewerName, locale, com
             </div>
           </div>
           {ad.adUrl && (
-            <a href={ad.adUrl} target="_blank" rel="noopener noreferrer" className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center border border-white/5 hover:border-white/20 hover:bg-white/[0.04] transition-all duration-300 cursor-pointer" style={{ color: "var(--superseller-text-muted)" }}>
+            <a href={ad.adUrl} target="_blank" rel="noopener noreferrer" className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center border border-white/5 hover:border-white/20 hover:bg-white/[0.04] transition-all duration-300 cursor-pointer" style={{ color: THEME.textMuted }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
             </a>
           )}
@@ -257,12 +258,12 @@ export default function CompetitorAdCard({ ad, onRate, reviewerName, locale, com
           </div>
         ) : (
           <div className="relative mx-4 rounded-2xl overflow-hidden backdrop-blur-xl" style={{ background: "rgba(22,37,64,0.6)", border: "1px solid rgba(255,255,255,0.06)" }}>
-            <div className="absolute top-0 right-0 w-40 h-40 rounded-full blur-3xl opacity-[0.06]" style={{ background: "var(--superseller-cyan)" }} />
-            <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-[0.04]" style={{ background: "var(--superseller-orange)" }} />
+            <div className="absolute top-0 right-0 w-40 h-40 rounded-full blur-3xl opacity-[0.06]" style={{ background: GOLD.primary }} />
+            <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-[0.04]" style={{ background: THEME.pass }} />
             <div className="h-[2px] w-full" style={{ background: "var(--superseller-gradient-brand)" }} />
             <div className="relative px-6 py-6" dir={isRTL ? "rtl" : "ltr"}>
               {ad.adTitle && (
-                <h3 className="text-lg font-extrabold leading-snug mb-3" style={{ color: "var(--superseller-text-primary)", letterSpacing: "-0.01em" }}>
+                <h3 className="text-lg font-extrabold leading-snug mb-3" style={{ color: THEME.text, letterSpacing: "-0.01em" }}>
                   {ad.adTitle}
                 </h3>
               )}
@@ -270,7 +271,7 @@ export default function CompetitorAdCard({ ad, onRate, reviewerName, locale, com
                 <p
                   className="text-[15px] leading-[1.7]"
                   style={{
-                    color: "var(--superseller-text-secondary)",
+                    color: THEME.textSecondary,
                     display: "-webkit-box",
                     WebkitLineClamp: 5,
                     WebkitBoxOrient: "vertical",
@@ -281,7 +282,7 @@ export default function CompetitorAdCard({ ad, onRate, reviewerName, locale, com
                 </p>
               )}
               {!ad.adTitle && !ad.adText && (
-                <p className="text-center py-6 text-sm" style={{ color: "var(--superseller-text-muted)" }}>{t("noTextContent", locale)}</p>
+                <p className="text-center py-6 text-sm" style={{ color: THEME.textMuted }}>{t("noTextContent", locale)}</p>
               )}
             </div>
           </div>
@@ -291,9 +292,9 @@ export default function CompetitorAdCard({ ad, onRate, reviewerName, locale, com
         <div className="px-5 pt-3 pb-2">
           {hasMedia && (ad.adTitle || ad.adText) && (
             <div dir={isRTL ? "rtl" : "ltr"} className="mb-3">
-              {ad.adTitle && <h4 className="text-sm font-bold leading-snug mb-1" style={{ color: "var(--superseller-text-primary)" }}>{ad.adTitle}</h4>}
+              {ad.adTitle && <h4 className="text-sm font-bold leading-snug mb-1" style={{ color: THEME.text }}>{ad.adTitle}</h4>}
               {ad.adText && (
-                <p className="text-[13px] leading-relaxed" style={{ color: "var(--superseller-text-muted)", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                <p className="text-[13px] leading-relaxed" style={{ color: THEME.textMuted, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                   {ad.adText}
                 </p>
               )}
@@ -329,16 +330,13 @@ export default function CompetitorAdCard({ ad, onRate, reviewerName, locale, com
             <button
               onClick={() => handleRate(true)}
               disabled={saving}
-              className={`flex-1 flex items-center justify-center gap-2.5 py-4 rounded-2xl font-bold text-[15px] transition-all duration-300 cursor-pointer active:scale-[0.97] disabled:opacity-40 ${
-                localLiked === true ? "superseller-btn-3d-primary" : "superseller-btn-3d-glass"
-              }`}
-              style={localLiked === true ? undefined : {
-                color: "var(--superseller-teal)",
-                border: "1px solid rgba(78,205,196,0.2)",
-                background: "rgba(78,205,196,0.06)",
-              }}
+              className="flex-1 flex items-center justify-center gap-2.5 py-4 rounded-2xl font-bold text-[15px] transition-all duration-300 cursor-pointer active:scale-[0.97] disabled:opacity-40"
+              style={localLiked === true
+                ? { background: GOLD.gradient, color: '#0e1225', boxShadow: GOLD.glow }
+                : { color: GOLD.primary, border: `1px solid ${GOLD.border}`, background: GOLD.dimmer }
+              }
             >
-              <svg width="22" height="22" viewBox="0 0 24 24" fill={localLiked === true ? "white" : "var(--superseller-teal)"} stroke="none">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill={localLiked === true ? "#0e1225" : GOLD.primary} stroke="none">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
               </svg>
               {localLiked === true ? t("likeActive", locale) : t("likeBtn", locale)}
@@ -346,16 +344,13 @@ export default function CompetitorAdCard({ ad, onRate, reviewerName, locale, com
             <button
               onClick={() => handleRate(false)}
               disabled={saving}
-              className={`flex-1 flex items-center justify-center gap-2.5 py-4 rounded-2xl font-bold text-[15px] transition-all duration-300 cursor-pointer active:scale-[0.97] disabled:opacity-40 ${
-                localLiked === false ? "superseller-btn-3d-primary" : "superseller-btn-3d-glass"
-              }`}
-              style={localLiked === false ? { background: "linear-gradient(135deg, #dc2626, #f97316)" } : {
-                color: "var(--superseller-orange)",
-                border: "1px solid rgba(244,121,32,0.2)",
-                background: "rgba(244,121,32,0.06)",
-              }}
+              className="flex-1 flex items-center justify-center gap-2.5 py-4 rounded-2xl font-bold text-[15px] transition-all duration-300 cursor-pointer active:scale-[0.97] disabled:opacity-40"
+              style={localLiked === false
+                ? { background: THEME.passGradient, color: '#fff' }
+                : { color: THEME.pass, border: `1px solid ${THEME.passBorder}`, background: THEME.passLight }
+              }
             >
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={localLiked === false ? "white" : "var(--superseller-orange)"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={localLiked === false ? "white" : THEME.pass} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
               </svg>
               {localLiked === false ? t("dislikeActive", locale) : t("passBtn", locale)}
@@ -366,7 +361,7 @@ export default function CompetitorAdCard({ ad, onRate, reviewerName, locale, com
             <button
               onClick={() => setShowFeedback(!showFeedback)}
               className="flex items-center gap-1.5 mt-3 text-[11px] transition-all duration-300 hover:text-[var(--superseller-cyan)] py-1 cursor-pointer"
-              style={{ color: "var(--superseller-text-muted)" }}
+              style={{ color: THEME.textMuted }}
             >
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
               {showFeedback ? t("hide", locale) : localNote ? t("editNote", locale) : t("addNote", locale)}
@@ -384,7 +379,7 @@ export default function CompetitorAdCard({ ad, onRate, reviewerName, locale, com
               >
                 <div className="mt-3 space-y-3">
                   {noteError && !note.trim() && (
-                    <p className="text-[12px] font-semibold" style={{ color: "var(--superseller-orange)" }}>
+                    <p className="text-[12px] font-semibold" style={{ color: THEME.pass }}>
                       {locale === "he" ? "חובה לכתוב סיבה לפני שליחה" : "A reason is required before submitting"}
                     </p>
                   )}
@@ -397,8 +392,8 @@ export default function CompetitorAdCard({ ad, onRate, reviewerName, locale, com
                     autoFocus={!!pendingLiked}
                     className="superseller-input w-full text-sm resize-none rounded-xl px-4 py-3"
                     style={{
-                      color: "var(--superseller-text-primary)",
-                      borderColor: noteError && !note.trim() ? "var(--superseller-orange)" : undefined,
+                      color: THEME.text,
+                      borderColor: noteError && !note.trim() ? THEME.pass : undefined,
                     }}
                   />
                   {pendingLiked !== null ? (
@@ -418,7 +413,7 @@ export default function CompetitorAdCard({ ad, onRate, reviewerName, locale, com
                       className={`px-5 py-2 rounded-xl text-sm font-bold transition-all duration-300 disabled:opacity-20 cursor-pointer ${
                         saved ? "" : "superseller-btn-3d-neon"
                       }`}
-                      style={saved ? { background: "rgba(78,205,196,0.15)", color: "var(--superseller-teal)" } : undefined}
+                      style={saved ? { background: "rgba(78,205,196,0.15)", color: GOLD.warm } : undefined}
                     >
                       {saved ? t("saved", locale) : t("save", locale)}
                     </button>

@@ -4,6 +4,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import CompetitorAdCard from "./CompetitorAdCard";
 import { t, tReplace, type CompeteLocale } from "./compete-i18n";
+import { GOLD, THEME } from "./compete-theme";
 
 interface Ad {
   id: string;
@@ -126,16 +127,16 @@ export default function CompeteFeed({ tenantSlug, userName, locale }: Props) {
   // ─── Loading ───
   if (loading) {
     return (
-      <div dir={isRTL ? "rtl" : "ltr"} className="min-h-screen flex flex-col items-center justify-center" style={{ background: "var(--superseller-bg-primary)" }}>
+      <div dir={isRTL ? "rtl" : "ltr"} className="min-h-screen flex flex-col items-center justify-center" style={{ background: THEME.bg }}>
         <div className="w-10 h-10 rounded-full border-2 border-transparent animate-spin" style={{ borderTopColor: "var(--superseller-cyan)", borderRightColor: "var(--superseller-orange)" }} />
-        <p className="text-sm mt-5" style={{ color: "var(--superseller-text-muted)" }}>{t("loading", locale)}</p>
+        <p className="text-sm mt-5" style={{ color: THEME.textMuted }}>{t("loading", locale)}</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div dir={isRTL ? "rtl" : "ltr"} className="min-h-screen flex items-center justify-center px-4" style={{ background: "var(--superseller-bg-primary)" }}>
+      <div dir={isRTL ? "rtl" : "ltr"} className="min-h-screen flex items-center justify-center px-4" style={{ background: THEME.bg }}>
         <div className="superseller-card rounded-2xl p-8 max-w-md w-full text-center" style={{ borderColor: "rgba(220,38,38,0.2)" }}>
           <p className="font-semibold" style={{ color: "#ef4444" }}>{error}</p>
         </div>
@@ -145,10 +146,10 @@ export default function CompeteFeed({ tenantSlug, userName, locale }: Props) {
 
   if (total === 0) {
     return (
-      <div dir={isRTL ? "rtl" : "ltr"} className="min-h-screen flex items-center justify-center px-4" style={{ background: "var(--superseller-bg-primary)" }}>
+      <div dir={isRTL ? "rtl" : "ltr"} className="min-h-screen flex items-center justify-center px-4" style={{ background: THEME.bg }}>
         <div className="text-center">
-          <h2 className="text-xl font-bold mb-2" style={{ color: "var(--superseller-text-primary)" }}>{t("noAdsYet", locale)}</h2>
-          <p className="text-sm" style={{ color: "var(--superseller-text-muted)" }}>{tReplace("adsNotCollected", locale, { name: displayName })}</p>
+          <h2 className="text-xl font-bold mb-2" style={{ color: THEME.text }}>{t("noAdsYet", locale)}</h2>
+          <p className="text-sm" style={{ color: THEME.textMuted }}>{tReplace("adsNotCollected", locale, { name: displayName })}</p>
         </div>
       </div>
     );
@@ -157,13 +158,13 @@ export default function CompeteFeed({ tenantSlug, userName, locale }: Props) {
   // ─── History ───
   if (showHistory) {
     return (
-      <div dir={isRTL ? "rtl" : "ltr"} className="min-h-screen" style={{ background: "var(--superseller-bg-primary)" }}>
+      <div dir={isRTL ? "rtl" : "ltr"} className="min-h-screen" style={{ background: THEME.bg }}>
         <div className="sticky top-0 z-20 px-4 py-3 flex items-center justify-between backdrop-blur-xl" style={{ background: "rgba(13,27,46,0.9)", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
           <button onClick={() => setShowHistory(false)} className="superseller-btn-3d-neon flex items-center gap-2 text-sm font-bold px-4 py-2 rounded-xl cursor-pointer">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d={isRTL ? "M19 12H5M12 19l-7-7 7-7" : "M5 12H19M12 5l7 7-7 7"}/></svg>
             {t("back", locale)}
           </button>
-          <span className="text-[11px] font-semibold" style={{ color: "var(--superseller-text-muted)" }}>{reviewed} {t("ratings", locale)}</span>
+          <span className="text-[11px] font-semibold" style={{ color: THEME.textMuted }}>{reviewed} {t("ratings", locale)}</span>
         </div>
         <div className="max-w-lg mx-auto px-4 py-4 space-y-3">
           {reviewedAds.map((ad, idx) => (
@@ -184,8 +185,8 @@ export default function CompeteFeed({ tenantSlug, userName, locale }: Props) {
   // ─── Complete ───
   if (isComplete) {
     return (
-      <div dir={isRTL ? "rtl" : "ltr"} className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden" style={{ background: "var(--superseller-bg-primary)" }}>
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full blur-[120px] opacity-[0.1]" style={{ background: "var(--superseller-teal)" }} />
+      <div dir={isRTL ? "rtl" : "ltr"} className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden" style={{ background: THEME.bg }}>
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full blur-[120px] opacity-[0.1]" style={{ background: GOLD.primary }} />
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -195,19 +196,19 @@ export default function CompeteFeed({ tenantSlug, userName, locale }: Props) {
           <div
             className="w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center superseller-animate-glow"
             style={{
-              background: "linear-gradient(135deg, var(--superseller-teal), var(--superseller-cyan))",
-              boxShadow: "var(--superseller-glow-neon)",
+              background: GOLD.gradient,
+              boxShadow: GOLD.glowStrong,
             }}
           >
             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
           </div>
-          <h2 className="text-3xl font-black mb-3" style={{ color: "var(--superseller-text-primary)" }}>{t("done", locale)}</h2>
+          <h2 className="text-3xl font-black mb-3" style={{ color: THEME.text }}>{t("done", locale)}</h2>
           <p className="text-base mb-2" style={{ color: "var(--superseller-text-secondary)" }}>
-            {t("reviewed", locale)} <span className="font-black" style={{ color: "var(--superseller-cyan)" }}>{total}</span> {t("postsWord", locale)}
+            {t("reviewed", locale)} <span className="font-black" style={{ color: GOLD.primary }}>{total}</span> {t("postsWord", locale)}
           </p>
           <div className="flex justify-center gap-6 mb-8">
-            <span className="text-sm"><span className="font-black" style={{ color: "var(--superseller-teal)" }}>{likedCount}</span> <span style={{ color: "var(--superseller-text-muted)" }}>{t("liked", locale)}</span></span>
-            <span className="text-sm"><span className="font-black" style={{ color: "var(--superseller-orange)" }}>{dislikedCount}</span> <span style={{ color: "var(--superseller-text-muted)" }}>{t("disliked", locale)}</span></span>
+            <span className="text-sm"><span className="font-black" style={{ color: GOLD.warm }}>{likedCount}</span> <span style={{ color: THEME.textMuted }}>{t("liked", locale)}</span></span>
+            <span className="text-sm"><span className="font-black" style={{ color: "var(--superseller-orange)" }}>{dislikedCount}</span> <span style={{ color: THEME.textMuted }}>{t("disliked", locale)}</span></span>
           </div>
           <button onClick={() => setShowHistory(true)} className="superseller-btn-3d-neon px-6 py-3 rounded-xl text-sm font-bold cursor-pointer">
             {t("viewRatings", locale)}
@@ -220,29 +221,29 @@ export default function CompeteFeed({ tenantSlug, userName, locale }: Props) {
 
   // ─── MAIN FEED ───
   return (
-    <div dir={isRTL ? "rtl" : "ltr"} className="min-h-screen flex flex-col relative" style={{ background: "var(--superseller-bg-primary)" }}>
+    <div dir={isRTL ? "rtl" : "ltr"} className="min-h-screen flex flex-col relative" style={{ background: THEME.bg }}>
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-40 right-1/4 w-[600px] h-[400px] rounded-full blur-[150px] opacity-[0.04]" style={{ background: "var(--superseller-orange)" }} />
-        <div className="absolute bottom-0 left-1/4 w-[500px] h-[350px] rounded-full blur-[120px] opacity-[0.03]" style={{ background: "var(--superseller-cyan)" }} />
+        <div className="absolute -top-40 right-1/4 w-[600px] h-[400px] rounded-full blur-[150px] opacity-[0.05]" style={{ background: GOLD.primary }} />
+        <div className="absolute bottom-0 left-1/4 w-[500px] h-[350px] rounded-full blur-[120px] opacity-[0.03]" style={{ background: GOLD.warm }} />
       </div>
 
       {/* ── Top bar ── */}
       <div className="sticky top-0 z-30 px-4 py-3 backdrop-blur-xl" style={{ background: "rgba(13,27,46,0.85)", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
         <div className="max-w-lg mx-auto flex items-center justify-between">
           <div>
-            <h1 className="text-sm font-black" style={{ color: "var(--superseller-text-primary)" }}>{displayName}</h1>
-            <p className="text-[10px] font-semibold" style={{ color: "var(--superseller-text-muted)" }}>
+            <h1 className="text-sm font-black" style={{ color: THEME.text }}>{displayName}</h1>
+            <p className="text-[10px] font-semibold" style={{ color: THEME.textMuted }}>
               {total} {t("posts", locale)} &middot; {pendingAds.length} {t("pending", locale)}
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full backdrop-blur-md" style={{ background: "rgba(78,205,196,0.08)", border: "1px solid rgba(78,205,196,0.15)" }}>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--superseller-teal)" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-              <span className="text-[12px] font-black" style={{ color: "var(--superseller-teal)" }}>{likedCount}</span>
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full backdrop-blur-md" style={{ background: GOLD.dimmer, border: `1px solid ${GOLD.border}` }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill={GOLD.primary} stroke="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              <span className="text-[12px] font-black" style={{ color: GOLD.primary }}>{likedCount}</span>
             </div>
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full backdrop-blur-md" style={{ background: "rgba(244,121,32,0.08)", border: "1px solid rgba(244,121,32,0.15)" }}>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--superseller-orange)" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-              <span className="text-[12px] font-black" style={{ color: "var(--superseller-orange)" }}>{dislikedCount}</span>
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full backdrop-blur-md" style={{ background: THEME.passLight, border: `1px solid ${THEME.passBorder}` }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={THEME.pass} strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              <span className="text-[12px] font-black" style={{ color: THEME.pass }}>{dislikedCount}</span>
             </div>
             {reviewed > 0 && (
               <button onClick={() => setShowHistory(true)} className="superseller-btn-3d-neon text-[11px] font-bold px-3 py-1.5 rounded-full cursor-pointer">
@@ -257,8 +258,8 @@ export default function CompeteFeed({ tenantSlug, userName, locale }: Props) {
               className="h-full rounded-full transition-all duration-500 ease-out"
               style={{
                 width: `${((reviewed) / total) * 100}%`,
-                background: "var(--superseller-gradient-brand)",
-                boxShadow: "0 0 12px rgba(244,121,32,0.4)",
+                background: GOLD.gradientShimmer,
+                boxShadow: `0 0 12px rgba(208,178,90,0.4)`,
               }}
             />
           </div>
@@ -313,7 +314,7 @@ export default function CompeteFeed({ tenantSlug, userName, locale }: Props) {
                 onClick={goNext}
                 disabled={currentIndex >= pendingAds.length - 1}
                 className="superseller-btn-3d-glass text-[11px] font-semibold px-4 py-2 rounded-full cursor-pointer disabled:opacity-20"
-                style={{ color: "var(--superseller-text-muted)" }}
+                style={{ color: THEME.textMuted }}
               >
                 {t("skip", locale)} {isRTL ? "\u2190" : "\u2192"}
               </button>
