@@ -111,7 +111,7 @@ export async function POST(
       message: `${name.trim()} added to ${tenant.name}`,
     });
   } catch (err: any) {
-    console.error("[onboard] Error:", err.message);
+    console.error("[onboard] Error:", err.message, err.stack || "", JSON.stringify(err.meta || {}));
     return NextResponse.json(
       { error: "Failed to onboard. Please try again." },
       { status: 500 },
