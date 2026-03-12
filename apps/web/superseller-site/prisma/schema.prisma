@@ -1154,19 +1154,19 @@ model ProspectReport {
   id                 String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   slug               String   @unique
   active             Boolean  @default(true)
-  businessName       String
+  businessName       String   @map("business_name")
   vertical           String
   location           String?
   summary            Json?
-  adIds              Json?
-  ctaType            String   @default("whatsapp")
-  ctaUrl             String?
-  ctaText            String   @default("Get Your Custom Strategy")
-  recommendedProduct String?
+  adIds              Json?    @map("ad_ids")
+  ctaType            String   @default("whatsapp") @map("cta_type")
+  ctaUrl             String?  @map("cta_url")
+  ctaText            String   @default("Get Your Custom Strategy") @map("cta_text")
+  recommendedProduct String?  @map("recommended_product")
   views              Int      @default(0)
-  leadsCaptured      Int      @default(0)
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @default(now()) @updatedAt
+  leadsCaptured      Int      @default(0) @map("leads_captured")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @default(now()) @updatedAt @map("updated_at")
 
   @@map("prospect_reports")
 }

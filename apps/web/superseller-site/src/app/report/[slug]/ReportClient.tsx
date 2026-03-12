@@ -21,7 +21,7 @@ interface ReportData {
 interface Ad {
   id: string;
   page_name: string;
-  ad_copy: string | null;
+  ad_text: string | null;
   image_url: string | null;
   start_date: string | null;
   meta: Record<string, unknown> | null;
@@ -403,11 +403,11 @@ export function ReportClient({
                     <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                       {ad.page_name}
                     </p>
-                    {ad.ad_copy && (
+                    {ad.ad_text && (
                       <p className="text-sm text-gray-300 leading-relaxed">
-                        {ad.ad_copy.length > 120
-                          ? ad.ad_copy.slice(0, 120) + "..."
-                          : ad.ad_copy}
+                        {ad.ad_text.length > 120
+                          ? ad.ad_text.slice(0, 120) + "..."
+                          : ad.ad_text}
                       </p>
                     )}
                   </div>

@@ -24,7 +24,7 @@ async function getReport(slug: string) {
 async function getReportAds(slug: string) {
   try {
     const ads = await prisma.$queryRawUnsafe(
-      `SELECT id, page_name, ad_copy, image_url, start_date, meta
+      `SELECT id, page_name, ad_text, image_url, start_date, meta
        FROM competitor_ads
        WHERE tenant_id = $1
        ORDER BY start_date DESC
@@ -34,7 +34,7 @@ async function getReportAds(slug: string) {
     return ads as Array<{
       id: string;
       page_name: string;
-      ad_copy: string | null;
+      ad_text: string | null;
       image_url: string | null;
       start_date: string | null;
       meta: Record<string, unknown> | null;
