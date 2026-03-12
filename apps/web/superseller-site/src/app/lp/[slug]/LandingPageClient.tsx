@@ -232,7 +232,7 @@ function HeroSlideshow({ images }: { images: string[] }) {
             alt=""
             className="absolute inset-0 w-full h-full object-cover"
             style={{
-              objectPosition: "center 25%",
+              objectPosition: "center 40%",
               animation: i === current ? "kenburns 8s ease-in-out forwards" : "none",
             }}
           />
@@ -410,7 +410,7 @@ export function LandingPageClient({ page }: { page: LandingPage & { brand: Brand
               />
             )}
             <motion.h1
-              style={{ fontFamily: `var(--lp-font-heading)` }}
+              style={{ fontFamily: `var(--lp-font-heading)`, textShadow: "0 2px 12px rgba(0,0,0,0.6)" }}
               className="text-3xl md:text-5xl font-black mb-4 leading-tight max-w-3xl"
               variants={fadeUp}
             >
