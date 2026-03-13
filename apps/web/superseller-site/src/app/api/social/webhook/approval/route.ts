@@ -6,7 +6,7 @@
  */
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { parseApprovalResponse, sendPublishNotification, editApprovalMessage } from "@/lib/services/social/approval-flow";
+import { parseApprovalResponse, parsePollVote, sendPublishNotification, editApprovalMessage } from "@/lib/services/social/approval-flow";
 import { publishToFacebook, publishToInstagram } from "@/lib/services/social/facebook-publisher";
 import { publishToX } from "@/lib/services/social/x-publisher";
 import { publishToLinkedIn } from "@/lib/services/social/linkedin-publisher";
@@ -17,35 +17,66 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
-    // WAHA webhook payload
+    // WAHA webhook payload — handles both "message" and "poll.vote" events
     const event = body.event;
-    if (event !== "message") {
-      return NextResponse.json({ ok: true, skipped: "not a message event" });
-    }
-
     const payload = body.payload;
-    const messageBody = payload?.body || "";
-    const from = payload?.from?.replace("@c.us", "")?.replace("@s.whatsapp.net", "") || "";
 
-    // Extract button ID from WAHA interactive message payload
-    const buttonId =
-      payload?.selectedButtonId ||
-      payload?.buttonId ||
-      payload?._data?.quotedMsg?.selectedButtonId ||
-      undefined;
+    let action: "approve" | "reject" | "edit" | "unknown" = "unknown";
+    let reason: string | undefined;
+    let postIdPrefix: string | undefined;
+    let from = "";
+    let pollMessageId: string | undefined; // to find post by poll message ID
 
-    if (!from || (!messageBody && !buttonId)) {
-      return NextResponse.json({ ok: true, skipped: "empty message" });
+    if (event === "poll.vote") {
+      // Poll vote — user tapped an option on the approval poll
+      from = payload?.vote?.from?.replace("@c.us", "")?.replace("@s.whatsapp.net", "") || "";
+      const selectedOptions: string[] = payload?.vote?.selectedOptions || [];
+      pollMessageId = payload?.poll?.id; // e.g. "true_phone@c.us_KEYID"
+      if (!from || !selectedOptions.length) {
+        return NextResponse.json({ ok: true, skipped: "empty poll vote" });
+      }
+      const parsed = parsePollVote(selectedOptions);
+      action = parsed.action;
+      console.log(`[approval-webhook] poll.vote from=${from} selected=${selectedOptions.join(",")} action=${action} pollId=${pollMessageId}`);
+    } else if (event === "message") {
+      // Text message — keyword or NL approval
+      const messageBody = payload?.body || "";
+      from = payload?.from?.replace("@c.us", "")?.replace("@s.whatsapp.net", "") || "";
+      const buttonId =
+        payload?.selectedButtonId ||
+        payload?.buttonId ||
+        payload?._data?.quotedMsg?.selectedButtonId ||
+        undefined;
+      if (!from || (!messageBody && !buttonId)) {
+        return NextResponse.json({ ok: true, skipped: "empty message" });
+      }
+      const parsed = await parseApprovalResponse(messageBody, buttonId);
+      action = parsed.action;
+      reason = parsed.reason;
+      postIdPrefix = parsed.postIdPrefix;
+    } else {
+      return NextResponse.json({ ok: true, skipped: `unhandled event: ${event}` });
     }
 
-    const { action, reason, postIdPrefix } = await parseApprovalResponse(messageBody, buttonId);
     if (action === "unknown") {
       return NextResponse.json({ ok: true, skipped: "not an approval response" });
     }
 
-    // Find the target post — use button postId prefix if available, otherwise most recent
+    // Find the target post — match by poll message ID, button postId prefix, or most recent
     let pendingPost;
-    if (postIdPrefix) {
+
+    // Poll vote — find by the stored approvalMessageId matching the poll ID
+    if (pollMessageId) {
+      pendingPost = await prisma.contentPost.findFirst({
+        where: {
+          approvalStatus: "pending",
+          status: "pending_approval",
+          metadata: { path: ["approvalMessageId"], equals: pollMessageId },
+        },
+      });
+    }
+
+    if (!pendingPost && postIdPrefix) {
       // Button click — find by ID prefix (first 8 chars of UUID)
       pendingPost = await prisma.contentPost.findFirst({
         where: {

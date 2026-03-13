@@ -1,11 +1,17 @@
 /**
  * SocialHub — WhatsApp Approval Flow via WAHA Pro
- * Interactive buttons with post-specific IDs, message editing, read tracking.
+ * Uses Polls (buttons are deprecated in WAHA) for interactive approval.
+ * Polls render natively on all WhatsApp mobile clients.
  */
 
 const WAHA_BASE = process.env.WAHA_BASE_URL || "http://172.245.56.50:3000";
 const WAHA_KEY = process.env.WAHA_API_KEY || "${WAHA_API_KEY}";
 const WAHA_SESSION = process.env.WAHA_SESSION || "superseller-whatsapp";
+
+// Poll option labels — used to match poll.vote events back to actions
+export const POLL_APPROVE = "✅ Approve & Publish";
+export const POLL_REJECT = "❌ Reject";
+export const POLL_EDIT = "✏️ Request Edit";
 
 export interface ApprovalRequest {
   postId: string;
@@ -30,9 +36,9 @@ export interface ApprovalResult {
  * Flow:
  * 1. Send image (if available) with SHORT caption (WhatsApp caps captions ~1024 chars)
  * 2. Send full content as a separate text message (no truncation)
- * 3. Send approval instructions as a separate text message
+ * 3. Send a Poll with Approve/Reject/Edit options (renders as tappable on mobile)
  *
- * Returns messageId of the instructions message for later editing.
+ * Returns messageId of the poll message for tracking.
  */
 export async function sendApprovalRequest(
   req: ApprovalRequest
@@ -81,8 +87,8 @@ export async function sendApprovalRequest(
       }),
     }).catch(() => {});
 
-    // Step 3: Send approval instructions
-    const instructionsRes = await fetch(`${WAHA_BASE}/api/sendText`, {
+    // Step 3: Send Poll for approval (renders as tappable options on mobile)
+    const pollRes = await fetch(`${WAHA_BASE}/api/sendPoll`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -91,15 +97,45 @@ export async function sendApprovalRequest(
       body: JSON.stringify({
         session: WAHA_SESSION,
         chatId,
-        text: `⬆️ *Review the post above*\n\n✅ Reply *approve* to publish\n❌ Reply *reject* to skip\n✏️ Reply *edit [notes]* to revise`,
+        poll: {
+          name: `⬆️ Review the ${platformLabel} post above:`,
+          options: [POLL_APPROVE, POLL_REJECT, POLL_EDIT],
+          multipleAnswers: false,
+        },
       }),
     });
 
-    const instructionsData = await instructionsRes.json();
-    const keyId = instructionsData.key?.id;
+    if (!pollRes.ok) {
+      const errBody = await pollRes.text().catch(() => "");
+      console.warn(`[approval-flow] Poll failed (${pollRes.status}): ${errBody}. Falling back to text.`);
+      // Fallback to plain text if poll fails
+      const fallbackRes = await fetch(`${WAHA_BASE}/api/sendText`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Api-Key": WAHA_KEY,
+        },
+        body: JSON.stringify({
+          session: WAHA_SESSION,
+          chatId,
+          text: `⬆️ *Review the post above*\n\n✅ Reply *approve* to publish\n❌ Reply *reject* to skip\n✏️ Reply *edit [notes]* to revise`,
+        }),
+      });
+      const fallbackData = await fallbackRes.json();
+      const keyId = fallbackData.key?.id;
+      return {
+        sent: fallbackRes.ok,
+        messageId: keyId,
+        serializedMessageId: keyId ? `true_${req.approverPhone}@c.us_${keyId}` : undefined,
+      };
+    }
+
+    const pollData = await pollRes.json();
+    const keyId = pollData._data?.key?.id || pollData.key?.id;
+    console.log(`[approval-flow] Poll sent for post ${req.postId.slice(0, 8)}, messageId: ${keyId}`);
 
     return {
-      sent: instructionsRes.ok,
+      sent: true,
       messageId: keyId,
       serializedMessageId: keyId ? `true_${req.approverPhone}@c.us_${keyId}` : undefined,
     };
@@ -112,15 +148,33 @@ export async function sendApprovalRequest(
 }
 
 /**
+ * Parse a poll.vote event into an approval action.
+ * Maps poll option text to approve/reject/edit.
+ */
+export function parsePollVote(
+  selectedOptions: string[]
+): { action: "approve" | "reject" | "edit" | "unknown" } {
+  const selected = selectedOptions[0] || "";
+  if (selected === POLL_APPROVE) return { action: "approve" };
+  if (selected === POLL_REJECT) return { action: "reject" };
+  if (selected === POLL_EDIT) return { action: "edit" };
+  // Fuzzy match in case of slight differences
+  const lower = selected.toLowerCase();
+  if (lower.includes("approve") || lower.includes("publish")) return { action: "approve" };
+  if (lower.includes("reject")) return { action: "reject" };
+  if (lower.includes("edit")) return { action: "edit" };
+  return { action: "unknown" };
+}
+
+/**
  * Parse an incoming WhatsApp message as an approval response.
- * Handles button clicks (with postId), text replies, and NL via Claude.
- * Returns action + optional postId extracted from button.
+ * Handles text replies and NL via Claude.
  */
 export async function parseApprovalResponse(
   messageBody: string,
   buttonId?: string
 ): Promise<{ action: "approve" | "reject" | "edit" | "unknown"; reason?: string; postIdPrefix?: string }> {
-  // Button click — extract action and postId from "action_shortId" format
+  // Legacy button click support
   if (buttonId) {
     const [action, postIdPrefix] = buttonId.split("_");
     if (action === "approve") return { action: "approve", postIdPrefix };
