@@ -328,7 +328,7 @@ function InvoiceDocument({ data }: { data: InvoiceData }) {
   const company = {
     name: data.companyName || "SuperSeller Agency",
     address: data.companyAddress || [
-      "Dallas, TX",
+      "309 S. Jupiter Rd, Allen, TX 75002",
       "United States",
     ],
     email: data.companyEmail || "shai@superseller.agency",
