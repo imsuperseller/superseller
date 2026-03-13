@@ -108,14 +108,14 @@ async function main() {
     paymentTerms: [
       "- First payment due upon signing this agreement",
       "- Subsequent payments due on the same date each month",
-      "- Payments accepted via PayPal",
+      "- Payments accepted via credit card (Stripe secure checkout)",
       "- 7-day cancellation notice required",
       "",
       "───────────────────────────────",
       "",
       "- תשלום ראשון נדרש עם חתימת הסכם זה",
       "- תשלומים עוקבים באותו תאריך בכל חודש",
-      "- תשלומים מתקבלים דרך PayPal",
+      "- תשלומים מתקבלים דרך כרטיס אשראי (Stripe)",
       "- נדרשת הודעת ביטול של 7 ימים מראש",
     ].join("\n"),
   });
