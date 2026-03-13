@@ -717,9 +717,102 @@ export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | nul
         </section>
 
         {/* ================================================================ */}
-        {/* THE OPPORTUNITY — Market data */}
+        {/* GOOGLE MAPS HACKS — What competitors are doing */}
         {/* ================================================================ */}
         <section style={{ background: WARM_BG }} className="py-20 md:py-28">
+          <div className="max-w-6xl mx-auto px-6">
+            <Reveal className="text-center mb-14">
+              <SectionTag>Industry Intel</SectionTag>
+              <SectionTitle text="How Top Contractors" accent="Hack Google Maps" />
+              <p className="text-base max-w-2xl mx-auto" style={{ color: TEXT_MID }}>
+                The contractors beating you on Google aren&apos;t just &quot;lucky&quot; — they&apos;re using
+                specific technical strategies to dominate local search. Here&apos;s what&apos;s working in 2026.
+              </p>
+            </Reveal>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              {[
+                {
+                  icon: "📍",
+                  title: "Geo-Tagged Job Proof (DataPins)",
+                  desc: "Contractor takes photo at jobsite → GPS coordinates auto-wrap in schema markup → proves to Google they work in cities where they don't have an office. The legitimate way to rank across your entire service area.",
+                  impact: "High",
+                  impactColor: GREEN,
+                },
+                {
+                  icon: "🏗️",
+                  title: "Building Permit Lead Alerts",
+                  desc: "APIs like Shovels.ai monitor 185M+ building permits. Query for renovation/demolition permits filed in Plano — these homeowners are ACTIVELY planning projects. First contractor to reach them wins.",
+                  impact: "Very High",
+                  impactColor: GREEN,
+                },
+                {
+                  icon: "🗺️",
+                  title: "Geo-Grid Rank Tracking",
+                  desc: "Tools like Local Falcon divide your service area into a grid and check ranking at each point. Creates a visual heat map showing exactly where you're visible vs invisible. Agencies use this to sell — and optimize.",
+                  impact: "High",
+                  impactColor: GREEN,
+                },
+                {
+                  icon: "⭐",
+                  title: "Competitor Review Mining",
+                  desc: "AI scrapes competitor 1-2 star reviews → identifies their pain points → generates marketing that positions you against their exact weaknesses. \"They complained about delays? Show your on-time guarantee.\"",
+                  impact: "High",
+                  impactColor: GREEN,
+                },
+                {
+                  icon: "🏠",
+                  title: "Virtual Door-Knocking",
+                  desc: "Satellite view identifies aged roofs, Street View spots exterior deterioration, county assessor data flags 1970s–80s builds. Cross-reference for targeted outreach to homes most likely to need renovation.",
+                  impact: "Medium",
+                  impactColor: ORANGE,
+                },
+                {
+                  icon: "✅",
+                  title: "Google Guaranteed Badge",
+                  desc: "Google Local Service Ads appear ABOVE the map pack. Pay-per-lead ($25–$100/lead) with a \"Google Guaranteed\" badge = instant trust. Most contractors in Plano aren't using this yet.",
+                  impact: "High",
+                  impactColor: GREEN,
+                },
+              ].map((hack, i) => (
+                <Reveal key={i} delay={i * 100}>
+                  <div className="card-hover rounded-xl p-6 flex flex-col h-full" style={{ background: WHITE, border: `1px solid ${BORDER}` }}>
+                    <div className="flex items-start gap-3 mb-3">
+                      <span className="text-2xl">{hack.icon}</span>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="text-sm font-bold" style={{ color: NAVY }}>{hack.title}</h3>
+                          <span
+                            className="text-[0.6rem] font-bold px-2 py-0.5 rounded-full text-white"
+                            style={{ background: hack.impactColor }}
+                          >
+                            {hack.impact} Impact
+                          </span>
+                        </div>
+                        <p className="text-xs leading-relaxed" style={{ color: TEXT_MID }}>{hack.desc}</p>
+                      </div>
+                    </div>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+
+            <Reveal delay={700} className="mt-10">
+              <div className="rounded-xl p-6 text-center" style={{ background: WHITE, border: `2px solid ${ORANGE}` }}>
+                <p className="text-sm font-bold" style={{ color: NAVY }}>
+                  Agencies charge <span style={{ color: RED }}>$1,000–$2,000/mo</span> for basic GBP optimization alone.
+                  <br />
+                  Our plans include <span style={{ color: ORANGE }}>AI automation + permit alerts + competitor intel + geo-tracking</span> starting at $297/mo.
+                </p>
+              </div>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ================================================================ */}
+        {/* THE OPPORTUNITY — Market data */}
+        {/* ================================================================ */}
+        <section style={{ background: OFF_WHITE }} className="py-20 md:py-28">
           <div className="max-w-6xl mx-auto px-6">
             <Reveal className="text-center mb-14">
               <SectionTag>The Opportunity</SectionTag>
@@ -791,26 +884,28 @@ export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | nul
                 },
                 {
                   phase: "Week 3–4",
-                  title: "Get On Google Maps",
+                  title: "Get On Google Maps + Build Your Lead Engine",
                   items: [
                     "Claim + optimize Google Business Profile (category, description, photos)",
-                    "Launch Google review generation campaign — QR codes, follow-up sequences",
-                    "Target: 25+ Google reviews in first 60 days",
+                    "Launch Google review generation — QR codes + automated follow-up sequences",
+                    "Deploy geo-tagged job proof: photo at jobsite → GPS schema markup → proves service area to Google",
                     "Add schema markup + XML sitemap for local SEO",
                     "Submit to 40+ local directories with consistent NAP",
+                    "Target: 25+ Google reviews in first 60 days",
                   ],
                   color: ORANGE,
                   bg: "rgba(232,134,58,0.06)",
                 },
                 {
                   phase: "Ongoing",
-                  title: "Monitor, Grow, Dominate",
+                  title: "AI-Powered Maps Domination",
                   items: [
-                    "AI-powered competitor monitoring — alerts when they get reviews or run ads",
-                    "Automated GBP posts with before/after project photos",
-                    "Weekly competitor intelligence reports via WhatsApp",
-                    "Review response management — AI drafts, you approve",
-                    "Monthly performance dashboard: rankings, reviews, lead attribution",
+                    "Building permit monitoring — instant alerts when Plano homeowners file renovation permits",
+                    "Geo-grid rank tracking — visual heat map of where you rank vs where you're invisible",
+                    "Competitor review mining — AI scrapes 1-2 star reviews, finds their weaknesses, positions you against them",
+                    "Automated GBP posts with before/after project photos + geo-tags",
+                    "Review response management — AI drafts, you approve via WhatsApp",
+                    "Monthly dashboard: ranking map, permit leads, competitor intel, review growth",
                   ],
                   color: GREEN,
                   bg: GREEN_BG,
@@ -862,27 +957,28 @@ export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | nul
                 {
                   tier: "Starter",
                   price: "$297",
-                  desc: "Monitor + Fix",
+                  desc: "Fix + Monitor",
                   features: [
                     "All critical website fixes",
-                    "NAP standardization",
-                    "Weekly competitor reports",
-                    "Review monitoring alerts",
-                    "WhatsApp intelligence feed",
+                    "NAP standardization across 40+ directories",
+                    "Weekly competitor review monitoring",
+                    "Competitor weakness reports via WhatsApp",
+                    "Basic Google Maps rank tracking",
                   ],
                   action: "pricing_starter_click",
                 },
                 {
                   tier: "Growth",
                   price: "$497",
-                  desc: "Get on Google Maps",
+                  desc: "Google Maps Lead Engine",
                   features: [
                     "Everything in Starter",
-                    "Google Business Profile setup",
-                    "Review generation campaign",
-                    "AI review responses",
-                    "Full analytics dashboard",
-                    "Daily monitoring & alerts",
+                    "Google Business Profile setup + optimization",
+                    "Review generation campaign (QR + follow-ups)",
+                    "Geo-tagged job proof system",
+                    "Geo-grid rank heat map dashboard",
+                    "AI review response drafts",
+                    "Daily competitor monitoring",
                   ],
                   popular: true,
                   action: "pricing_growth_click",
@@ -890,14 +986,14 @@ export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | nul
                 {
                   tier: "Premium",
                   price: "$797",
-                  desc: "Full visibility engine",
+                  desc: "Full AI Domination",
                   features: [
                     "Everything in Growth",
-                    "GBP post automation",
-                    "Social media content",
+                    "Building permit lead alerts (Plano area)",
+                    "Automated GBP posts + geo-tagged photos",
+                    "Competitor review mining + positioning",
                     "Bi-weekly strategy calls",
-                    "Competitor ad monitoring",
-                    "Priority support",
+                    "Priority support + dedicated WhatsApp line",
                   ],
                   action: "pricing_premium_click",
                 },
