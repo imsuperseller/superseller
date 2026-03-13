@@ -329,7 +329,7 @@ export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | nul
         <section style={{ background: WHITE }} className="py-20 md:py-28">
           <div className="max-w-6xl mx-auto px-6">
             <Reveal className="text-center mb-14">
-              <SectionTag>Our Work</SectionTag>
+              <SectionTag>Your Work</SectionTag>
               <SectionTitle text="Quality Craftsmanship," accent="Every Project" />
               <p className="text-base max-w-xl mx-auto" style={{ color: TEXT_MID }}>
                 From kitchen transformations to complete home renovations — see why Plano homeowners trust GP Homes.
@@ -424,7 +424,7 @@ export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | nul
                 </div>
                 <p className="text-sm max-w-md mx-auto" style={{ color: TEXT_MID }}>
                   The #1 platform where homeowners search — and GP Homes is invisible.
-                  That&apos;s the gap we close.
+                  That&apos;s the gap SuperSeller closes for you.
                 </p>
               </div>
             </Reveal>
@@ -788,7 +788,7 @@ export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | nul
               ].map((p, i) => (
                 <Reveal key={i} delay={i * 150}>
                   <div
-                    className="card-hover rounded-xl p-8 relative"
+                    className="card-hover rounded-xl p-8 relative flex flex-col h-full"
                     style={{
                       background: p.popular ? NAVY : WHITE,
                       border: p.popular ? `2px solid ${ORANGE}` : `1px solid ${BORDER}`,
@@ -813,7 +813,7 @@ export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | nul
                     <p className="text-sm mb-6" style={{ color: p.popular ? "rgba(255,255,255,0.6)" : TEXT_MID }}>
                       {p.desc}
                     </p>
-                    <ul className="space-y-3 mb-8">
+                    <ul className="space-y-3 mb-8 flex-1">
                       {p.features.map((f, j) => (
                         <li key={j} className="flex items-center gap-2 text-sm" style={{ color: p.popular ? "rgba(255,255,255,0.85)" : TEXT_DARK }}>
                           <CheckIcon /> {f}
@@ -825,7 +825,7 @@ export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | nul
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => trackConversion(p.action)}
-                      className="cta-btn block text-center w-full py-3 rounded-lg font-bold text-sm"
+                      className="cta-btn block text-center w-full py-3 rounded-lg font-bold text-sm mt-auto"
                       style={{
                         background: p.popular ? ORANGE : "transparent",
                         color: p.popular ? WHITE : NAVY,
