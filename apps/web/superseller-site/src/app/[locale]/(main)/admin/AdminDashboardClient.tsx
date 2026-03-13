@@ -62,6 +62,7 @@ import SuperSellerOps from '@/components/admin/SuperSellerOps';
 import CompetitorAdsTab from '@/components/admin/CompetitorAdsTab';
 import ContentActorsTab from '@/components/admin/ContentActorsTab';
 import InvoiceGenerator from '@/components/admin/InvoiceGenerator';
+import SitesManagement from '@/components/admin/SitesManagement';
 import { Skeleton } from '@/components/ui/skeleton-enhanced';
 import { Button } from '@/components/ui/button-enhanced';
 import { Badge } from '@/components/ui/badge-enhanced';
@@ -368,6 +369,7 @@ export default function AdminDashboardClient({
                                 { id: 'ci', label: 'CI Pipeline', icon: GitBranch },
                                 { id: 'portfolio', label: 'Portfolio', icon: Globe },
                                 { id: 'landing', label: 'Landing Content', icon: Globe },
+                                { id: 'sites', label: 'Client Sites', icon: Globe },
                                 { id: 'factory', label: 'Product Factory', icon: Package },
                                 { id: 'monitor', label: 'System Monitor', icon: Activity },
                                 { id: 'vault', label: 'Vault & Infra', icon: ShieldCheck },
@@ -706,6 +708,9 @@ export default function AdminDashboardClient({
                                 </div>
                                 <ContentActorsTab />
                             </div>
+                        )}
+                        {activeTab === 'sites' && (
+                            <SitesManagement />
                         )}
                         {activeTab === 'invoices' && (
                             <div className="space-y-8">

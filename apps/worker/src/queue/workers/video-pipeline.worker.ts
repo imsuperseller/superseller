@@ -20,6 +20,7 @@ import { classifyListingPhotos, filterUsablePhotos, upscaleUsablePhotos, getBest
 import { CreditManager } from "../../services/credits";
 import { NotificationService } from "../../services/notification";
 import { trackExpense } from "../../services/expense-tracker";
+import { createPipelineRun, updatePipelineRun } from "../../services/pipeline-run";
 import { withRetry } from "../../utils/retry";
 import { join } from "path";
 import { existsSync, mkdirSync, rmSync, writeFileSync } from "fs";
@@ -34,6 +35,18 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
         const workDir = join(TEMP_BASE, jobId);
 
         logger.info({ msg: "Starting video pipeline", jobId, userId });
+
+        const pipelineStartTime = Date.now();
+        let pipelineRunId: string | null = null;
+        try {
+            pipelineRunId = await createPipelineRun({
+                pipelineType: "video",
+                status: "running",
+                inputJson: { jobId, listingId, userId },
+            });
+        } catch (prErr: any) {
+            logger.warn({ msg: "PipelineRun create failed (non-blocking)", error: prErr.message });
+        }
 
         try {
             // 0. Idempotent start: if already complete (e.g. previous run succeeded then threw), sync and exit
@@ -1150,6 +1163,20 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
 
             logger.info({ msg: "Video pipeline complete", jobId });
 
+            // PipelineRun: mark completed
+            if (pipelineRunId) {
+                try {
+                    await updatePipelineRun(pipelineRunId, {
+                        status: "completed",
+                        outputJson: { masterUrl, verticalUrl, squareUrl, portraitUrl, thumbUrl },
+                        costCents: Math.round(totalCost * 100),
+                        durationMs: Date.now() - pipelineStartTime,
+                    });
+                } catch (prErr: any) {
+                    logger.warn({ msg: "PipelineRun update (complete) failed (non-blocking)", error: prErr.message });
+                }
+            }
+
             // 11. Notify customer (email)
             try {
                 const userRow = await queryOne("SELECT email FROM \"User\" WHERE id = $1", [userId]);
@@ -1245,6 +1272,19 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
             }
 
             await query("UPDATE video_jobs SET status = 'failed', error_message = $1 WHERE id = $2", [err.message, jobId]);
+
+            // PipelineRun: mark failed
+            if (pipelineRunId) {
+                try {
+                    await updatePipelineRun(pipelineRunId, {
+                        status: "failed",
+                        errorMessage: err.message,
+                        durationMs: Date.now() - pipelineStartTime,
+                    });
+                } catch (prErr: any) {
+                    logger.warn({ msg: "PipelineRun update (failed) failed (non-blocking)", error: prErr.message });
+                }
+            }
 
             // Circuit breaker: 402 = credits exhausted. Don't waste BullMQ retries — won't fix itself.
             if (err.creditExhausted || err.message?.includes("code 402") || err.message?.includes("Credits insufficient")) {

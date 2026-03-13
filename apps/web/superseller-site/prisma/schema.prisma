@@ -27,6 +27,7 @@ model Tenant {
   assets             TenantAsset[]
   pipelineRuns       PipelineRun[]
   siteConfig         TenantSiteConfig?
+  characterBibles    CharacterBible[]
 }
 
 /// Emails allowed to request magic links for a tenant's Compete page (whitelist).
@@ -1895,4 +1896,28 @@ model PipelineRun {
   @@index([pipelineType])
   @@index([status])
   @@index([createdAt])
+}
+
+/// Character Bible — reusable AI character identity for video/content pipelines.
+/// Stores persona description, visual style, reference media, and approval status.
+model CharacterBible {
+  id                 String    @id @default(cuid())
+  tenantId           String    @db.Uuid
+  name               String                           // Character name (e.g., "Nick the Builder")
+  personaDescription String?   @db.Text               // Full persona prompt for AI models
+  visualStyle        String?                          // Visual style notes
+  soraHandle         String?                          // Sora 2 @handle for cameos
+  referenceVideoUrls Json?                            // String[] — reference videos
+  testSceneUrls      Json?                            // String[] — test scene renders
+  approvedAt         DateTime?
+  approvedBy         String?
+  version            Int       @default(1)
+  active             Boolean   @default(true)
+  metadata           Json?                            // Flexible: { voiceId, modelPreference, etc. }
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @default(now()) @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
 }

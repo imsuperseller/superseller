@@ -4,6 +4,7 @@ import { uploadFromUrl, ensurePublicUrl } from "./r2";
 import { createTask, getTaskStatus, extractResultUrls, buildAvatarProInput, buildInfinitalkInput, buildKling3Input, buildIsolationInput } from "./kie";
 import { sendText, sendVideo } from "./waha";
 import { refundCredit } from "./credits";
+import { createPipelineRun, updatePipelineRun, findPipelineRunByGenerationId } from "./pipeline-run";
 import { getEnv } from "./env";
 import { LEGAL_TRANSITIONS, type GenerationStage, type GenerationRow } from "@/types";
 
@@ -215,6 +216,19 @@ export async function fireVideoTask(
     [gen.id, JSON.stringify({ taskId, model })]
   );
 
+  // PipelineRun tracking (best-effort, never breaks pipeline)
+  try {
+    await createPipelineRun({
+      tenantId: gen.tenant_id ?? undefined,
+      pipelineType: "avatar_video",
+      status: "running",
+      inputJson: { generationId: gen.id, taskId, stage: "VIDEO_GENERATING" },
+      modelUsed: model,
+    });
+  } catch (err) {
+    console.error(`PipelineRun create failed for gen ${gen.id}:`, err);
+  }
+
   return taskId;
 }
 
@@ -380,6 +394,19 @@ export async function failGeneration(
     [generationId, JSON.stringify({ failed_at: failedStage, error: errorMessage })]
   );
 
+  // PipelineRun: mark failed (best-effort)
+  try {
+    const pipelineRunId = await findPipelineRunByGenerationId(generationId);
+    if (pipelineRunId) {
+      await updatePipelineRun(pipelineRunId, {
+        status: "failed",
+        errorMessage,
+      });
+    }
+  } catch (err) {
+    console.error(`PipelineRun update (failed) failed for gen ${generationId}:`, err);
+  }
+
   // Refund credit
   await refundCredit(generationId).catch((err) =>
     console.error(`Credit refund failed for ${generationId}:`, err)
@@ -472,6 +499,21 @@ export async function deliverGeneration(generationId: string): Promise<void> {
       video_url: videoUrl,
     },
   });
+
+  // PipelineRun: mark completed (best-effort)
+  try {
+    const pipelineRunId = await findPipelineRunByGenerationId(gen.id);
+    if (pipelineRunId) {
+      await updatePipelineRun(pipelineRunId, {
+        status: "completed",
+        outputJson: { videoUrl: videoUrl ?? null, whatsappSent: !!user?.whatsapp_jid },
+        deliveredVia: user?.whatsapp_jid ? "whatsapp" : "gallery",
+        deliveredAt: new Date(),
+      });
+    }
+  } catch (err) {
+    console.error(`PipelineRun update (completed) failed for gen ${gen.id}:`, err);
+  }
 
   // Decrement concurrent counter + invalidate caches
   await redis.decr(`winner:rate:concurrent:${gen.user_id}`);

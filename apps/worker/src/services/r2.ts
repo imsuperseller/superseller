@@ -4,12 +4,21 @@ import { createReadStream, statSync } from "fs";
 import { lookup } from "mime-types";
 import { config } from "../config";
 import { logger } from "../utils/logger";
+import { registerAsset } from "./tenant-asset";
+
+export interface AssetInfo {
+    tenantId: string;
+    type: string;
+    filename: string;
+    metadata?: Record<string, unknown>;
+}
 
 /** Upload a Buffer to R2 (for base64 from web forms). Returns public URL. */
 export async function uploadBufferToR2(
     buffer: Buffer,
     r2Key: string,
-    contentType: string = "image/png"
+    contentType: string = "image/png",
+    assetInfo?: AssetInfo
 ): Promise<string> {
     logger.info({
         msg: "Uploading buffer to R2",
@@ -31,6 +40,24 @@ export async function uploadBufferToR2(
         logger.warn({ msg: "R2_PUBLIC_URL not set — Kie.ai cannot fetch relative URL", key: r2Key });
     }
     logger.info({ msg: "R2 buffer upload complete", url: publicUrl });
+
+    if (assetInfo) {
+        try {
+            await registerAsset({
+                tenantId: assetInfo.tenantId,
+                type: assetInfo.type,
+                filename: assetInfo.filename,
+                r2Key,
+                publicUrl,
+                mimeType: contentType,
+                sizeBytes: buffer.length,
+                metadata: assetInfo.metadata,
+            });
+        } catch (err) {
+            logger.error({ msg: "TenantAsset registration failed (upload succeeded)", r2Key, err });
+        }
+    }
+
     return publicUrl;
 }
 
@@ -47,7 +74,8 @@ const r2Client = new S3Client({
 export async function uploadToR2(
     localPath: string,
     r2Key: string,
-    contentType?: string
+    contentType?: string,
+    assetInfo?: AssetInfo
 ): Promise<string> {
     const detectedType = contentType || lookup(localPath) || "application/octet-stream";
     const fileSize = statSync(localPath).size;
@@ -77,6 +105,24 @@ export async function uploadToR2(
         logger.warn({ msg: "R2_PUBLIC_URL not set — returned URL is relative; Kie.ai cannot fetch it", key: r2Key });
     }
     logger.info({ msg: "R2 upload complete", url: publicUrl });
+
+    if (assetInfo) {
+        try {
+            await registerAsset({
+                tenantId: assetInfo.tenantId,
+                type: assetInfo.type,
+                filename: assetInfo.filename,
+                r2Key,
+                publicUrl,
+                mimeType: detectedType,
+                sizeBytes: fileSize,
+                metadata: assetInfo.metadata,
+            });
+        } catch (err) {
+            logger.error({ msg: "TenantAsset registration failed (upload succeeded)", r2Key, err });
+        }
+    }
+
     return publicUrl;
 }
 

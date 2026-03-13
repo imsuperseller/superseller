@@ -1,6 +1,14 @@
 import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { getEnv } from "./env";
+import { registerAsset } from "./tenant-asset";
+
+export interface AssetInfo {
+  tenantId: string;
+  type: string;
+  filename: string;
+  metadata?: Record<string, unknown>;
+}
 
 let _client: S3Client | null = null;
 
@@ -23,7 +31,8 @@ function getClient(): S3Client {
 export async function uploadFile(
   key: string,
   body: Buffer | ReadableStream | Uint8Array,
-  contentType: string
+  contentType: string,
+  assetInfo?: AssetInfo
 ): Promise<string> {
   const env = getEnv();
   await getClient().send(
@@ -34,15 +43,38 @@ export async function uploadFile(
       ContentType: contentType,
     })
   );
-  return getPublicUrl(key);
+  const publicUrl = getPublicUrl(key);
+
+  if (assetInfo) {
+    try {
+      await registerAsset({
+        tenantId: assetInfo.tenantId,
+        type: assetInfo.type,
+        filename: assetInfo.filename,
+        r2Key: key,
+        publicUrl,
+        mimeType: contentType,
+        sizeBytes: body instanceof Buffer ? body.length : undefined,
+        metadata: assetInfo.metadata,
+      });
+    } catch (err) {
+      console.error("TenantAsset registration failed (upload succeeded)", key, err);
+    }
+  }
+
+  return publicUrl;
 }
 
-export async function uploadFromUrl(key: string, sourceUrl: string): Promise<string> {
+export async function uploadFromUrl(
+  key: string,
+  sourceUrl: string,
+  assetInfo?: AssetInfo
+): Promise<string> {
   const response = await fetch(sourceUrl);
   if (!response.ok) throw new Error(`Failed to fetch ${sourceUrl}: ${response.status}`);
   const buffer = Buffer.from(await response.arrayBuffer());
   const contentType = response.headers.get("content-type") || "application/octet-stream";
-  return uploadFile(key, buffer, contentType);
+  return uploadFile(key, buffer, contentType, assetInfo);
 }
 
 export async function downloadFile(key: string): Promise<Buffer> {
