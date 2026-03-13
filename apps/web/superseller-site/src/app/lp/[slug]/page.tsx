@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import prisma from "@/lib/prisma";
 import { LandingPageClient } from "./LandingPageClient";
 import { HairApproachPage } from "./HairApproachPage";
+import { GPHomesPage } from "./GPHomesPage";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -42,6 +43,10 @@ export default async function LandingPage({ params }: Props) {
 
   if (slug === "hair-approach") {
     return <HairApproachPage page={page} />;
+  }
+
+  if (slug === "gp-homes-repairs") {
+    return <GPHomesPage page={page} />;
   }
 
   return <LandingPageClient page={page} />;
