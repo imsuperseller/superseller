@@ -37,21 +37,21 @@
 
 ### Module: Asset Collection (ASSET)
 
-- [ ] **ASSET-01**: Agent activates asset collection when customer has any visual product (VideoForge, Lead Pages, SocialHub)
+- [x] **ASSET-01**: Agent activates asset collection when customer has any visual product (VideoForge, Lead Pages, SocialHub)
 - [ ] **ASSET-02**: Agent requests business photos, logos, brand materials via WhatsApp media messages
 - [ ] **ASSET-03**: Received media downloaded via WAHA, uploaded to R2, registered as TenantAsset
 - [ ] **ASSET-04**: Agent categorizes assets (logo, photo, document) and confirms receipt
 
 ### Module: Social Media Setup (SOCIAL)
 
-- [ ] **SOCIAL-01**: Agent activates social setup when customer has SocialHub/Buzz product
+- [x] **SOCIAL-01**: Agent activates social setup when customer has SocialHub/Buzz product
 - [ ] **SOCIAL-02**: Agent collects social media credentials and preferences (platforms, posting frequency, content style)
 - [ ] **SOCIAL-03**: Agent stores preferences in ServiceInstance.configuration JSON
 - [ ] **SOCIAL-04**: Agent explains what SocialHub will do and sets expectations
 
 ### Module: Competitor Research Briefing (COMPETE)
 
-- [ ] **COMPETE-01**: Agent activates competitor briefing when customer has Maps/SEO or Lead Pages product
+- [x] **COMPETE-01**: Agent activates competitor briefing when customer has Maps/SEO or Lead Pages product
 - [ ] **COMPETE-02**: Agent asks for top 3 competitors (names, URLs, locations)
 - [ ] **COMPETE-03**: Agent stores competitor info in ServiceInstance.configuration or dedicated table
 - [ ] **COMPETE-04**: Agent shares initial findings in group when AgentForge research completes

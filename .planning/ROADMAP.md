@@ -10,7 +10,7 @@
 | # | Phase | Goal | Requirements | Success Criteria |
 |---|-------|------|--------------|------------------|
 | 1 | Universal Group + Product-Aware Agent | Auto-create WhatsApp group with AI agent that knows customer's products | UGRP-01..05, PAGENT-01..05 | 5 |
-| 2 | Onboarding Modules: Asset Collection, Social Setup, Competitor Research | Product-specific conversational flows inside the group | ASSET-01..04, SOCIAL-01..04, COMPETE-01..04 | 4 |
+| 2 | 1/3 | In Progress|  | 4 |
 | 3 | Module: Character Questionnaire | AI-driven brand character questionnaire → CharacterBible | CHAR-01..04 | 4 |
 | 4 | Module: Character Video Generation + Delivery | Kie.ai Sora 2 → Remotion reveal → WhatsApp delivery | CHAR-05..10 | 4 |
 | 5 | Pipeline Orchestration | BullMQ end-to-end pipeline with module routing, cost tracking, admin visibility | PIPE-01..05 | 4 |
@@ -51,7 +51,7 @@ Plans:
 
 **Requirements:** ASSET-01..04, SOCIAL-01..04, COMPETE-01..04
 
-**Plans:** 3 plans
+**Plans:** 1/3 plans executed
 
 Plans:
 - [ ] 02-01-PLAN.md — Module foundation: shared types, DB state persistence, module router

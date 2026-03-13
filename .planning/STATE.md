@@ -2,15 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_plan: Not started
-status: planning
-stopped_at: Completed 01-02-PLAN.md (Phase 1 complete)
-last_updated: "2026-03-13T22:55:27.232Z"
+current_plan: 02-01 complete
+status: executing
+stopped_at: Completed 02-01-PLAN.md
+last_updated: "2026-03-13T23:21:20.039Z"
 progress:
   total_phases: 5
   completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  total_plans: 5
+  completed_plans: 3
+  percent: 60
 ---
 
 # State: Universal Customer Onboarding System
@@ -20,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-13)
 
 **Core value:** Every customer gets an AI agent in a WhatsApp group from Day 1 — product-aware, zero friction
-**Current focus:** Phase 1 — Universal Group + Product-Aware Agent
+**Current focus:** Phase 2 — Onboarding Modules (Asset, Social, Compete)
 
 ## Current Phase
 
-**Phase:** 1 — Universal Group + Product-Aware Agent
-**Status:** Ready to plan
-**Current Plan:** Not started
-**Progress:** [====================] 2/2 plans complete
+**Phase:** 2 — Onboarding Modules (Asset, Social, Compete)
+**Status:** Executing
+**Current Plan:** 02-01 complete
+**Progress:** [██████░░░░] 60%
 
 ## Decisions
 
@@ -35,11 +36,15 @@ See: .planning/PROJECT.md (updated 2026-03-13)
 - Pass inputJson as object to createPipelineRun (avoids double-stringify bug)
 - ServiceInstance takes priority over Subscription when deduplicating products
 - Auto-approved human-verify checkpoint for 01-02: type-check clean, worker healthy, WhatsApp test deferred to integration
+- SocialHub triggers asset-collection first (highest priority visual product) before social-setup
+- Module loader uses lazy dynamic imports for graceful handling of not-yet-implemented modules
+- Fallback intro messages hardcoded in router for pre-implementation phase
 
 ## Phase History
 
 - **01-01** (Core Onboarding Modules): COMPLETE — prompt-assembler + group-bootstrap (2min)
 - **01-02** (API Endpoint + Verification): COMPLETE — POST /api/onboarding/start wired (1min)
+- **02-01** (Module Foundation): COMPLETE — types, DB state, module router with priority activation (3min)
 
 ## Blockers
 
@@ -61,11 +66,12 @@ None identified.
 |------|----------|-------|-------|
 | 01-01 | 2min | 2 | 3 |
 | 01-02 | 1min | 2 | 1 |
+| 02-01 | 3min | 2 | 5 |
 
 ## Last Session
 
-- **Stopped at:** Completed 01-02-PLAN.md (Phase 1 complete)
-- **Timestamp:** 2026-03-13T22:51:21Z
+- **Stopped at:** Completed 02-01-PLAN.md
+- **Timestamp:** 2026-03-13T23:20:01Z
 
 ---
-*Last updated: 2026-03-13 — completed plan 01-02 (Phase 1 complete)*
+*Last updated: 2026-03-13 — completed plan 02-01 (Module Foundation)*
