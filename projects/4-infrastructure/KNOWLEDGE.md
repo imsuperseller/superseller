@@ -39,10 +39,13 @@ SuperSeller AI runs on two platforms:
 - **FB Bot**: `rsync` deploy-package to `/opt/fb-marketplace-bot/`
 
 ### MCP Servers
-5 configured in `.mcp.json`:
-- universal-v2 (n8n), notion, stripe, postgres, redis
+3 configured in `.mcp.json`:
 - Postgres: `@modelcontextprotocol/server-postgres` → RackNerd `app_db`
-- Redis: `@anthropic-ai/claude-mcp-server-redis` → RackNerd Redis
+- Cloudflare R2: `aws-s3-mcp` → R2 storage buckets
+- Redis: `@anthropic-ai/claude-mcp-server-redis` → RackNerd Redis (BullMQ queues, sessions, rate limits)
+
+Additional remote MCPs available via Claude Code:
+- Vercel, Cloudflare Developer Platform, GitHub, Gmail, GoDaddy, universal-v2 (n8n/Stripe)
 
 ### Cowork Plugins
 `plugins/` directory was deleted Mar 8, 2026; content lives in `docs/PRODUCT_BIBLE.md` and `.claude/skills/`.

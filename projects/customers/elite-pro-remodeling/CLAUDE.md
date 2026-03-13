@@ -1,6 +1,6 @@
 # Customer: Elite Pro Remodeling
 
-> **Type**: Active paying customer — $2,000/mo (signed, not started billing)
+> **Type**: Active paying customer — $2,000/mo via Stripe (contract + payment link sent Mar 13)
 > **Contact**: Saar Bitton (owner) + Mor Dayan (PM) | (800) 476-7608 | info@elitepreremodeling.com
 > **WhatsApp group**: `120363408376076110@g.us` (ClaudeClaw group agent active)
 
@@ -9,9 +9,11 @@
 ## What We're Building For Them
 
 1. **ClaudeClaw Group Agent** ✅ LIVE — Claude AI assistant in their WhatsApp group, answers @superseller mentions
-2. **Instagram Content Pipeline** 🔴 BLOCKED — Python agents on RackNerd (DRY_RUN mode, waiting for credentials)
+2. **Instagram Content Pipeline** ⏳ WAITING — Eliran to add shai@superseller.agency as Content admin on FB Page (no credentials needed)
 3. **Demo video** ✅ DONE — R2: `elite-pro-demo/elite-pro-v12-final.mp4` (25.7s, 1080x1920)
-4. **eSignatures contract** ⏳ NOT SENT — template ID `99de20b5-2bb9-4439-9532-e00902fe6824`
+4. **eSignatures contract** ✅ SENT — Contract ID `3c2ce265-4d1a-41db-a8ef-179f44b78eb8`, expires Mar 27
+5. **Stripe payment** ✅ SENT — Checkout URL with TX tax (6.6% effective after §151.351 exemption)
+6. **Post-payment flow** ✅ WIRED — 9/9 automations (welcome email, invoice, WhatsApp, DB records, n8n)
 
 ---
 
@@ -41,10 +43,10 @@ apps/worker/src/services/group-memory.ts   → Project 8 (ClaudeClaw)
 
 | Blocker | Who | Status |
 |---------|-----|--------|
-| Meta App ID + Secret (for IG token refresh) | Saar to provide | WAITING |
-| Saar + Mor phone numbers (for dual WhatsApp approval) | Saar to provide | WAITING |
-| eSignatures contract sent | Shai to send | NOT SENT — template ready |
-| IG account ID fix | Internal | `/opt/superseller-agents/config.py` has wrong IG_ACCOUNT_ID (SuperSeller's, not Elite Pro's) |
+| FB Page Content access for shai@superseller.agency | Eliran to add | WAITING |
+| IG account ID fix | Internal (after access granted) | `/opt/superseller-agents/config.py` has wrong IG_ACCOUNT_ID |
+| Contract signature | Saar | SENT Mar 13, expires Mar 27 |
+| Stripe payment | Saar | SENT Mar 13, awaiting payment |
 
 ---
 

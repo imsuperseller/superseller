@@ -362,8 +362,6 @@ scripts/simple-add-notion-fields.js
 scripts/sync-workflow-templates-to-notion.js
 scripts/bmad/bmad-smart-data-population.js
 scripts/build-email-automation-system.js
-scripts/create-rensto-system-corrected.js     # legacy cleanup script
-scripts/document-all-rensto-implementations.js # legacy cleanup script
 scripts/workflow-organization-and-migration.js
 scripts/cleanup_duplicates.js
 scripts/notion_deep_investigation.js
@@ -394,11 +392,9 @@ data/*.db-*
 .cursor/mcp.json
 claude_desktop_config.json
 scripts/node_modules/
-apps/web/rensto-site/service-account.json
 apps/web/superseller-site/service-account.json
 
 # Secrets / credentials
-infra/rensto-svc.json
 infra/superseller-svc.json
 docs/vault/FINANCIAL_VAULT.md
 **/service-account*.json
@@ -477,3 +473,12 @@ apps/worker/.agents/
 apps/worker/.claude/
 *.pyc
 __pycache__/
+
+# Claude Code lock files
+.claude/scheduled_tasks.lock
+
+# Chat exports (confidential — already extracted to structured docs)
+_chat*.txt
+
+# One-off audit files with credentials
+DATA_AUDIT_2026_03.md

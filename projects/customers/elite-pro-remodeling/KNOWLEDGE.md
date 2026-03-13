@@ -40,11 +40,12 @@ Three Python agents running on RackNerd at `/opt/superseller-agents/`:
 3. `ANTHROPIC_API_KEY` — different key from main worker (not a blocker, just different)
 
 **To go live** (in order):
-1. Get Meta App ID + Secret from Saar
-2. Get Saar + Mor phone numbers for dual WhatsApp approval
-3. Fix IG_ACCOUNT_ID in config.py
-4. Refresh IG access token
-5. Set `DRY_RUN=False` (or `SS_DRY_RUN=false` env var)
+1. Saar adds shai@superseller.agency as Admin on Elite Pro Facebook Page in Meta Business Suite
+2. We get Page Access Token + IG Business Account ID from the Graph API (no username/password needed)
+3. Fix IG_ACCOUNT_ID in config.py with correct ID
+4. Set `DRY_RUN=False` (or `SS_DRY_RUN=false` env var)
+
+**WRONG approach (previously asked)**: Do NOT ask for username+password. Meta Graph API needs Facebook Page Access Token + IG Business Account ID. Obtained by being added as Page Admin → OAuth flow.
 
 ## ElevenLabs Voice
 
@@ -55,12 +56,27 @@ Used in V12 demo video — alternating dialogue pattern.
 ## Contract Status
 
 eSignatures.com template ID: `99de20b5-2bb9-4439-9532-e00902fe6824`
-Status: NOT YET SENT. Waiting for Saar to formally commit to $2,000/mo.
-Price: $2,000/mo (custom deal — not in the SaaS billing system).
+Contract ID: `3c2ce265-4d1a-41db-a8ef-179f44b78eb8`
+Contract signing link: https://esignatures.com/sign/2bd50a3f-2987-44ca-9264-3c0423038d45
+Status: SENT to Saar (Mar 13, 2026). Stripe terms. Expires Mar 27, 2026.
+Price: $2,000/mo (custom deal).
+
+## Payment — STRIPE (NOT PayPal)
+
+Stripe account: `acct_1R4wsKDE8rt1dEs1` (Rensto LLC)
+Stripe product: `prod_U8UPuEkgpefAGQ`
+Stripe price: `price_1TADQfDE8rt1dEs1PUPGDEfc` ($2,000/mo)
+Checkout URL: https://superseller.agency/api/checkout/stripe-subscribe?tenant=elite-pro-remodeling
+Old payment link (fallback): `plink_1TADQmDE8rt1dEs1gMlyRXCA`
+Webhook: `we_1TADRKDE8rt1dEs1WfMIYsEm`
+Tax: TX 8.25% on 80% of price (TX §151.351 data processing exemption) = $132/mo
+Status: SENT to Saar (Mar 13, 2026), awaiting payment.
+
+**PayPal was created in error (Mar 13) — DO NOT USE for Elite Pro.**
 
 ## Revenue Model
 
-$2,000/mo custom retainer (signed verbally, contract not sent). This is NOT a SaaS plan — it's a managed service agreement. No credits consumed. Manual invoicing (or PayPal invoice when we send).
+$2,000/mo + $132/mo TX sales tax via Stripe subscription. Post-payment flow fully wired: welcome email, invoice PDF, WhatsApp notifications, DB records, n8n forwarding.
 
 ## Content Strategy
 

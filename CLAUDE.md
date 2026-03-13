@@ -103,7 +103,8 @@
 
 ## 5. Implementation Status
 
-> See `PRODUCT_STATUS.md` for detailed per-product status, feature matrices, and priority order.
+> **Status SSOT**: admin.superseller.agency → Projects tab (R9.1). Query: `GET /api/admin/projects`.
+> `PRODUCT_STATUS.md` has static customer reference (contacts, revenue models) — NOT live status.
 
 ---
 

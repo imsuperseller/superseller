@@ -19,45 +19,45 @@
 
 ## System / Product Projects
 
-| # | Project | Folder | What It Covers |
-|---|---------|--------|----------------|
-| 1 | **SuperSeller Web** | `projects/1-superseller-web/` | Next.js SaaS platform, admin portal, billing, PayPal, i18n, Prisma, auth |
-| 2 | **Video Engine** | `projects/2-video-engine/` | VideoForge pipeline, Kling AI clips, Remotion compositions, FFmpeg, model selector |
-| 3 | **Marketplace Bot** | `projects/3-marketplace-bot/` | FB Marketplace automation, GoLogin, UAD + MissParty, PostgreSQL (migrated from Firestore Mar 2026) |
-| 4 | **Infrastructure** | `projects/4-infrastructure/` | RackNerd VPS, PM2, Docker, MCP servers, CI/CD, env vars |
-| 5 | **Social & Content** | `projects/5-social-content/` | SocialHub/Buzz (Phase 1 live), WAHA sessions, Telnyx FrontDesk Voice |
-| 8 | **ClaudeClaw** | `projects/8-claudeclaw/` | WhatsApp AI bridge, group agent, 3-tier memory, guardrails, RAG, approvals |
-| 7 | **Strategy & Docs** | `projects/7-strategy-docs/` | Root docs, brain.md, PRODUCT_BIBLE, NotebookLM, business intelligence |
+| # | Project                    | Folder                          | What It Covers                                                                                                                                                                                                                                                      |
+| - | -------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 | **SuperSeller Web**  | `projects/1-superseller-web/` | Next.js SaaS platform, admin portal, billing, PayPal, i18n, Prisma, auth                                                                                                                                                                                            |
+| 2 | **Video Engine**     | `projects/2-video-engine/`    | TourReel pipeline, Kling AI clips, Remotion compositions, FFmpeg, model selector<br />what about kie.ai?                                                                                                                                                            |
+| 3 | **Marketplace Bot**  | `projects/3-marketplace-bot/` | FB Marketplace automation, GoLogin, UAD + MissParty, Firestore<br />how can it be we still have firestore in our systems???????                                                                                                                                     |
+| 4 | **Infrastructure**   | `projects/4-infrastructure/`  | RackNerd VPS, PM2, Docker, MCP servers, CI/CD, env vars<br />infrastructure is so much more! again you work halfway in research?? dont u have claude plugins??                                                                                                      |
+| 5 | **Social & Content** | `projects/5-social-content/`  | SocialHub/Buzz (Phase 1 live), WAHA sessions, Telnyx FrontDesk Voice<br />How come in social in content you don't put a lot more things regarding social content that we have done and plan to do whether it's for one of our business businesses or for customers? |
+| 8 | **ClaudeClaw**       | `projects/8-claudeclaw/`      | WhatsApp AI bridge, group agent, 3-tier memory, guardrails, RAG, approvals                                                                                                                                                                                          |
+| 7 | **Strategy & Docs**  | `projects/7-strategy-docs/`   | Root docs, brain.md, PRODUCT_BIBLE, NotebookLM, business intelligence<br />Do you need to do a thorough deep audit and testing to see that everything is aligned and synced since this is the most important department ?                                           |
 
 ---
 
 ## Customer Projects (Active + Delivered)
 
-| Customer | Folder | Revenue | Status |
-|----------|--------|---------|--------|
-| **Elite Pro Remodeling** | `projects/customers/elite-pro-remodeling/` | $2,000/mo (signed) | IG pipeline BLOCKED on Saar's creds. Group agent LIVE in Hebrew. |
-| **UAD Garage Doors** | `projects/customers/uad-garage-doors/` | Revenue split | ✅ FB Bot posting daily |
-| **Miss Party** | `projects/customers/miss-party/` | Free | ✅ FB Bot posting daily |
-| **Kedem Developments** | `projects/customers/kedem-developments/` | Per-video | Pilot delivered, dormant |
-| **AC&C HVAC** | `projects/customers/ac-c-hvac/` | TBD | Site built, behind password, not live |
-| **Yoram Friedman** | `projects/customers/yoram-friedman/` | Pay per lead | ✅ Site live, Apify not set up |
-| **Wonder.care** | `projects/customers/wonder-care/` | Project-based | Pipeline delivered, proposal pending 3mo |
-| **Ortal Pilates** | `projects/customers/ortal-pilates/` | TBD | Placeholder only, strategic asset |
-| **Yossi / Mivnim** | (in PRODUCT_STATUS.md §7) | TBD | Winner Studio — PAUSED till Pesach April 2026 |
+| Customer                       | Folder                                       | Revenue            | Status                                                                                                                                                                                                                                                                                                                                      |
+| ------------------------------ | -------------------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Elite Pro Remodeling** | `projects/customers/elite-pro-remodeling/` | $2,000/mo (signed) | IG pipeline BLOCKED on Saar's creds. Group agent LIVE in Hebrew.<br />This is embarrassing to see that these are only things you write about Itay pro remodeling as if everything else is done and complete.                                                                                                                                |
+| **UAD Garage Doors**     | `projects/customers/uad-garage-doors/`     | Revenue split      | ✅ FB Bot posting daily.<br />The fact that you check it with a V as if everything is complete regarding UAD is furyating                                                                                                                                                                                                                   |
+| **Miss Party**           | `projects/customers/miss-party/`           | Free               | ✅ FB Bot posting daily                                                                                                                                                                                                                                                                                                                     |
+| **Kedem Developments**   | `projects/customers/kedem-developments/`   | Per-video          | Pilot delivered, dormant.<br />You did such a lousy job because the video department is still rookie and because of that, he didn't even reply to my message after showing him your lousy video. This is why I always tell you how important it is that the worker/s that are related to having everything synced and known is so critical. |
+| **AC&C HVAC**            | `projects/customers/ac-c-hvac/`            | TBD                | Site built, behind password, not live.<br />eliran didnt reply to my messages.                                                                                                                                                                                                                                                              |
+| **Yoram Friedman**       | `projects/customers/yoram-friedman/`       | Pay per lead       | ✅ Site live, Apify not set up.                                                                                                                                                                                                                                                                                                             |
+| **Wonder.care**          | `projects/customers/wonder-care/`          | Project-based      | Pipeline delivered, proposal pending 3mo.<br />Low chances of them working with me again, so put them in a low priority.                                                                                                                                                                                                                    |
+| **Ortal Pilates**        | `projects/customers/ortal-pilates/`        | TBD                | Placeholder only, strategic asset.<br />We have created the website for her, but she said she wants to work with the one she's working with, but she did tell her husband saar about me and so the elite pro remodeling relationship began.                                                                                                 |
+| **Yossi / Mivnim**       | (in PRODUCT_STATUS.md §7)                   | TBD                | Winner Studio — PAUSED till Pesach April 2026                                                                                                                                                                                                                                                                                              |
 
 ## Prospects / Hot Leads (Israeli Parliament Group)
 
 Full pipeline strategy: `projects/leads-pipeline/CLAUDE.md`
 
-| Lead | Folder | Business | Priority |
-|------|--------|----------|----------|
-| **Yehuda Alali** | `projects/customers/yehuda-alali-meat-point/` | Meat Point + Pizza Ella (kosher restaurants) | 🔴 #1 — posts daily, gets deleted |
-| **Yaron Yashar** | `projects/customers/yaron-air-duct/` | Air duct / chimney / dryer vent | 🔴 Tier 1 |
-| **Avi** | `projects/customers/avi-tokyo-bar/` | Tokyo Bar (kosher restaurant) | 🔴 Tier 1 |
-| **Avi Construction** | `projects/customers/avi-construction/` | Roofing / general contractor | 🔴 Tier 1 |
-| **Tomer** | `projects/customers/tomer-tesla-heroes/` | Tesla Heroes (Tesla repair) | 🟡 Tier 2 |
-| **Maydan (Midan Arazi)** | `projects/customers/maydan-insurance/` | UnitedHealthcare insurance | 🟡 Tier 2 |
-| Other Parliament members | `projects/leads-pipeline/` | Various | See pipeline doc |
+| Lead                           | Folder                                          | Business                                     | Priority                                                                                                                                                            |
+| ------------------------------ | ----------------------------------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Yehuda Alali**         | `projects/customers/yehuda-alali-meat-point/` | Meat Point + Pizza Ella (kosher restaurants) | 🔴 #1 — posts daily, gets deleted<br /><br />he didnt get back to me after seeing the prices u generated in his offer.                                             |
+| **Yaron Yashar**         | `projects/customers/yaron-air-duct/`          | Air duct / chimney / dryer vent              | 🔴 Tier 1<br />yaron yashar is https://www.dallashomesrg.com/ !!! what made u confuse???? what else is wrong, is it in the rag issues?????? did u delete things??? |
+| **Avi**                  | `projects/customers/avi-tokyo-bar/`           | Tokyo Bar (kosher restaurant)                | 🔴 Tier 1<br />we never talked                                                                                                                                      |
+| **Avi Construction**     | `projects/customers/avi-construction/`        | Roofing / general contractor                 | 🔴 Tier 1<br />we never talked                                                                                                                                      |
+| **Tomer**                | `projects/customers/tomer-tesla-heroes/`      | Tesla Heroes (Tesla repair)                  | 🟡 Tier 2<br />we never talked                                                                                                                                      |
+| **Maydan (Midan Arazi)** | `projects/customers/maydan-insurance/`        | UnitedHealthcare insurance                   | 🟡 Tier 2<br />we never talked                                                                                                                                      |
+| Other Parliament members       | `projects/leads-pipeline/`                    | Various                                      | See pipeline doc                                                                                                                                                    |
 
 > **Note**: Other Parliament members (Eliran, Dror, DialWise.ai/Etai) tracked in `leads-pipeline/CLAUDE.md`. Yaron Yashar's last name — not confirmed in docs, verify with Shai.
 
@@ -65,9 +65,9 @@ Full pipeline strategy: `projects/leads-pipeline/CLAUDE.md`
 
 ## Rensto (Separate Business)
 
-| Folder | What It Covers |
-|--------|----------------|
-| `projects/rensto/` | Rensto Online Directory — live at rensto.com (separate codebase at `~/rensto - online directory/`) |
+| Folder               | What It Covers                                                                                                                                                                       |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `projects/rensto/` | Rensto Online Directory — live at rensto.com (separate codebase at `~/rensto - online directory/`)<br />we can smartly use rensto.com on certain people on the Parliament group? |
 
 ---
 
@@ -75,12 +75,12 @@ Full pipeline strategy: `projects/leads-pipeline/CLAUDE.md`
 
 Items that need to happen but aren't assigned to an active sprint:
 
-| Item | Folder | Decision Needed |
-|------|--------|-----------------|
-| VideoForge end-to-end audit + test | `projects/backlog/tourreel-audit/` | Approve ~$2 API spend |
-| Billing system fix (7 issues) | `projects/backlog/billing-system-fix/` | Prioritize which of 7 issues to start |
-| Iron Dome OS pipeline rebuild | `projects/backlog/iron-dome-rebuild/` | Pick rebuild option (A/B/C) |
-| Elite Pro go-live (once Saar sends creds) | `projects/backlog/elite-pro-go-live/` | Waiting on Saar |
+| Item                                      | Folder                                   | Decision Needed                                                                                                                                                                                                                                                               |
+| ----------------------------------------- | ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| TourReel end-to-end audit + test          | `projects/backlog/tourreel-audit/`     | Approve ~$2 API spend.<br />Before costs, you still need to attend infrastructure and order and knowledge base and testings after you failed to demonstrate powers of a real studio that should generate whatever our customers need using the correct things for each thing. |
+| Billing system fix (7 issues)             | `projects/backlog/billing-system-fix/` | Prioritize which of 7 issues to start                                                                                                                                                                                                                                         |
+| Iron Dome OS pipeline rebuild             | `projects/backlog/iron-dome-rebuild/`  | Pick rebuild option (A/B/C)<br />Where do I choose a B or c?                                                                                                                                                                                                                  |
+| Elite Pro go-live (once Saar sends creds) | `projects/backlog/elite-pro-go-live/`  | Waiting on Saar.<br />We are definitely not waiting on Saar, I told you what went after the meeting. Why because the credential is missing you think this is the next thing????                                                                                               |
 
 ---
 
@@ -115,33 +115,33 @@ ortal pilates/**                       → Customer: Ortal
 
 ## Skill Assignments
 
-| Skill | Project |
-|-------|---------|
-| admin-portal | 1 — Web |
-| customer-journey | 1 — Web |
-| lead-pages | 1 — Web |
-| ui-ux-pro-max | 1 — Web |
-| ui-design-workflow | 1 — Web |
-| videoforge-pipeline | 2 — Video Engine |
-| model-observatory | 2 — Video Engine |
-| cost-tracker | 2 — Video Engine |
-| winner-studio | 2 — Video Engine |
-| remotion-best-practices | 2 — Video Engine (app-local) |
-| marketplace-saas | 3 — Marketplace Bot |
-| deploy-ops | 4 — Infrastructure |
-| monitoring-alerts | 4 — Infrastructure |
-| antigravity-automation | 4 — Infrastructure |
-| data-integrity | 4 — Infrastructure |
-| database-management | 4 — Infrastructure |
-| migration-validator | 4 — Infrastructure |
-| credential-guardian | 4 — Infrastructure |
-| resilience-patterns | 4 — Infrastructure |
-| socialhub | 5 — Social & Content |
-| whatsapp-waha | 5 — Social & Content + 8 — ClaudeClaw |
-| frontdesk-voice | 5 — Social & Content |
-| rag-pgvector | 8 — ClaudeClaw |
-| notebooklm-hub | 7 — Strategy & Docs |
-| api-contracts | 7 — Strategy & Docs |
+| Skill                   | Project                                 |
+| ----------------------- | --------------------------------------- |
+| admin-portal            | 1 — Web                                |
+| customer-journey        | 1 — Web                                |
+| lead-pages              | 1 — Web                                |
+| ui-ux-pro-max           | 1 — Web                                |
+| ui-design-workflow      | 1 — Web                                |
+| tourreel-pipeline       | 2 — Video Engine                       |
+| model-observatory       | 2 — Video Engine                       |
+| cost-tracker            | 2 — Video Engine                       |
+| winner-studio           | 2 — Video Engine                       |
+| remotion-best-practices | 2 — Video Engine (app-local)           |
+| marketplace-saas        | 3 — Marketplace Bot                    |
+| deploy-ops              | 4 — Infrastructure                     |
+| monitoring-alerts       | 4 — Infrastructure                     |
+| antigravity-automation  | 4 — Infrastructure                     |
+| data-integrity          | 4 — Infrastructure                     |
+| database-management     | 4 — Infrastructure                     |
+| migration-validator     | 4 — Infrastructure                     |
+| credential-guardian     | 4 — Infrastructure                     |
+| resilience-patterns     | 4 — Infrastructure                     |
+| socialhub               | 5 — Social & Content                   |
+| whatsapp-waha           | 5 — Social & Content + 8 — ClaudeClaw |
+| frontdesk-voice         | 5 — Social & Content                   |
+| rag-pgvector            | 8 — ClaudeClaw                         |
+| notebooklm-hub          | 7 — Strategy & Docs                    |
+| api-contracts           | 7 — Strategy & Docs                    |
 
 ---
 

@@ -1,10 +1,11 @@
-# Product & Customer Status — Living Tracker
+# Product & Customer Status — Reference
 
-**Purpose**: Single source of truth for every product's status, customer, blockers, and next action. Read this FIRST when resuming work. Updated after every task.
+> **⚠️ STATUS LIVES IN ADMIN DB — NOT HERE**
+> Project/product status is tracked in **admin.superseller.agency → Projects tab** (the single pane of glass, R9.1).
+> Query via API: `GET /api/admin/projects`. Update via: `PATCH /api/admin/projects { id, status, description }`.
+> This file is a **static customer reference** (contacts, revenue models) — NOT a status tracker.
 
-**Rule**: Never ask "what's next?" — read this file. Never ask "where are we?" — read this file.
-
-**Last Updated**: March 8, 2026
+**Last Updated**: March 11, 2026
 
 ---
 
@@ -23,35 +24,16 @@
 
 ---
 
-## PRIORITY ORDER (Mar 8, 2026)
+## PRIORITY ORDER — See admin.superseller.agency for live status
 
-1. 🔴 **Elite Pro Remodeling** — $2,000/mo waiting. Blocked on IG credentials from Saar.
-2. 🔴 **Shai Personal Brand** — Instagram/Facebook automation system to build.
-3. 🟡 **VideoForge** — Quality regressions unvalidated. Run 1 test job to confirm fixes work.
-4. ✅ **Miss Party + UAD** — Verified posting Mar 8. UAD 5/5, Miss Party 3/3. Fix video variation gap when time allows.
-5. ✅ **ClaudeClaw** — Group agent rebuilt and deployed Mar 8. All 6 service files live. Test with Elite Pro group next.
-6. ⚪ **Yoram** — Landing page when ready.
-7. ⏸ **Yossi (Mivnim)** — Revisit for Pesach campaign (April 2026). No action now.
-8. ⏸ **Rensto.com** — Design audit + business model + traffic strategy. Separate session.
+> Priority and status are maintained in the Admin Command Center Projects tab.
+> Below is a frozen snapshot from March 8 for offline reference only.
 
 ---
 
-## CRITICAL TECHNICAL BLOCKERS (Fix Before Anything)
+## TECHNICAL BLOCKERS — See admin.superseller.agency for live tracking
 
-| # | Blocker | Impact | Fix |
-|---|---------|--------|-----|
-| 1 | VideoForge quality fixes NEVER validated end-to-end | Can't sell to realtors confidently | Run 1 test job (~$1-2) — deep audit first |
-| ~~2~~ | ~~`docs/AI_MODEL_REGISTRY.md` referenced but doesn't exist~~ | RESOLVED | File exists (created Mar 8) |
-| 3 | `docs/BUSINESS_COVERAGE_INDEX.md` is abstract, not a real navigation map | Every session loses context | Rewrite to concrete file-location map |
-| 4 | Iron Dome OS data pipeline broken — Aitable tables deleted | Shai personal brand dashboard shows zeros | Rebuild n8n → PostgreSQL pipeline |
-| 5 | Elite Pro eSignatures contract never sent to Saar | $2,000/mo not activated | Send `SuperSeller AI Services Agreement` once he agrees to pay |
-
-**RESOLVED THIS SESSION (Mar 8)**:
-- ✅ group-agent.ts, group-memory.ts, guardrails.ts, approval-service.ts, rag-ingestor.ts, claudeclaw-router.ts — all rebuilt + deployed
-- ✅ Worker Redis password fixed (was literal `${REDIS_PASSWORD}` in .env)
-- ✅ group_agent_config DB schema updated (added agent_name, agent_role, allowed_phones, registered_at)
-- ✅ Rensto contamination fixed in: CUSTOMERS.md, yoram-landing GitHub, yoram-friedman-insurance GitHub, eSignatures templates
-- ✅ Miss Party + UAD verified posting (Mar 8: UAD 5/5, Miss Party 3/3, all exit 0)
+> Blockers are tracked as Project records with `blocked` status in the Admin Command Center.
 
 ---
 

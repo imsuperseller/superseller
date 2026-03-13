@@ -61,7 +61,11 @@ When a task involves async work (deploy, run job, poll status, fix, iterate):
 - **Monitor until done.** After retry/deploy, poll job status until complete or failed. Do not stop at "it's running." Use bounded poll loops (e.g. 20x30s) so you don't block forever.
 - **Video pipeline: Never report until final video with issues fixed.** Deploy worker. Run/create job. Monitor (poll 30-60s). Fix issues (double realtor, pool, etc.). Iterate. Return only when: playable `master_video_url` AND issues user reported are fixed. No status updates, no "blocked on X," no "check back later." Exhaust options first.
 - **Verify links before giving them.** curl/fetch every URL you share. Only give links that return 200 (or the expected response). Never give a link without checking it works.
-- **Document at end of every task.** Update progress.md (what was done, where we are). Update findings.md (root causes, never repeat). The project memory is the reference -- not the user. Do NOT send session summaries to the user.
+- **Document at end of every task.** Three actions, in order:
+  1. **Admin DB** (SSOT): Update Project record via `PATCH /api/admin/projects` with `{ id, status, description }`. This is the single pane of glass (R9.1).
+  2. **progress.md**: Append session execution log (what was done, costs, test results). This is a detailed log, NOT status.
+  3. **findings.md**: Append root causes and prevention patterns. This is a knowledge base, NOT status.
+  The project memory is the reference -- not the user. Do NOT send session summaries to the user.
 - **Take initiative.** When the path is clear, do it. Don't ask permission to run a script when you have the credentials.
 - **Ask smart questions** when truly stuck or ambiguous. "Which env?" when there are 3. "Retry or change approach?" when blocked. Don't ask when you can figure it out.
 - Report only when complete with verifiable artifact.
