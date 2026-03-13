@@ -975,6 +975,7 @@ export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | nul
                 {
                   tier: "Foundation",
                   price: "$297",
+                  setup: "",
                   desc: "Fix + Monitor",
                   features: [
                     "Emergency website fixes",
@@ -988,6 +989,7 @@ export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | nul
                 {
                   tier: "Growth",
                   price: "$597",
+                  setup: "$1,500 one-time setup",
                   desc: "Maps + New Website",
                   features: [
                     "Everything in Foundation",
@@ -1002,6 +1004,7 @@ export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | nul
                 {
                   tier: "Pro",
                   price: "$897",
+                  setup: "$2,500 one-time setup",
                   desc: "Maps + Website + Social",
                   features: [
                     "Everything in Growth",
@@ -1018,6 +1021,7 @@ export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | nul
                 {
                   tier: "Full Service",
                   price: "$1,297",
+                  setup: "Setup fee waived",
                   desc: "Total Digital Takeover",
                   features: [
                     "Everything in Pro",
@@ -1054,9 +1058,15 @@ export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | nul
                       <span className="text-4xl font-black" style={{ color: p.popular ? WHITE : NAVY }}>{p.price}</span>
                       <span className="text-sm" style={{ color: p.popular ? "rgba(255,255,255,0.5)" : TEXT_LIGHT }}>/mo</span>
                     </div>
-                    <p className="text-sm mb-6" style={{ color: p.popular ? "rgba(255,255,255,0.6)" : TEXT_MID }}>
+                    <p className="text-sm mb-1" style={{ color: p.popular ? "rgba(255,255,255,0.6)" : TEXT_MID }}>
                       {p.desc}
                     </p>
+                    {p.setup && (
+                      <p className="text-xs font-semibold mb-5" style={{ color: p.setup === "Setup fee waived" ? "#22C55E" : ORANGE }}>
+                        {p.setup}
+                      </p>
+                    )}
+                    {!p.setup && <div className="mb-6" />}
                     <ul className="space-y-3 mb-8 flex-1">
                       {p.features.map((f, j) => (
                         <li key={j} className="flex items-center gap-2 text-sm" style={{ color: p.popular ? "rgba(255,255,255,0.85)" : TEXT_DARK }}>

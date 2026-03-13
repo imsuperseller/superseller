@@ -49,14 +49,14 @@ Plano TX remodeling contractor, founded 2010. BuildZoom top 7% of 222,249 TX con
 Full research covers: Apify scraping stack ($6.70 initial scan), n8n workflows for GBP management, competitor review monitoring with Claude AI sentiment analysis, WAHA WhatsApp alerts, Looker Studio dashboards. Operating cost: $9-20/mo per client.
 
 ## Pricing Tiers (revised Mar 13 — covers full digital presence)
-| Tier | Price | Includes |
-|---|---|---|
-| Foundation | $297/mo | Emergency fixes, NAP standardization, competitor monitoring, WhatsApp alerts, basic rank tracking |
-| Growth | $597/mo | Everything in Foundation + brand-new website (we build+host on Vercel), GBP setup, review generation, schema markup, geo-grid dashboard |
-| Pro | $897/mo | Everything in Growth + Instagram/Facebook launch, 3-4 AI posts/week, before/after content, geo-tagged job proof, AI review responses |
-| Full Service | $1,297/mo | Everything in Pro + building permit alerts, competitor review mining, automated GBP posts, bi-weekly strategy calls, priority support |
+| Tier | Monthly | One-Time Setup | Includes |
+|---|---|---|---|
+| Foundation | $297/mo | $0 | Emergency fixes, NAP standardization, competitor monitoring, WhatsApp alerts, basic rank tracking |
+| Growth | $597/mo | $1,500 | Everything in Foundation + brand-new website (we build+host on Vercel), GBP setup, review generation, schema markup, geo-grid dashboard |
+| Pro | $897/mo | $2,500 | Everything in Growth + Instagram/Facebook launch, 3-4 AI posts/week, before/after content, geo-tagged job proof, AI review responses |
+| Full Service | $1,297/mo | **Waived** | Everything in Pro + building permit alerts, competitor review mining, automated GBP posts, bi-weekly strategy calls, priority support. Setup fee waived as commitment incentive. |
 
-**Comparison**: Agencies charge $4K-$10K for website build alone + $1.5K-$3K/mo for SEO. Our stack (Next.js/Vercel) = near-zero marginal cost per client.
+**Comparison**: Agencies charge $4K-$10K for website build alone + $1.5K-$3K/mo for SEO. Our setup fee ($1,500-$2,500) is 60-85% less. Stack (Next.js/Vercel) = near-zero marginal cost per client.
 
 ## BBB Accreditation
 - Cost: ~$600-$800/year (Dallas metro)
