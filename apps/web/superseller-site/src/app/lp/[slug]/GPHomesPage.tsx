@@ -13,25 +13,17 @@ const BG_CARD = "#161a33";
 const DARK = "#0a0c1a";
 
 // ---------------------------------------------------------------------------
-// Reveal wrapper (IntersectionObserver + CSS transitions)
+// Reveal wrapper — pure CSS animation, no JS observer needed
+// Uses CSS @keyframes so content is always visible (SSR-safe).
+// Stagger via delay prop adds visual polish on load.
 // ---------------------------------------------------------------------------
-function Reveal({ children, className }: { children: React.ReactNode; className?: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setVisible(true); obs.disconnect(); } },
-      { threshold: 0, rootMargin: "0px 0px -40px 0px" },
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
+function Reveal({ children, className, delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
   return (
     <div
-      ref={ref}
-      className={`transition-all duration-700 ease-out ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} ${className || ""}`}
+      className={className || ""}
+      style={{
+        animation: `revealUp 0.7s ease-out ${delay}ms both`,
+      }}
     >
       {children}
     </div>
@@ -379,7 +371,10 @@ export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | nul
               </a>
             </div>
           </div>
-          <style>{`@keyframes heroFadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }`}</style>
+          <style>{`
+            @keyframes heroFadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+            @keyframes revealUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+          `}</style>
 
           {/* Scroll indicator */}
           <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 opacity-50">
