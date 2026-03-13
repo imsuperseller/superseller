@@ -13,6 +13,8 @@ export interface ApprovalRequest {
   platform: string;
   contentPreview: string; // First ~200 chars of the post
   imageUrl?: string;
+  tenantName?: string; // e.g. "Elite Pro Remodeling", "Rensto"
+  igAccount?: string; // e.g. "@myrensto"
 }
 
 export interface ApprovalResult {
@@ -30,9 +32,14 @@ export async function sendApprovalRequest(
 ): Promise<ApprovalResult> {
   const chatId = `${req.approverPhone}@c.us`;
 
+  const accountLine = req.tenantName
+    ? `Account: *${req.tenantName}*${req.igAccount ? ` (${req.igAccount})` : ""}`
+    : null;
+
   const message = [
     `*SocialHub — Content Approval*`,
     ``,
+    accountLine,
     `Platform: *${req.platform}*`,
     `Post ID: \`${req.postId.slice(0, 8)}\``,
     ``,
@@ -46,7 +53,7 @@ export async function sendApprovalRequest(
     `*approve* — to publish now`,
     `*reject [reason]* — to reject with feedback`,
     `*edit [instructions]* — to request changes`,
-  ].join("\n");
+  ].filter(Boolean).join("\n");
 
   try {
     // Send text message

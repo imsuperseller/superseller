@@ -190,6 +190,8 @@ export async function POST(request: NextRequest) {
             platform: config.platform || "instagram",
             contentPreview: generated.text,
             imageUrl,
+            tenantName: tenant.name,
+            igAccount: config.platform === "instagram" ? `@${tenant.slug === "rensto" ? "myrensto" : tenant.slug}` : undefined,
           });
 
           return {
