@@ -194,6 +194,20 @@ export async function POST(request: NextRequest) {
             igAccount: config.platform === "instagram" ? `@${tenant.slug === "rensto" ? "myrensto" : tenant.slug}` : undefined,
           });
 
+          // Store the approval message ID so we can edit it after approve/reject
+          if (approvalResult.serializedMessageId) {
+            await prisma.contentPost.update({
+              where: { id: post.id },
+              data: {
+                metadata: {
+                  ...(post.metadata as Record<string, unknown>),
+                  ...(aitableResult.recordId ? { aitableRecordId: aitableResult.recordId } : {}),
+                  approvalMessageId: approvalResult.serializedMessageId,
+                },
+              },
+            });
+          }
+
           return {
             type: slot.type,
             postId: post.id,

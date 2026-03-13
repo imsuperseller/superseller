@@ -1,12 +1,12 @@
 /**
  * POST /api/social/webhook/approval
- * WAHA webhook — processes WhatsApp approval replies.
- * On "approve" → auto-publishes to the platform.
- * On "reject" → updates status in Postgres + Aitable.
+ * WAHA webhook — processes WhatsApp approval replies (buttons + text).
+ * On "approve" → auto-publishes to the platform + edits original message.
+ * On "reject" → updates status in Postgres + Aitable + edits message.
  */
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { parseApprovalResponse, sendPublishNotification } from "@/lib/services/social/approval-flow";
+import { parseApprovalResponse, sendPublishNotification, editApprovalMessage } from "@/lib/services/social/approval-flow";
 import { publishToFacebook, publishToInstagram } from "@/lib/services/social/facebook-publisher";
 import { publishToX } from "@/lib/services/social/x-publisher";
 import { publishToLinkedIn } from "@/lib/services/social/linkedin-publisher";
@@ -38,22 +38,37 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true, skipped: "empty message" });
     }
 
-    const { action, reason } = await parseApprovalResponse(messageBody, buttonId);
+    const { action, reason, postIdPrefix } = await parseApprovalResponse(messageBody, buttonId);
     if (action === "unknown") {
       return NextResponse.json({ ok: true, skipped: "not an approval response" });
     }
 
-    // Find the most recent pending post — prefer one assigned to this approver
-    let pendingPost = await prisma.contentPost.findFirst({
-      where: {
-        approvalStatus: "pending",
-        status: "pending_approval",
-        metadata: { path: ["approverPhone"], equals: from },
-      },
-      orderBy: { createdAt: "desc" },
-    });
+    // Find the target post — use button postId prefix if available, otherwise most recent
+    let pendingPost;
+    if (postIdPrefix) {
+      // Button click — find by ID prefix (first 8 chars of UUID)
+      pendingPost = await prisma.contentPost.findFirst({
+        where: {
+          id: { startsWith: postIdPrefix },
+          approvalStatus: "pending",
+          status: "pending_approval",
+        },
+      });
+    }
 
-    // Fallback: any pending post (backwards compat for posts without approverPhone)
+    // Fallback: most recent pending post for this approver
+    if (!pendingPost) {
+      pendingPost = await prisma.contentPost.findFirst({
+        where: {
+          approvalStatus: "pending",
+          status: "pending_approval",
+          metadata: { path: ["approverPhone"], equals: from },
+        },
+        orderBy: { createdAt: "desc" },
+      });
+    }
+
+    // Last resort: any pending post
     if (!pendingPost) {
       pendingPost = await prisma.contentPost.findFirst({
         where: {
@@ -71,6 +86,8 @@ export async function POST(req: NextRequest) {
     const meta = pendingPost.metadata as Record<string, unknown> | null;
     const aitableRecordId =
       (meta?.aitableRecordId as string) || (await findRecordByPostgresId(pendingPost.id));
+    const approvalMessageId = meta?.approvalMessageId as string | undefined;
+    const chatId = `${from}@c.us`;
 
     // === APPROVE ===
     if (action === "approve") {
@@ -93,13 +110,17 @@ export async function POST(req: NextRequest) {
         });
       }
 
+      // Edit the original approval message
+      if (approvalMessageId) {
+        editApprovalMessage(approvalMessageId, chatId, "✅ *APPROVED* — publishing now...").catch(() => {});
+      }
+
       // Auto-publish: tenant-specific env vars take priority over PlatformAccount
       const tenantSlug = (meta?.tenantSlug as string) || "";
       const igAccountFromEnv = pendingPost.platform === "instagram"
         ? getIgAccountFromEnv(tenantSlug)
         : null;
 
-      // Fall back to PlatformAccount if no tenant env var mapping
       const account = !igAccountFromEnv
         ? await prisma.platformAccount.findFirst({
             where: {
@@ -115,14 +136,6 @@ export async function POST(req: NextRequest) {
         : account
           ? { accessToken: account.accessToken, accountId: account.accountId }
           : null;
-
-      console.log("[approval] publish:", {
-        tenantSlug,
-        platform: pendingPost.platform,
-        source: igAccountFromEnv ? "env" : account ? "db" : "none",
-        hasToken: !!effectiveAccount?.accessToken,
-        hasAccountId: !!effectiveAccount?.accountId,
-      });
 
       if (effectiveAccount?.accessToken && effectiveAccount.accountId) {
         const content = pendingPost.content || "";
@@ -205,7 +218,14 @@ export async function POST(req: NextRequest) {
             });
           }
 
-          // Notify via WhatsApp
+          // Edit original message to show published status
+          if (approvalMessageId) {
+            editApprovalMessage(
+              approvalMessageId, chatId,
+              `✅ *PUBLISHED*\n${publishResult.postUrl || "Post is live!"}`
+            ).catch(() => {});
+          }
+
           await sendPublishNotification(from, pendingPost.platform || "social", publishResult.postUrl);
 
           return NextResponse.json({
@@ -246,6 +266,14 @@ export async function POST(req: NextRequest) {
         });
       }
 
+      // Edit original message to show rejected status
+      if (approvalMessageId) {
+        editApprovalMessage(
+          approvalMessageId, chatId,
+          `❌ *REJECTED*${reason ? `\nReason: ${reason}` : ""}`
+        ).catch(() => {});
+      }
+
       return NextResponse.json({ ok: true, action: "rejected", postId: pendingPost.id, reason });
     }
 
@@ -265,6 +293,14 @@ export async function POST(req: NextRequest) {
         data: { metadata: updatedMeta },
       });
 
+      // Edit original message to show edit requested
+      if (approvalMessageId) {
+        editApprovalMessage(
+          approvalMessageId, chatId,
+          `✏️ *EDIT REQUESTED*${reason ? `\nNotes: ${reason}` : ""}`
+        ).catch(() => {});
+      }
+
       return NextResponse.json({ ok: true, action: "edit_requested", postId: pendingPost.id, instructions: reason });
     }
 
@@ -280,16 +316,13 @@ export async function POST(req: NextRequest) {
 
 /**
  * Env var fallback for IG publishing when no PlatformAccount exists.
- * Maps tenant slugs to env var tokens.
  */
 function getIgAccountFromEnv(tenantSlug: string): { accessToken: string; accountId: string } | null {
-  // Tenant-specific tokens
   const tokenMap: Record<string, { tokenEnv: string; accountIdEnv: string }> = {
     "rensto": { tokenEnv: "FB_PAGE_TOKEN_RENSTO", accountIdEnv: "IG_BUSINESS_ACCOUNT_ID_RENSTO" },
     "superseller": { tokenEnv: "FB_PAGE_TOKEN_SUPERSELLER", accountIdEnv: "IG_BUSINESS_ACCOUNT_ID_SUPERSELLER" },
   };
 
-  // Try tenant-specific first
   const mapping = tokenMap[tenantSlug];
   if (mapping) {
     const token = process.env[mapping.tokenEnv];
@@ -297,7 +330,6 @@ function getIgAccountFromEnv(tenantSlug: string): { accessToken: string; account
     if (token && accountId) return { accessToken: token, accountId };
   }
 
-  // Default fallback to Rensto (test account)
   const defaultToken = process.env.FB_PAGE_TOKEN_RENSTO;
   const defaultAccountId = process.env.IG_BUSINESS_ACCOUNT_ID_RENSTO;
   if (defaultToken && defaultAccountId) return { accessToken: defaultToken, accountId: defaultAccountId };

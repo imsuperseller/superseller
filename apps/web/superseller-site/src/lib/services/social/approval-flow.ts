@@ -1,6 +1,6 @@
 /**
  * SocialHub — WhatsApp Approval Flow via WAHA Pro
- * Sends content for approval via WhatsApp buttons, processes approve/reject replies.
+ * Interactive buttons with post-specific IDs, message editing, read tracking.
  */
 
 const WAHA_BASE = process.env.WAHA_BASE_URL || "http://172.245.56.50:3000";
@@ -9,22 +9,25 @@ const WAHA_SESSION = process.env.WAHA_SESSION || "superseller-whatsapp";
 
 export interface ApprovalRequest {
   postId: string;
-  approverPhone: string; // WhatsApp number with country code, e.g. "972501234567"
+  approverPhone: string;
   platform: string;
-  contentPreview: string; // First ~200 chars of the post
+  contentPreview: string;
   imageUrl?: string;
-  tenantName?: string; // e.g. "Elite Pro Remodeling", "Rensto"
-  igAccount?: string; // e.g. "@myrensto"
+  tenantName?: string;
+  igAccount?: string;
 }
 
 export interface ApprovalResult {
   sent: boolean;
-  messageId?: string;
+  messageId?: string; // WAHA message key ID
+  serializedMessageId?: string; // Full format: true_phone@c.us_ID (for editing)
   error?: string;
 }
 
 /**
  * Send a content approval request via WhatsApp with interactive buttons.
+ * Button IDs include the postId for exact matching on reply.
+ * Returns messageId for later editing (status updates).
  */
 export async function sendApprovalRequest(
   req: ApprovalRequest
@@ -41,8 +44,11 @@ export async function sendApprovalRequest(
 
   const message = `${header}\n📱 ${req.platform.charAt(0).toUpperCase() + req.platform.slice(1)} post\n\n${preview}`;
 
+  // Short ID for button payload (first 8 chars of UUID)
+  const shortId = req.postId.slice(0, 8);
+
   try {
-    // Send image first if available (gives visual context before the buttons)
+    // Send image first if available
     if (req.imageUrl) {
       await fetch(`${WAHA_BASE}/api/sendImage`, {
         method: "POST",
@@ -56,10 +62,10 @@ export async function sendApprovalRequest(
           file: { url: req.imageUrl },
           caption: message,
         }),
-      }).catch(() => {}); // Best-effort, buttons below are the key part
+      }).catch(() => {});
     }
 
-    // Send buttons message
+    // Send buttons with postId embedded in button IDs
     const buttonsRes = await fetch(`${WAHA_BASE}/api/sendButtons`, {
       method: "POST",
       headers: {
@@ -69,11 +75,11 @@ export async function sendApprovalRequest(
       body: JSON.stringify({
         session: WAHA_SESSION,
         chatId,
-        text: req.imageUrl ? "Tap to respond:" : message,
+        text: req.imageUrl ? `⬆️ Post preview above. Tap to respond:` : message,
         buttons: [
-          { id: "approve", text: "✅ Approve" },
-          { id: "reject", text: "❌ Reject" },
-          { id: "edit", text: "✏️ Edit" },
+          { id: `approve_${shortId}`, text: "✅ Approve" },
+          { id: `reject_${shortId}`, text: "❌ Reject" },
+          { id: `edit_${shortId}`, text: "✏️ Edit" },
         ],
       }),
     });
@@ -93,17 +99,21 @@ export async function sendApprovalRequest(
         }),
       });
       const fallbackData = await fallbackRes.json();
+      const keyId = fallbackData.key?.id;
       return {
         sent: fallbackRes.ok,
-        messageId: fallbackData.key?.id || fallbackData.id,
-        error: fallbackRes.ok ? undefined : "Buttons failed, sent text fallback",
+        messageId: keyId,
+        serializedMessageId: keyId ? `true_${req.approverPhone}@c.us_${keyId}` : undefined,
       };
     }
 
     const buttonsData = await buttonsRes.json();
+    const keyId = buttonsData.key?.id;
+
     return {
       sent: true,
-      messageId: buttonsData.key?.id || buttonsData.id,
+      messageId: keyId,
+      serializedMessageId: keyId ? `true_${req.approverPhone}@c.us_${keyId}` : undefined,
     };
   } catch (err) {
     return {
@@ -115,17 +125,19 @@ export async function sendApprovalRequest(
 
 /**
  * Parse an incoming WhatsApp message as an approval response.
- * Handles both button clicks (buttonId) and text replies.
+ * Handles button clicks (with postId), text replies, and NL via Claude.
+ * Returns action + optional postId extracted from button.
  */
 export async function parseApprovalResponse(
   messageBody: string,
   buttonId?: string
-): Promise<{ action: "approve" | "reject" | "edit" | "unknown"; reason?: string }> {
-  // Button click — direct mapping
+): Promise<{ action: "approve" | "reject" | "edit" | "unknown"; reason?: string; postIdPrefix?: string }> {
+  // Button click — extract action and postId from "action_shortId" format
   if (buttonId) {
-    if (buttonId === "approve") return { action: "approve" };
-    if (buttonId === "reject") return { action: "reject" };
-    if (buttonId === "edit") return { action: "edit" };
+    const [action, postIdPrefix] = buttonId.split("_");
+    if (action === "approve") return { action: "approve", postIdPrefix };
+    if (action === "reject") return { action: "reject", postIdPrefix };
+    if (action === "edit") return { action: "edit", postIdPrefix };
   }
 
   const text = messageBody.trim().toLowerCase();
@@ -182,6 +194,60 @@ export async function parseApprovalResponse(
 }
 
 /**
+ * Edit an existing WhatsApp message (e.g., update approval status after action).
+ */
+export async function editApprovalMessage(
+  serializedMessageId: string,
+  chatId: string,
+  newText: string
+): Promise<boolean> {
+  try {
+    const res = await fetch(
+      `${WAHA_BASE}/api/${WAHA_SESSION}/chats/${chatId}/messages/${serializedMessageId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Api-Key": WAHA_KEY,
+        },
+        body: JSON.stringify({ text: newText }),
+      }
+    );
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * React to a message with an emoji.
+ */
+export async function reactToMessage(
+  chatId: string,
+  messageId: string,
+  emoji: string
+): Promise<boolean> {
+  try {
+    const res = await fetch(`${WAHA_BASE}/api/reaction`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Api-Key": WAHA_KEY,
+      },
+      body: JSON.stringify({
+        session: WAHA_SESSION,
+        me: { id: chatId },
+        key: { id: messageId, fromMe: true, remoteJid: chatId.replace("@c.us", "@s.whatsapp.net") },
+        reaction: emoji,
+      }),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Send a notification that content was published.
  */
 export async function sendPublishNotification(
@@ -205,5 +271,5 @@ export async function sendPublishNotification(
       chatId,
       text: message,
     }),
-  }).catch(() => {}); // Best-effort notification
+  }).catch(() => {});
 }
