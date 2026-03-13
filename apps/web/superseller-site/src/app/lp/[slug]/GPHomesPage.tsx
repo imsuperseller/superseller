@@ -877,35 +877,50 @@ export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | nul
                     "Fix contact page 404 — restore lead capture",
                     "Standardize phone number (469-444-7777) across all directories",
                     "Add address, hours, email to website",
-                    "Submit BBB accreditation application",
+                    "Submit BBB accreditation application (~$600/yr, 2–4 week process)",
                   ],
                   color: RED,
                   bg: RED_BG,
                 },
                 {
-                  phase: "Week 3–4",
-                  title: "Get On Google Maps + Build Your Lead Engine",
+                  phase: "Week 3–6",
+                  title: "New Website + Google Maps Launch",
                   items: [
-                    "Claim + optimize Google Business Profile (category, description, photos)",
-                    "Launch Google review generation — QR codes + automated follow-up sequences",
-                    "Deploy geo-tagged job proof: photo at jobsite → GPS schema markup → proves service area to Google",
-                    "Add schema markup + XML sitemap for local SEO",
+                    "Build brand-new modern website — mobile-first, fast, built to convert (not a WordPress patch)",
+                    "Before/after project gallery, embedded Google reviews, trust badges (BuildZoom Top 7%, Licensed, BBB)",
+                    "Service area pages for Plano, Frisco, Allen, McKinney, Richardson — each targets local search",
+                    "LocalBusiness + Service schema markup (JSON-LD) + XML sitemap → Google understands your business",
+                    "Claim + optimize Google Business Profile (category, description, photos, posts)",
+                    "Launch Google review generation — QR codes at jobsite + automated follow-up sequences",
                     "Submit to 40+ local directories with consistent NAP",
-                    "Target: 25+ Google reviews in first 60 days",
                   ],
                   color: ORANGE,
                   bg: "rgba(232,134,58,0.06)",
                 },
                 {
+                  phase: "Month 2+",
+                  title: "Social Media Launch + Content Engine",
+                  items: [
+                    "Launch Instagram + Facebook with before/after project content",
+                    "AI-generated social posts from your jobsite photos — you snap, we publish",
+                    "Content calendar: 3–4 posts/week (before/after, tips, project spotlights, team)",
+                    "Hashtag strategy targeting #PlanoRemodel #DFWContractor #KitchenRemodel",
+                    "Review request automation after every completed job",
+                    "Target: 25+ Google reviews in first 60 days",
+                  ],
+                  color: NAVY,
+                  bg: "rgba(27,58,92,0.04)",
+                },
+                {
                   phase: "Ongoing",
-                  title: "AI-Powered Maps Domination",
+                  title: "AI-Powered Lead Domination",
                   items: [
                     "Building permit monitoring — instant alerts when Plano homeowners file renovation permits",
                     "Geo-grid rank tracking — visual heat map of where you rank vs where you're invisible",
-                    "Competitor review mining — AI scrapes 1-2 star reviews, finds their weaknesses, positions you against them",
+                    "Competitor review mining — AI scrapes their 1-2 star reviews, positions you against their weaknesses",
                     "Automated GBP posts with before/after project photos + geo-tags",
-                    "Review response management — AI drafts, you approve via WhatsApp",
-                    "Monthly dashboard: ranking map, permit leads, competitor intel, review growth",
+                    "Deploy geo-tagged job proof: photo at jobsite → GPS schema → proves your service area to Google",
+                    "Monthly dashboard: ranking map, permit leads, competitor intel, review growth, social analytics",
                   ],
                   color: GREEN,
                   bg: GREEN_BG,
@@ -948,54 +963,71 @@ export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | nul
               <SectionTag>Investment</SectionTag>
               <SectionTitle text="Choose Your" accent="Growth Speed" />
               <p className="text-base max-w-xl mx-auto" style={{ color: TEXT_MID }}>
-                All plans include the Week 1–2 fixes. Choose how aggressively you want to grow.
+                Every plan includes the emergency fixes. Choose how fast you want to dominate Plano.
+              </p>
+              <p className="text-xs mt-3" style={{ color: TEXT_LIGHT }}>
+                Agencies charge $4,000–$10,000 for a website alone + $1,500–$3,000/mo for SEO. We bundle everything.
               </p>
             </Reveal>
 
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
               {[
                 {
-                  tier: "Starter",
+                  tier: "Foundation",
                   price: "$297",
                   desc: "Fix + Monitor",
                   features: [
-                    "All critical website fixes",
-                    "NAP standardization across 40+ directories",
-                    "Weekly competitor review monitoring",
-                    "Competitor weakness reports via WhatsApp",
+                    "Emergency website fixes",
+                    "NAP standardization (40+ directories)",
+                    "Weekly competitor monitoring",
+                    "WhatsApp intelligence alerts",
                     "Basic Google Maps rank tracking",
                   ],
-                  action: "pricing_starter_click",
+                  action: "pricing_foundation_click",
                 },
                 {
                   tier: "Growth",
-                  price: "$497",
-                  desc: "Google Maps Lead Engine",
+                  price: "$597",
+                  desc: "Maps + New Website",
                   features: [
-                    "Everything in Starter",
-                    "Google Business Profile setup + optimization",
-                    "Review generation campaign (QR + follow-ups)",
-                    "Geo-tagged job proof system",
+                    "Everything in Foundation",
+                    "Brand-new modern website (we build + host)",
+                    "Google Business Profile setup",
+                    "Review generation (QR + follow-ups)",
+                    "Schema markup + service area pages",
                     "Geo-grid rank heat map dashboard",
+                  ],
+                  action: "pricing_growth_click",
+                },
+                {
+                  tier: "Pro",
+                  price: "$897",
+                  desc: "Maps + Website + Social",
+                  features: [
+                    "Everything in Growth",
+                    "Instagram + Facebook launch",
+                    "3–4 AI-generated posts per week",
+                    "Before/after content from your photos",
+                    "Geo-tagged job proof system",
                     "AI review response drafts",
                     "Daily competitor monitoring",
                   ],
                   popular: true,
-                  action: "pricing_growth_click",
+                  action: "pricing_pro_click",
                 },
                 {
-                  tier: "Premium",
-                  price: "$797",
-                  desc: "Full AI Domination",
+                  tier: "Full Service",
+                  price: "$1,297",
+                  desc: "Total Digital Takeover",
                   features: [
-                    "Everything in Growth",
-                    "Building permit lead alerts (Plano area)",
-                    "Automated GBP posts + geo-tagged photos",
+                    "Everything in Pro",
+                    "Building permit lead alerts",
                     "Competitor review mining + positioning",
+                    "Automated GBP posts + geo-tags",
                     "Bi-weekly strategy calls",
-                    "Priority support + dedicated WhatsApp line",
+                    "Priority support + dedicated line",
                   ],
-                  action: "pricing_premium_click",
+                  action: "pricing_fullservice_click",
                 },
               ].map((p, i) => (
                 <Reveal key={i} delay={i * 150}>
@@ -1067,7 +1099,7 @@ export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | nul
               >
                 <div className="grid grid-cols-3 gap-6">
                   <div>
-                    <div className="text-3xl font-black mb-1" style={{ color: NAVY }}>$297</div>
+                    <div className="text-3xl font-black mb-1" style={{ color: NAVY }}>$297–$1,297</div>
                     <div className="text-xs" style={{ color: TEXT_LIGHT }}>Monthly Investment</div>
                   </div>
                   <div>
@@ -1075,7 +1107,7 @@ export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | nul
                     <div className="text-xs" style={{ color: TEXT_LIGHT }}>Per Kitchen Lead</div>
                   </div>
                   <div>
-                    <div className="text-3xl font-black mb-1" style={{ color: GREEN }}>50x–168x</div>
+                    <div className="text-3xl font-black mb-1" style={{ color: GREEN }}>12x–168x</div>
                     <div className="text-xs" style={{ color: TEXT_LIGHT }}>Return on Investment</div>
                   </div>
                 </div>

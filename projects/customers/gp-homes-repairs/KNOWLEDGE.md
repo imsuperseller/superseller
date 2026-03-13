@@ -48,12 +48,27 @@ Plano TX remodeling contractor, founded 2010. BuildZoom top 7% of 222,249 TX con
 ## Google Maps Automation Blueprint
 Full research covers: Apify scraping stack ($6.70 initial scan), n8n workflows for GBP management, competitor review monitoring with Claude AI sentiment analysis, WAHA WhatsApp alerts, Looker Studio dashboards. Operating cost: $9-20/mo per client.
 
-## Pricing Tiers (proposed)
+## Pricing Tiers (revised Mar 13 — covers full digital presence)
 | Tier | Price | Includes |
 |---|---|---|
-| Starter | $297/mo | Weekly competitor report, review monitoring, WhatsApp alerts |
-| Growth | $497/mo | Daily monitoring, AI review responses, full dashboard |
-| Premium | $797/mo | All above + GBP post automation, bi-weekly calls |
+| Foundation | $297/mo | Emergency fixes, NAP standardization, competitor monitoring, WhatsApp alerts, basic rank tracking |
+| Growth | $597/mo | Everything in Foundation + brand-new website (we build+host on Vercel), GBP setup, review generation, schema markup, geo-grid dashboard |
+| Pro | $897/mo | Everything in Growth + Instagram/Facebook launch, 3-4 AI posts/week, before/after content, geo-tagged job proof, AI review responses |
+| Full Service | $1,297/mo | Everything in Pro + building permit alerts, competitor review mining, automated GBP posts, bi-weekly strategy calls, priority support |
+
+**Comparison**: Agencies charge $4K-$10K for website build alone + $1.5K-$3K/mo for SEO. Our stack (Next.js/Vercel) = near-zero marginal cost per client.
+
+## BBB Accreditation
+- Cost: ~$600-$800/year (Dallas metro)
+- Timeline: 2-4 weeks from application
+- GP Homes qualifies (operating since 2010)
+- Must respond to BBB verification outreach (hasn't done this)
+
+## Website Rebuild Scope
+- Replace WordPress entirely with Next.js site on our Vercel infrastructure
+- 7-10 pages: Home, Services (individual per service for SEO), Portfolio (before/after), Reviews, About, Contact, Service Areas
+- Must-haves: LocalBusiness + Service JSON-LD schema, XML sitemap, click-to-call, "Get Free Estimate" CTA, before/after gallery, trust badges
+- We host = recurring lock-in + upsell path
 
 ## Revenue Potential
 Each Google Maps lead for kitchen remodeling in Plano = $15K-$50K+ project value.
