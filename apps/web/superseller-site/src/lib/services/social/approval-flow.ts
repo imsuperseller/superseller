@@ -34,8 +34,8 @@ export async function sendApprovalRequest(
 ): Promise<ApprovalResult> {
   const chatId = `${req.approverPhone}@c.us`;
 
-  const preview = req.contentPreview.length > 300
-    ? req.contentPreview.slice(0, 300) + "..."
+  const preview = req.contentPreview.length > 1000
+    ? req.contentPreview.slice(0, 1000) + "..."
     : req.contentPreview;
 
   const header = req.tenantName
