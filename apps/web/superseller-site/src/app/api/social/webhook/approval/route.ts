@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true, skipped: "empty message" });
     }
 
-    const { action, reason } = parseApprovalResponse(messageBody);
+    const { action, reason } = await parseApprovalResponse(messageBody);
     if (action === "unknown") {
       return NextResponse.json({ ok: true, skipped: "not an approval response" });
     }

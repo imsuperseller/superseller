@@ -104,23 +104,48 @@ ${preview}
  * Parse an incoming WhatsApp message as an approval response.
  * Returns the action and optional reason/instructions.
  */
-export function parseApprovalResponse(
+export async function parseApprovalResponse(
   messageBody: string
-): { action: "approve" | "reject" | "edit" | "unknown"; reason?: string } {
+): Promise<{ action: "approve" | "reject" | "edit" | "unknown"; reason?: string }> {
   const text = messageBody.trim().toLowerCase();
 
-  if (text === "approve" || text === "yes" || text === "ok" || text === "אשר") {
+  // Fast path: exact keywords
+  if (text === "approve" || text === "yes" || text === "ok" || text === "אשר" || text === "👍") {
     return { action: "approve" };
   }
-
-  if (text.startsWith("reject") || text.startsWith("no") || text.startsWith("דחה")) {
-    const reason = messageBody.replace(/^(reject|no|דחה)\s*/i, "").trim();
-    return { action: "reject", reason: reason || undefined };
+  if (text === "no" || text === "reject" || text === "skip" || text === "דחה" || text === "👎") {
+    return { action: "reject" };
   }
 
-  if (text.startsWith("edit") || text.startsWith("change") || text.startsWith("ערוך")) {
-    const reason = messageBody.replace(/^(edit|change|ערוך)\s*/i, "").trim();
-    return { action: "edit", reason: reason || undefined };
+  // Natural language: use Claude to interpret intent
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return { action: "unknown" };
+
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "claude-haiku-4-5-20251001",
+        max_tokens: 100,
+        system: "You classify WhatsApp replies to a content approval request. Reply with ONLY a JSON object: {\"action\":\"approve|reject|edit\",\"reason\":\"optional reason\"}. If the message is clearly not about approving/rejecting content, return {\"action\":\"unknown\"}.",
+        messages: [{ role: "user", content: messageBody }],
+      }),
+    });
+
+    if (!res.ok) return { action: "unknown" };
+    const data = await res.json();
+    const content = data.content?.[0]?.text || "";
+    const parsed = JSON.parse(content);
+    if (["approve", "reject", "edit"].includes(parsed.action)) {
+      return { action: parsed.action, reason: parsed.reason || undefined };
+    }
+  } catch {
+    // LLM failed, fall through
   }
 
   return { action: "unknown" };
