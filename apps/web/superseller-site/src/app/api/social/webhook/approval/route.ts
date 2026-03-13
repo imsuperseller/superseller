@@ -152,7 +152,8 @@ export async function POST(req: NextRequest) {
         ? getIgAccountFromEnv(tenantSlug)
         : null;
 
-      const account = !igAccountFromEnv
+      // Look up PlatformAccount: try post's userId first, then any user in same tenant
+      let account = !igAccountFromEnv
         ? await prisma.platformAccount.findFirst({
             where: {
               userId: pendingPost.userId,
@@ -161,6 +162,25 @@ export async function POST(req: NextRequest) {
             },
           })
         : null;
+
+      // Fallback: find PlatformAccount via tenant membership (post userId may differ from account owner)
+      if (!account && !igAccountFromEnv && tenantSlug) {
+        const tenant = await prisma.tenant.findFirst({ where: { slug: tenantSlug } });
+        if (tenant) {
+          const tenantUsers = await prisma.tenantUser.findMany({
+            where: { tenantId: tenant.id },
+            select: { userId: true },
+          });
+          const userIds = tenantUsers.map(tu => tu.userId);
+          account = await prisma.platformAccount.findFirst({
+            where: {
+              userId: { in: userIds },
+              platform: pendingPost.platform || "facebook",
+              isActive: true,
+            },
+          });
+        }
+      }
 
       const effectiveAccount = igAccountFromEnv
         ? igAccountFromEnv
