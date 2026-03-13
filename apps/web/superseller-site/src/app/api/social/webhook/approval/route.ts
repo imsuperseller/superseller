@@ -97,6 +97,13 @@ export async function POST(req: NextRequest) {
 
       // Env var fallback for IG publishing when no PlatformAccount exists
       const tenantSlug = (meta?.tenantSlug as string) || "";
+      console.log("[approval] publish debug:", {
+        hasAccount: !!account,
+        platform: pendingPost.platform,
+        tenantSlug,
+        hasFbToken: !!process.env.FB_PAGE_TOKEN_RENSTO,
+        hasIgId: !!process.env.IG_BUSINESS_ACCOUNT_ID_RENSTO,
+      });
       const igAccountFromEnv = !account && pendingPost.platform === "instagram"
         ? getIgAccountFromEnv(tenantSlug)
         : null;
@@ -104,6 +111,12 @@ export async function POST(req: NextRequest) {
       const effectiveAccount = account
         ? { accessToken: account.accessToken, accountId: account.accountId }
         : igAccountFromEnv;
+
+      console.log("[approval] effectiveAccount:", {
+        hasEffective: !!effectiveAccount,
+        hasToken: !!effectiveAccount?.accessToken,
+        hasAccountId: !!effectiveAccount?.accountId,
+      });
 
       if (effectiveAccount?.accessToken && effectiveAccount.accountId) {
         const content = pendingPost.content || "";
