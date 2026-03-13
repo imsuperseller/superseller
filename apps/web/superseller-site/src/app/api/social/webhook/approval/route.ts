@@ -25,13 +25,20 @@ export async function POST(req: NextRequest) {
 
     const payload = body.payload;
     const messageBody = payload?.body || "";
-    const from = payload?.from?.replace("@c.us", "") || "";
+    const from = payload?.from?.replace("@c.us", "")?.replace("@s.whatsapp.net", "") || "";
 
-    if (!messageBody || !from) {
+    // Extract button ID from WAHA interactive message payload
+    const buttonId =
+      payload?.selectedButtonId ||
+      payload?.buttonId ||
+      payload?._data?.quotedMsg?.selectedButtonId ||
+      undefined;
+
+    if (!from || (!messageBody && !buttonId)) {
       return NextResponse.json({ ok: true, skipped: "empty message" });
     }
 
-    const { action, reason } = await parseApprovalResponse(messageBody);
+    const { action, reason } = await parseApprovalResponse(messageBody, buttonId);
     if (action === "unknown") {
       return NextResponse.json({ ok: true, skipped: "not an approval response" });
     }

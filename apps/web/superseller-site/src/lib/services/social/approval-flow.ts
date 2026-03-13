@@ -1,6 +1,6 @@
 /**
  * SocialHub — WhatsApp Approval Flow via WAHA Pro
- * Sends content for approval via WhatsApp, processes approve/reject replies.
+ * Sends content for approval via WhatsApp buttons, processes approve/reject replies.
  */
 
 const WAHA_BASE = process.env.WAHA_BASE_URL || "http://172.245.56.50:3000";
@@ -24,8 +24,7 @@ export interface ApprovalResult {
 }
 
 /**
- * Send a content approval request via WhatsApp.
- * The approver replies "approve" or "reject [reason]".
+ * Send a content approval request via WhatsApp with interactive buttons.
  */
 export async function sendApprovalRequest(
   req: ApprovalRequest
@@ -40,38 +39,10 @@ export async function sendApprovalRequest(
     ? `📋 *${req.tenantName}*${req.igAccount ? ` → ${req.igAccount}` : ""}`
     : `📋 *Content Approval*`;
 
-  const message = `${header}
-📱 ${req.platform.charAt(0).toUpperCase() + req.platform.slice(1)} post
-
-${preview}
-
-✅ Reply *approve* to publish
-❌ Reply *reject* to skip
-✏️ Reply *edit [notes]* to revise`;
+  const message = `${header}\n📱 ${req.platform.charAt(0).toUpperCase() + req.platform.slice(1)} post\n\n${preview}`;
 
   try {
-    // Send text message
-    const textRes = await fetch(`${WAHA_BASE}/api/sendText`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Api-Key": WAHA_KEY,
-      },
-      body: JSON.stringify({
-        session: WAHA_SESSION,
-        chatId,
-        text: message,
-      }),
-    });
-
-    if (!textRes.ok) {
-      const err = await textRes.text();
-      return { sent: false, error: `WAHA text error ${textRes.status}: ${err}` };
-    }
-
-    const textData = await textRes.json();
-
-    // If there's an image, send it as a follow-up
+    // Send image first if available (gives visual context before the buttons)
     if (req.imageUrl) {
       await fetch(`${WAHA_BASE}/api/sendImage`, {
         method: "POST",
@@ -83,14 +54,56 @@ ${preview}
           session: WAHA_SESSION,
           chatId,
           file: { url: req.imageUrl },
-          caption: "Preview image for the post above",
+          caption: message,
         }),
-      });
+      }).catch(() => {}); // Best-effort, buttons below are the key part
     }
 
+    // Send buttons message
+    const buttonsRes = await fetch(`${WAHA_BASE}/api/sendButtons`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Api-Key": WAHA_KEY,
+      },
+      body: JSON.stringify({
+        session: WAHA_SESSION,
+        chatId,
+        text: req.imageUrl ? "Tap to respond:" : message,
+        buttons: [
+          { id: "approve", text: "✅ Approve" },
+          { id: "reject", text: "❌ Reject" },
+          { id: "edit", text: "✏️ Edit" },
+        ],
+      }),
+    });
+
+    if (!buttonsRes.ok) {
+      // Fallback to plain text if buttons fail
+      const fallbackRes = await fetch(`${WAHA_BASE}/api/sendText`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Api-Key": WAHA_KEY,
+        },
+        body: JSON.stringify({
+          session: WAHA_SESSION,
+          chatId,
+          text: `${message}\n\n✅ Reply *approve* to publish\n❌ Reply *reject* to skip\n✏️ Reply *edit [notes]* to revise`,
+        }),
+      });
+      const fallbackData = await fallbackRes.json();
+      return {
+        sent: fallbackRes.ok,
+        messageId: fallbackData.key?.id || fallbackData.id,
+        error: fallbackRes.ok ? undefined : "Buttons failed, sent text fallback",
+      };
+    }
+
+    const buttonsData = await buttonsRes.json();
     return {
       sent: true,
-      messageId: textData.key?.id || textData.id,
+      messageId: buttonsData.key?.id || buttonsData.id,
     };
   } catch (err) {
     return {
@@ -102,11 +115,19 @@ ${preview}
 
 /**
  * Parse an incoming WhatsApp message as an approval response.
- * Returns the action and optional reason/instructions.
+ * Handles both button clicks (buttonId) and text replies.
  */
 export async function parseApprovalResponse(
-  messageBody: string
+  messageBody: string,
+  buttonId?: string
 ): Promise<{ action: "approve" | "reject" | "edit" | "unknown"; reason?: string }> {
+  // Button click — direct mapping
+  if (buttonId) {
+    if (buttonId === "approve") return { action: "approve" };
+    if (buttonId === "reject") return { action: "reject" };
+    if (buttonId === "edit") return { action: "edit" };
+  }
+
   const text = messageBody.trim().toLowerCase();
 
   // Fast path: keyword matching
@@ -170,8 +191,8 @@ export async function sendPublishNotification(
 ): Promise<void> {
   const chatId = `${phone}@c.us`;
   const message = postUrl
-    ? `*Published!* Your ${platform} post is live: ${postUrl}`
-    : `*Published!* Your ${platform} post is live.`;
+    ? `✅ *Published!* Your ${platform} post is live:\n${postUrl}`
+    : `✅ *Published!* Your ${platform} post is live.`;
 
   await fetch(`${WAHA_BASE}/api/sendText`, {
     method: "POST",
