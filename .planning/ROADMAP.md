@@ -27,7 +27,7 @@
 
 Plans:
 - [x] 01-01-PLAN.md — Core modules: prompt-assembler + universal group-bootstrap
-- [ ] 01-02-PLAN.md — API endpoint + end-to-end verification
+- [x] 01-02-PLAN.md — API endpoint + end-to-end verification
 
 **Success Criteria:**
 1. `POST /api/onboarding/start` with tenantId + clientPhone creates WhatsApp group

@@ -8,7 +8,7 @@
 
 ### Universal Group Creation (UGRP)
 
-- [ ] **UGRP-01**: Admin can trigger onboarding for any tenant via API endpoint (`POST /api/onboarding/start`)
+- [x] **UGRP-01**: Admin can trigger onboarding for any tenant via API endpoint (`POST /api/onboarding/start`)
 - [x] **UGRP-02**: System auto-creates a WhatsApp group named "[BusinessName] — SuperSeller AI" with client phone + AI agent
 - [x] **UGRP-03**: System reads tenant's ServiceInstance + Subscription records to determine which products the customer has
 - [x] **UGRP-04**: Group icon set from tenant's Brand logo (if available)
@@ -98,7 +98,7 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| UGRP-01 | Phase 1 | Pending |
+| UGRP-01 | Phase 1 | Complete (01-02) |
 | UGRP-02..05 | Phase 1 | Complete (01-01) |
 | PAGENT-01..05 | Phase 1 | Complete (01-01) |
 | ASSET-01..04 | Phase 2 | Pending |
