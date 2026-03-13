@@ -51,6 +51,13 @@ Plans:
 
 **Requirements:** ASSET-01..04, SOCIAL-01..04, COMPETE-01..04
 
+**Plans:** 3 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — Module foundation: shared types, DB state persistence, module router
+- [ ] 02-02-PLAN.md — Asset collection + social setup modules
+- [ ] 02-03-PLAN.md — Competitor research module + ClaudeClaw worker integration
+
 **Success Criteria:**
 1. Asset collection module downloads media from WhatsApp, uploads to R2, registers as TenantAsset
 2. Social setup module collects credentials/preferences, stores in ServiceInstance.configuration
