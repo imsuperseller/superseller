@@ -95,26 +95,36 @@ export async function POST(req: NextRequest) {
         },
       });
 
-      if (account?.accessToken && account.accountId) {
+      // Env var fallback for IG publishing when no PlatformAccount exists
+      const tenantSlug = (meta?.tenantSlug as string) || "";
+      const igAccountFromEnv = !account && pendingPost.platform === "instagram"
+        ? getIgAccountFromEnv(tenantSlug)
+        : null;
+
+      const effectiveAccount = account
+        ? { accessToken: account.accessToken, accountId: account.accountId }
+        : igAccountFromEnv;
+
+      if (effectiveAccount?.accessToken && effectiveAccount.accountId) {
         const content = pendingPost.content || "";
         const mediaUrls = (pendingPost.mediaUrls as string[]) || [];
         let publishResult;
 
         if (pendingPost.platform === "facebook") {
           publishResult = await publishToFacebook({
-            pageId: account.accountId,
-            accessToken: account.accessToken,
+            pageId: effectiveAccount.accountId!,
+            accessToken: effectiveAccount.accessToken!,
             message: content,
             imageUrl: mediaUrls[0],
           });
         } else if (pendingPost.platform === "instagram" && mediaUrls[0]) {
           publishResult = await publishToInstagram({
-            igUserId: account.accountId,
-            accessToken: account.accessToken,
+            igUserId: effectiveAccount.accountId!,
+            accessToken: effectiveAccount.accessToken!,
             caption: content,
             imageUrl: mediaUrls[0],
           });
-        } else if (pendingPost.platform === "twitter") {
+        } else if (pendingPost.platform === "twitter" && account) {
           const acctMeta = (account.metadata as Record<string, string>) || {};
           if (acctMeta.authType === "oauth2" && account.accessToken) {
             publishResult = await publishToX({
@@ -134,22 +144,22 @@ export async function POST(req: NextRequest) {
                 mediaUrl: mediaUrls[0],
                 apiKey,
                 apiKeySecret,
-                accessToken: account.accessToken,
+                accessToken: account.accessToken!,
                 accessTokenSecret: xAccessTokenSecret,
               });
             }
           }
-        } else if (pendingPost.platform === "linkedin" && account.accountId) {
+        } else if (pendingPost.platform === "linkedin" && effectiveAccount.accountId) {
           publishResult = await publishToLinkedIn({
-            accessToken: account.accessToken,
-            authorUrn: account.accountId,
+            accessToken: effectiveAccount.accessToken!,
+            authorUrn: effectiveAccount.accountId,
             text: content,
             imageUrl: mediaUrls[0],
           });
-        } else if (pendingPost.platform === "youtube") {
+        } else if (pendingPost.platform === "youtube" && account) {
           const postMeta = (pendingPost.metadata as Record<string, string>) || {};
           publishResult = await publishToYouTube({
-            accessToken: account.accessToken,
+            accessToken: account.accessToken!,
             title: postMeta.title || content.slice(0, 100),
             description: content,
             videoUrl: mediaUrls[0],
@@ -247,4 +257,31 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+/**
+ * Env var fallback for IG publishing when no PlatformAccount exists.
+ * Maps tenant slugs to env var tokens.
+ */
+function getIgAccountFromEnv(tenantSlug: string): { accessToken: string; accountId: string } | null {
+  // Tenant-specific tokens
+  const tokenMap: Record<string, { tokenEnv: string; accountIdEnv: string }> = {
+    "rensto": { tokenEnv: "FB_PAGE_TOKEN_RENSTO", accountIdEnv: "IG_BUSINESS_ACCOUNT_ID_RENSTO" },
+    "superseller": { tokenEnv: "FB_PAGE_TOKEN_SUPERSELLER", accountIdEnv: "IG_BUSINESS_ACCOUNT_ID_SUPERSELLER" },
+  };
+
+  // Try tenant-specific first
+  const mapping = tokenMap[tenantSlug];
+  if (mapping) {
+    const token = process.env[mapping.tokenEnv];
+    const accountId = process.env[mapping.accountIdEnv];
+    if (token && accountId) return { accessToken: token, accountId };
+  }
+
+  // Default fallback to Rensto (test account)
+  const defaultToken = process.env.FB_PAGE_TOKEN_RENSTO;
+  const defaultAccountId = process.env.IG_BUSINESS_ACCOUNT_ID_RENSTO;
+  if (defaultToken && defaultAccountId) return { accessToken: defaultToken, accountId: defaultAccountId };
+
+  return null;
 }
