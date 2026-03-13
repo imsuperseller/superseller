@@ -1,26 +1,40 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import type { LandingPage, Brand } from "@prisma/client";
 
 // ---------------------------------------------------------------------------
-// Brand
+// Brand — Light professional theme for home remodeling contractor
 // ---------------------------------------------------------------------------
+const NAVY = "#1B3A5C";
+const NAVY_LIGHT = "#2A4F7A";
 const ORANGE = "#E8863A";
-const ORANGE_DIM = "rgba(232,134,58,0.15)";
-const BG = "#0e1225";
-const BG_CARD = "#161a33";
-const DARK = "#0a0c1a";
+const ORANGE_HOVER = "#D4782F";
+const WHITE = "#FFFFFF";
+const OFF_WHITE = "#F7F8FA";
+const WARM_BG = "#FDF8F3";
+const TEXT_DARK = "#1E293B";
+const TEXT_MID = "#475569";
+const TEXT_LIGHT = "#64748B";
+const BORDER = "#E2E8F0";
+
+const R2 = "https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/gp-homes-repairs/portfolio";
+
+const PHOTOS = {
+  heroKitchen: `${R2}/hero-kitchen-remodel.jpg`,
+  bathroom: `${R2}/bathroom-renovation.jpg`,
+  roomAddition: `${R2}/room-addition.jpg`,
+  exterior: `${R2}/exterior-renovation.jpg`,
+  flooring: `${R2}/flooring-install.jpg`,
+  garage: `${R2}/garage-conversion.jpg`,
+};
 
 // ---------------------------------------------------------------------------
 // Reveal wrapper — pure CSS animation, SSR-safe
 // ---------------------------------------------------------------------------
 function Reveal({ children, className, delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
   return (
-    <div
-      className={className || ""}
-      style={{ animation: `revealUp 0.7s ease-out ${delay}ms both` }}
-    >
+    <div className={className || ""} style={{ animation: `revealUp 0.7s ease-out ${delay}ms both` }}>
       {children}
     </div>
   );
@@ -29,11 +43,15 @@ function Reveal({ children, className, delay = 0 }: { children: React.ReactNode;
 // ---------------------------------------------------------------------------
 // Section Tag (pill badge)
 // ---------------------------------------------------------------------------
-function SectionTag({ children }: { children: React.ReactNode }) {
+function SectionTag({ children, light = false }: { children: React.ReactNode; light?: boolean }) {
   return (
     <span
-      className="inline-block text-[0.65rem] font-bold tracking-[0.25em] uppercase px-5 py-2 mb-8 rounded-sm"
-      style={{ color: ORANGE, border: `1px solid ${ORANGE_DIM}` }}
+      className="inline-block text-[0.65rem] font-bold tracking-[0.25em] uppercase px-5 py-2 mb-6 rounded-full"
+      style={{
+        color: light ? WHITE : ORANGE,
+        border: `1.5px solid ${light ? "rgba(255,255,255,0.3)" : ORANGE}`,
+        background: light ? "rgba(255,255,255,0.1)" : "rgba(232,134,58,0.08)",
+      }}
     >
       {children}
     </span>
@@ -41,218 +59,56 @@ function SectionTag({ children }: { children: React.ReactNode }) {
 }
 
 // ---------------------------------------------------------------------------
-// Section Title (two-tone)
+// Section Title
 // ---------------------------------------------------------------------------
-function SectionTitle({ white, orange }: { white: string; orange: string }) {
+function SectionTitle({ text, accent, light = false }: { text: string; accent: string; light?: boolean }) {
   return (
-    <h2 className="text-3xl md:text-[2.8rem] font-black leading-[1.1] tracking-tight mb-6 max-w-2xl">
-      {white}{" "}
-      <span className="bg-gradient-to-r from-[#E8863A] via-[#f0a860] to-[#E8863A] bg-clip-text text-transparent">
-        {orange}
-      </span>
+    <h2
+      className="text-3xl md:text-[2.6rem] font-extrabold leading-[1.15] tracking-tight mb-5"
+      style={{ color: light ? WHITE : NAVY }}
+    >
+      {text}{" "}
+      <span style={{ color: ORANGE }}>{accent}</span>
     </h2>
   );
 }
 
 // ---------------------------------------------------------------------------
-// WhatsApp Icon
+// Icons (inline SVG)
 // ---------------------------------------------------------------------------
-function WhatsAppIcon() {
+function StarIcon() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16">
-      <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232" />
+    <svg width="20" height="20" viewBox="0 0 20 20" fill={ORANGE}>
+      <path d="M10 1l2.39 4.84L17.82 6.7l-3.91 3.81.92 5.39L10 13.34l-4.83 2.56.92-5.39L2.18 6.7l5.43-.86z" />
     </svg>
   );
 }
 
-// ---------------------------------------------------------------------------
-// SVG Icons
-// ---------------------------------------------------------------------------
-function HammerIcon() {
+function CheckIcon() {
   return (
-    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M15 12l-8.5 8.5c-.83.83-2.17.83-3 0 0 0 0 0 0 0a2.12 2.12 0 0 1 0-3L12 9" />
-      <path d="M17.64 15L22 10.64" />
-      <path d="M20.91 11.7l-1.25-1.25c-.6-.6-.93-1.4-.93-2.25v-.86L16.01 4.6a5.56 5.56 0 0 0-3.94-1.64H9l.92.82A6.18 6.18 0 0 1 12 8.4v1.56l2 2h2.47l2.26 1.91" />
-    </svg>
-  );
-}
-
-function SearchIcon() {
-  return (
-    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="11" cy="11" r="8" />
-      <line x1="21" y1="21" x2="16.65" y2="16.65" />
-    </svg>
-  );
-}
-
-function ChartIcon() {
-  return (
-    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <line x1="18" y1="20" x2="18" y2="10" />
-      <line x1="12" y1="20" x2="12" y2="4" />
-      <line x1="6" y1="20" x2="6" y2="14" />
-    </svg>
-  );
-}
-
-function ShieldIcon() {
-  return (
-    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-    </svg>
-  );
-}
-
-function MapPinIcon() {
-  return (
-    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-      <circle cx="12" cy="10" r="3" />
-    </svg>
-  );
-}
-
-function TrendingUpIcon() {
-  return (
-    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
-      <polyline points="17 6 23 6 23 12" />
-    </svg>
-  );
-}
-
-function AlertIcon() {
-  return (
-    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-      <line x1="12" y1="9" x2="12" y2="13" />
-      <line x1="12" y1="17" x2="12.01" y2="17" />
-    </svg>
-  );
-}
-
-function XCircleIcon({ size = 18 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="10" />
-      <line x1="15" y1="9" x2="9" y2="15" />
-      <line x1="9" y1="9" x2="15" y2="15" />
-    </svg>
-  );
-}
-
-function CheckIcon({ size = 14 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill={ORANGE} stroke="none">
-      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+    <svg width="20" height="20" viewBox="0 0 20 20" fill={ORANGE}>
+      <path d="M10 0a10 10 0 110 20 10 10 0 010-20zm4.3 6.3a1 1 0 00-1.4 0L9 10.2 7.1 8.3a1 1 0 00-1.4 1.4l2.6 2.6a1 1 0 001.4 0l4.6-4.6a1 1 0 000-1.4z" />
     </svg>
   );
 }
 
 function PhoneIcon() {
   return (
-    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-    </svg>
-  );
-}
-
-function SettingsIcon() {
-  return (
-    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="3" />
-      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-    </svg>
-  );
-}
-
-function EyeIcon() {
-  return (
-    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-      <circle cx="12" cy="12" r="3" />
-    </svg>
-  );
-}
-
-function StarIcon({ size = 16, filled = true }: { size?: number; filled?: boolean }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill={filled ? ORANGE : "none"} stroke={ORANGE} strokeWidth="1.5">
-      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-    </svg>
-  );
-}
-
-function DollarIcon() {
-  return (
-    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <line x1="12" y1="1" x2="12" y2="23" />
-      <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-    </svg>
-  );
-}
-
-function UsersIcon() {
-  return (
-    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-      <circle cx="9" cy="7" r="4" />
-      <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+      <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
     </svg>
   );
 }
 
 // ---------------------------------------------------------------------------
-// Geometric Background Pattern
+// Track Conversion
 // ---------------------------------------------------------------------------
-function GeometricPattern() {
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      <svg className="absolute inset-0 w-full h-full opacity-[0.03]" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
-            <path d="M 60 0 L 0 0 0 60" fill="none" stroke="white" strokeWidth="0.5" />
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#grid)" />
-      </svg>
-      <div
-        className="absolute top-[15%] right-[10%] w-64 h-64 rounded-full opacity-[0.04]"
-        style={{ background: `radial-gradient(circle, ${ORANGE} 0%, transparent 70%)` }}
-      />
-      <div
-        className="absolute bottom-[20%] left-[5%] w-96 h-96 rounded-full opacity-[0.03]"
-        style={{ background: `radial-gradient(circle, ${ORANGE} 0%, transparent 70%)` }}
-      />
-      <svg className="absolute top-0 right-0 w-[600px] h-[600px] opacity-[0.04]" viewBox="0 0 600 600">
-        <line x1="0" y1="0" x2="600" y2="600" stroke={ORANGE} strokeWidth="1" />
-        <line x1="100" y1="0" x2="600" y2="500" stroke={ORANGE} strokeWidth="0.5" />
-        <line x1="200" y1="0" x2="600" y2="400" stroke={ORANGE} strokeWidth="0.5" />
-      </svg>
-    </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Glassmorphism Card
-// ---------------------------------------------------------------------------
-function GlassCard({ children, className = "", glow = false }: { children: React.ReactNode; className?: string; glow?: boolean }) {
-  return (
-    <div
-      className={`rounded-xl border border-white/[0.08] backdrop-blur-xl ${className}`}
-      style={{
-        background: "rgba(22, 26, 51, 0.6)",
-        boxShadow: glow
-          ? `0 0 30px rgba(232,134,58,0.08), inset 0 1px 0 rgba(255,255,255,0.05)`
-          : `inset 0 1px 0 rgba(255,255,255,0.05)`,
-      }}
-    >
-      {children}
-    </div>
-  );
+function trackConversion(action: string) {
+  fetch("/api/analytics/track", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ slug: "gp-homes-repairs", action, ts: Date.now() }),
+  }).catch(() => {});
 }
 
 // ---------------------------------------------------------------------------
@@ -261,458 +117,254 @@ function GlassCard({ children, className = "", glow = false }: { children: React
 export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | null } }) {
   const [scrolled, setScrolled] = useState(false);
 
-  const WA_MSG = encodeURIComponent(
-    "Hi! I just saw the business intelligence report SuperSeller built for GP Homes — I'd like to learn more."
-  );
-  const WA_LINK = `https://wa.me/${page.whatsappNumber}?text=${WA_MSG}`;
-
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    fetch("/api/analytics/track", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        slug: page.slug,
-        type: "pageview",
-        referrer: document.referrer || null,
-        utmSource: params.get("utm_source"),
-        utmMedium: params.get("utm_medium"),
-        utmCampaign: params.get("utm_campaign"),
-      }),
-    }).catch(() => {});
-  }, [page.slug]);
-
-  function trackConversion(eventType: string) {
-    fetch("/api/analytics/track", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ slug: page.slug, type: "conversion", eventType }),
-    }).catch(() => {});
-  }
+  const whatsappUrl = `https://wa.me/14694447777?text=${encodeURIComponent("Hi, I saw the GP Homes report and I'd like to learn more about growing my online presence.")}`;
+  const phoneUrl = "tel:+14694447777";
 
   return (
     <>
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
-      />
-      <div
-        className="min-h-screen antialiased overflow-x-hidden"
-        style={{ fontFamily: "'Inter', sans-serif", background: BG, color: "#f5f5f5" }}
-      >
-        {/* ================================================================ */}
-        {/* STICKY HEADER                                                     */}
-        {/* ================================================================ */}
-        <header
-          className="fixed top-0 left-0 w-full z-50 flex items-center justify-between transition-all duration-400"
-          style={{
-            padding: scrolled ? "1rem 4%" : "1.5rem 4%",
-            background: scrolled ? "rgba(14,18,37,0.85)" : "transparent",
-            backdropFilter: scrolled ? "blur(18px)" : "none",
-          }}
-        >
-          <div className="flex items-center gap-2">
-            <span
-              className="font-extrabold text-base sm:text-lg tracking-[0.08em] uppercase whitespace-nowrap"
-              style={{ color: ORANGE }}
-            >
-              GP Homes
-            </span>
-            <span className="hidden sm:inline text-white/40 text-sm mx-1">&times;</span>
-            <span className="hidden sm:inline font-bold text-sm tracking-[0.1em] uppercase text-white/80">
-              SuperSeller
-            </span>
-          </div>
-          <a
-            href={WA_LINK}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[0.65rem] sm:text-xs font-bold tracking-[0.1em] uppercase px-3 sm:px-6 py-2 sm:py-3 rounded-sm transition-all duration-300 hover:text-[#0a0c1a] whitespace-nowrap"
-            style={{ border: `1.5px solid ${ORANGE}`, color: ORANGE }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = ORANGE;
-              e.currentTarget.style.color = DARK;
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "transparent";
-              e.currentTarget.style.color = ORANGE;
-            }}
-            onClick={() => trackConversion("header_whatsapp_click")}
-          >
-            Let&rsquo;s Talk
-          </a>
-        </header>
+      {/* Global styles */}
+      <style>{`
+        @keyframes revealUp {
+          from { opacity: 0; transform: translateY(24px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes slideRight {
+          from { opacity: 0; transform: translateX(-20px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes barGrow {
+          from { width: 0%; }
+          to { width: var(--bar-width); }
+        }
+        @keyframes countUp {
+          from { opacity: 0; transform: scale(0.85); }
+          to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        @keyframes pulseBtn {
+          0%, 100% { box-shadow: 0 4px 20px rgba(232,134,58,0.3); }
+          50% { box-shadow: 0 4px 30px rgba(232,134,58,0.5); }
+        }
+        .gallery-img:hover { transform: scale(1.03); }
+        .gallery-img { transition: transform 0.4s ease; }
+        .cta-btn:hover { transform: translateY(-2px); background: ${ORANGE_HOVER}; }
+        .cta-btn { transition: all 0.25s ease; }
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.1); }
+        .card-hover { transition: all 0.3s ease; }
+      `}</style>
+
+      <div style={{ fontFamily: "'Inter', system-ui, sans-serif", color: TEXT_DARK }}>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+          rel="stylesheet"
+        />
 
         {/* ================================================================ */}
-        {/* HERO                                                              */}
+        {/* STICKY NAV */}
         {/* ================================================================ */}
-        <section className="relative min-h-screen flex items-center overflow-hidden">
+        <nav
+          className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+          style={{
+            background: scrolled ? "rgba(255,255,255,0.97)" : "transparent",
+            backdropFilter: scrolled ? "blur(12px)" : "none",
+            borderBottom: scrolled ? `1px solid ${BORDER}` : "none",
+            padding: scrolled ? "12px 0" : "20px 0",
+          }}
+        >
+          <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div
+                className="w-10 h-10 rounded-lg flex items-center justify-center font-extrabold text-white text-sm"
+                style={{ background: NAVY }}
+              >
+                GP
+              </div>
+              <div>
+                <div className="font-bold text-sm" style={{ color: scrolled ? NAVY : WHITE }}>
+                  GP Homes &amp; Repairs
+                </div>
+                <div className="text-[0.65rem] font-medium" style={{ color: scrolled ? TEXT_LIGHT : "rgba(255,255,255,0.7)" }}>
+                  Top 7% Texas Contractors
+                </div>
+              </div>
+            </div>
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackConversion("nav_cta_click")}
+              className="cta-btn px-5 py-2.5 rounded-lg font-semibold text-sm text-white"
+              style={{ background: ORANGE }}
+            >
+              Free Estimate
+            </a>
+          </div>
+        </nav>
+
+        {/* ================================================================ */}
+        {/* HERO — Navy overlay on kitchen image */}
+        {/* ================================================================ */}
+        <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+          {/* Background image */}
           <div className="absolute inset-0">
+            <img
+              src={PHOTOS.heroKitchen}
+              alt="Beautiful kitchen remodel by GP Homes and Repairs"
+              className="w-full h-full object-cover"
+              style={{ filter: "brightness(0.4)" }}
+            />
             <div
               className="absolute inset-0"
               style={{
-                background: `radial-gradient(ellipse at 20% 30%, rgba(232,134,58,0.06) 0%, transparent 50%), radial-gradient(ellipse at 80% 70%, rgba(232,134,58,0.04) 0%, transparent 50%), linear-gradient(180deg, ${DARK} 0%, ${BG} 60%, ${BG} 100%)`,
+                background: `linear-gradient(135deg, rgba(27,58,92,0.85) 0%, rgba(27,58,92,0.6) 50%, rgba(27,58,92,0.4) 100%)`,
               }}
             />
-            <GeometricPattern />
           </div>
 
-          <div className="relative z-10 px-[6%] max-w-[900px]">
-            <div className="animate-[heroFadeUp_0.7s_ease-out_0.1s_both]">
-              <span
-                className="inline-block text-[0.65rem] font-bold tracking-[0.25em] uppercase px-5 py-2 rounded-sm mb-8"
-                style={{ color: ORANGE, border: `1px solid ${ORANGE_DIM}` }}
-              >
-                Built for Nir, Ron &amp; the GP Homes Team
-              </span>
-            </div>
-            <h1
-              className="text-[clamp(2.4rem,5.5vw,4.5rem)] font-black leading-[1.05] tracking-tight mb-6 animate-[heroFadeUp_0.7s_ease-out_0.25s_both]"
-            >
-              Top 7% in Texas. Invisible Online.
-              <br />
-              <span className="bg-gradient-to-r from-[#E8863A] via-[#f0a860] to-[#E8863A] bg-[length:200%_auto] bg-clip-text text-transparent">
-                We&rsquo;re Here to Fix That.
-              </span>
-            </h1>
-            <p
-              className="text-base md:text-lg font-light leading-relaxed max-w-[600px] mb-10 text-[#9a9cb8] animate-[heroFadeUp_0.7s_ease-out_0.4s_both]"
-            >
-              We analyzed your business, your competitors, and your market before this
-              conversation started. Scroll down to see what we found.
-            </p>
-            <div className="flex gap-4 flex-wrap animate-[heroFadeUp_0.7s_ease-out_0.55s_both]">
-              <a
-                href="#the-gap"
-                className="inline-flex items-center gap-2 px-8 py-4 font-bold text-xs tracking-[0.1em] uppercase rounded-full transition-all duration-300 hover:-translate-y-0.5"
-                style={{
-                  background: `linear-gradient(135deg, ${ORANGE} 0%, #f0a860 50%, ${ORANGE} 100%)`,
-                  color: DARK,
-                  boxShadow: `0 4px 15px rgba(232,134,58,0.25)`,
-                }}
-              >
-                See What We Found <span>&darr;</span>
-              </a>
-              <a
-                href="#reputation"
-                className="inline-flex items-center gap-2 px-8 py-4 font-semibold text-xs tracking-[0.1em] uppercase rounded-full transition-all duration-300 border border-white/12 backdrop-blur-sm bg-white/[0.03] hover:border-[#E8863A]/30 hover:bg-[#E8863A]/5 hover:-translate-y-px"
-              >
-                Your Reputation
-              </a>
-            </div>
-          </div>
-          <style>{`
-            @keyframes heroFadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-            @keyframes revealUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
-            @keyframes countUp { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
-            @keyframes slideInLeft { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
-            @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 20px rgba(232,134,58,0.15); } 50% { box-shadow: 0 0 40px rgba(232,134,58,0.3); } }
-            @keyframes barGrow { from { width: 0%; } to { width: var(--bar-width); } }
-          `}</style>
-
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 opacity-50">
-            <span className="text-[0.6rem] font-semibold tracking-[0.3em] uppercase">Scroll</span>
-            <div className="w-px h-10 bg-gradient-to-b from-white/40 to-transparent" />
-          </div>
-        </section>
-
-        {/* ================================================================ */}
-        {/* MARQUEE                                                           */}
-        {/* ================================================================ */}
-        <div className="py-5 overflow-hidden border-y border-white/5" style={{ background: DARK }}>
-          <div className="flex gap-12 animate-[marquee_35s_linear_infinite] whitespace-nowrap">
-            {[
-              "Business Intelligence",
-              "Competitor Analysis",
-              "Review Strategy",
-              "Google Maps",
-              "Content Strategy",
-              "Digital Presence Audit",
-              "Market Research",
-              "Business Intelligence",
-              "Competitor Analysis",
-              "Review Strategy",
-              "Google Maps",
-              "Content Strategy",
-              "Digital Presence Audit",
-              "Market Research",
-            ].map((item, i) => (
-              <div
-                key={i}
-                className="flex items-center gap-3 text-xs font-semibold tracking-[0.15em] uppercase text-white/50"
-              >
-                <span className="w-1.5 h-1.5 rounded-full" style={{ background: ORANGE }} />
-                {item}
-              </div>
-            ))}
-          </div>
-          <style>{`@keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }`}</style>
-        </div>
-
-        {/* ================================================================ */}
-        {/* REPUTATION — 5-Star Review Showcase (NEW)                         */}
-        {/* ================================================================ */}
-        <section id="reputation" className="py-24 px-[4%] relative overflow-hidden" style={{ background: BG }}>
-          <div className="max-w-5xl mx-auto">
+          <div className="relative z-10 max-w-6xl mx-auto px-6 py-32 md:py-40">
             <Reveal>
-              <SectionTag>Your Reputation</SectionTag>
-            </Reveal>
-            <Reveal delay={100}>
-              <SectionTitle white="Universal 5-Star Reviews." orange="Across Every Platform." />
-            </Reveal>
-            <Reveal delay={200}>
-              <p className="text-base font-light leading-relaxed max-w-xl mb-14 text-[#9a9cb8]">
-                Zero negative reviews. Anywhere. That&rsquo;s not common — it&rsquo;s exceptional. But without
-                Google reviews, the platform that matters most is the one where you&rsquo;re invisible.
-              </p>
-            </Reveal>
-            <Reveal delay={300}>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-                {[
-                  { platform: "HomeAdvisor", reviews: "12", rating: "5.0" },
-                  { platform: "Networx", reviews: "8", rating: "5.0" },
-                  { platform: "BestProsInTown", reviews: "18", rating: "5.0" },
-                  { platform: "Yelp", reviews: "33+", rating: "5.0" },
-                ].map((p, i) => (
-                  <GlassCard key={i} className="p-6 text-center" glow>
-                    <div className="flex justify-center gap-0.5 mb-3">
-                      {[1, 2, 3, 4, 5].map((s) => (
-                        <StarIcon key={s} size={14} />
-                      ))}
-                    </div>
-                    <div className="text-2xl font-black mb-1" style={{ color: ORANGE }}>
-                      {p.rating}
-                    </div>
-                    <div className="text-xs font-bold text-white/80 mb-1">{p.platform}</div>
-                    <div className="text-[0.65rem] text-white/40">{p.reviews} reviews</div>
-                  </GlassCard>
-                ))}
-              </div>
-            </Reveal>
-
-            {/* Google — the gap */}
-            <Reveal delay={400}>
-              <GlassCard className="p-8 md:p-10 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-40 h-40 rounded-full opacity-[0.06]"
-                  style={{ background: `radial-gradient(circle, #ef4444 0%, transparent 70%)`, transform: "translate(30%, -30%)" }}
-                />
-                <div className="flex flex-col md:flex-row md:items-center gap-6">
-                  <div className="flex-shrink-0">
-                    <div className="w-16 h-16 rounded-2xl flex items-center justify-center" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
-                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="11" cy="11" r="8" />
-                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                      </svg>
-                    </div>
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold mb-2">
-                      Google Reviews: <span className="text-[#ef4444]">0</span>
-                    </h3>
-                    <p className="text-sm text-[#9a9cb8] leading-relaxed">
-                      Google is where 46% of local searches happen. Your competitors have 30–210+ Google
-                      reviews. Despite your perfect ratings on every other platform, you&rsquo;re invisible
-                      where it matters most. Every week without Google reviews is a week you&rsquo;re losing
-                      kitchen remodel leads worth $15K–$50K each.
-                    </p>
-                  </div>
-                  <div className="flex-shrink-0 text-center md:text-right">
-                    <div className="text-4xl font-black text-[#ef4444]">0</div>
-                    <div className="text-[0.65rem] text-white/40 uppercase tracking-wider">vs. 210+ for top competitor</div>
-                  </div>
+              <div className="max-w-2xl">
+                <div
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold mb-8"
+                  style={{ background: "rgba(232,134,58,0.15)", color: ORANGE, border: `1px solid rgba(232,134,58,0.3)` }}
+                >
+                  <span className="w-2 h-2 rounded-full" style={{ background: "#22C55E" }} />
+                  BuildZoom Top 7% of 222,249 TX Contractors
                 </div>
-              </GlassCard>
-            </Reveal>
-          </div>
-        </section>
 
-        {/* ================================================================ */}
-        {/* THE GAP — Data visualization                                      */}
-        {/* ================================================================ */}
-        <section id="the-gap" className="py-24 px-[4%] relative overflow-hidden" style={{ background: DARK }}>
-          <div className="max-w-5xl mx-auto">
-            <Reveal>
-              <SectionTag>The Problem</SectionTag>
-            </Reveal>
-            <Reveal delay={100}>
-              <SectionTitle white="5-Star Quality." orange="1.5/10 Visibility." />
-            </Reveal>
-            <Reveal delay={200}>
-              <p className="text-base font-light leading-relaxed max-w-xl mb-14 text-[#9a9cb8]">
-                Your work speaks for itself — universal 5-star reviews, BuildZoom&rsquo;s top 7% in
-                Texas. But online, you&rsquo;re practically invisible. The gap between the quality of
-                your work and your digital presence is costing you projects every single day.
-              </p>
-            </Reveal>
-            <Reveal delay={300}>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {[
-                  { number: "1.5/10", label: "Digital Presence Score", sub: "vs. 7+ for top competitors" },
-                  { number: "23", label: "Facebook Likes", sub: "vs. 500+ for competitors your size" },
-                  { number: "0", label: "Google Reviews", sub: "despite 5-star ratings everywhere else" },
-                  { number: "Oct 2024", label: "Last Social Post", sub: "5+ months of silence online" },
-                ].map((stat, i) => (
-                  <GlassCard key={i} className="p-6 text-center">
-                    <div
-                      className="text-2xl md:text-3xl font-black mb-2"
-                      style={{ color: ORANGE, animation: `countUp 0.5s ease-out ${300 + i * 150}ms both` }}
-                    >
-                      {stat.number}
-                    </div>
-                    <div className="text-xs font-bold uppercase tracking-wide text-white/80 mb-2">
-                      {stat.label}
-                    </div>
-                    <div className="text-[0.65rem] text-white/40 leading-snug">{stat.sub}</div>
-                  </GlassCard>
-                ))}
-              </div>
-            </Reveal>
-          </div>
-        </section>
+                <h1 className="text-4xl md:text-6xl font-black text-white leading-[1.08] tracking-tight mb-6">
+                  Plano&apos;s Most Trusted{" "}
+                  <span style={{ color: ORANGE }}>Home Remodeling</span>{" "}
+                  Team
+                </h1>
 
-        {/* ================================================================ */}
-        {/* COMPETITOR LANDSCAPE — Visual comparison (NEW)                     */}
-        {/* ================================================================ */}
-        <section className="py-24 px-[4%] relative overflow-hidden" style={{ background: BG }}>
-          <div className="max-w-5xl mx-auto">
-            <Reveal>
-              <SectionTag>Competitive Intelligence</SectionTag>
-            </Reveal>
-            <Reveal delay={100}>
-              <SectionTitle white="You vs. Your Competitors." orange="The Online Gap." />
-            </Reveal>
-            <Reveal delay={200}>
-              <p className="text-base font-light leading-relaxed max-w-xl mb-14 text-[#9a9cb8]">
-                Your top competitors don&rsquo;t do better work — they just show up online. Here&rsquo;s
-                how you compare on the metrics that drive leads in Plano.
-              </p>
-            </Reveal>
+                <p className="text-lg md:text-xl text-white/80 leading-relaxed mb-10 max-w-xl">
+                  Kitchen &amp; bath remodels, room additions, and full-home renovations — backed by
+                  universal 5-star reviews and 15+ years of Texas craftsmanship.
+                </p>
 
-            {/* Google Reviews comparison */}
-            <Reveal delay={300}>
-              <GlassCard className="p-8 mb-6">
-                <h3 className="text-sm font-bold uppercase tracking-wider text-white/60 mb-6">Google Reviews</h3>
-                <div className="space-y-5">
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <a
+                    href={whatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => trackConversion("hero_whatsapp_click")}
+                    className="cta-btn inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-lg text-white"
+                    style={{ background: ORANGE, animation: "pulseBtn 3s ease-in-out infinite" }}
+                  >
+                    Get a Free Estimate
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="white">
+                      <path d="M3 10h12m-4-4l4 4-4 4" stroke="white" strokeWidth="2" fill="none" strokeLinecap="round" />
+                    </svg>
+                  </a>
+                  <a
+                    href={phoneUrl}
+                    onClick={() => trackConversion("hero_phone_click")}
+                    className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-lg text-white border-2 border-white/30 hover:bg-white/10 transition"
+                  >
+                    <PhoneIcon /> (469) 444-7777
+                  </a>
+                </div>
+
+                {/* Trust stats */}
+                <div className="flex gap-8 mt-12">
                   {[
-                    { name: "DFW Improved", reviews: 210, pct: 100, color: "#4ecdc4" },
-                    { name: "Home Platinum", reviews: 98, pct: 47, color: "#4ecdc4" },
-                    { name: "BRYJO Roofing", reviews: 31, pct: 15, color: "#4ecdc4" },
-                    { name: "GP Homes", reviews: 0, pct: 2, color: "#ef4444", you: true },
-                  ].map((c, i) => (
-                    <div key={i}>
-                      <div className="flex justify-between mb-2">
-                        <span className={`text-sm font-semibold ${c.you ? "text-white" : "text-white/70"}`}>
-                          {c.name} {c.you && <span className="text-[0.6rem] uppercase tracking-wider ml-2 px-2 py-0.5 rounded" style={{ background: "rgba(239,68,68,0.15)", color: "#ef4444" }}>You</span>}
-                        </span>
-                        <span className="text-sm font-bold" style={{ color: c.color }}>{c.reviews}</span>
-                      </div>
-                      <div className="h-2 rounded-full overflow-hidden bg-white/5">
-                        <div
-                          className="h-full rounded-full"
-                          style={{
-                            width: `${c.pct}%`,
-                            background: c.you
-                              ? "linear-gradient(90deg, #ef4444, #ef444480)"
-                              : `linear-gradient(90deg, ${c.color}, ${c.color}80)`,
-                            animation: `barGrow 1s ease-out ${400 + i * 200}ms both`,
-                            ["--bar-width" as string]: `${c.pct}%`,
-                          }}
-                        />
-                      </div>
+                    { num: "15+", label: "Years in Business" },
+                    { num: "5.0", label: "Star Rating" },
+                    { num: "Top 7%", label: "TX Contractors" },
+                  ].map((s, i) => (
+                    <div key={i} style={{ animation: `countUp 0.6s ease-out ${400 + i * 150}ms both` }}>
+                      <div className="text-2xl md:text-3xl font-black text-white">{s.num}</div>
+                      <div className="text-xs text-white/60 font-medium mt-1">{s.label}</div>
                     </div>
                   ))}
                 </div>
-              </GlassCard>
-            </Reveal>
-
-            {/* Side-by-side stat cards */}
-            <Reveal delay={400}>
-              <div className="grid md:grid-cols-3 gap-4">
-                {[
-                  {
-                    label: "Online Visibility",
-                    you: "1.5/10",
-                    them: "7+/10",
-                    insight: "Top competitors dominate Google Maps local pack — 46% of all local search clicks",
-                  },
-                  {
-                    label: "Social Followers",
-                    you: "23",
-                    them: "500+",
-                    insight: "Before/after content on social media is the #1 lead generator for remodeling contractors",
-                  },
-                  {
-                    label: "Monthly Leads from Digital",
-                    you: "~0",
-                    them: "15-30+",
-                    insight: "Competitors invest in visibility, not quality — yet they capture the majority of leads",
-                  },
-                ].map((c, i) => (
-                  <GlassCard key={i} className="p-6">
-                    <div className="text-xs font-bold uppercase tracking-wider text-white/50 mb-4">{c.label}</div>
-                    <div className="flex items-baseline gap-3 mb-4">
-                      <div>
-                        <div className="text-2xl font-black text-[#ef4444]">{c.you}</div>
-                        <div className="text-[0.6rem] uppercase tracking-wider text-white/30">You</div>
-                      </div>
-                      <div className="text-white/20 text-lg">vs</div>
-                      <div>
-                        <div className="text-2xl font-black" style={{ color: "#4ecdc4" }}>{c.them}</div>
-                        <div className="text-[0.6rem] uppercase tracking-wider text-white/30">Competitors</div>
-                      </div>
-                    </div>
-                    <p className="text-[0.75rem] text-[#9a9cb8] leading-relaxed">{c.insight}</p>
-                  </GlassCard>
-                ))}
               </div>
             </Reveal>
           </div>
         </section>
 
         {/* ================================================================ */}
-        {/* YOUR STORY — Why this matters (NEW)                               */}
+        {/* TRUST MARQUEE */}
         {/* ================================================================ */}
-        <section className="py-24 px-[4%] relative overflow-hidden" style={{ background: DARK }}>
-          <div className="max-w-5xl mx-auto">
-            <Reveal>
-              <SectionTag>Your Story</SectionTag>
-            </Reveal>
-            <Reveal delay={100}>
-              <SectionTitle white="15 Years. Top 7%. Zero Presence." orange="That's the Gap We Close." />
+        <section style={{ background: NAVY, borderTop: `3px solid ${ORANGE}` }} className="py-4 overflow-hidden">
+          <div className="flex whitespace-nowrap" style={{ animation: "marquee 25s linear infinite" }}>
+            {[...Array(2)].map((_, i) => (
+              <div key={i} className="flex items-center gap-8 mr-8">
+                {[
+                  "★ BuildZoom Top 7%",
+                  "★ Universal 5-Star Reviews",
+                  "★ Licensed & Bonded",
+                  "★ 15+ Years Experience",
+                  "★ Full-Spectrum Service",
+                  "★ City of Plano Licensed",
+                  "★ Free Estimates",
+                ].map((t, j) => (
+                  <span key={j} className="text-sm font-semibold text-white/80 flex items-center gap-2">
+                    {t}
+                    <span style={{ color: ORANGE }}>◆</span>
+                  </span>
+                ))}
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ================================================================ */}
+        {/* PORTFOLIO GALLERY */}
+        {/* ================================================================ */}
+        <section style={{ background: WHITE }} className="py-20 md:py-28">
+          <div className="max-w-6xl mx-auto px-6">
+            <Reveal className="text-center mb-14">
+              <SectionTag>Our Work</SectionTag>
+              <SectionTitle text="Quality Craftsmanship," accent="Every Project" />
+              <p className="text-base max-w-xl mx-auto" style={{ color: TEXT_MID }}>
+                From kitchen transformations to complete home renovations — see why Plano homeowners trust GP Homes.
+              </p>
             </Reveal>
 
-            <div className="grid md:grid-cols-3 gap-6 mt-12">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
               {[
-                {
-                  icon: <HammerIcon />,
-                  title: "World-Class Work, Quiet Feed",
-                  text: "Since 2010, GP Homes has earned universal 5-star reviews and BuildZoom's top 7% ranking. But a Facebook page with 23 likes and zero Instagram means your best work stays invisible to the homeowners searching right now.",
-                },
-                {
-                  icon: <UsersIcon />,
-                  title: "Your Competitors Show Up — You Don't",
-                  text: "DFW Improved has 210+ Google reviews. BRYJO won NARI awards and posts weekly. They don't do better work — they just show up. In 2026, showing up online is the job interview before the estimate.",
-                },
-                {
-                  icon: <DollarIcon />,
-                  title: "$15K–$50K Per Lost Lead",
-                  text: "Every kitchen remodel in Plano is a $15K–$50K project. When a homeowner searches 'kitchen remodeling Plano TX,' they find your competitors first. Every day without online presence is revenue walking to someone else.",
-                },
-              ].map((card, i) => (
-                <Reveal key={i} delay={200 + i * 150}>
-                  <GlassCard className="p-8 h-full" glow>
-                    <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-5" style={{ background: ORANGE_DIM }}>
-                      {card.icon}
-                    </div>
-                    <h3 className="text-lg font-bold mb-3">{card.title}</h3>
-                    <p className="text-sm text-[#9a9cb8] leading-relaxed">{card.text}</p>
-                  </GlassCard>
+                { src: PHOTOS.heroKitchen, label: "Kitchen Remodel", span: true },
+                { src: PHOTOS.bathroom, label: "Bathroom Renovation", span: false },
+                { src: PHOTOS.flooring, label: "Flooring Installation", span: false },
+                { src: PHOTOS.exterior, label: "Exterior Renovation", span: true },
+                { src: PHOTOS.roomAddition, label: "Room Addition", span: false },
+                { src: PHOTOS.garage, label: "Garage Conversion", span: false },
+              ].map((item, i) => (
+                <Reveal
+                  key={i}
+                  delay={i * 100}
+                  className={`relative overflow-hidden rounded-xl group cursor-pointer gallery-img ${
+                    item.span ? "md:col-span-2" : ""
+                  }`}
+                  style={{ aspectRatio: item.span ? "2/1" : "1/1" } as any}
+                >
+                  <img
+                    src={item.src}
+                    alt={`${item.label} by GP Homes and Repairs`}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                  <div
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end"
+                    style={{ background: "linear-gradient(to top, rgba(27,58,92,0.8) 0%, transparent 60%)" }}
+                  >
+                    <span className="text-white font-bold text-sm p-4">{item.label}</span>
+                  </div>
                 </Reveal>
               ))}
             </div>
@@ -720,53 +372,237 @@ export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | nul
         </section>
 
         {/* ================================================================ */}
-        {/* WHAT WE FOUND — Market intelligence cards                         */}
+        {/* REVIEW STARS */}
         {/* ================================================================ */}
-        <section
-          id="what-we-found"
-          className="py-24 px-[4%] relative overflow-hidden"
-          style={{ background: BG }}
-        >
-          <div className="max-w-5xl mx-auto">
-            <Reveal>
-              <SectionTag>Your Market</SectionTag>
+        <section style={{ background: OFF_WHITE }} className="py-20 md:py-28">
+          <div className="max-w-6xl mx-auto px-6">
+            <Reveal className="text-center mb-14">
+              <SectionTag>Reputation</SectionTag>
+              <SectionTitle text="Universal 5-Star Reviews," accent="Zero Negatives" />
             </Reveal>
-            <Reveal delay={100}>
-              <SectionTitle white="We Researched Your Landscape." orange="Here's What We See." />
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+              {[
+                { platform: "HomeAdvisor", count: "12", rating: "5.0" },
+                { platform: "Networx", count: "8", rating: "5.0" },
+                { platform: "BestProsInTown", count: "18", rating: "5.0" },
+                { platform: "Yelp", count: "33+", rating: "4.9" },
+              ].map((r, i) => (
+                <Reveal key={i} delay={i * 100}>
+                  <div
+                    className="card-hover rounded-xl p-6 text-center"
+                    style={{
+                      background: WHITE,
+                      border: `1px solid ${BORDER}`,
+                      boxShadow: "0 2px 12px rgba(0,0,0,0.04)",
+                    }}
+                  >
+                    <div className="flex justify-center gap-0.5 mb-3">
+                      {[...Array(5)].map((_, j) => <StarIcon key={j} />)}
+                    </div>
+                    <div className="text-3xl font-black mb-1" style={{ color: NAVY }}>{r.rating}</div>
+                    <div className="text-xs font-semibold mb-1" style={{ color: TEXT_MID }}>
+                      {r.count} reviews
+                    </div>
+                    <div className="text-xs font-bold" style={{ color: ORANGE }}>{r.platform}</div>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+
+            {/* Google Reviews gap callout */}
+            <Reveal delay={500} className="mt-8">
+              <div
+                className="rounded-xl p-6 text-center"
+                style={{
+                  background: WARM_BG,
+                  border: `2px dashed ${ORANGE}`,
+                }}
+              >
+                <div className="text-xl font-bold mb-2" style={{ color: NAVY }}>
+                  But Google Reviews? <span style={{ color: ORANGE }}>0</span>
+                </div>
+                <p className="text-sm max-w-md mx-auto" style={{ color: TEXT_MID }}>
+                  The #1 platform where homeowners search — and GP Homes is invisible.
+                  That&apos;s the gap we close.
+                </p>
+              </div>
             </Reveal>
-            <Reveal delay={200}>
-              <p className="text-base font-light leading-relaxed max-w-xl mb-12 text-[#9a9cb8]">
-                Before building anything, we studied your market, your competitors, and your
-                positioning. Here are the three things you need to know.
+          </div>
+        </section>
+
+        {/* ================================================================ */}
+        {/* THE GAP — Data Visualization */}
+        {/* ================================================================ */}
+        <section style={{ background: NAVY }} className="py-20 md:py-28">
+          <div className="max-w-6xl mx-auto px-6">
+            <Reveal className="text-center mb-14">
+              <SectionTag light>The Problem</SectionTag>
+              <h2 className="text-3xl md:text-[2.6rem] font-extrabold text-white leading-[1.15] tracking-tight mb-5">
+                World-Class Work,{" "}
+                <span style={{ color: ORANGE }}>Zero Online Visibility</span>
+              </h2>
+              <p className="text-base max-w-xl mx-auto text-white/70">
+                Your reputation exists — but only where customers aren&apos;t looking.
+              </p>
+            </Reveal>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              {[
+                { stat: "1.5/10", label: "Digital Presence Score", desc: "Facebook: 23 likes, last post Oct 2024. No Instagram, no TikTok, no YouTube." },
+                { stat: "0", label: "Google Reviews", desc: "The #1 trust signal for local search — and GP Homes has none." },
+                { stat: "3", label: "Different Phone Numbers", desc: "NAP inconsistency across directories kills search rankings." },
+                { stat: "Broken", label: "Website Contact Forms", desc: "Raw shortcodes, no address, no hours — leads can't reach you." },
+              ].map((item, i) => (
+                <Reveal key={i} delay={i * 120}>
+                  <div
+                    className="rounded-xl p-6"
+                    style={{
+                      background: "rgba(255,255,255,0.06)",
+                      border: "1px solid rgba(255,255,255,0.1)",
+                    }}
+                  >
+                    <div className="text-4xl font-black mb-2" style={{ color: ORANGE }}>{item.stat}</div>
+                    <div className="text-base font-bold text-white mb-2">{item.label}</div>
+                    <p className="text-sm text-white/60">{item.desc}</p>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ================================================================ */}
+        {/* COMPETITOR COMPARISON */}
+        {/* ================================================================ */}
+        <section style={{ background: WHITE }} className="py-20 md:py-28">
+          <div className="max-w-6xl mx-auto px-6">
+            <Reveal className="text-center mb-14">
+              <SectionTag>Market Intel</SectionTag>
+              <SectionTitle text="Your Competitors" accent="Show Up — You Don't" />
+            </Reveal>
+
+            <div className="space-y-5 max-w-2xl mx-auto">
+              {[
+                { name: "DFW Improved", reviews: 210, pct: 100 },
+                { name: "Home Platinum", reviews: 98, pct: 47 },
+                { name: "BRYJO Roofing", reviews: 31, pct: 15 },
+                { name: "GP Homes", reviews: 0, pct: 0, highlight: true },
+              ].map((c, i) => (
+                <Reveal key={i} delay={i * 120}>
+                  <div className="flex items-center gap-4">
+                    <div
+                      className="w-36 text-right text-sm font-semibold flex-shrink-0"
+                      style={{ color: c.highlight ? ORANGE : NAVY }}
+                    >
+                      {c.name}
+                    </div>
+                    <div
+                      className="flex-1 h-10 rounded-lg overflow-hidden"
+                      style={{ background: OFF_WHITE, border: `1px solid ${BORDER}` }}
+                    >
+                      <div
+                        className="h-full rounded-lg flex items-center px-3"
+                        style={{
+                          ["--bar-width" as any]: `${c.pct}%`,
+                          width: `${c.pct}%`,
+                          animation: `barGrow 1.2s ease-out ${300 + i * 200}ms both`,
+                          background: c.highlight
+                            ? `repeating-linear-gradient(45deg, rgba(232,134,58,0.15), rgba(232,134,58,0.15) 4px, transparent 4px, transparent 8px)`
+                            : `linear-gradient(90deg, ${NAVY}, ${NAVY_LIGHT})`,
+                        }}
+                      >
+                        {c.reviews > 0 && (
+                          <span className="text-xs font-bold text-white">{c.reviews} reviews</span>
+                        )}
+                      </div>
+                    </div>
+                    {c.highlight && (
+                      <span className="text-xs font-bold flex-shrink-0" style={{ color: ORANGE }}>
+                        ← You
+                      </span>
+                    )}
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ================================================================ */}
+        {/* YOUR STORY — Why This Matters */}
+        {/* ================================================================ */}
+        <section style={{ background: WARM_BG }} className="py-20 md:py-28">
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              {/* Image */}
+              <Reveal>
+                <div className="rounded-2xl overflow-hidden shadow-xl">
+                  <img
+                    src={PHOTOS.exterior}
+                    alt="GP Homes exterior renovation work"
+                    className="w-full h-80 md:h-[420px] object-cover"
+                    loading="lazy"
+                  />
+                </div>
+              </Reveal>
+
+              {/* Content */}
+              <Reveal delay={200}>
+                <SectionTag>Why It Matters</SectionTag>
+                <h2 className="text-3xl md:text-4xl font-extrabold leading-[1.15] mb-6" style={{ color: NAVY }}>
+                  World-Class Work,{" "}
+                  <span style={{ color: ORANGE }}>Quiet Feed</span>
+                </h2>
+                <div className="space-y-4">
+                  {[
+                    "You're in the top 7% of Texas contractors — but Plano homeowners can't find you online.",
+                    "Your competitors with inferior work are winning leads through Google visibility alone.",
+                    "Every lost kitchen lead = $15K–$50K in revenue walking to a competitor.",
+                    "Spring 2026 is peak booking season in the #1 real estate market in America. Time matters.",
+                  ].map((txt, i) => (
+                    <div key={i} className="flex gap-3 items-start">
+                      <div className="mt-0.5 flex-shrink-0"><CheckIcon /></div>
+                      <p className="text-sm leading-relaxed" style={{ color: TEXT_MID }}>{txt}</p>
+                    </div>
+                  ))}
+                </div>
+              </Reveal>
+            </div>
+          </div>
+        </section>
+
+        {/* ================================================================ */}
+        {/* WEBSITE ISSUES — Quick Wins */}
+        {/* ================================================================ */}
+        <section style={{ background: WHITE }} className="py-20 md:py-28">
+          <div className="max-w-6xl mx-auto px-6">
+            <Reveal className="text-center mb-14">
+              <SectionTag>Quick Wins</SectionTag>
+              <SectionTitle text="Your Website Is" accent="Losing You Leads" />
+              <p className="text-base max-w-xl mx-auto" style={{ color: TEXT_MID }}>
+                We found critical issues preventing customers from contacting you.
               </p>
             </Reveal>
 
             <div className="grid md:grid-cols-3 gap-6">
               {[
-                {
-                  icon: <MapPinIcon />,
-                  title: "Market Opportunity",
-                  text: "Plano, TX — $146K average household income, homes valued $415K–$790K, mostly 1970s–80s housing stock. These homes need updates. DFW is the #1 real estate market in the US, and spring 2026 is peak booking season.",
-                },
-                {
-                  icon: <SearchIcon />,
-                  title: "Your Competition",
-                  text: "9,706 contractors operating in Plano alone. Your top competitors — DFW Improved, BRYJO — dominate through online visibility, not better work quality. They win the trust battle before a single phone call.",
-                },
-                {
-                  icon: <ShieldIcon />,
-                  title: "Your Advantage",
-                  text: "BuildZoom ranks you in the top 7% of 222,249 Texas contractors. You have universal 5-star reviews across every platform. Full-spectrum service (handyman to major remodel) is rare — most competitors only do one.",
-                },
-              ].map((card, i) => (
-                <Reveal key={i} delay={300 + i * 150}>
-                  <GlassCard className="p-8 h-full" glow>
-                    <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-5" style={{ background: ORANGE_DIM }}>
-                      {card.icon}
-                    </div>
-                    <h3 className="text-lg font-bold mb-3">{card.title}</h3>
-                    <p className="text-sm text-[#9a9cb8] leading-relaxed">{card.text}</p>
-                  </GlassCard>
+                { icon: "🔴", title: "Broken Contact Forms", desc: "Raw shortcode visible instead of working forms. Customers literally cannot reach you." },
+                { icon: "🔴", title: "No Address or Hours", desc: "No physical address, email, or business hours on the website. Trust killer for homeowners." },
+                { icon: "🟡", title: "3 Different Phone Numbers", desc: "NAP inconsistency across directories confuses Google and customers alike." },
+                { icon: "🟡", title: "Broken Reviews Page", desc: "Reviews page shows raw code instead of your stellar ratings. Wasted social proof." },
+                { icon: "🟡", title: "Duplicate Content", desc: "Homepage has duplicate sections that hurt SEO ranking and look unprofessional." },
+                { icon: "🔴", title: "BBB Not Accredited", desc: "Listed but not verified. Easy fix that adds instant credibility for enterprise clients." },
+              ].map((issue, i) => (
+                <Reveal key={i} delay={i * 100}>
+                  <div
+                    className="card-hover rounded-xl p-6"
+                    style={{ background: OFF_WHITE, border: `1px solid ${BORDER}` }}
+                  >
+                    <div className="text-2xl mb-3">{issue.icon}</div>
+                    <div className="text-sm font-bold mb-2" style={{ color: NAVY }}>{issue.title}</div>
+                    <p className="text-sm" style={{ color: TEXT_MID }}>{issue.desc}</p>
+                  </div>
                 </Reveal>
               ))}
             </div>
@@ -774,101 +610,46 @@ export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | nul
         </section>
 
         {/* ================================================================ */}
-        {/* WEBSITE ISSUES                                                    */}
+        {/* HOW IT WORKS */}
         {/* ================================================================ */}
-        <section className="py-24 px-[4%] relative overflow-hidden" style={{ background: DARK }}>
-          <div className="max-w-5xl mx-auto">
-            <Reveal>
-              <SectionTag>Quick Wins</SectionTag>
-            </Reveal>
-            <Reveal delay={100}>
-              <SectionTitle white="Your Website Has" orange="Easy Fixes." />
-            </Reveal>
-            <Reveal delay={200}>
-              <p className="text-base font-light leading-relaxed max-w-xl mb-12 text-[#9a9cb8]">
-                We went through your current online presence and identified specific issues that
-                are costing you credibility and leads right now. Every one of these is fixable.
-              </p>
-            </Reveal>
-            <Reveal delay={300}>
-              <div className="grid md:grid-cols-2 gap-4">
-                {[
-                  { title: "Broken reviews page", desc: "Raw WordPress shortcode displaying instead of actual reviews" },
-                  { title: "Contact forms not working", desc: "Potential customers can't reach you through your own website" },
-                  { title: "No address, email, or business hours", desc: "Essential trust signals missing from your site entirely" },
-                  { title: "Three different phone numbers across directories", desc: "NAP inconsistency hurts Google ranking and confuses customers" },
-                  { title: "Copyright still says 2024", desc: "Signals an unmaintained, potentially inactive business" },
-                  { title: "BBB listed but not accredited", desc: "An unfinished credibility signal that raises questions instead of trust" },
-                ].map((issue, i) => (
-                  <GlassCard key={i} className="p-6 flex items-start gap-4">
-                    <div className="flex-shrink-0 mt-1">
-                      <XCircleIcon />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-sm mb-1">{issue.title}</h3>
-                      <p className="text-xs text-white/50 leading-relaxed">{issue.desc}</p>
-                    </div>
-                  </GlassCard>
-                ))}
-              </div>
-            </Reveal>
-          </div>
-        </section>
-
-        {/* ================================================================ */}
-        {/* HOW IT WORKS                                                      */}
-        {/* ================================================================ */}
-        <section className="py-24 px-[4%] relative overflow-hidden" style={{ background: BG }}>
-          <div className="max-w-5xl mx-auto">
-            <Reveal>
-              <SectionTag>What Happens Next</SectionTag>
-            </Reveal>
-            <Reveal delay={100}>
-              <SectionTitle white="You Say Yes." orange="We Handle Everything." />
-            </Reveal>
-            <Reveal delay={200}>
-              <p className="text-base font-light leading-relaxed max-w-xl mb-14 text-[#9a9cb8]">
-                Everything you&rsquo;ve seen on this page was researched before we even spoke. Here&rsquo;s
-                what happens when you give us the green light.
-              </p>
+        <section style={{ background: OFF_WHITE }} className="py-20 md:py-28">
+          <div className="max-w-6xl mx-auto px-6">
+            <Reveal className="text-center mb-14">
+              <SectionTag>How It Works</SectionTag>
+              <SectionTitle text="From Invisible to" accent="Fully Booked" />
             </Reveal>
 
             <div className="grid md:grid-cols-3 gap-8">
               {[
                 {
                   step: "01",
-                  icon: <PhoneIcon />,
-                  title: "Quick Call",
-                  text: "15 minutes. We walk through our findings, answer your questions, and customize the strategy to your goals and budget.",
+                  title: "Free Consultation",
+                  desc: "We audit your digital presence, identify gaps, and show you exactly what your competitors are doing that you're not.",
                 },
                 {
                   step: "02",
-                  icon: <SettingsIcon />,
-                  title: "We Build Your Engine",
-                  text: "Fix website issues, set up Google review collection, launch your social media presence, and optimize your Google Business Profile.",
+                  title: "Custom Strategy",
+                  desc: "Get a tailored plan: Google Maps optimization, review generation, social media launch, and NAP cleanup — all handled for you.",
                 },
                 {
                   step: "03",
-                  icon: <EyeIcon />,
-                  title: "Watch It Work",
-                  text: "Competitor monitoring, review alerts, monthly reports — all automated, all delivered straight to your WhatsApp.",
+                  title: "Watch Leads Flow",
+                  desc: "Our AI-powered monitoring tracks competitors, generates reviews, and keeps your business visible 24/7. You focus on the work you love.",
                 },
               ].map((s, i) => (
-                <Reveal key={i} delay={300 + i * 150}>
-                  <div className="relative">
-                    <span
-                      className="absolute -top-4 -left-2 text-[5rem] font-black leading-none pointer-events-none select-none"
-                      style={{ color: `${ORANGE}08` }}
+                <Reveal key={i} delay={i * 150}>
+                  <div
+                    className="card-hover rounded-xl p-8 relative"
+                    style={{ background: WHITE, border: `1px solid ${BORDER}`, boxShadow: "0 2px 12px rgba(0,0,0,0.04)" }}
+                  >
+                    <div
+                      className="text-5xl font-black mb-4"
+                      style={{ color: ORANGE, opacity: 0.15 }}
                     >
                       {s.step}
-                    </span>
-                    <GlassCard className="p-8 relative">
-                      <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-5" style={{ background: ORANGE_DIM }}>
-                        {s.icon}
-                      </div>
-                      <h3 className="text-lg font-bold mb-3">{s.title}</h3>
-                      <p className="text-sm text-[#9a9cb8] leading-relaxed">{s.text}</p>
-                    </GlassCard>
+                    </div>
+                    <h3 className="text-lg font-bold mb-3" style={{ color: NAVY }}>{s.title}</h3>
+                    <p className="text-sm leading-relaxed" style={{ color: TEXT_MID }}>{s.desc}</p>
                   </div>
                 </Reveal>
               ))}
@@ -877,347 +658,311 @@ export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | nul
         </section>
 
         {/* ================================================================ */}
-        {/* SERVICES — What they actually do (NEW)                            */}
+        {/* SERVICES GRID */}
         {/* ================================================================ */}
-        <section className="py-24 px-[4%] relative overflow-hidden" style={{ background: DARK }}>
-          <div className="max-w-5xl mx-auto">
-            <Reveal>
-              <SectionTag>Full-Spectrum Contractor</SectionTag>
-            </Reveal>
-            <Reveal delay={100}>
-              <SectionTitle white="One Team." orange="Every Project." />
-            </Reveal>
-            <Reveal delay={200}>
-              <p className="text-base font-light leading-relaxed max-w-xl mb-12 text-[#9a9cb8]">
-                Most competitors only do remodels or only do handyman work. GP Homes does it all — and
-                that&rsquo;s a competitive advantage most Plano homeowners don&rsquo;t know about yet.
-              </p>
-            </Reveal>
-            <Reveal delay={300}>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {[
-                  "Kitchen Remodeling",
-                  "Bathroom Remodeling",
-                  "Room Additions",
-                  "Garage Conversions",
-                  "Flooring",
-                  "Painting",
-                  "Electrical",
-                  "Plumbing",
-                  "Drywall",
-                  "Fencing",
-                  "Concrete Work",
-                  "Handyman Services",
-                ].map((service, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center gap-2.5 px-4 py-3 rounded-lg border border-white/[0.06] text-sm text-white/70 backdrop-blur-sm"
-                    style={{ background: "rgba(22, 26, 51, 0.4)" }}
-                  >
-                    <CheckIcon size={12} />
-                    {service}
+        <section style={{ background: WHITE }} className="py-20 md:py-28">
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              {/* Services list */}
+              <Reveal>
+                <SectionTag>Full Spectrum</SectionTag>
+                <SectionTitle text="One Team for" accent="Everything" />
+                <p className="text-sm mb-8" style={{ color: TEXT_MID }}>
+                  Most contractors only do handyman or major remodels. GP Homes does both — and everything in between.
+                </p>
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    "Kitchen Remodels",
+                    "Bathroom Renovation",
+                    "Room Additions",
+                    "Garage Conversions",
+                    "Flooring & Tile",
+                    "Painting & Drywall",
+                    "Fencing & Concrete",
+                    "Electrical Work",
+                    "Plumbing",
+                    "Handyman Services",
+                    "Home Exteriors",
+                    "Custom Projects",
+                  ].map((svc, i) => (
+                    <div key={i} className="flex items-center gap-2 text-sm py-2" style={{ color: TEXT_DARK }}>
+                      <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: ORANGE }} />
+                      {svc}
+                    </div>
+                  ))}
+                </div>
+              </Reveal>
+
+              {/* Image collage */}
+              <Reveal delay={200}>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="rounded-xl overflow-hidden shadow-lg">
+                    <img src={PHOTOS.bathroom} alt="Bathroom renovation" className="w-full h-48 object-cover" loading="lazy" />
                   </div>
-                ))}
-              </div>
-            </Reveal>
+                  <div className="rounded-xl overflow-hidden shadow-lg mt-8">
+                    <img src={PHOTOS.flooring} alt="Flooring installation" className="w-full h-48 object-cover" loading="lazy" />
+                  </div>
+                  <div className="rounded-xl overflow-hidden shadow-lg">
+                    <img src={PHOTOS.roomAddition} alt="Room addition" className="w-full h-48 object-cover" loading="lazy" />
+                  </div>
+                  <div className="rounded-xl overflow-hidden shadow-lg mt-8">
+                    <img src={PHOTOS.garage} alt="Garage conversion" className="w-full h-48 object-cover" loading="lazy" />
+                  </div>
+                </div>
+              </Reveal>
+            </div>
           </div>
         </section>
 
         {/* ================================================================ */}
-        {/* PRICING                                                           */}
+        {/* MARKET CONTEXT */}
         {/* ================================================================ */}
-        <section className="py-24 px-[4%] relative overflow-hidden" style={{ background: BG }}>
-          <div className="max-w-5xl mx-auto text-center">
-            <Reveal>
-              <SectionTag>Investment</SectionTag>
-            </Reveal>
-            <Reveal delay={100}>
-              <h2 className="text-3xl md:text-[2.8rem] font-black leading-[1.1] tracking-tight mb-4">
-                Pick Your{" "}
-                <span className="bg-gradient-to-r from-[#E8863A] via-[#f0a860] to-[#E8863A] bg-clip-text text-transparent">
-                  Growth Plan
-                </span>
+        <section style={{ background: NAVY }} className="py-20 md:py-28">
+          <div className="max-w-6xl mx-auto px-6">
+            <Reveal className="text-center mb-14">
+              <SectionTag light>Plano Market</SectionTag>
+              <h2 className="text-3xl md:text-[2.6rem] font-extrabold text-white leading-[1.15] tracking-tight mb-5">
+                The Opportunity Is{" "}
+                <span style={{ color: ORANGE }}>Massive</span>
               </h2>
             </Reveal>
-            <Reveal delay={200}>
-              <p className="text-sm text-white/50 mb-14">
-                No setup fees. No contracts. Cancel anytime.
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[
+                { val: "$146K", label: "Avg Household Income" },
+                { val: "$415K+", label: "Median Home Price" },
+                { val: "#1", label: "US Real Estate Market" },
+                { val: "1970s", label: "Housing Stock = Remodel Ready" },
+              ].map((m, i) => (
+                <Reveal key={i} delay={i * 100}>
+                  <div
+                    className="text-center p-6 rounded-xl"
+                    style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
+                  >
+                    <div className="text-2xl md:text-3xl font-black mb-2" style={{ color: ORANGE }}>{m.val}</div>
+                    <div className="text-xs text-white/60 font-medium">{m.label}</div>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ================================================================ */}
+        {/* PRICING */}
+        {/* ================================================================ */}
+        <section style={{ background: WHITE }} className="py-20 md:py-28">
+          <div className="max-w-6xl mx-auto px-6">
+            <Reveal className="text-center mb-14">
+              <SectionTag>Pricing</SectionTag>
+              <SectionTitle text="Grow Your Online Presence" accent="Starting at $297/mo" />
+              <p className="text-base max-w-xl mx-auto" style={{ color: TEXT_MID }}>
+                Everything you need to dominate Plano&apos;s local search — managed for you.
               </p>
             </Reveal>
 
-            <Reveal delay={300}>
-              <div className="grid md:grid-cols-3 gap-6 text-left">
-                {/* Starter */}
-                <GlassCard className="p-8">
-                  <h3 className="text-lg font-bold mb-1">Starter</h3>
-                  <div className="flex items-baseline gap-1 mb-4">
-                    <span className="text-4xl font-black" style={{ color: ORANGE }}>$297</span>
-                    <span className="text-sm text-white/40">/mo</span>
-                  </div>
-                  <p className="text-sm text-[#9a9cb8] mb-6">
-                    Stay informed on your market with automated intelligence.
-                  </p>
-                  <div className="space-y-3 mb-8">
-                    {[
-                      "Weekly competitor report",
-                      "Review monitoring across platforms",
-                      "WhatsApp alerts for new reviews",
-                      "Monthly market summary",
-                      "NAP consistency audit",
-                    ].map((f, i) => (
-                      <div key={i} className="flex items-center gap-2.5 text-sm text-white/70">
-                        <CheckIcon /> {f}
-                      </div>
-                    ))}
-                  </div>
-                  <a
-                    href={WA_LINK}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block w-full text-center py-3 text-xs font-bold tracking-[0.1em] uppercase rounded-full border transition-all duration-300 hover:-translate-y-0.5"
-                    style={{ borderColor: ORANGE, color: ORANGE }}
-                    onClick={() => trackConversion("pricing_starter_click")}
-                  >
-                    Get Started
-                  </a>
-                </GlassCard>
-
-                {/* Growth — featured */}
-                <div className="relative">
+            <div className="grid md:grid-cols-3 gap-6">
+              {[
+                {
+                  tier: "Starter",
+                  price: "$297",
+                  desc: "Essential monitoring",
+                  features: ["Weekly competitor reports", "Review monitoring", "WhatsApp alerts", "Monthly performance snapshot"],
+                  action: "pricing_starter_click",
+                },
+                {
+                  tier: "Growth",
+                  price: "$497",
+                  desc: "Full visibility engine",
+                  features: ["Daily monitoring & alerts", "AI review responses", "Full analytics dashboard", "Social media content calendar", "NAP cleanup & management"],
+                  popular: true,
+                  action: "pricing_growth_click",
+                },
+                {
+                  tier: "Premium",
+                  price: "$797",
+                  desc: "Done-for-you domination",
+                  features: ["Everything in Growth", "GBP post automation", "Bi-weekly strategy calls", "Priority support", "Competitor ad monitoring"],
+                  action: "pricing_premium_click",
+                },
+              ].map((p, i) => (
+                <Reveal key={i} delay={i * 150}>
                   <div
-                    className="absolute -top-3 left-1/2 -translate-x-1/2 text-[0.6rem] font-bold tracking-[0.2em] uppercase px-4 py-1 rounded-full z-10"
-                    style={{ background: ORANGE, color: DARK }}
+                    className="card-hover rounded-xl p-8 relative"
+                    style={{
+                      background: p.popular ? NAVY : WHITE,
+                      border: p.popular ? `2px solid ${ORANGE}` : `1px solid ${BORDER}`,
+                      boxShadow: p.popular ? `0 8px 40px rgba(27,58,92,0.15)` : "0 2px 12px rgba(0,0,0,0.04)",
+                    }}
                   >
-                    Most Popular
-                  </div>
-                  <GlassCard className="p-8 ring-1 ring-[#E8863A]/30" glow>
-                    <h3 className="text-lg font-bold mb-1">Growth</h3>
-                    <div className="flex items-baseline gap-1 mb-4">
-                      <span className="text-4xl font-black" style={{ color: ORANGE }}>$497</span>
-                      <span className="text-sm text-white/40">/mo</span>
+                    {p.popular && (
+                      <div
+                        className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold text-white"
+                        style={{ background: ORANGE }}
+                      >
+                        Most Popular
+                      </div>
+                    )}
+                    <div className="text-sm font-bold mb-1" style={{ color: p.popular ? ORANGE : TEXT_LIGHT }}>
+                      {p.tier}
                     </div>
-                    <p className="text-sm text-[#9a9cb8] mb-6">
-                      The full engine — monitoring, optimization, and active management.
+                    <div className="flex items-baseline gap-1 mb-1">
+                      <span className="text-4xl font-black" style={{ color: p.popular ? WHITE : NAVY }}>{p.price}</span>
+                      <span className="text-sm" style={{ color: p.popular ? "rgba(255,255,255,0.5)" : TEXT_LIGHT }}>/mo</span>
+                    </div>
+                    <p className="text-sm mb-6" style={{ color: p.popular ? "rgba(255,255,255,0.6)" : TEXT_MID }}>
+                      {p.desc}
                     </p>
-                    <div className="space-y-3 mb-8">
-                      {[
-                        "Daily competitor monitoring",
-                        "AI-powered review responses",
-                        "Full analytics dashboard",
-                        "Google Maps optimization",
-                        "Social media content calendar",
-                        "Google Business Profile management",
-                        "WhatsApp approval workflow",
-                        "Monthly performance report",
-                      ].map((f, i) => (
-                        <div key={i} className="flex items-center gap-2.5 text-sm text-white/70">
+                    <ul className="space-y-3 mb-8">
+                      {p.features.map((f, j) => (
+                        <li key={j} className="flex items-center gap-2 text-sm" style={{ color: p.popular ? "rgba(255,255,255,0.85)" : TEXT_DARK }}>
                           <CheckIcon /> {f}
-                        </div>
+                        </li>
                       ))}
-                    </div>
+                    </ul>
                     <a
-                      href={WA_LINK}
+                      href={whatsappUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="block w-full text-center py-3 text-xs font-bold tracking-[0.1em] uppercase rounded-full transition-all duration-300 hover:-translate-y-0.5"
+                      onClick={() => trackConversion(p.action)}
+                      className="cta-btn block text-center w-full py-3 rounded-lg font-bold text-sm"
                       style={{
-                        background: `linear-gradient(135deg, ${ORANGE}, #f0a860)`,
-                        color: DARK,
-                        boxShadow: "0 4px 15px rgba(232,134,58,0.25)",
+                        background: p.popular ? ORANGE : "transparent",
+                        color: p.popular ? WHITE : NAVY,
+                        border: p.popular ? "none" : `2px solid ${NAVY}`,
                       }}
-                      onClick={() => trackConversion("pricing_growth_click")}
                     >
                       Get Started
                     </a>
-                  </GlassCard>
-                </div>
-
-                {/* Premium */}
-                <GlassCard className="p-8">
-                  <h3 className="text-lg font-bold mb-1">Premium</h3>
-                  <div className="flex items-baseline gap-1 mb-4">
-                    <span className="text-4xl font-black" style={{ color: ORANGE }}>$797</span>
-                    <span className="text-sm text-white/40">/mo</span>
                   </div>
-                  <p className="text-sm text-[#9a9cb8] mb-6">
-                    Everything in Growth plus hands-on strategy and priority support.
-                  </p>
-                  <div className="space-y-3 mb-8">
-                    {[
-                      "Everything in Growth",
-                      "GBP post automation",
-                      "Bi-weekly strategy calls",
-                      "Priority support",
-                      "Website issue monitoring",
-                      "Quarterly competitive deep-dive",
-                    ].map((f, i) => (
-                      <div key={i} className="flex items-center gap-2.5 text-sm text-white/70">
-                        <CheckIcon /> {f}
-                      </div>
-                    ))}
-                  </div>
-                  <a
-                    href={WA_LINK}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block w-full text-center py-3 text-xs font-bold tracking-[0.1em] uppercase rounded-full border transition-all duration-300 hover:-translate-y-0.5"
-                    style={{ borderColor: ORANGE, color: ORANGE }}
-                    onClick={() => trackConversion("pricing_premium_click")}
-                  >
-                    Get Started
-                  </a>
-                </GlassCard>
-              </div>
-            </Reveal>
+                </Reveal>
+              ))}
+            </div>
           </div>
         </section>
 
         {/* ================================================================ */}
-        {/* ROI — Market opportunity (NEW)                                    */}
+        {/* ROI */}
         {/* ================================================================ */}
-        <section className="py-24 px-[4%] relative overflow-hidden" style={{ background: DARK }}>
-          <div className="max-w-5xl mx-auto">
+        <section style={{ background: WARM_BG }} className="py-20 md:py-28">
+          <div className="max-w-3xl mx-auto px-6 text-center">
             <Reveal>
-              <SectionTag>The Math</SectionTag>
-            </Reveal>
-            <Reveal delay={100}>
-              <SectionTitle white="One Kitchen Lead Pays for" orange="a Full Year." />
-            </Reveal>
-            <Reveal delay={200}>
-              <p className="text-base font-light leading-relaxed max-w-xl mb-14 text-[#9a9cb8]">
-                Plano homeowners are searching right now. Spring is peak season in DFW — the #1 real
-                estate market in the US. Here&rsquo;s what the numbers look like.
-              </p>
-            </Reveal>
-
-            <Reveal delay={300}>
-              <div className="grid md:grid-cols-4 gap-4 mb-10">
-                {[
-                  { value: "$15K–$50K", label: "Avg Kitchen Remodel", sub: "in Plano, TX" },
-                  { value: "$146K", label: "Avg Household Income", sub: "prime renovation budget" },
-                  { value: "9,706", label: "Contractors in Plano", sub: "most are invisible online" },
-                  { value: "Spring '26", label: "Peak Booking Season", sub: "starting right now" },
-                ].map((stat, i) => (
-                  <GlassCard key={i} className="p-6 text-center">
-                    <div className="text-xl md:text-2xl font-black mb-1" style={{ color: ORANGE }}>{stat.value}</div>
-                    <div className="text-xs font-bold text-white/80 mb-1">{stat.label}</div>
-                    <div className="text-[0.65rem] text-white/40">{stat.sub}</div>
-                  </GlassCard>
-                ))}
-              </div>
-            </Reveal>
-
-            <Reveal delay={400}>
-              <GlassCard className="p-8 md:p-10" glow>
-                <div className="flex flex-col md:flex-row items-center gap-8 text-center md:text-left">
-                  <div className="flex-shrink-0">
-                    <div
-                      className="w-20 h-20 rounded-2xl flex items-center justify-center"
-                      style={{ background: ORANGE_DIM, animation: "pulseGlow 3s ease-in-out infinite" }}
-                    >
-                      <TrendingUpIcon />
-                    </div>
+              <SectionTag>ROI</SectionTag>
+              <SectionTitle text="One Kitchen Lead Pays for" accent="a Full Year" />
+              <div
+                className="rounded-xl p-8 mt-8"
+                style={{ background: WHITE, border: `1px solid ${BORDER}`, boxShadow: "0 4px 20px rgba(0,0,0,0.06)" }}
+              >
+                <div className="grid grid-cols-3 gap-6">
+                  <div>
+                    <div className="text-3xl font-black mb-1" style={{ color: NAVY }}>$297</div>
+                    <div className="text-xs" style={{ color: TEXT_LIGHT }}>Monthly Investment</div>
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold mb-2">The ROI is simple.</h3>
-                    <p className="text-sm text-[#9a9cb8] leading-relaxed max-w-2xl">
-                      At $497/mo, your annual investment is $5,964. One kitchen remodel lead is worth
-                      $15,000–$50,000. That means <strong className="text-white">a single converted
-                      lead pays for 2.5–8 years of service</strong>. Your competitors are getting those
-                      leads right now because they show up online. You should too.
-                    </p>
+                    <div className="text-3xl font-black mb-1" style={{ color: ORANGE }}>$15K–$50K</div>
+                    <div className="text-xs" style={{ color: TEXT_LIGHT }}>Per Kitchen Lead</div>
+                  </div>
+                  <div>
+                    <div className="text-3xl font-black mb-1" style={{ color: "#22C55E" }}>50x–168x</div>
+                    <div className="text-xs" style={{ color: TEXT_LIGHT }}>Return on Investment</div>
                   </div>
                 </div>
-              </GlassCard>
+              </div>
             </Reveal>
           </div>
         </section>
 
         {/* ================================================================ */}
-        {/* FINAL CTA                                                         */}
+        {/* FINAL CTA */}
         {/* ================================================================ */}
-        <section className="py-24 px-[4%] relative overflow-hidden" style={{ background: BG }}>
-          <div className="absolute inset-0">
-            <div
-              className="absolute inset-0"
-              style={{
-                background: `radial-gradient(ellipse at 50% 50%, rgba(232,134,58,0.06) 0%, transparent 60%)`,
-              }}
-            />
+        <section
+          className="py-20 md:py-28 relative overflow-hidden"
+          style={{
+            background: `linear-gradient(135deg, ${NAVY} 0%, ${NAVY_LIGHT} 100%)`,
+          }}
+        >
+          {/* Background image subtle overlay */}
+          <div className="absolute inset-0 opacity-10">
+            <img src={PHOTOS.heroKitchen} alt="" className="w-full h-full object-cover" />
           </div>
-          <div className="max-w-3xl mx-auto text-center relative z-10">
+
+          <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
             <Reveal>
-              <SectionTag>Ready?</SectionTag>
-            </Reveal>
-            <Reveal delay={100}>
-              <h2 className="text-3xl md:text-[2.8rem] font-black leading-[1.1] tracking-tight mb-6">
-                Your Competitors Are Online.{" "}
-                <span className="bg-gradient-to-r from-[#E8863A] via-[#f0a860] to-[#E8863A] bg-clip-text text-transparent">
-                  You Should Be Too.
-                </span>
+              <h2 className="text-3xl md:text-5xl font-black text-white leading-tight mb-6">
+                Stop Losing Leads to{" "}
+                <span style={{ color: ORANGE }}>Less Qualified Competitors</span>
               </h2>
-            </Reveal>
-            <Reveal delay={200}>
-              <p className="text-base font-light leading-relaxed max-w-xl mx-auto mb-10 text-[#9a9cb8]">
-                Spring is peak booking season in DFW. Every day without an online presence is a
-                $15K–$50K kitchen remodel that goes to someone else. Let&rsquo;s make sure the next
-                one goes to you.
+              <p className="text-lg text-white/70 mb-10 max-w-xl mx-auto">
+                Spring is peak season. Your competitors are already getting the calls. Let&apos;s change that.
               </p>
-            </Reveal>
-            <Reveal delay={300}>
-              <a
-                href={WA_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-3 px-10 py-5 font-bold text-sm tracking-[0.1em] uppercase rounded-full transition-all duration-300 hover:-translate-y-1"
-                style={{
-                  background: `linear-gradient(135deg, ${ORANGE}, #f0a860, ${ORANGE})`,
-                  color: DARK,
-                  boxShadow: `0 6px 25px rgba(232,134,58,0.3)`,
-                }}
-                onClick={() => trackConversion("final_cta_whatsapp_click")}
-              >
-                <WhatsAppIcon /> Let&rsquo;s Talk on WhatsApp
-              </a>
-            </Reveal>
-            <Reveal delay={400}>
-              <p className="text-xs text-white/30 mt-8 max-w-md mx-auto">
-                Join 222,249 Texas contractors who know — the best work wins when people can find it.
-              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackConversion("final_cta_whatsapp_click")}
+                  className="cta-btn inline-flex items-center justify-center gap-2 px-10 py-4 rounded-xl font-bold text-lg text-white"
+                  style={{ background: ORANGE, animation: "pulseBtn 3s ease-in-out infinite" }}
+                >
+                  Get Your Free Audit
+                </a>
+                <a
+                  href={phoneUrl}
+                  onClick={() => trackConversion("final_cta_phone_click")}
+                  className="inline-flex items-center justify-center gap-2 px-10 py-4 rounded-xl font-bold text-lg text-white border-2 border-white/30 hover:bg-white/10 transition"
+                >
+                  <PhoneIcon /> (469) 444-7777
+                </a>
+              </div>
             </Reveal>
           </div>
         </section>
 
         {/* ================================================================ */}
-        {/* FOOTER                                                            */}
+        {/* FOOTER */}
         {/* ================================================================ */}
-        <footer className="py-10 px-[4%] border-t border-white/5" style={{ background: DARK }}>
-          <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-white/30">
-            <div className="flex flex-col items-center md:items-start gap-1">
-              <span className="font-bold text-white/60">GP Homes and Repairs</span>
-              <span>3624 Marwick Drive, Plano, TX 75075</span>
-            </div>
-            <div className="flex flex-col items-center gap-1">
-              <span className="font-semibold text-white/50">(469) 444-7777</span>
-              <span>Licensed &bull; Bonded &bull; Insured</span>
-            </div>
-            <div className="text-center md:text-right">
-              <span>Powered by </span>
-              <span className="font-bold" style={{ color: ORANGE }}>SuperSeller AI</span>
+        <footer style={{ background: "#0F172A" }} className="py-12">
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+              <div className="text-center md:text-left">
+                <div className="flex items-center gap-3 justify-center md:justify-start mb-3">
+                  <div
+                    className="w-10 h-10 rounded-lg flex items-center justify-center font-extrabold text-white text-sm"
+                    style={{ background: NAVY }}
+                  >
+                    GP
+                  </div>
+                  <div>
+                    <div className="font-bold text-white text-sm">GP Homes &amp; Repairs</div>
+                    <div className="text-xs text-white/40">Since 2010 — Plano, TX</div>
+                  </div>
+                </div>
+                <p className="text-xs text-white/30">
+                  3624 Marwick Drive, Plano, TX 75075 &nbsp;|&nbsp; (469) 444-7777
+                </p>
+              </div>
+              <div className="text-xs text-white/20">
+                &copy; {new Date().getFullYear()} GP Homes and Repairs. All rights reserved.
+              </div>
             </div>
           </div>
         </footer>
 
-        {/* WhatsApp FAB */}
+        {/* ================================================================ */}
+        {/* FLOATING WhatsApp FAB */}
+        {/* ================================================================ */}
         <a
-          href={WA_LINK}
+          href={whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="fixed bottom-6 left-6 z-50 w-14 h-14 rounded-full flex items-center justify-center text-white shadow-lg transition-transform duration-300 hover:scale-110"
-          style={{ background: "#25d366" }}
           onClick={() => trackConversion("fab_whatsapp_click")}
+          className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
+          style={{ background: "#25D366" }}
+          aria-label="Contact via WhatsApp"
         >
-          <WhatsAppIcon />
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+          </svg>
         </a>
       </div>
     </>
