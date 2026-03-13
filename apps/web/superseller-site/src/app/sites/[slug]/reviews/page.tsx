@@ -9,7 +9,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const site = getSiteConfig(slug);
+  const site = await getSiteConfig(slug);
   if (!site) return {};
   const totalReviews = site.reviewPlatforms.reduce((s, p) => s + p.count, 0);
   return {
@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ReviewsPage({ params }: Props) {
   const { slug } = await params;
-  const site = getSiteConfig(slug);
+  const site = await getSiteConfig(slug);
   if (!site) notFound();
   const c = site.colors;
   const base = `/sites/${slug}`;

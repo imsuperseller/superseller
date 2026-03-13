@@ -9,7 +9,7 @@ interface Props {
 
 export default async function ContractorHomePage({ params }: Props) {
   const { slug } = await params;
-  const site = getSiteConfig(slug);
+  const site = await getSiteConfig(slug);
   if (!site) notFound();
 
   return <ContractorHomeClient site={site} />;

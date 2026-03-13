@@ -12,7 +12,7 @@ interface Props {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const site = getSiteConfig(slug);
+  const site = await getSiteConfig(slug);
   if (!site) return {};
 
   return {
@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function ContractorSiteLayout({ params, children }: Props) {
   const { slug } = await params;
-  const site = getSiteConfig(slug);
+  const site = await getSiteConfig(slug);
   if (!site) notFound();
 
   return (

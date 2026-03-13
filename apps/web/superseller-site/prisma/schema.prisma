@@ -22,6 +22,11 @@ model Tenant {
   leads              Lead[]
   competeAllowlist   CompeteAllowlist[]
   entityCapabilities EntityCapability[]
+  services           TenantService[]
+  serviceAreas       TenantServiceArea[]
+  assets             TenantAsset[]
+  pipelineRuns       PipelineRun[]
+  siteConfig         TenantSiteConfig?
 }
 
 /// Emails allowed to request magic links for a tenant's Compete page (whitelist).
@@ -1693,4 +1698,201 @@ model EntityCapability {
   @@unique([capabilityId, tenantId])
   @@index([tenantId])
   @@index([capabilityId])
+}
+
+// ===========================================================================
+// Tenant Site Configuration — DB-driven contractor/business sites
+// ===========================================================================
+
+/// Full site configuration for a tenant's business website.
+/// Replaces static .ts config files — single source of truth.
+model TenantSiteConfig {
+  id              String   @id @default(cuid())
+  tenantId        String   @unique @db.Uuid
+  phone           String
+  email           String?
+  addressStreet   String
+  addressCity     String
+  addressState    String
+  addressZip      String
+  website         String?
+  foundedYear     Int?
+  license         String?
+  schemaType      String   @default("GeneralContractor") // JSON-LD schema type
+
+  // Brand overrides (complements Brand model for site-specific colors)
+  accentHoverColor String?
+  backgroundColor  String?  @default("#FFFFFF")
+  backgroundAlt    String?  @default("#F7F8FA")
+  warmBg           String?  @default("#FDF8F3")
+  textDark         String?  @default("#1E293B")
+  textMid          String?  @default("#475569")
+  textLight        String?  @default("#64748B")
+  borderColor      String?  @default("#E2E8F0")
+
+  // Content
+  heroHeadline     String?
+  heroSubheadline  String?
+  aboutText        String?  @db.Text
+  uniqueValue      String?
+
+  // Hero media
+  heroImageUrl     String?
+
+  // SEO
+  metaTitle        String?
+  metaDescription  String?  @db.Text
+
+  // Social links
+  facebookUrl      String?
+  instagramUrl     String?
+  yelpUrl          String?
+  tiktokUrl        String?
+  youtubeUrl       String?
+  googleReviewUrl  String?
+
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @default(now()) @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  // Related data
+  trustBadges     TenantTrustBadge[]
+  stats           TenantStat[]
+  reviewPlatforms TenantReviewPlatform[]
+}
+
+/// Service offered by a tenant (e.g., Kitchen Remodeling).
+model TenantService {
+  id               String   @id @default(cuid())
+  tenantId         String   @db.Uuid
+  slug             String
+  name             String
+  shortDescription String
+  longDescription  String?  @db.Text
+  icon             String   @default("🔨")
+  features         Json?    // String[] — stored as JSON array
+  priceRange       String?
+  imageUrl         String?
+  order            Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @default(now()) @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, slug])
+  @@index([tenantId])
+}
+
+/// Geographic service area for a tenant.
+model TenantServiceArea {
+  id        String   @id @default(cuid())
+  tenantId  String   @db.Uuid
+  name      String   // City name (e.g., "Plano")
+  state     String?  // State code (e.g., "TX")
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, name])
+  @@index([tenantId])
+}
+
+/// Trust badge / credential for a tenant (e.g., "Licensed & Insured").
+model TenantTrustBadge {
+  id           String @id @default(cuid())
+  siteConfigId String
+  label        String
+  detail       String?
+  icon         String @default("✅")
+  order        Int    @default(0)
+
+  siteConfig TenantSiteConfig @relation(fields: [siteConfigId], references: [id], onDelete: Cascade)
+
+  @@index([siteConfigId])
+}
+
+/// Key statistic for a tenant (e.g., "15+ Years").
+model TenantStat {
+  id           String @id @default(cuid())
+  siteConfigId String
+  value        String
+  label        String
+  order        Int    @default(0)
+
+  siteConfig TenantSiteConfig @relation(fields: [siteConfigId], references: [id], onDelete: Cascade)
+
+  @@index([siteConfigId])
+}
+
+/// Review platform presence for a tenant (e.g., Yelp 5.0/33).
+model TenantReviewPlatform {
+  id           String  @id @default(cuid())
+  siteConfigId String
+  name         String
+  rating       Float
+  count        Int
+  url          String?
+  order        Int     @default(0)
+
+  siteConfig TenantSiteConfig @relation(fields: [siteConfigId], references: [id], onDelete: Cascade)
+
+  @@index([siteConfigId])
+}
+
+// ===========================================================================
+// Asset Registry — tracks all R2/external assets per tenant
+// ===========================================================================
+
+/// Centralized asset registry. Every file (logo, photo, video, character ref)
+/// gets a DB record with its R2 key and metadata.
+model TenantAsset {
+  id          String   @id @default(cuid())
+  tenantId    String   @db.Uuid
+  type        String   // logo | photo | video | character_ref | before_after | document
+  filename    String
+  r2Key       String   @unique
+  r2Bucket    String   @default("superseller-assets")
+  publicUrl   String
+  mimeType    String?
+  sizeBytes   Int?
+  metadata    Json?    // Flexible: { category, tags, description, beforeAfter: true }
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([tenantId, type])
+}
+
+// ===========================================================================
+// Pipeline Runs — unified execution tracking across all products
+// ===========================================================================
+
+/// Every generation (video, social post, review response) is a pipeline run.
+/// Unified cost tracking, status, and delivery tracking.
+model PipelineRun {
+  id            String    @id @default(cuid())
+  tenantId      String?   @db.Uuid
+  pipelineType  String    // video | social_post | review_response | content | research
+  status        String    @default("queued") // queued | running | completed | failed | cancelled
+  inputJson     Json?     // What was requested
+  outputJson    Json?     // What was produced (URLs, metadata)
+  modelUsed     String?   // e.g., "kling-3.0", "claude-sonnet-4-6", "sora-2"
+  costCents     Int?      // Total cost in cents
+  deliveredVia  String?   // whatsapp | email | dashboard | api
+  deliveredAt   DateTime?
+  errorMessage  String?   @db.Text
+  durationMs    Int?      // Processing time
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @default(now()) @updatedAt
+
+  tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId])
+  @@index([pipelineType])
+  @@index([status])
+  @@index([createdAt])
 }

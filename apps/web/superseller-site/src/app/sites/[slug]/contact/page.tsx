@@ -9,7 +9,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const site = getSiteConfig(slug);
+  const site = await getSiteConfig(slug);
   if (!site) return {};
   return {
     title: `Contact Us`,
@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ContactPage({ params }: Props) {
   const { slug } = await params;
-  const site = getSiteConfig(slug);
+  const site = await getSiteConfig(slug);
   if (!site) notFound();
   return <ContactPageClient site={site} />;
 }
