@@ -77,6 +77,11 @@ vi.mock('../config', () => ({
             maxResponseLength: 4000,
             botJid: '14695885133',
         },
+        waha: {
+            url: 'http://localhost:3000',
+            apiKey: 'test-waha-key',
+            session: 'default',
+        },
     },
 }));
 
