@@ -9,18 +9,18 @@
 ### Universal Group Creation (UGRP)
 
 - [ ] **UGRP-01**: Admin can trigger onboarding for any tenant via API endpoint (`POST /api/onboarding/start`)
-- [ ] **UGRP-02**: System auto-creates a WhatsApp group named "[BusinessName] — SuperSeller AI" with client phone + AI agent
-- [ ] **UGRP-03**: System reads tenant's ServiceInstance + Subscription records to determine which products the customer has
-- [ ] **UGRP-04**: Group icon set from tenant's TenantBrand logo (if available)
-- [ ] **UGRP-05**: Group description includes customer name and list of active products/services
+- [x] **UGRP-02**: System auto-creates a WhatsApp group named "[BusinessName] — SuperSeller AI" with client phone + AI agent
+- [x] **UGRP-03**: System reads tenant's ServiceInstance + Subscription records to determine which products the customer has
+- [x] **UGRP-04**: Group icon set from tenant's Brand logo (if available)
+- [x] **UGRP-05**: Group description includes customer name and list of active products/services
 
 ### Product-Aware Agent (PAGENT)
 
-- [ ] **PAGENT-01**: AI agent registered in group_agent_config with product-aware system prompt
-- [ ] **PAGENT-02**: System prompt assembled dynamically from tenant's active products (reads ServiceInstance/Subscription)
-- [ ] **PAGENT-03**: Agent knows which onboarding modules to activate based on customer's product mix
-- [ ] **PAGENT-04**: Agent sends personalized welcome message listing what it will help with (based on products)
-- [ ] **PAGENT-05**: Agent can handle general Q&A about any SuperSeller product the customer has
+- [x] **PAGENT-01**: AI agent registered in group_agent_config with product-aware system prompt
+- [x] **PAGENT-02**: System prompt assembled dynamically from tenant's active products (reads ServiceInstance/Subscription)
+- [x] **PAGENT-03**: Agent knows which onboarding modules to activate based on customer's product mix
+- [x] **PAGENT-04**: Agent sends personalized welcome message listing what it will help with (based on products)
+- [x] **PAGENT-05**: Agent can handle general Q&A about any SuperSeller product the customer has
 
 ### Module: Character-in-a-Box (CHAR)
 
@@ -98,8 +98,9 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| UGRP-01..05 | Phase 1 | Pending |
-| PAGENT-01..05 | Phase 1 | Pending |
+| UGRP-01 | Phase 1 | Pending |
+| UGRP-02..05 | Phase 1 | Complete (01-01) |
+| PAGENT-01..05 | Phase 1 | Complete (01-01) |
 | ASSET-01..04 | Phase 2 | Pending |
 | SOCIAL-01..04 | Phase 2 | Pending |
 | COMPETE-01..04 | Phase 2 | Pending |

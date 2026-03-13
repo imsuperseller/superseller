@@ -10,12 +10,19 @@ See: .planning/PROJECT.md (updated 2026-03-13)
 ## Current Phase
 
 **Phase:** 1 — Universal Group + Product-Aware Agent
-**Status:** Planning
-**Plans:** Creating now
+**Status:** Executing
+**Current Plan:** 2 of 3
+**Progress:** [==========..........] 1/3 plans complete
+
+## Decisions
+
+- Used `Brand` table (not `TenantBrand`) — matches current Prisma schema
+- Pass inputJson as object to createPipelineRun (avoids double-stringify bug)
+- ServiceInstance takes priority over Subscription when deduplicating products
 
 ## Phase History
 
-(None — project just initialized and scope corrected)
+- **01-01** (Core Onboarding Modules): COMPLETE — prompt-assembler + group-bootstrap (2min)
 
 ## Blockers
 
@@ -31,5 +38,16 @@ None identified.
 - Sora 2 accessed via Kie.ai API (NOT fal.ai): `POST /v1/jobs/createTask` with `model: "sora-2-pro-text-to-video"`
 - Old `character-pipeline/group-bootstrap.ts` exists but is too narrow — Phase 1 replaces it with universal `onboarding/group-bootstrap.ts`
 
+## Performance Metrics
+
+| Plan | Duration | Tasks | Files |
+|------|----------|-------|-------|
+| 01-01 | 2min | 2 | 3 |
+
+## Last Session
+
+- **Stopped at:** Completed 01-01-PLAN.md
+- **Timestamp:** 2026-03-13T22:48:20Z
+
 ---
-*Last updated: 2026-03-13 — scope corrected to universal onboarding*
+*Last updated: 2026-03-13 — completed plan 01-01*

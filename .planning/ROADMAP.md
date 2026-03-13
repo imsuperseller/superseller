@@ -26,7 +26,7 @@
 **Plans:** 2 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Core modules: prompt-assembler + universal group-bootstrap
+- [x] 01-01-PLAN.md — Core modules: prompt-assembler + universal group-bootstrap
 - [ ] 01-02-PLAN.md — API endpoint + end-to-end verification
 
 **Success Criteria:**
