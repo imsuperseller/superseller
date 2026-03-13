@@ -41,6 +41,12 @@ const MODULE_REGISTRY: ModuleRegistryEntry[] = [
         ],
     },
     {
+        type: "character-questionnaire",
+        loader: () =>
+            import("./modules/character-questionnaire").then((m) => ({ module: m.characterQuestionnaireModule })),
+        triggerProducts: ["VideoForge", "Winner Studio", "Character-in-a-Box"],
+    },
+    {
         type: "social-setup",
         loader: () => import("./modules/social-setup").then((m) => ({ module: m.socialSetupModule })),
         triggerProducts: ["SocialHub", "Buzz"],
@@ -74,6 +80,8 @@ function productsMatchModule(
 const INTRO_MESSAGES: Record<ModuleType, string> = {
     "asset-collection":
         "Let's start by collecting your brand assets -- logo, photos, and business info. This will help us create amazing content for you!",
+    "character-questionnaire":
+        "Let's create your AI brand character! I'll ask a few questions about their personality, look, and the scenarios where they'll appear.",
     "social-setup":
         "Time to set up your social media automation! I'll need your platform preferences and content style.",
     "competitor-research":

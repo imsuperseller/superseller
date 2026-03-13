@@ -12,6 +12,7 @@ export type { ProductInfo } from "../prompt-assembler";
 
 export type ModuleType =
     | "asset-collection"
+    | "character-questionnaire"
     | "social-setup"
     | "competitor-research";
 
