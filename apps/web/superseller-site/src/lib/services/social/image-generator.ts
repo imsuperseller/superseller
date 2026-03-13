@@ -1,6 +1,6 @@
 /**
  * SocialHub — AI Image Generation
- * Primary: gpt-image-1 (OpenAI). Fallback chain: DALL-E 3 → Kie.AI Flux 2 Pro.
+ * Primary: Kie.AI Recraft (permanent URLs). Fallback: OpenAI gpt-image-1.
  */
 
 const KIE_API_BASE = "https://api.kie.ai/api/v1";
@@ -25,7 +25,7 @@ const DALLE_SIZE_MAP: Record<string, string> = {
 };
 
 /**
- * Generate a social media image. Tries DALL-E 3 first, falls back to Kie.AI.
+ * Generate a social media image. Tries Kie.AI first (permanent URLs), falls back to OpenAI.
  */
 export async function generateSocialImage(
   prompt: string,
@@ -34,29 +34,24 @@ export async function generateSocialImage(
     resolution?: "1K" | "2K";
   }
 ): Promise<{ imageUrl: string; cost: number } | { error: string }> {
-  // Try OpenAI image generation first (gpt-image-1 → dall-e-3 fallback)
-  const openaiKey = process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY_ALT;
-  if (openaiKey) {
-    const result = await generateWithDalle(prompt, options?.aspectRatio || "1:1", openaiKey);
-    if ("imageUrl" in result) return result;
-    // If primary key failed, try alt key
-    const altKey = process.env.OPENAI_API_KEY_ALT;
-    if (altKey && altKey !== openaiKey) {
-      const altResult = await generateWithDalle(prompt, options?.aspectRatio || "1:1", altKey);
-      if ("imageUrl" in altResult) return altResult;
-      console.warn("[image-gen] OpenAI failed with both keys, trying Kie.AI:", altResult.error);
-    } else {
-      console.warn("[image-gen] OpenAI failed, trying Kie.AI:", result.error);
-    }
-  }
+  const ar = options?.aspectRatio || "1:1";
 
-  // Fallback to Kie.AI
+  // Try Kie.AI first — permanent URLs, no expiry
   const kieKey = process.env.KIE_AI_API_KEY;
   if (kieKey) {
-    return generateWithKie(prompt, options?.aspectRatio || "1:1", options?.resolution || "1K", kieKey);
+    const result = await generateWithKie(prompt, ar, options?.resolution || "1K", kieKey);
+    if ("imageUrl" in result) return result;
+    console.warn("[image-gen] Kie.AI failed, trying OpenAI:", result.error);
   }
 
-  return { error: "No image generation API key configured (OPENAI_API_KEY or KIE_AI_API_KEY)" };
+  // Fallback to OpenAI (gpt-image-1 → dall-e-3)
+  const openaiKey = process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY_ALT;
+  if (openaiKey) {
+    const result = await generateWithDalle(prompt, ar, openaiKey);
+    if ("imageUrl" in result) return result;
+  }
+
+  return { error: "No image generation API key configured (KIE_AI_API_KEY or OPENAI_API_KEY)" };
 }
 
 /**
