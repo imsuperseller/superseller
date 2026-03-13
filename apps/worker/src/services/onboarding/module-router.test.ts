@@ -47,6 +47,10 @@ vi.mock("./modules/competitor-research", () => ({
     default: undefined,
     competitorResearchModule: undefined,
 }));
+vi.mock("./modules/character-questionnaire", () => ({
+    default: undefined,
+    characterQuestionnaireModule: undefined,
+}));
 
 const mockGetActiveModule = vi.mocked(moduleState.getActiveModule);
 const mockGetModuleState = vi.mocked(moduleState.getModuleState);
@@ -182,6 +186,16 @@ describe("module-router", () => {
                 groupId: "group-1",
                 tenantId: "tenant-1",
                 moduleType: "asset-collection",
+                phase: "complete",
+                collectedData: {},
+                updatedAt: new Date(),
+            })
+            // character-questionnaire already complete (VideoForge triggers it)
+            .mockResolvedValueOnce({
+                id: "ms-cq",
+                groupId: "group-1",
+                tenantId: "tenant-1",
+                moduleType: "character-questionnaire",
                 phase: "complete",
                 collectedData: {},
                 updatedAt: new Date(),
