@@ -1,127 +1,117 @@
-# Requirements: Character-in-a-Box Pipeline
+# Requirements: Universal Customer Onboarding System
 
 **Defined:** 2026-03-13
-**Core Value:** Client sees their AI brand character on Day 1 via WhatsApp — zero friction onboarding
+**Updated:** 2026-03-13 — corrected from Character-in-a-Box to universal onboarding
+**Core Value:** Every customer gets an AI agent in a WhatsApp group from Day 1 — zero friction, product-aware onboarding
 
 ## v1 Requirements
 
-### Onboarding Trigger
+### Universal Group Creation (UGRP)
 
-- [ ] **ONBD-01**: Admin can trigger Character-in-a-Box pipeline for a tenant via API endpoint
-- [ ] **ONBD-02**: System auto-creates a WhatsApp group named "[BusinessName] — Character Studio" with client phone + AI agent
-- [ ] **ONBD-03**: AI agent registers itself in group_agent_config with character-questionnaire role and system prompt
+- [ ] **UGRP-01**: Admin can trigger onboarding for any tenant via API endpoint (`POST /api/onboarding/start`)
+- [ ] **UGRP-02**: System auto-creates a WhatsApp group named "[BusinessName] — SuperSeller AI" with client phone + AI agent
+- [ ] **UGRP-03**: System reads tenant's ServiceInstance + Subscription records to determine which products the customer has
+- [ ] **UGRP-04**: Group icon set from tenant's TenantBrand logo (if available)
+- [ ] **UGRP-05**: Group description includes customer name and list of active products/services
 
-### Questionnaire
+### Product-Aware Agent (PAGENT)
 
-- [ ] **QUES-01**: AI agent sends welcome message explaining the character creation process
-- [ ] **QUES-02**: AI agent asks brand personality questions conversationally (tone, values, visual style)
-- [ ] **QUES-03**: AI agent asks for target audience description
-- [ ] **QUES-04**: AI agent asks for 3 sample business scenarios where the character would appear
-- [ ] **QUES-05**: AI agent handles text, voice notes, and photo responses from client
-- [ ] **QUES-06**: AI agent asks dynamic follow-up questions when answers are vague
-- [ ] **QUES-07**: AI agent confirms collected information with client before proceeding
+- [ ] **PAGENT-01**: AI agent registered in group_agent_config with product-aware system prompt
+- [ ] **PAGENT-02**: System prompt assembled dynamically from tenant's active products (reads ServiceInstance/Subscription)
+- [ ] **PAGENT-03**: Agent knows which onboarding modules to activate based on customer's product mix
+- [ ] **PAGENT-04**: Agent sends personalized welcome message listing what it will help with (based on products)
+- [ ] **PAGENT-05**: Agent can handle general Q&A about any SuperSeller product the customer has
 
-### Character Generation
+### Module: Character-in-a-Box (CHAR)
 
-- [ ] **CHAR-01**: System generates CharacterBible from questionnaire responses via Claude
-- [ ] **CHAR-02**: CharacterBible includes: persona description, visual style, target audience, scenario prompts
-- [ ] **CHAR-03**: CharacterBible is saved to DB linked to tenant
+- [ ] **CHAR-01**: Agent activates character questionnaire when customer has VideoForge/Winner Studio/Character-in-a-Box product
+- [ ] **CHAR-02**: Agent asks brand personality, visual style, target audience, 3 business scenarios — ONE question at a time
+- [ ] **CHAR-03**: Agent handles text responses, asks follow-ups for vague answers
+- [ ] **CHAR-04**: Agent confirms collected info with client, generates CharacterBible in DB via Claude
+- [ ] **CHAR-05**: System generates reference character video via Kie.ai Sora 2 API
+- [ ] **CHAR-06**: System generates 5 test scene videos via Kie.ai Sora 2 (job site, studio, street, office, stylized)
+- [ ] **CHAR-07**: Remotion "CharacterReveal" composition wraps 5 scenes with branded overlays (logo, name, colors)
+- [ ] **CHAR-08**: FFmpeg renders final MP4 on RackNerd, uploaded to R2 as TenantAsset
+- [ ] **CHAR-09**: WAHA delivers character reveal video to WhatsApp group with summary message
+- [ ] **CHAR-10**: All generation steps tracked via PipelineRun with cost via trackExpense()
 
-### Video Generation
+### Module: Asset Collection (ASSET)
 
-- [ ] **VGEN-01**: System generates reference character video via fal.ai Sora 2 API
-- [ ] **VGEN-02**: System generates 5 test scene videos via fal.ai: job site, studio, street, office, stylized
-- [ ] **VGEN-03**: All generated videos are uploaded to R2 and registered as TenantAssets
-- [ ] **VGEN-04**: Each generation step is tracked via PipelineRun with status, cost, duration
+- [ ] **ASSET-01**: Agent activates asset collection when customer has any visual product (VideoForge, Lead Pages, SocialHub)
+- [ ] **ASSET-02**: Agent requests business photos, logos, brand materials via WhatsApp media messages
+- [ ] **ASSET-03**: Received media downloaded via WAHA, uploaded to R2, registered as TenantAsset
+- [ ] **ASSET-04**: Agent categorizes assets (logo, photo, document) and confirms receipt
 
-### Reveal Video
+### Module: Social Media Setup (SOCIAL)
 
-- [ ] **REVL-01**: Remotion "CharacterReveal" composition wraps all 5 scenes with branded overlays
-- [ ] **REVL-02**: Composition includes client logo, business name, accent colors from tenant brand
-- [ ] **REVL-03**: FFmpeg renders final MP4 on RackNerd
-- [ ] **REVL-04**: Final video uploaded to R2 and registered as TenantAsset
+- [ ] **SOCIAL-01**: Agent activates social setup when customer has SocialHub/Buzz product
+- [ ] **SOCIAL-02**: Agent collects social media credentials and preferences (platforms, posting frequency, content style)
+- [ ] **SOCIAL-03**: Agent stores preferences in ServiceInstance.configuration JSON
+- [ ] **SOCIAL-04**: Agent explains what SocialHub will do and sets expectations
 
-### Delivery
+### Module: Competitor Research Briefing (COMPETE)
 
-- [ ] **DLVR-01**: WAHA delivers character reveal video to the same WhatsApp group
-- [ ] **DLVR-02**: AI agent sends accompanying message with character summary
-- [ ] **DLVR-03**: PipelineRun marked complete with all output URLs
+- [ ] **COMPETE-01**: Agent activates competitor briefing when customer has Maps/SEO or Lead Pages product
+- [ ] **COMPETE-02**: Agent asks for top 3 competitors (names, URLs, locations)
+- [ ] **COMPETE-03**: Agent stores competitor info in ServiceInstance.configuration or dedicated table
+- [ ] **COMPETE-04**: Agent shares initial findings in group when AgentForge research completes
 
-### Pipeline Orchestration
+### Pipeline Orchestration (PIPE)
 
-- [ ] **PIPE-01**: BullMQ queue `character-pipeline` orchestrates the full flow
-- [ ] **PIPE-02**: Pipeline handles failures gracefully — retries generation steps, alerts on permanent failure
-- [ ] **PIPE-03**: Pipeline tracks total cost via trackExpense()
-- [ ] **PIPE-04**: Admin can view pipeline status via existing admin API
+- [ ] **PIPE-01**: BullMQ `customer-onboarding` queue orchestrates the full flow
+- [ ] **PIPE-02**: Pipeline determines which modules to run based on tenant's products
+- [ ] **PIPE-03**: Pipeline handles failures gracefully — retries, alerts on permanent failure
+- [ ] **PIPE-04**: Pipeline tracks total cost via trackExpense() and PipelineRun
+- [ ] **PIPE-05**: Admin can view onboarding status via admin API
 
 ## v2 Requirements
 
-### Enhanced Questionnaire
+### Automation Triggers
 
-- **QUES-V2-01**: AI agent transcribes voice notes via Whisper before processing
-- **QUES-V2-02**: AI agent analyzes uploaded photos to extract brand visual elements
-- **QUES-V2-03**: Multi-language questionnaire support (Hebrew, English, Spanish)
+- **AUTO-01**: Pipeline auto-triggers on PayPal/Stripe subscription webhook (new customer)
+- **AUTO-02**: Voice note transcription via Whisper before processing
+- **AUTO-03**: Multi-language auto-detection and response
 
-### Character Iteration
+### Module: Voice AI Setup (VOICE)
 
-- **ITER-01**: Client can request changes to character via WhatsApp
-- **ITER-02**: System regenerates specific scenes based on feedback
-- **ITER-03**: Version tracking for CharacterBible iterations
+- **VOICE-01**: Agent activates when customer has FrontDesk Voice AI product
+- **VOICE-02**: Agent collects business hours, greeting preferences, transfer rules
+- **VOICE-03**: Agent configures Telnyx assistant via API
 
-### Automation
+### Enhanced Character
 
-- **AUTO-01**: Pipeline auto-triggers on PayPal subscription webhook (new client sign)
-- **AUTO-02**: Pipeline auto-triggers on admin project creation with character-in-a-box type
+- **ECHAR-01**: Client can request changes to character via WhatsApp
+- **ECHAR-02**: System regenerates specific scenes based on feedback
 
 ## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
-| Web UI questionnaire form | WhatsApp-first approach — zero friction |
-| Sora 2 @handle creation | API may not support this yet |
-| Music/audio overlay on reveal | Visual-only for v1, add later |
-| Client self-service pipeline restart | Admin-only for v1 |
-| Real-time generation progress streaming | Deliver final video only |
-| Voice note transcription | v2 — process text responses for v1 |
+| Web UI forms for onboarding | WhatsApp-first — zero friction |
+| Customer self-service pipeline | Admin-only for v1 |
+| Auto-trigger from webhooks | Admin trigger first, webhook in v2 |
+| Voice note transcription | Text-only for v1 |
+| Multi-language auto-detection | Per-tenant language field for v1 |
+| Music/audio on reveal video | Visual-only for v1 |
 
 ## Traceability
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| ONBD-01 | Phase 1 | Pending |
-| ONBD-02 | Phase 1 | Pending |
-| ONBD-03 | Phase 1 | Pending |
-| QUES-01 | Phase 2 | Pending |
-| QUES-02 | Phase 2 | Pending |
-| QUES-03 | Phase 2 | Pending |
-| QUES-04 | Phase 2 | Pending |
-| QUES-05 | Phase 2 | Pending |
-| QUES-06 | Phase 2 | Pending |
-| QUES-07 | Phase 2 | Pending |
-| CHAR-01 | Phase 2 | Pending |
-| CHAR-02 | Phase 2 | Pending |
-| CHAR-03 | Phase 2 | Pending |
-| VGEN-01 | Phase 3 | Pending |
-| VGEN-02 | Phase 3 | Pending |
-| VGEN-03 | Phase 3 | Pending |
-| VGEN-04 | Phase 3 | Pending |
-| REVL-01 | Phase 4 | Pending |
-| REVL-02 | Phase 4 | Pending |
-| REVL-03 | Phase 4 | Pending |
-| REVL-04 | Phase 4 | Pending |
-| DLVR-01 | Phase 4 | Pending |
-| DLVR-02 | Phase 4 | Pending |
-| DLVR-03 | Phase 4 | Pending |
-| PIPE-01 | Phase 5 | Pending |
-| PIPE-02 | Phase 5 | Pending |
-| PIPE-03 | Phase 5 | Pending |
-| PIPE-04 | Phase 5 | Pending |
+| UGRP-01..05 | Phase 1 | Pending |
+| PAGENT-01..05 | Phase 1 | Pending |
+| ASSET-01..04 | Phase 2 | Pending |
+| SOCIAL-01..04 | Phase 2 | Pending |
+| COMPETE-01..04 | Phase 2 | Pending |
+| CHAR-01..04 | Phase 3 | Pending |
+| CHAR-05..10 | Phase 4 | Pending |
+| PIPE-01..05 | Phase 5 | Pending |
 
 **Coverage:**
-- v1 requirements: 28 total
-- Mapped to phases: 28
-- Unmapped: 0 ✓
+- v1 requirements: 38 total
+- Mapped to phases: 38
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-13*
-*Last updated: 2026-03-13 after initial definition*
+*Last updated: 2026-03-13 — rewritten for universal onboarding (not just Character-in-a-Box)*
