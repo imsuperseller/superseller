@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!site) return {};
   const totalReviews = site.reviewPlatforms.reduce((s, p) => s + p.count, 0);
   return {
-    title: `Reviews | ${site.businessName}`,
+    title: `Reviews`,
     description: `${totalReviews}+ reviews across all platforms. Universal 5-star rating. See what ${site.address.city} homeowners say about ${site.businessName}.`,
   };
 }

@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const site = getSiteConfig(slug);
   if (!site) return {};
   return {
-    title: `About Us | ${site.businessName}`,
+    title: `About Us`,
     description: `Learn about ${site.businessName} — serving ${site.address.city}, ${site.address.state} since ${site.foundedYear}. ${site.license}.`,
   };
 }

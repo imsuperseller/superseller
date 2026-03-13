@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const svc = site.services.find((s) => s.slug === serviceSlug);
   if (!svc) return {};
   return {
-    title: `${svc.name} in ${site.address.city}, ${site.address.state} | ${site.businessName}`,
+    title: `${svc.name} in ${site.address.city}, ${site.address.state}`,
     description: `${svc.shortDescription} ${site.businessName} — licensed, bonded, insured ${site.address.city} contractor. Free estimates. Call ${site.phone}.`,
   };
 }
