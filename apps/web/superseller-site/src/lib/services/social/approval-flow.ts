@@ -32,28 +32,22 @@ export async function sendApprovalRequest(
 ): Promise<ApprovalResult> {
   const chatId = `${req.approverPhone}@c.us`;
 
-  const accountLine = req.tenantName
-    ? `Account: *${req.tenantName}*${req.igAccount ? ` (${req.igAccount})` : ""}`
-    : null;
+  const preview = req.contentPreview.length > 300
+    ? req.contentPreview.slice(0, 300) + "..."
+    : req.contentPreview;
 
-  const message = [
-    `*SocialHub — Content Approval*`,
-    ``,
-    accountLine,
-    `Platform: *${req.platform}*`,
-    `Post ID: \`${req.postId.slice(0, 8)}\``,
-    ``,
-    `---`,
-    req.contentPreview.length > 300
-      ? req.contentPreview.slice(0, 300) + "..."
-      : req.contentPreview,
-    `---`,
-    ``,
-    `Reply with:`,
-    `*approve* — to publish now`,
-    `*reject [reason]* — to reject with feedback`,
-    `*edit [instructions]* — to request changes`,
-  ].filter(Boolean).join("\n");
+  const header = req.tenantName
+    ? `📋 *${req.tenantName}*${req.igAccount ? ` → ${req.igAccount}` : ""}`
+    : `📋 *Content Approval*`;
+
+  const message = `${header}
+📱 ${req.platform.charAt(0).toUpperCase() + req.platform.slice(1)} post
+
+${preview}
+
+✅ Reply *approve* to publish
+❌ Reply *reject* to skip
+✏️ Reply *edit [notes]* to revise`;
 
   try {
     // Send text message
