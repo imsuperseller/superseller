@@ -54,9 +54,9 @@ Plans:
 **Plans:** 3/3 plans complete
 
 Plans:
-- [ ] 02-01-PLAN.md — Module foundation: shared types, DB state persistence, module router
-- [ ] 02-02-PLAN.md — Asset collection + social setup modules
-- [ ] 02-03-PLAN.md — Competitor research module + ClaudeClaw worker integration
+- [x] 02-01-PLAN.md — Module foundation: shared types, DB state persistence, module router
+- [x] 02-02-PLAN.md — Asset collection + social setup modules
+- [x] 02-03-PLAN.md — Competitor research module + ClaudeClaw worker integration
 
 **Success Criteria:**
 1. Asset collection module downloads media from WhatsApp, uploads to R2, registers as TenantAsset
@@ -78,6 +78,11 @@ Plans:
 
 **Requirements:** CHAR-01..04
 
+**Plans:** 1 plan
+
+Plans:
+- [ ] 03-01-PLAN.md — Character questionnaire module + CharacterBible generator via Claude
+
 **Success Criteria:**
 1. Questionnaire activates only for tenants with video products (VideoForge, Winner Studio, Character-in-a-Box)
 2. Agent tracks questionnaire state across messages (which questions asked/answered)
@@ -87,7 +92,7 @@ Plans:
 **Key files to create/modify:**
 - `apps/worker/src/services/onboarding/modules/character-questionnaire.ts`
 - `apps/worker/src/services/onboarding/character-bible-generator.ts`
-- Uses: `claudeclaw` queue for Claude responses
+- Uses: Anthropic Claude API for CharacterBible generation
 
 ---
 
@@ -134,14 +139,14 @@ Plans:
 ## Dependencies
 
 ```
-Phase 1 (Universal Group + Agent) ← Foundation — everything depends on this
-    ↓
-Phase 2 (Light Modules: Asset, Social, Compete) — can run in parallel with Phase 3
-Phase 3 (Character Questionnaire) — can run in parallel with Phase 2
-    ↓
-Phase 4 (Character Video Gen + Delivery) — depends on Phase 3
-    ↓
-Phase 5 (Pipeline Orchestration) — wires 1-4 together, can start after Phase 1-2
+Phase 1 (Universal Group + Agent) <- Foundation -- everything depends on this
+    |
+Phase 2 (Light Modules: Asset, Social, Compete) -- can run in parallel with Phase 3
+Phase 3 (Character Questionnaire) -- can run in parallel with Phase 2
+    |
+Phase 4 (Character Video Gen + Delivery) -- depends on Phase 3
+    |
+Phase 5 (Pipeline Orchestration) -- wires 1-4 together, can start after Phase 1-2
 ```
 
 Phase 2 and Phase 3 are independent and can be built in parallel.
@@ -149,4 +154,4 @@ Phase 5 can start partially after Phase 1 is done (queue + routing skeleton).
 
 ---
 *Created: 2026-03-13*
-*Last updated: 2026-03-13 — rewritten for universal onboarding*
+*Last updated: 2026-03-13 -- Phase 3 planned (1 plan)*
