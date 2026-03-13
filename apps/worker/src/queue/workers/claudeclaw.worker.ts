@@ -101,6 +101,37 @@ export const claudeclawWorker = new Worker<ClaudeClawJobData>(
                 return { handled: result.handler, isGroup: true };
             }
 
+            // ─── Onboarding Module Router ───
+            // Check if an onboarding module should handle this message
+            // (before falling through to general Claude chat)
+            try {
+                const groupCfg = getGroupConfig(chatId);
+                if (groupCfg?.tenantId) {
+                    const { routeToModule } = await import("../../services/onboarding/module-router");
+                    const moduleResult = await routeToModule({
+                        groupId: chatId,
+                        tenantId: groupCfg.tenantId,
+                        messageBody: messageBody || "",
+                        hasMedia: !!hasMedia,
+                        mediaUrl: mediaUrl || undefined,
+                        mediaType: mediaType || undefined,
+                        messageId: messageId || undefined,
+                        senderChatId: senderChatId || undefined,
+                    });
+
+                    if (moduleResult.handled && moduleResult.response) {
+                        await sendText(chatId, moduleResult.response, target);
+                        // Log both messages
+                        const sp = (senderChatId || "").replace("@c.us", "").replace("@s.whatsapp.net", "");
+                        await logGroupMessage({ groupId: chatId, tenantId: groupCfg.tenantId, senderPhone: sp, content: messageBody });
+                        await logGroupMessage({ groupId: chatId, tenantId: groupCfg.tenantId, content: moduleResult.response, isAgent: true });
+                        return { handled: `onboarding-module:${moduleResult.moduleType}`, isGroup: true };
+                    }
+                }
+            } catch (err: any) {
+                logger.warn({ msg: "Onboarding module router error (non-critical, falling through to Claude)", error: err.message });
+            }
+
             // Not handled by quick handlers — use Claude with memory context + guardrails
             const groupConfig = getGroupConfig(chatId);
             if (groupConfig) {
@@ -300,6 +331,10 @@ export async function initClaudeClaw(): Promise<void> {
     // Init group memory tables (3-tier memory + message archive)
     const { initGroupMemoryTables } = await import("../../services/group-memory");
     await initGroupMemoryTables();
+
+    // Init onboarding module state table
+    const { initModuleStateTable } = await import("../../services/onboarding/module-state");
+    await initModuleStateTable();
 
     // Clean up expired sessions
     await cleanExpiredSessions();
