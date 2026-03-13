@@ -1,7 +1,7 @@
 /**
  * social-setup.ts — Onboarding module for collecting social media preferences
  *
- * State machine: asking_platforms -> asking_frequency -> asking_style -> confirming -> complete
+ * State machine: intro -> asking_platforms -> asking_frequency -> asking_style -> confirming -> complete
  *
  * Collects platform preferences, posting frequency, and content style
  * conversationally, then stores in ServiceInstance.configuration JSON.
@@ -152,8 +152,11 @@ export const socialSetupModule: OnboardingModule = {
         const { groupId, tenantId, messageBody, state } = params;
         const { phase, collectedData } = state;
 
-        // ── asking_platforms ─────────────────────────────────
-        if (phase === "asking_platforms") {
+        // ── intro / asking_platforms ─────────────────────────
+        // Module router creates state with phase='intro'. The intro message
+        // already asks "Which platforms…", so the first user reply contains
+        // platform names — handle identically to asking_platforms.
+        if (phase === "intro" || phase === "asking_platforms") {
             const platforms = parsePlatforms(messageBody);
 
             if (platforms.length === 0) {
