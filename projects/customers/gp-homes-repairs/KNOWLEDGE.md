@@ -70,5 +70,51 @@ Full research covers: Apify scraping stack ($6.70 initial scan), n8n workflows f
 - Must-haves: LocalBusiness + Service JSON-LD schema, XML sitemap, click-to-call, "Get Free Estimate" CTA, before/after gallery, trust badges
 - We host = recurring lock-in + upsell path
 
+## Social Media Competitive Landscape (researched Mar 13, 2026)
+
+### DFW Competitor Social Presence
+| Competitor | IG Followers | IG Posts | FB Likes |
+|---|---|---|---|
+| Home Platinum Services | **15,000** | 395 | Active |
+| DFW Improved | 3,200 | 1,558 | Active |
+| Manning R+C | ~1,147 | Unknown | 1,857 |
+| Toscana Remodeling | 780 | 662 | 842 |
+| BRYJO Roofing | Not found | Unknown | 268 |
+| **GP Homes** | **0** | **0** | **23** |
+
+**Key insight**: Bar is LOW. Only Home Platinum has serious IG traction (15K). GP Homes needs just 1-3K followers to match most competitors. Nobody doing TikTok well — first mover advantage available.
+
+### Content Strategy (2026 benchmarks)
+- **Carousels** outperform Reels (0.55% vs 0.52% engagement) — perfect for before/after reveals
+- Best content: before/after carousels, time-lapse Reels, homeowner reveal reactions
+- Posting cadence: 3-5x/week IG feed, daily Stories, 2x/week FB, 2-3x/week TikTok
+- Hashtag strategy: #PlanoTX #DFWRemodeling #NorthTexasContractor #PlanoRemodeling
+
+### Growth Targets
+| Metric | 3 Months | 6 Months | 12 Months |
+|---|---|---|---|
+| IG Followers | 200-500 | 500-1,500 | 1,500-3,000 |
+| FB Likes | 100-200 | 200-500 | 500-1,000 |
+| Monthly Reach | 2K-5K | 5K-15K | 15K-50K |
+| Leads from Social | 1-3/mo | 3-8/mo | 8-15/mo |
+
+At 3,000 IG followers GP Homes would be **#2 remodeling IG in Plano** behind Home Platinum.
+
+### Agency Pricing Comparison (social media)
+- Basic: $500-$1,500/mo (10-20 posts, 1-2 platforms)
+- Mid-tier: $1,500-$4,000/mo (20-40 posts, 2-4 platforms, custom graphics)
+- Premium: $4,000-$10,000/mo (30+ posts, all platforms, video production)
+- **Our Pro tier ($897)**: 3-4 AI posts/week, IG/FB launch, before/after content. COGS ~$100-150/mo = **~80% margin**.
+
+### AI Content Stack (our tools)
+- Photos: Customer job site + ReimagineHome.ai mockups
+- Videos: Kie.ai/Kling 3.0 animated before/after
+- Captions: Claude AI with local DFW hashtags
+- Scheduling: SocialBee ($29-99/mo)
+- Approval: WAHA WhatsApp polls (existing infrastructure)
+- Tool cost per customer: $50-150/mo
+
+Full research: `SOCIAL_MEDIA_COMPETITIVE_INTEL.md`
+
 ## Revenue Potential
 Each Google Maps lead for kitchen remodeling in Plano = $15K-$50K+ project value.
