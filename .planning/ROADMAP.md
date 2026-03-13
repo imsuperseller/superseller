@@ -1,131 +1,145 @@
-# Roadmap: Character-in-a-Box Pipeline
+# Roadmap: Universal Customer Onboarding System
 
 **Created:** 2026-03-13
+**Updated:** 2026-03-13 — rewritten for universal onboarding (not just Character-in-a-Box)
 **Phases:** 5
-**Core Value:** Client sees their AI brand character on Day 1 via WhatsApp
+**Core Value:** Every customer gets an AI agent in a WhatsApp group from Day 1 — product-aware, zero friction
 
 ## Phase Overview
 
 | # | Phase | Goal | Requirements | Success Criteria |
 |---|-------|------|--------------|------------------|
-| 1 | WhatsApp Group Bootstrapper | Auto-create branded WhatsApp group with AI agent on trigger | ONBD-01, ONBD-02, ONBD-03 | 3 |
-| 2 | AI Questionnaire Agent | Conversational character questionnaire → CharacterBible | QUES-01..07, CHAR-01..03 | 5 |
-| 3 | fal.ai Video Generation | Generate reference + 5 test scenes via Sora 2 | VGEN-01..04 | 4 |
-| 4 | Reveal Video + Delivery | Remotion composition → FFmpeg render → WhatsApp delivery | REVL-01..04, DLVR-01..03 | 4 |
-| 5 | Pipeline Orchestration | BullMQ end-to-end pipeline with cost tracking + admin visibility | PIPE-01..04 | 3 |
+| 1 | Universal Group + Product-Aware Agent | Auto-create WhatsApp group with AI agent that knows customer's products | UGRP-01..05, PAGENT-01..05 | 5 |
+| 2 | Onboarding Modules: Asset Collection, Social Setup, Competitor Research | Product-specific conversational flows inside the group | ASSET-01..04, SOCIAL-01..04, COMPETE-01..04 | 4 |
+| 3 | Module: Character Questionnaire | AI-driven brand character questionnaire → CharacterBible | CHAR-01..04 | 4 |
+| 4 | Module: Character Video Generation + Delivery | Kie.ai Sora 2 → Remotion reveal → WhatsApp delivery | CHAR-05..10 | 4 |
+| 5 | Pipeline Orchestration | BullMQ end-to-end pipeline with module routing, cost tracking, admin visibility | PIPE-01..05 | 4 |
 
 ---
 
-## Phase 1: WhatsApp Group Bootstrapper
+## Phase 1: Universal Group + Product-Aware Agent
 
-**Goal:** When admin triggers the pipeline for a tenant, system auto-creates a branded WhatsApp group, adds the client, and registers the AI agent.
+**Goal:** When admin triggers onboarding for a tenant, system creates a WhatsApp group, reads the tenant's products (ServiceInstance + Subscription), assembles a product-aware system prompt, registers the AI agent, and sends a personalized welcome.
 
-**Requirements:** ONBD-01, ONBD-02, ONBD-03
+**Requirements:** UGRP-01..05, PAGENT-01..05
+
+**Plans:** 2 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Core modules: prompt-assembler + universal group-bootstrap
+- [ ] 01-02-PLAN.md — API endpoint + end-to-end verification
 
 **Success Criteria:**
-1. POST `/api/character-pipeline/start` with tenantId + clientPhone creates WhatsApp group
-2. Group has name "[BusinessName] — Character Studio", icon from tenant logo, description
-3. AI agent is registered in group_agent_config with character-questionnaire system prompt
+1. `POST /api/onboarding/start` with tenantId + clientPhone creates WhatsApp group
+2. System reads tenant's ServiceInstance/Subscription records to know which products they have
+3. AI agent system prompt is assembled dynamically based on active products
+4. Agent sends welcome message listing specific products and what it will help with
+5. Agent responds to messages with product-aware context (knows what customer bought)
 
 **Key files to create/modify:**
-- `apps/worker/src/api/routes.ts` — Add `/api/character-pipeline/start` endpoint
-- `apps/worker/src/services/character-pipeline/group-bootstrap.ts` — Group creation logic
-- Uses: `waha-client.ts` (createGroup, setGroupIcon, setGroupDescription, addGroupParticipant)
-- Uses: `group-agent.ts` (registerGroup)
+- `apps/worker/src/services/onboarding/group-bootstrap.ts` — Universal group creation (replaces character-specific version)
+- `apps/worker/src/services/onboarding/prompt-assembler.ts` — Build system prompt from tenant's product mix
+- `apps/worker/src/api/routes.ts` — Add `/api/onboarding/start` endpoint
+- Uses: `waha-client.ts`, `group-agent.ts`, `pipeline-run.ts`
+- Reads: `ServiceInstance`, `Subscription`, `TenantBrand` via DB queries
 
 ---
 
-## Phase 2: AI Questionnaire Agent
+## Phase 2: Onboarding Modules — Asset Collection, Social Setup, Competitor Research
 
-**Goal:** AI agent in the WhatsApp group conducts a structured-but-conversational questionnaire, collects brand info, and generates a CharacterBible.
+**Goal:** Build the lightweight conversational modules that the product-aware agent activates based on customer's products. These collect info and assets — no heavy generation.
 
-**Requirements:** QUES-01..07, CHAR-01..03
+**Requirements:** ASSET-01..04, SOCIAL-01..04, COMPETE-01..04
 
 **Success Criteria:**
-1. Agent sends welcome message and asks first question within 10 seconds of group creation
-2. Agent tracks questionnaire state (which questions asked, which answered) across messages
-3. Agent handles text responses and asks follow-ups for vague answers
-4. After all info collected, agent confirms with client and generates CharacterBible in DB
-5. CharacterBible has all required fields populated (persona, visual style, audience, scenarios)
+1. Asset collection module downloads media from WhatsApp, uploads to R2, registers as TenantAsset
+2. Social setup module collects credentials/preferences, stores in ServiceInstance.configuration
+3. Competitor research module collects competitor info, triggers AgentForge research
+4. Each module activates only when the customer has the relevant product
 
 **Key files to create/modify:**
-- `apps/worker/src/services/character-pipeline/questionnaire-agent.ts` — Questionnaire state machine
-- `apps/worker/src/services/character-pipeline/character-bible-generator.ts` — Claude → CharacterBible
-- Extends: `group-agent.ts` system prompt with character-specific instructions
+- `apps/worker/src/services/onboarding/modules/asset-collection.ts`
+- `apps/worker/src/services/onboarding/modules/social-setup.ts`
+- `apps/worker/src/services/onboarding/modules/competitor-research.ts`
+- `apps/worker/src/services/onboarding/module-router.ts` — Routes to correct module based on conversation state
+
+---
+
+## Phase 3: Module — Character Questionnaire
+
+**Goal:** AI agent conducts structured character creation questionnaire, collects brand info, generates CharacterBible in DB.
+
+**Requirements:** CHAR-01..04
+
+**Success Criteria:**
+1. Questionnaire activates only for tenants with video products (VideoForge, Winner Studio, Character-in-a-Box)
+2. Agent tracks questionnaire state across messages (which questions asked/answered)
+3. Agent confirms collected info, then generates CharacterBible via Claude
+4. CharacterBible saved to DB with all fields (persona, visual style, audience, scenarios)
+
+**Key files to create/modify:**
+- `apps/worker/src/services/onboarding/modules/character-questionnaire.ts`
+- `apps/worker/src/services/onboarding/character-bible-generator.ts`
 - Uses: `claudeclaw` queue for Claude responses
 
 ---
 
-## Phase 3: fal.ai Video Generation
+## Phase 4: Module — Character Video Generation + Delivery
 
-**Goal:** Generate reference character video + 5 test scene videos via fal.ai Sora 2 API.
+**Goal:** Generate character videos via Kie.ai Sora 2, wrap in Remotion reveal, deliver via WhatsApp.
 
-**Requirements:** VGEN-01..04
-
-**Success Criteria:**
-1. fal.ai client successfully calls Sora 2 API with character prompt from CharacterBible
-2. 6 videos generated (1 reference + 5 scenes) and uploaded to R2
-3. All 6 registered as TenantAssets with correct metadata
-4. PipelineRun records for each generation step with cost tracking
-
-**Key files to create/modify:**
-- `apps/worker/src/services/character-pipeline/fal-client.ts` — fal.ai Sora 2 API client
-- `apps/worker/src/services/character-pipeline/scene-generator.ts` — Scene prompt builder + generation orchestrator
-- Uses: `r2.ts` (uploadToR2 with assetInfo), `pipeline-run.ts`, `tenant-asset.ts`
-
----
-
-## Phase 4: Reveal Video + Delivery
-
-**Goal:** Wrap 5 test scenes into a branded Remotion composition, render via FFmpeg, deliver via WhatsApp.
-
-**Requirements:** REVL-01..04, DLVR-01..03
+**Requirements:** CHAR-05..10
 
 **Success Criteria:**
-1. CharacterReveal Remotion composition renders 5 scenes with brand overlays (logo, name, colors)
-2. FFmpeg produces final MP4 at 1080p
-3. Video uploaded to R2 as TenantAsset
-4. WAHA delivers video to the original WhatsApp group with summary message
+1. Kie.ai Sora 2 generates reference + 5 scene videos from CharacterBible prompts
+2. Remotion CharacterReveal composition renders branded video with all 5 scenes
+3. Final video uploaded to R2, registered as TenantAsset
+4. WAHA delivers video to WhatsApp group with summary
 
 **Key files to create/modify:**
-- `apps/worker/remotion/src/CharacterRevealComposition.tsx` — New Remotion composition
-- `apps/worker/remotion/src/Root.tsx` — Register CharacterReveal composition
-- `apps/worker/src/services/character-pipeline/reveal-renderer.ts` — Render + upload + deliver
-- Uses: `remotion-renderer.ts` (renderComposition), `r2.ts`, `waha-client.ts` (sendVideo)
+- `apps/worker/src/services/onboarding/modules/character-video-gen.ts` — Kie.ai Sora 2 integration
+- `apps/worker/remotion/src/CharacterRevealComposition.tsx` — Remotion composition
+- `apps/worker/remotion/src/Root.tsx` — Register new composition
+- Uses: `remotion-renderer.ts`, `r2.ts`, `waha-client.ts`, `pipeline-run.ts`
 
 ---
 
 ## Phase 5: Pipeline Orchestration
 
-**Goal:** Wire everything into a BullMQ pipeline that runs end-to-end with error handling, cost tracking, and admin visibility.
+**Goal:** Wire everything into a BullMQ pipeline that routes to correct modules based on tenant's products, with error handling, cost tracking, and admin visibility.
 
-**Requirements:** PIPE-01..04
+**Requirements:** PIPE-01..05
 
 **Success Criteria:**
-1. `character-pipeline` BullMQ queue processes jobs through all 4 stages sequentially
-2. Pipeline retries failed generation steps (max 3), alerts on permanent failure
-3. Total cost tracked via trackExpense() and PipelineRun
-4. Admin can view pipeline status via GET `/api/character-pipeline/status/:tenantId`
+1. `customer-onboarding` BullMQ queue routes jobs to appropriate modules
+2. Module selection driven by tenant's ServiceInstance/Subscription records
+3. Pipeline retries failed steps (max 3), alerts on permanent failure
+4. Total cost tracked via trackExpense() and PipelineRun
+5. Admin can view onboarding status via GET `/api/onboarding/status/:tenantId`
 
 **Key files to create/modify:**
-- `apps/worker/src/queue/queues.ts` — Add `characterPipelineQueue`
-- `apps/worker/src/queue/workers/character-pipeline.worker.ts` — Main pipeline worker
+- `apps/worker/src/queue/queues.ts` — Add `customerOnboardingQueue`
+- `apps/worker/src/queue/workers/onboarding.worker.ts` — Main pipeline worker with module routing
 - `apps/worker/src/api/routes.ts` — Add status endpoint
-- Uses: All character-pipeline services from phases 1-4
 
 ---
 
 ## Dependencies
 
 ```
-Phase 1 (Group Bootstrap) → Phase 2 (Questionnaire) → Phase 3 (Video Gen) → Phase 4 (Reveal + Delivery)
-                                                                                       ↓
-                                                                              Phase 5 (Orchestration)
+Phase 1 (Universal Group + Agent) ← Foundation — everything depends on this
+    ↓
+Phase 2 (Light Modules: Asset, Social, Compete) — can run in parallel with Phase 3
+Phase 3 (Character Questionnaire) — can run in parallel with Phase 2
+    ↓
+Phase 4 (Character Video Gen + Delivery) — depends on Phase 3
+    ↓
+Phase 5 (Pipeline Orchestration) — wires 1-4 together, can start after Phase 1-2
 ```
 
-Phases 1-4 are sequential (each depends on previous output).
-Phase 5 wires them together — can start partially after Phase 1-2 are done.
+Phase 2 and Phase 3 are independent and can be built in parallel.
+Phase 5 can start partially after Phase 1 is done (queue + routing skeleton).
 
 ---
 *Created: 2026-03-13*
-*Last updated: 2026-03-13 after initial creation*
+*Last updated: 2026-03-13 — rewritten for universal onboarding*
