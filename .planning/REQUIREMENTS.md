@@ -52,9 +52,9 @@
 ### Module: Competitor Research Briefing (COMPETE)
 
 - [x] **COMPETE-01**: Agent activates competitor briefing when customer has Maps/SEO or Lead Pages product
-- [ ] **COMPETE-02**: Agent asks for top 3 competitors (names, URLs, locations)
-- [ ] **COMPETE-03**: Agent stores competitor info in ServiceInstance.configuration or dedicated table
-- [ ] **COMPETE-04**: Agent shares initial findings in group when AgentForge research completes
+- [x] **COMPETE-02**: Agent asks for top 3 competitors (names, URLs, locations)
+- [x] **COMPETE-03**: Agent stores competitor info in ServiceInstance.configuration or dedicated table
+- [x] **COMPETE-04**: Agent shares initial findings in group when AgentForge research completes
 
 ### Pipeline Orchestration (PIPE)
 
