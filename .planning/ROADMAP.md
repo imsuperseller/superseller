@@ -1,43 +1,131 @@
-# Roadmap: Admin Command Center v1.0
+# Roadmap: Character-in-a-Box Pipeline
 
-## Phase 1: Data Foundation — Project + Audit Models
-**Goal:** Create the real database backbone that everything else builds on
-**Requirements:** R1.1, R1.2, R1.3, R1.4, R1.5, R1.6, R2.1, R2.2, R2.3
-**Scope:** Prisma models (Project, ProjectMilestone, ProjectTask, AuditTemplate, AuditSection, AuditItem, AuditInstance, AuditResponse), CRUD API routes, replace fake Projects API
-**Why first:** Every subsequent phase writes to these tables
+**Created:** 2026-03-13
+**Phases:** 5
+**Core Value:** Client sees their AI brand character on Day 1 via WhatsApp
 
-## Phase 2: Seed Playbooks + Customer Data
-**Goal:** Populate the audit system with both playbooks and seed existing customers
-**Requirements:** R2.4, R2.5, R2.6, R3.1, R3.2, R7.1, R7.2, R7.3, R7.4, R7.5
-**Scope:** Seed script for SuperSeller 130-question audit template, Rensto 140-question playbook, create Project+AuditInstance for UAD/MissParty/ElitePro/Yoram, seed internal projects
-**Why second:** Data model exists from Phase 1, now fill it
+## Phase Overview
 
-## Phase 3: CI Pipeline + Code Health
-**Goal:** Every push runs tests, results land on admin automatically
-**Requirements:** R4.1, R4.2, R4.3, R4.4, R4.5, R4.6
-**Scope:** CiRun model, GitHub Actions ci.yml, POST/GET ci-status API, dynamic Mission Control Code Health
-**Why third:** First automated data flow into the new Project system
+| # | Phase | Goal | Requirements | Success Criteria |
+|---|-------|------|--------------|------------------|
+| 1 | WhatsApp Group Bootstrapper | Auto-create branded WhatsApp group with AI agent on trigger | ONBD-01, ONBD-02, ONBD-03 | 3 |
+| 2 | AI Questionnaire Agent | Conversational character questionnaire → CharacterBible | QUES-01..07, CHAR-01..03 | 5 |
+| 3 | fal.ai Video Generation | Generate reference + 5 test scenes via Sora 2 | VGEN-01..04 | 4 |
+| 4 | Reveal Video + Delivery | Remotion composition → FFmpeg render → WhatsApp delivery | REVL-01..04, DLVR-01..03 | 4 |
+| 5 | Pipeline Orchestration | BullMQ end-to-end pipeline with cost tracking + admin visibility | PIPE-01..04 | 3 |
 
-## Phase 4: Multi-Project Portfolio
-**Goal:** See all repos and deploys (SuperSeller, Rensto, Yoram, Iron Dome) on admin
-**Requirements:** R5.1, R5.2, R5.3, R5.4, R5.5
-**Scope:** GitHub API + Vercel API integration, external project cards, portfolio dashboard section
-**Why fourth:** Extends Project model with external data sources
+---
 
-## Phase 5: Unified Alert Engine
-**Goal:** One alert system — everything routes through it, WhatsApp + admin history
-**Requirements:** R6.1, R6.2, R6.3, R6.4, R6.5, R6.6
-**Scope:** Merge alert channels, project-linked AlertHistory, CI failure WhatsApp, recovery notifications
-**Why fifth:** Requires CI (Phase 3) and portfolio (Phase 4) to be alert sources
+## Phase 1: WhatsApp Group Bootstrapper
 
-## Phase 6: Admin UI + Agent Integration
-**Goal:** Projects tab becomes the real command center, agents auto-update it
-**Requirements:** R2.5, R2.6, R9.1, R9.2, R9.3
-**Scope:** Customer audit UI (view/fill per customer), project CRUD forms, real stats dashboard, agent API contract for programmatic updates
-**Why sixth:** All data flows exist, now make the UI comprehensive
+**Goal:** When admin triggers the pipeline for a tenant, system auto-creates a branded WhatsApp group, adds the client, and registers the AI agent.
 
-## Phase 7: Residue Audit + Cleanup
-**Goal:** Clean every doc, config, and memory file of stale references
-**Requirements:** R8.1, R8.2, R8.3, R8.4
-**Scope:** Scan all docs, cross-check memory, fix contradictions, track as Project on admin
-**Why last:** Everything else is built — this is the polish pass
+**Requirements:** ONBD-01, ONBD-02, ONBD-03
+
+**Success Criteria:**
+1. POST `/api/character-pipeline/start` with tenantId + clientPhone creates WhatsApp group
+2. Group has name "[BusinessName] — Character Studio", icon from tenant logo, description
+3. AI agent is registered in group_agent_config with character-questionnaire system prompt
+
+**Key files to create/modify:**
+- `apps/worker/src/api/routes.ts` — Add `/api/character-pipeline/start` endpoint
+- `apps/worker/src/services/character-pipeline/group-bootstrap.ts` — Group creation logic
+- Uses: `waha-client.ts` (createGroup, setGroupIcon, setGroupDescription, addGroupParticipant)
+- Uses: `group-agent.ts` (registerGroup)
+
+---
+
+## Phase 2: AI Questionnaire Agent
+
+**Goal:** AI agent in the WhatsApp group conducts a structured-but-conversational questionnaire, collects brand info, and generates a CharacterBible.
+
+**Requirements:** QUES-01..07, CHAR-01..03
+
+**Success Criteria:**
+1. Agent sends welcome message and asks first question within 10 seconds of group creation
+2. Agent tracks questionnaire state (which questions asked, which answered) across messages
+3. Agent handles text responses and asks follow-ups for vague answers
+4. After all info collected, agent confirms with client and generates CharacterBible in DB
+5. CharacterBible has all required fields populated (persona, visual style, audience, scenarios)
+
+**Key files to create/modify:**
+- `apps/worker/src/services/character-pipeline/questionnaire-agent.ts` — Questionnaire state machine
+- `apps/worker/src/services/character-pipeline/character-bible-generator.ts` — Claude → CharacterBible
+- Extends: `group-agent.ts` system prompt with character-specific instructions
+- Uses: `claudeclaw` queue for Claude responses
+
+---
+
+## Phase 3: fal.ai Video Generation
+
+**Goal:** Generate reference character video + 5 test scene videos via fal.ai Sora 2 API.
+
+**Requirements:** VGEN-01..04
+
+**Success Criteria:**
+1. fal.ai client successfully calls Sora 2 API with character prompt from CharacterBible
+2. 6 videos generated (1 reference + 5 scenes) and uploaded to R2
+3. All 6 registered as TenantAssets with correct metadata
+4. PipelineRun records for each generation step with cost tracking
+
+**Key files to create/modify:**
+- `apps/worker/src/services/character-pipeline/fal-client.ts` — fal.ai Sora 2 API client
+- `apps/worker/src/services/character-pipeline/scene-generator.ts` — Scene prompt builder + generation orchestrator
+- Uses: `r2.ts` (uploadToR2 with assetInfo), `pipeline-run.ts`, `tenant-asset.ts`
+
+---
+
+## Phase 4: Reveal Video + Delivery
+
+**Goal:** Wrap 5 test scenes into a branded Remotion composition, render via FFmpeg, deliver via WhatsApp.
+
+**Requirements:** REVL-01..04, DLVR-01..03
+
+**Success Criteria:**
+1. CharacterReveal Remotion composition renders 5 scenes with brand overlays (logo, name, colors)
+2. FFmpeg produces final MP4 at 1080p
+3. Video uploaded to R2 as TenantAsset
+4. WAHA delivers video to the original WhatsApp group with summary message
+
+**Key files to create/modify:**
+- `apps/worker/remotion/src/CharacterRevealComposition.tsx` — New Remotion composition
+- `apps/worker/remotion/src/Root.tsx` — Register CharacterReveal composition
+- `apps/worker/src/services/character-pipeline/reveal-renderer.ts` — Render + upload + deliver
+- Uses: `remotion-renderer.ts` (renderComposition), `r2.ts`, `waha-client.ts` (sendVideo)
+
+---
+
+## Phase 5: Pipeline Orchestration
+
+**Goal:** Wire everything into a BullMQ pipeline that runs end-to-end with error handling, cost tracking, and admin visibility.
+
+**Requirements:** PIPE-01..04
+
+**Success Criteria:**
+1. `character-pipeline` BullMQ queue processes jobs through all 4 stages sequentially
+2. Pipeline retries failed generation steps (max 3), alerts on permanent failure
+3. Total cost tracked via trackExpense() and PipelineRun
+4. Admin can view pipeline status via GET `/api/character-pipeline/status/:tenantId`
+
+**Key files to create/modify:**
+- `apps/worker/src/queue/queues.ts` — Add `characterPipelineQueue`
+- `apps/worker/src/queue/workers/character-pipeline.worker.ts` — Main pipeline worker
+- `apps/worker/src/api/routes.ts` — Add status endpoint
+- Uses: All character-pipeline services from phases 1-4
+
+---
+
+## Dependencies
+
+```
+Phase 1 (Group Bootstrap) → Phase 2 (Questionnaire) → Phase 3 (Video Gen) → Phase 4 (Reveal + Delivery)
+                                                                                       ↓
+                                                                              Phase 5 (Orchestration)
+```
+
+Phases 1-4 are sequential (each depends on previous output).
+Phase 5 wires them together — can start partially after Phase 1-2 are done.
+
+---
+*Created: 2026-03-13*
+*Last updated: 2026-03-13 after initial creation*

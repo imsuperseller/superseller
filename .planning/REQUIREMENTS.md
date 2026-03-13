@@ -1,63 +1,127 @@
-# Requirements: Admin Command Center
+# Requirements: Character-in-a-Box Pipeline
 
-## R1: Real Project Data Model
-- R1.1: Create `Project` Prisma model with: name, description, type (internal/customer/infrastructure/external), status, progress, pillar, owner, dates, metadata JSON
-- R1.2: Create `ProjectMilestone` model linked to Project
-- R1.3: Create `ProjectTask` model linked to Project
-- R1.4: CRUD API routes: POST/GET/PATCH/DELETE `/api/admin/projects`
-- R1.5: Replace fake ServiceInstance/WhatsAppInstance synthesis with real Project queries
-- R1.6: Real stats (not hardcoded 12/2/45/8) calculated from DB
+**Defined:** 2026-03-13
+**Core Value:** Client sees their AI brand character on Day 1 via WhatsApp — zero friction onboarding
 
-## R2: Customer Audit System (SuperSeller Playbook)
-- R2.1: Create `AuditTemplate` model — stores section/question definitions (the 10 sections, 130+ questions from playbook)
-- R2.2: Create `AuditInstance` model — one per customer, linked to Project
-- R2.3: Create `AuditResponse` model — one per question per instance (status, answer, notes)
-- R2.4: Seed SuperSeller Business Audit template from docx (10 sections, all questions)
-- R2.5: Admin UI to view/fill audit per customer
-- R2.6: Progress tracking per section and overall
+## v1 Requirements
 
-## R3: Rensto Operations Playbook
-- R3.1: Seed Rensto playbook as second audit template (11 sections, 140+ questions)
-- R3.2: Rensto appears as an external project on admin
-- R3.3: City launch tracking per Rensto market
+### Onboarding Trigger
 
-## R4: CI Pipeline + Code Health
-- R4.1: Create `CiRun` Prisma model (commitSha, branch, schemaStatus, test results, duration)
-- R4.2: GitHub Actions workflow: schema sentinel + vitest web + vitest worker on every push
-- R4.3: POST `/api/admin/ci-status` endpoint (GitHub Actions writes results)
-- R4.4: GET `/api/admin/ci-status` endpoint (Mission Control reads)
-- R4.5: Mission Control Code Health category reads live from CiRun table
-- R4.6: Schema drift = CI failure = red on dashboard
+- [ ] **ONBD-01**: Admin can trigger Character-in-a-Box pipeline for a tenant via API endpoint
+- [ ] **ONBD-02**: System auto-creates a WhatsApp group named "[BusinessName] — Character Studio" with client phone + AI agent
+- [ ] **ONBD-03**: AI agent registers itself in group_agent_config with character-questionnaire role and system prompt
 
-## R5: Multi-Project Portfolio
-- R5.1: Show GitHub commit activity for all repos (SuperSeller, Rensto, Iron Dome, Yoram)
-- R5.2: Show Vercel deploy status for all projects
-- R5.3: External projects registered as Project records with type="external"
-- R5.4: GitHub API + Vercel API integration using existing PATs/tokens
-- R5.5: Future-proof: add new projects via admin UI
+### Questionnaire
 
-## R6: Unified Alert Engine
-- R6.1: Merge WhatsApp + email + GitHub issue alerting into one engine
-- R6.2: All alerts written to `AlertHistory` table with project linkage
-- R6.3: CI failure → instant WhatsApp to Shai
-- R6.4: Health check failure → WhatsApp (with cooldowns from existing alert-engine.ts)
-- R6.5: Alert history visible on System Monitor tab
-- R6.6: Recovery notifications (service back up → WhatsApp)
+- [ ] **QUES-01**: AI agent sends welcome message explaining the character creation process
+- [ ] **QUES-02**: AI agent asks brand personality questions conversationally (tone, values, visual style)
+- [ ] **QUES-03**: AI agent asks for target audience description
+- [ ] **QUES-04**: AI agent asks for 3 sample business scenarios where the character would appear
+- [ ] **QUES-05**: AI agent handles text, voice notes, and photo responses from client
+- [ ] **QUES-06**: AI agent asks dynamic follow-up questions when answers are vague
+- [ ] **QUES-07**: AI agent confirms collected information with client before proceeding
 
-## R7: Existing Customer Data Seeding
-- R7.1: Seed UAD as Project + AuditInstance with known data
-- R7.2: Seed MissParty as Project + AuditInstance with known data
-- R7.3: Seed Elite Pro as Project + AuditInstance with known data
-- R7.4: Seed Yoram as Project + AuditInstance with known data
-- R7.5: Seed internal projects: CI Pipeline, Schema Health, Video Pipeline
+### Character Generation
 
-## R8: Residue & Reference Audit
-- R8.1: Scan all docs for stale references (dead URLs, deprecated services)
-- R8.2: Cross-check memory files against current reality
-- R8.3: Clean up contradictions between docs
-- R8.4: Track as a Project on admin
+- [ ] **CHAR-01**: System generates CharacterBible from questionnaire responses via Claude
+- [ ] **CHAR-02**: CharacterBible includes: persona description, visual style, target audience, scenario prompts
+- [ ] **CHAR-03**: CharacterBible is saved to DB linked to tenant
 
-## R9: Agent Integration
-- R9.1: After every task, agent creates/updates Project record via API
-- R9.2: progress.md updates continue but admin is primary SSOT
-- R9.3: Document the API contract for programmatic project updates
+### Video Generation
+
+- [ ] **VGEN-01**: System generates reference character video via fal.ai Sora 2 API
+- [ ] **VGEN-02**: System generates 5 test scene videos via fal.ai: job site, studio, street, office, stylized
+- [ ] **VGEN-03**: All generated videos are uploaded to R2 and registered as TenantAssets
+- [ ] **VGEN-04**: Each generation step is tracked via PipelineRun with status, cost, duration
+
+### Reveal Video
+
+- [ ] **REVL-01**: Remotion "CharacterReveal" composition wraps all 5 scenes with branded overlays
+- [ ] **REVL-02**: Composition includes client logo, business name, accent colors from tenant brand
+- [ ] **REVL-03**: FFmpeg renders final MP4 on RackNerd
+- [ ] **REVL-04**: Final video uploaded to R2 and registered as TenantAsset
+
+### Delivery
+
+- [ ] **DLVR-01**: WAHA delivers character reveal video to the same WhatsApp group
+- [ ] **DLVR-02**: AI agent sends accompanying message with character summary
+- [ ] **DLVR-03**: PipelineRun marked complete with all output URLs
+
+### Pipeline Orchestration
+
+- [ ] **PIPE-01**: BullMQ queue `character-pipeline` orchestrates the full flow
+- [ ] **PIPE-02**: Pipeline handles failures gracefully — retries generation steps, alerts on permanent failure
+- [ ] **PIPE-03**: Pipeline tracks total cost via trackExpense()
+- [ ] **PIPE-04**: Admin can view pipeline status via existing admin API
+
+## v2 Requirements
+
+### Enhanced Questionnaire
+
+- **QUES-V2-01**: AI agent transcribes voice notes via Whisper before processing
+- **QUES-V2-02**: AI agent analyzes uploaded photos to extract brand visual elements
+- **QUES-V2-03**: Multi-language questionnaire support (Hebrew, English, Spanish)
+
+### Character Iteration
+
+- **ITER-01**: Client can request changes to character via WhatsApp
+- **ITER-02**: System regenerates specific scenes based on feedback
+- **ITER-03**: Version tracking for CharacterBible iterations
+
+### Automation
+
+- **AUTO-01**: Pipeline auto-triggers on PayPal subscription webhook (new client sign)
+- **AUTO-02**: Pipeline auto-triggers on admin project creation with character-in-a-box type
+
+## Out of Scope
+
+| Feature | Reason |
+|---------|--------|
+| Web UI questionnaire form | WhatsApp-first approach — zero friction |
+| Sora 2 @handle creation | API may not support this yet |
+| Music/audio overlay on reveal | Visual-only for v1, add later |
+| Client self-service pipeline restart | Admin-only for v1 |
+| Real-time generation progress streaming | Deliver final video only |
+| Voice note transcription | v2 — process text responses for v1 |
+
+## Traceability
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| ONBD-01 | Phase 1 | Pending |
+| ONBD-02 | Phase 1 | Pending |
+| ONBD-03 | Phase 1 | Pending |
+| QUES-01 | Phase 2 | Pending |
+| QUES-02 | Phase 2 | Pending |
+| QUES-03 | Phase 2 | Pending |
+| QUES-04 | Phase 2 | Pending |
+| QUES-05 | Phase 2 | Pending |
+| QUES-06 | Phase 2 | Pending |
+| QUES-07 | Phase 2 | Pending |
+| CHAR-01 | Phase 2 | Pending |
+| CHAR-02 | Phase 2 | Pending |
+| CHAR-03 | Phase 2 | Pending |
+| VGEN-01 | Phase 3 | Pending |
+| VGEN-02 | Phase 3 | Pending |
+| VGEN-03 | Phase 3 | Pending |
+| VGEN-04 | Phase 3 | Pending |
+| REVL-01 | Phase 4 | Pending |
+| REVL-02 | Phase 4 | Pending |
+| REVL-03 | Phase 4 | Pending |
+| REVL-04 | Phase 4 | Pending |
+| DLVR-01 | Phase 4 | Pending |
+| DLVR-02 | Phase 4 | Pending |
+| DLVR-03 | Phase 4 | Pending |
+| PIPE-01 | Phase 5 | Pending |
+| PIPE-02 | Phase 5 | Pending |
+| PIPE-03 | Phase 5 | Pending |
+| PIPE-04 | Phase 5 | Pending |
+
+**Coverage:**
+- v1 requirements: 28 total
+- Mapped to phases: 28
+- Unmapped: 0 ✓
+
+---
+*Requirements defined: 2026-03-13*
+*Last updated: 2026-03-13 after initial definition*
