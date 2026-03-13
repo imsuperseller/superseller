@@ -37,7 +37,7 @@ const TENANT_CONFIGS: Record<string, {
     whatsappGroup?: string;
     state: string; // for tax calculation
 }> = {
-    'elite-pro': {
+    'elite-pro-remodeling': {
         priceId: 'price_1TADQfDE8rt1dEs1PUPGDEfc',
         amount: 200000, // $2,000
         productName: 'Autonomous Instagram Growth',
