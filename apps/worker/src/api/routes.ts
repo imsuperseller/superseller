@@ -722,7 +722,18 @@ async function handleClaudeClawWebhook(req: Request, res: Response, mode: "perso
             return res.json({ status: "ignored", reason: "empty" });
         }
 
-        // Intercept approval responses (generic approval system first, then crew-specific)
+        // Intercept approval responses — skip approval-related messages before ClaudeClaw
+        // Business mode: SocialHub approvals are handled by Vercel webhook, not ClaudeClaw
+        if (mode === "business" && body) {
+            const lowerBody = body.trim().toLowerCase();
+            const approvalKeywords = ["approve", "approved", "yes", "ok", "sure", "go", "publish", "ship", "send", "reject", "rejected", "no", "nah", "skip", "nope", "pass", "edit", "change", "fix", "revise", "lgtm", "looks good", "yep", "yeah", "אשר", "כן", "דחה", "לא", "ערוך", "תקן"];
+            if (approvalKeywords.some(w => lowerBody === w || lowerBody === w + "!" || lowerBody === w + "d")) {
+                logger.info({ msg: "ClaudeClaw: skipping approval keyword in business mode", chatId, body: lowerBody });
+                return res.json({ status: "ignored", reason: "approval_keyword" });
+            }
+        }
+
+        // Personal mode: intercept and handle approval responses
         if (mode === "personal" && body) {
             try {
                 const { handleApprovalResponse } = await import("../services/approval-service");

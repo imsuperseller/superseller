@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
 
     let action: "approve" | "reject" | "edit" | "unknown" = "unknown";
     let reason: string | undefined;
-    let postIdPrefix: string | undefined;
+    let postIdPrefix: string | undefined; // unused — kept for future poll-to-post mapping
     let from = "";
     let pollMessageId: string | undefined; // to find post by poll message ID
 
@@ -42,18 +42,12 @@ export async function POST(req: NextRequest) {
       // Text message — keyword or NL approval
       const messageBody = payload?.body || "";
       from = payload?.from?.replace("@c.us", "")?.replace("@s.whatsapp.net", "") || "";
-      const buttonId =
-        payload?.selectedButtonId ||
-        payload?.buttonId ||
-        payload?._data?.quotedMsg?.selectedButtonId ||
-        undefined;
-      if (!from || (!messageBody && !buttonId)) {
+      if (!from || !messageBody) {
         return NextResponse.json({ ok: true, skipped: "empty message" });
       }
-      const parsed = await parseApprovalResponse(messageBody, buttonId);
+      const parsed = await parseApprovalResponse(messageBody);
       action = parsed.action;
       reason = parsed.reason;
-      postIdPrefix = parsed.postIdPrefix;
     } else {
       return NextResponse.json({ ok: true, skipped: `unhandled event: ${event}` });
     }

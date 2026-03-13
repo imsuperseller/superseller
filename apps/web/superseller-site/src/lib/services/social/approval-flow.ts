@@ -134,7 +134,7 @@ export async function sendApprovalRequest(
     const keyId = pollData._data?.key?.id || pollData.key?.id;
     console.log(`[approval-flow] Poll sent for post ${req.postId.slice(0, 8)}, messageId: ${keyId}`);
 
-    // NOWEB engine doesn't fire poll.vote webhook events, so add text reply hint
+    // Text reply hint — polls work natively, this is a UX fallback for clarity
     await fetch(`${WAHA_BASE}/api/sendText`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "X-Api-Key": WAHA_KEY },
@@ -182,17 +182,8 @@ export function parsePollVote(
  * Handles text replies and NL via Claude.
  */
 export async function parseApprovalResponse(
-  messageBody: string,
-  buttonId?: string
-): Promise<{ action: "approve" | "reject" | "edit" | "unknown"; reason?: string; postIdPrefix?: string }> {
-  // Legacy button click support
-  if (buttonId) {
-    const [action, postIdPrefix] = buttonId.split("_");
-    if (action === "approve") return { action: "approve", postIdPrefix };
-    if (action === "reject") return { action: "reject", postIdPrefix };
-    if (action === "edit") return { action: "edit", postIdPrefix };
-  }
-
+  messageBody: string
+): Promise<{ action: "approve" | "reject" | "edit" | "unknown"; reason?: string }> {
   const text = messageBody.trim().toLowerCase();
 
   // Fast path: keyword matching
