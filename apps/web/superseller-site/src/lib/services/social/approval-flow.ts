@@ -34,9 +34,8 @@ export async function sendApprovalRequest(
 ): Promise<ApprovalResult> {
   const chatId = `${req.approverPhone}@c.us`;
 
-  const preview = req.contentPreview.length > 1000
-    ? req.contentPreview.slice(0, 1000) + "..."
-    : req.contentPreview;
+  // WhatsApp supports up to 65536 chars — show full content
+  const preview = req.contentPreview;
 
   const header = req.tenantName
     ? `📋 *${req.tenantName}*${req.igAccount ? ` → ${req.igAccount}` : ""}`
@@ -85,6 +84,8 @@ export async function sendApprovalRequest(
     });
 
     if (!buttonsRes.ok) {
+      const errBody = await buttonsRes.text().catch(() => "");
+      console.warn(`[approval-flow] Buttons failed (${buttonsRes.status}): ${errBody}. Falling back to plain text.`);
       // Fallback to plain text if buttons fail
       const fallbackRes = await fetch(`${WAHA_BASE}/api/sendText`, {
         method: "POST",
@@ -108,6 +109,7 @@ export async function sendApprovalRequest(
     }
 
     const buttonsData = await buttonsRes.json();
+    console.log(`[approval-flow] Buttons sent OK for post ${req.postId.slice(0, 8)}, messageId: ${buttonsData.key?.id}`);
     const keyId = buttonsData.key?.id;
 
     return {
