@@ -2,7 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { verifySession } from '@/lib/auth';
 
-async function requireAdmin() {
+const CRON_SECRET = process.env.CRON_SECRET;
+
+async function requireAdmin(req: NextRequest) {
+    // Allow CRON_SECRET bearer token (for programmatic updates from CI/agents)
+    const authHeader = req.headers.get('authorization');
+    if (CRON_SECRET && authHeader === `Bearer ${CRON_SECRET}`) {
+        return { session: { isValid: true, role: 'admin' } };
+    }
     const session = await verifySession();
     if (!session.isValid || session.role !== 'admin') {
         return { error: NextResponse.json({ error: 'Unauthorized' }, { status: 401 }) };
@@ -12,7 +19,7 @@ async function requireAdmin() {
 
 // GET /api/admin/projects — real Project table + live stats
 export async function GET(req: NextRequest) {
-    const auth = await requireAdmin();
+    const auth = await requireAdmin(req);
     if ('error' in auth && auth.error) return auth.error;
 
     try {
@@ -61,7 +68,7 @@ export async function GET(req: NextRequest) {
 
 // POST /api/admin/projects — create a new Project
 export async function POST(req: NextRequest) {
-    const auth = await requireAdmin();
+    const auth = await requireAdmin(req);
     if ('error' in auth && auth.error) return auth.error;
 
     try {
@@ -91,7 +98,7 @@ export async function POST(req: NextRequest) {
 
 // PATCH /api/admin/projects — update an existing Project
 export async function PATCH(req: NextRequest) {
-    const auth = await requireAdmin();
+    const auth = await requireAdmin(req);
     if ('error' in auth && auth.error) return auth.error;
 
     try {
@@ -114,7 +121,7 @@ export async function PATCH(req: NextRequest) {
 
 // DELETE /api/admin/projects — delete by id (cascades milestones + tasks)
 export async function DELETE(req: NextRequest) {
-    const auth = await requireAdmin();
+    const auth = await requireAdmin(req);
     if ('error' in auth && auth.error) return auth.error;
 
     try {
