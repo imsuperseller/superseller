@@ -134,6 +134,17 @@ export async function sendApprovalRequest(
     const keyId = pollData._data?.key?.id || pollData.key?.id;
     console.log(`[approval-flow] Poll sent for post ${req.postId.slice(0, 8)}, messageId: ${keyId}`);
 
+    // NOWEB engine doesn't fire poll.vote webhook events, so add text reply hint
+    await fetch(`${WAHA_BASE}/api/sendText`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Api-Key": WAHA_KEY },
+      body: JSON.stringify({
+        session: WAHA_SESSION,
+        chatId,
+        text: `Reply: *approve* · *reject* · *edit [notes]*`,
+      }),
+    }).catch(() => {});
+
     return {
       sent: true,
       messageId: keyId,
