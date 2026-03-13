@@ -23,11 +23,44 @@ function mapPropertyType(raw: string | undefined): string {
 }
 
 import { telnyxVoiceRouter } from "./telnyx-voice-webhook";
+import { bootstrapOnboardingGroup } from "../services/onboarding/group-bootstrap";
 
 export const apiRouter = Router();
 
 // Mount Telnyx voice webhook (migrated from n8n)
 apiRouter.use(telnyxVoiceRouter);
+
+// ─── ONBOARDING ───
+const onboardingStartSchema = z.object({
+    tenantId: z.string().uuid(),
+    clientPhone: z.string().min(8), // Phone number with country code
+});
+
+apiRouter.post("/api/onboarding/start", async (req: Request, res: Response) => {
+    try {
+        const parsed = onboardingStartSchema.safeParse(req.body);
+        if (!parsed.success) {
+            return res.status(400).json({ error: "Invalid input", details: parsed.error.flatten() });
+        }
+
+        const { tenantId, clientPhone } = parsed.data;
+
+        logger.info({ msg: "Onboarding start requested", tenantId, clientPhone });
+
+        const result = await bootstrapOnboardingGroup(tenantId, clientPhone);
+
+        return res.status(201).json({
+            ok: true,
+            groupId: result.groupId,
+            pipelineRunId: result.pipelineRunId,
+            tenantName: result.tenantName,
+            products: result.products.map(p => p.productName),
+        });
+    } catch (err: any) {
+        logger.error({ msg: "Onboarding start failed", error: err.message, stack: err.stack });
+        return res.status(500).json({ error: "Onboarding failed", message: err.message });
+    }
+});
 
 // ─── LIST JOBS ───
 apiRouter.get("/jobs", async (req: Request, res: Response) => {
