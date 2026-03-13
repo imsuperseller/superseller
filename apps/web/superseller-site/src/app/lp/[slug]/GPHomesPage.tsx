@@ -164,8 +164,8 @@ export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | nul
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const whatsappUrl = `https://wa.me/14694447777?text=${encodeURIComponent("Hi, I saw the GP Homes digital report and I'd like to discuss growing our online presence.")}`;
-  const phoneUrl = "tel:+14694447777";
+  const whatsappUrl = `https://wa.me/${page.whatsappNumber || "14695885133"}?text=${encodeURIComponent("Hi, I saw the GP Homes digital report and I'd like to discuss growing our online presence.")}`;
+  const phoneUrl = page.phone ? `tel:${page.phone.replace(/\D/g, "")}` : "tel:+14695885133";
 
   return (
     <>
@@ -305,7 +305,7 @@ export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | nul
                       onClick={() => trackConversion("hero_phone_click")}
                       className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-lg text-white border-2 border-white/30 hover:bg-white/10 transition"
                     >
-                      <PhoneIcon /> (469) 444-7777
+                      <PhoneIcon /> {page.phone || "Call Us"}
                     </a>
                   </div>
                 </div>
@@ -1125,7 +1125,7 @@ export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | nul
                   onClick={() => trackConversion("final_cta_phone_click")}
                   className="inline-flex items-center justify-center gap-2 px-10 py-4 rounded-xl font-bold text-lg text-white border-2 border-white/30 hover:bg-white/10 transition"
                 >
-                  <PhoneIcon /> (469) 444-7777
+                  <PhoneIcon /> {page.phone || "Call Us"}
                 </a>
               </div>
             </Reveal>
