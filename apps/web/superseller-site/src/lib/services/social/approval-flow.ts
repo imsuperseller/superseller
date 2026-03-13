@@ -25,29 +25,28 @@ export interface ApprovalResult {
 }
 
 /**
- * Send a content approval request via WhatsApp with interactive buttons.
- * Button IDs include the postId for exact matching on reply.
- * Returns messageId for later editing (status updates).
+ * Send a content approval request via WhatsApp.
+ *
+ * Flow:
+ * 1. Send image (if available) with SHORT caption (WhatsApp caps captions ~1024 chars)
+ * 2. Send full content as a separate text message (no truncation)
+ * 3. Send approval instructions as a separate text message
+ *
+ * Returns messageId of the instructions message for later editing.
  */
 export async function sendApprovalRequest(
   req: ApprovalRequest
 ): Promise<ApprovalResult> {
   const chatId = `${req.approverPhone}@c.us`;
 
-  // WhatsApp supports up to 65536 chars — show full content
-  const preview = req.contentPreview;
-
   const header = req.tenantName
     ? `📋 *${req.tenantName}*${req.igAccount ? ` → ${req.igAccount}` : ""}`
     : `📋 *Content Approval*`;
 
-  const message = `${header}\n📱 ${req.platform.charAt(0).toUpperCase() + req.platform.slice(1)} post\n\n${preview}`;
-
-  // Short ID for button payload (first 8 chars of UUID)
-  const shortId = req.postId.slice(0, 8);
+  const platformLabel = req.platform.charAt(0).toUpperCase() + req.platform.slice(1);
 
   try {
-    // Send image first if available
+    // Step 1: Send image with short caption (if available)
     if (req.imageUrl) {
       await fetch(`${WAHA_BASE}/api/sendImage`, {
         method: "POST",
@@ -59,13 +58,17 @@ export async function sendApprovalRequest(
           session: WAHA_SESSION,
           chatId,
           file: { url: req.imageUrl },
-          caption: message,
+          caption: `${header}\n📱 ${platformLabel} post`,
         }),
       }).catch(() => {});
     }
 
-    // Send buttons with postId embedded in button IDs
-    const buttonsRes = await fetch(`${WAHA_BASE}/api/sendButtons`, {
+    // Step 2: Send full content as text message (no caption limit)
+    const contentMessage = req.imageUrl
+      ? `${req.contentPreview}`
+      : `${header}\n📱 ${platformLabel} post\n\n${req.contentPreview}`;
+
+    await fetch(`${WAHA_BASE}/api/sendText`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -74,46 +77,29 @@ export async function sendApprovalRequest(
       body: JSON.stringify({
         session: WAHA_SESSION,
         chatId,
-        text: req.imageUrl ? `⬆️ Post preview above. Tap to respond:` : message,
-        buttons: [
-          { id: `approve_${shortId}`, text: "✅ Approve" },
-          { id: `reject_${shortId}`, text: "❌ Reject" },
-          { id: `edit_${shortId}`, text: "✏️ Edit" },
-        ],
+        text: contentMessage,
+      }),
+    }).catch(() => {});
+
+    // Step 3: Send approval instructions
+    const instructionsRes = await fetch(`${WAHA_BASE}/api/sendText`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Api-Key": WAHA_KEY,
+      },
+      body: JSON.stringify({
+        session: WAHA_SESSION,
+        chatId,
+        text: `⬆️ *Review the post above*\n\n✅ Reply *approve* to publish\n❌ Reply *reject* to skip\n✏️ Reply *edit [notes]* to revise`,
       }),
     });
 
-    if (!buttonsRes.ok) {
-      const errBody = await buttonsRes.text().catch(() => "");
-      console.warn(`[approval-flow] Buttons failed (${buttonsRes.status}): ${errBody}. Falling back to plain text.`);
-      // Fallback to plain text if buttons fail
-      const fallbackRes = await fetch(`${WAHA_BASE}/api/sendText`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Api-Key": WAHA_KEY,
-        },
-        body: JSON.stringify({
-          session: WAHA_SESSION,
-          chatId,
-          text: `${message}\n\n✅ Reply *approve* to publish\n❌ Reply *reject* to skip\n✏️ Reply *edit [notes]* to revise`,
-        }),
-      });
-      const fallbackData = await fallbackRes.json();
-      const keyId = fallbackData.key?.id;
-      return {
-        sent: fallbackRes.ok,
-        messageId: keyId,
-        serializedMessageId: keyId ? `true_${req.approverPhone}@c.us_${keyId}` : undefined,
-      };
-    }
-
-    const buttonsData = await buttonsRes.json();
-    console.log(`[approval-flow] Buttons sent OK for post ${req.postId.slice(0, 8)}, messageId: ${buttonsData.key?.id}`);
-    const keyId = buttonsData.key?.id;
+    const instructionsData = await instructionsRes.json();
+    const keyId = instructionsData.key?.id;
 
     return {
-      sent: true,
+      sent: instructionsRes.ok,
       messageId: keyId,
       serializedMessageId: keyId ? `true_${req.approverPhone}@c.us_${keyId}` : undefined,
     };
