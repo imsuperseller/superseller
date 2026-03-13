@@ -109,12 +109,21 @@ export async function parseApprovalResponse(
 ): Promise<{ action: "approve" | "reject" | "edit" | "unknown"; reason?: string }> {
   const text = messageBody.trim().toLowerCase();
 
-  // Fast path: exact keywords
-  if (text === "approve" || text === "yes" || text === "ok" || text === "אשר" || text === "👍") {
+  // Fast path: keyword matching
+  const approveWords = ["approve", "approved", "yes", "ok", "sure", "go", "publish", "ship", "send", "אשר", "👍", "כן", "yep", "yeah", "lgtm", "looks good"];
+  const rejectWords = ["reject", "rejected", "no", "nah", "skip", "nope", "pass", "דחה", "👎", "לא", "delete"];
+  const editWords = ["edit", "change", "fix", "revise", "update", "modify", "ערוך", "תקן"];
+
+  if (approveWords.some(w => text === w || text === w + "d" || text === w + "!")) {
     return { action: "approve" };
   }
-  if (text === "no" || text === "reject" || text === "skip" || text === "דחה" || text === "👎") {
-    return { action: "reject" };
+  if (rejectWords.some(w => text === w || text.startsWith(w + " "))) {
+    const reason = messageBody.trim().replace(/^\S+\s*/, "").trim();
+    return { action: "reject", reason: reason || undefined };
+  }
+  if (editWords.some(w => text === w || text.startsWith(w + " "))) {
+    const reason = messageBody.trim().replace(/^\S+\s*/, "").trim();
+    return { action: "edit", reason: reason || undefined };
   }
 
   // Natural language: use Claude to interpret intent
