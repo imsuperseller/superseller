@@ -38,7 +38,7 @@ export default async function ContractorSiteLayout({ params, children }: Props) 
   if (!site) notFound();
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ fontFamily: "'Inter', 'Outfit', sans-serif" }}>
+    <div className="min-h-screen flex flex-col" style={{ fontFamily: "'Inter', 'Outfit', sans-serif", background: "#FFFFFF", color: "#1E293B" }}>
       <ContractorSchema site={site} />
       <ContractorNav site={site} />
       <main className="flex-1">{children}</main>
