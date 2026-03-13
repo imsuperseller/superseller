@@ -52,6 +52,7 @@ import VaultManagement from '@/components/admin/VaultManagement';
 import TreasuryManagement from '@/components/admin/TreasuryManagement';
 import TerryAssistant from '@/components/admin/TerryAssistant';
 import EcosystemMap from '@/components/admin/EcosystemMap';
+import CapabilityMatrix from '@/components/admin/CapabilityMatrix';
 import SystemMonitor from '@/components/admin/SystemMonitor';
 import AuditManagement from '@/components/admin/AuditManagement';
 import CiDashboard from '@/components/admin/CiDashboard';
@@ -360,6 +361,7 @@ export default function AdminDashboardClient({
                                 { id: 'mission', label: 'Mission Control', icon: Crosshair },
                                 { id: 'ops', label: 'Ops Center', icon: Terminal },
                                 { id: 'ecosystem', label: 'Ecosystem Map', icon: Activity },
+                                { id: 'capabilities', label: 'Capabilities', icon: Zap },
                                 { id: 'crm', label: 'Client CRM', icon: Users },
                                 { id: 'projects', label: 'Projects', icon: FolderOpen },
                                 { id: 'audits', label: 'Audits', icon: ClipboardCheck },
@@ -598,6 +600,9 @@ export default function AdminDashboardClient({
                         )}
                         {activeTab === 'ops' && (
                             <SuperSellerOps />
+                        )}
+                        {activeTab === 'capabilities' && (
+                            <CapabilityMatrix />
                         )}
                         {activeTab === 'crm' && (
                             <ClientCRM />

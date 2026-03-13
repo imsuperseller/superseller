@@ -18,9 +18,10 @@ model Tenant {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  brand            Brand?
-  leads            Lead[]
-  competeAllowlist CompeteAllowlist[]
+  brand              Brand?
+  leads              Lead[]
+  competeAllowlist   CompeteAllowlist[]
+  entityCapabilities EntityCapability[]
 }
 
 /// Emails allowed to request magic links for a tenant's Compete page (whitelist).
@@ -1642,4 +1643,54 @@ model ConversionEvent {
   @@index([slug, createdAt])
   @@index([slug, eventType])
   @@map("conversion_events")
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CAPABILITY ENGINE
+// ═══════════════════════════════════════════════════════════════
+
+/// Platform capability registry — every feature, tool, agent, mechanism as a reusable block.
+model Capability {
+  id           String   @id @default(cuid())
+  name         String   @unique            // e.g. "whatsapp-poll-approval"
+  displayName  String                       // e.g. "WhatsApp Poll Approval"
+  description  String?
+  /// social | content | automation | analytics | infrastructure
+  category     String
+  /// feature | tool | agent | mechanism | integration
+  type         String
+  /// active | beta | deprecated
+  status       String   @default("active")
+  configSchema Json?                       // JSON Schema for per-entity config
+  dependencies String[]                    // other capability names this depends on
+  filePaths    String[]                    // key source files implementing this
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now()) @updatedAt
+
+  entityCapabilities EntityCapability[]
+
+  @@index([category])
+  @@index([status])
+}
+
+/// Per-tenant capability activation status and config.
+model EntityCapability {
+  id            String    @id @default(cuid())
+  capabilityId  String
+  tenantId      String?   @db.Uuid          // null = global (SuperSeller itself)
+  /// enabled | eligible | blocked | not_applicable
+  status        String    @default("eligible")
+  blockedReason String?
+  config        Json?                       // entity-specific config for this capability
+  enabledAt     DateTime?
+  enabledBy     String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @default(now()) @updatedAt
+
+  capability Capability @relation(fields: [capabilityId], references: [id], onDelete: Cascade)
+  tenant     Tenant?    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([capabilityId, tenantId])
+  @@index([tenantId])
+  @@index([capabilityId])
 }
