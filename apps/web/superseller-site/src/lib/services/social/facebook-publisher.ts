@@ -154,10 +154,23 @@ export async function publishToInstagram(
       };
     }
 
+    // Fetch the actual permalink from Graph API
+    const postId = publishData.id;
+    let postUrl: string | undefined;
+    try {
+      const permalinkRes = await fetch(
+        `${GRAPH_API_BASE}/${postId}?fields=permalink&access_token=${req.accessToken}`
+      );
+      const permalinkData = await permalinkRes.json();
+      postUrl = permalinkData.permalink || `https://www.instagram.com/p/${postId}`;
+    } catch {
+      postUrl = `https://www.instagram.com/p/${postId}`;
+    }
+
     return {
       success: true,
-      postId: publishData.id,
-      postUrl: `https://instagram.com/p/${publishData.id}`,
+      postId,
+      postUrl,
     };
   } catch (err) {
     return {
