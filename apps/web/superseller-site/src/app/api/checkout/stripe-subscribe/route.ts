@@ -3,26 +3,35 @@ import Stripe from 'stripe';
 import prisma from '@/lib/prisma';
 
 /**
- * GET /api/checkout/stripe-subscribe?tenant=elite-pro
+ * GET /api/checkout/stripe-subscribe?tenant=elite-pro-remodeling
  *
  * Creates a Stripe Checkout Session for a tenant's subscription with
  * sales tax calculated server-side (no Stripe Tax fee).
  *
  * Redirects the customer directly to Stripe Checkout.
  *
- * Tax rates are looked up from the Tenant's state. Currently supports TX.
- * Expand the TAX_RATES map as needed for other states.
+ * Tax logic (TX Tax Code §151.0035 + §151.351):
+ * - Service is "data processing" → taxable in TX
+ * - 20% exemption: only 80% of the price is taxable
+ * - Tax only applies when customer is in the same state (nexus)
+ * - Out-of-state: no TX tax (their state rules apply at their nexus threshold)
+ * - International: no US state sales tax
  */
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
-// State sales tax rates (state + avg local)
-// TX: 6.25% state + ~2% local = 8.25% for most DFW cities
-// Add more states as customers expand
-const TAX_RATES: Record<string, { rate: number; label: string }> = {
-    TX: { rate: 0.0825, label: 'TX Sales Tax (8.25%)' },
-    CA: { rate: 0.0875, label: 'CA Sales Tax (8.75%)' },
-    FL: { rate: 0.07, label: 'FL Sales Tax (7%)' },
+// TX §151.351: Data processing services get a mandatory 20% exemption
+// Only 80% of the charge is subject to sales tax
+const DATA_PROCESSING_TAXABLE_FRACTION = 0.80;
+
+// State sales tax rates (state + avg local) for data processing services
+// Only charge when BOTH seller and buyer are in the same state (or seller has nexus)
+// TX: 6.25% state + ~2% local = 8.25% for most DFW cities → effective 6.6% after 20% exemption
+// Add more states as customers expand and nexus is established
+const TAX_RATES: Record<string, { rate: number; label: string; effectiveLabel: string }> = {
+    TX: { rate: 0.0825, label: 'TX Sales Tax (8.25% on 80%)', effectiveLabel: 'TX Sales Tax (eff. 6.6%)' },
+    CA: { rate: 0.0875, label: 'CA Sales Tax (8.75%)', effectiveLabel: 'CA Sales Tax (8.75%)' },
+    FL: { rate: 0.07, label: 'FL Sales Tax (7%)', effectiveLabel: 'FL Sales Tax (7%)' },
 };
 
 // Tenant subscription configs — maps tenant slug to Stripe price + metadata
@@ -70,10 +79,6 @@ export async function GET(req: NextRequest) {
     const origin = req.nextUrl.origin || process.env.NEXT_PUBLIC_SITE_URL || 'https://superseller.agency';
 
     try {
-        // Calculate tax
-        const taxInfo = TAX_RATES[config.state];
-        const taxAmount = taxInfo ? Math.round(config.amount * taxInfo.rate) : 0;
-
         // Build line items
         const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [
             {
@@ -82,30 +87,36 @@ export async function GET(req: NextRequest) {
             },
         ];
 
-        // Add tax as a separate one-time line item on the first checkout
-        // For recurring tax, we create a Stripe tax rate object
-        let defaultTaxRates: string[] = [];
+        // Tax logic: only apply when customer is in a state where we have nexus
+        // TX §151.351: 20% exemption on data processing services
+        // Effective rate = nominal rate × 0.80 (e.g., 8.25% × 0.80 = 6.6%)
+        const taxInfo = TAX_RATES[config.state];
 
         if (taxInfo) {
-            // Create or retrieve a tax rate for this state
+            // The Stripe tax rate percentage must reflect the 20% exemption
+            // so it's applied correctly to each invoice automatically
+            const effectivePercentage = parseFloat(
+                (taxInfo.rate * 100 * DATA_PROCESSING_TAXABLE_FRACTION).toFixed(4)
+            );
+
+            // Create or retrieve a tax rate with the effective (post-exemption) percentage
             const existingRates = await stripe.taxRates.list({ limit: 100, active: true });
             let taxRate = existingRates.data.find(
-                r => r.jurisdiction === config.state && r.percentage === taxInfo.rate * 100,
+                r => r.jurisdiction === config.state &&
+                    Math.abs(r.percentage - effectivePercentage) < 0.001,
             );
 
             if (!taxRate) {
                 taxRate = await stripe.taxRates.create({
                     display_name: 'Sales Tax',
                     jurisdiction: config.state,
-                    percentage: taxInfo.rate * 100,
+                    percentage: effectivePercentage,
                     inclusive: false,
                     country: 'US',
                     state: config.state,
-                    description: taxInfo.label,
+                    description: `${taxInfo.label} — TX §151.351 20% data processing exemption applied`,
                 });
             }
-
-            defaultTaxRates = [taxRate.id];
 
             // Apply tax rate to the subscription line item
             lineItems[0].tax_rates = [taxRate.id];
