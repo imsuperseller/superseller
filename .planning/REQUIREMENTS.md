@@ -24,10 +24,10 @@
 
 ### Module: Character-in-a-Box (CHAR)
 
-- [ ] **CHAR-01**: Agent activates character questionnaire when customer has VideoForge/Winner Studio/Character-in-a-Box product
-- [ ] **CHAR-02**: Agent asks brand personality, visual style, target audience, 3 business scenarios — ONE question at a time
-- [ ] **CHAR-03**: Agent handles text responses, asks follow-ups for vague answers
-- [ ] **CHAR-04**: Agent confirms collected info with client, generates CharacterBible in DB via Claude
+- [x] **CHAR-01**: Agent activates character questionnaire when customer has VideoForge/Winner Studio/Character-in-a-Box product
+- [x] **CHAR-02**: Agent asks brand personality, visual style, target audience, 3 business scenarios — ONE question at a time
+- [x] **CHAR-03**: Agent handles text responses, asks follow-ups for vague answers
+- [x] **CHAR-04**: Agent confirms collected info with client, generates CharacterBible in DB via Claude
 - [ ] **CHAR-05**: System generates reference character video via Kie.ai Sora 2 API
 - [ ] **CHAR-06**: System generates 5 test scene videos via Kie.ai Sora 2 (job site, studio, street, office, stylized)
 - [ ] **CHAR-07**: Remotion "CharacterReveal" composition wraps 5 scenes with branded overlays (logo, name, colors)

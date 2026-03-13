@@ -4,13 +4,13 @@ milestone: v1.0
 milestone_name: milestone
 current_plan: 02-03 complete
 status: executing
-stopped_at: Completed 02-02-PLAN.md
-last_updated: "2026-03-13T23:27:27.458Z"
+stopped_at: Completed 03-01-PLAN.md
+last_updated: "2026-03-13T23:49:59.798Z"
 progress:
   total_phases: 5
-  completed_phases: 2
-  total_plans: 5
-  completed_plans: 5
+  completed_phases: 3
+  total_plans: 6
+  completed_plans: 6
   percent: 100
 ---
 
@@ -43,6 +43,9 @@ See: .planning/PROJECT.md (updated 2026-03-13)
 - Module router in ClaudeClaw uses lazy import and try/catch for non-critical fallthrough
 - [Phase 02-02]: Reused ep-asset-ingestion.ts media download pattern for asset collection module
 - [Phase 02-02]: Social setup stores preferences only (no credentials) in ServiceInstance.configuration with JSON merge
+- [Phase 03-01]: Used direct fetch instead of @anthropic-ai/sdk in character-bible-generator (sdk not installed in worker)
+- [Phase 03-01]: character-questionnaire registered between asset-collection and social-setup (higher priority for video customers)
+- [Phase 03-01]: Vague answer threshold set to 10 chars for personality/visual_style/audience phases only
 
 ## Phase History
 
@@ -74,10 +77,11 @@ None identified.
 | 02-01 | 3min | 2 | 5 |
 | 02-03 | 2min | 2 | 3 |
 | Phase 02 P02 | 4min | 2 tasks | 5 files |
+| Phase 03-character-questionnaire P03-01 | 22min | 2 tasks | 7 files |
 
 ## Last Session
 
-- **Stopped at:** Completed 02-02-PLAN.md
+- **Stopped at:** Completed 03-01-PLAN.md
 - **Timestamp:** 2026-03-13T23:24:43Z
 
 ---
