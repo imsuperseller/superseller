@@ -86,34 +86,33 @@ export async function POST(req: NextRequest) {
         });
       }
 
-      // Auto-publish: find the platform account and publish
-      const account = await prisma.platformAccount.findFirst({
-        where: {
-          userId: pendingPost.userId,
-          platform: pendingPost.platform || "facebook",
-          isActive: true,
-        },
-      });
-
-      // Env var fallback for IG publishing when no PlatformAccount exists
+      // Auto-publish: tenant-specific env vars take priority over PlatformAccount
       const tenantSlug = (meta?.tenantSlug as string) || "";
-      console.log("[approval] publish debug:", {
-        hasAccount: !!account,
-        platform: pendingPost.platform,
-        tenantSlug,
-        hasFbToken: !!process.env.FB_PAGE_TOKEN_RENSTO,
-        hasIgId: !!process.env.IG_BUSINESS_ACCOUNT_ID_RENSTO,
-      });
-      const igAccountFromEnv = !account && pendingPost.platform === "instagram"
+      const igAccountFromEnv = pendingPost.platform === "instagram"
         ? getIgAccountFromEnv(tenantSlug)
         : null;
 
-      const effectiveAccount = account
-        ? { accessToken: account.accessToken, accountId: account.accountId }
-        : igAccountFromEnv;
+      // Fall back to PlatformAccount if no tenant env var mapping
+      const account = !igAccountFromEnv
+        ? await prisma.platformAccount.findFirst({
+            where: {
+              userId: pendingPost.userId,
+              platform: pendingPost.platform || "facebook",
+              isActive: true,
+            },
+          })
+        : null;
 
-      console.log("[approval] effectiveAccount:", {
-        hasEffective: !!effectiveAccount,
+      const effectiveAccount = igAccountFromEnv
+        ? igAccountFromEnv
+        : account
+          ? { accessToken: account.accessToken, accountId: account.accountId }
+          : null;
+
+      console.log("[approval] publish:", {
+        tenantSlug,
+        platform: pendingPost.platform,
+        source: igAccountFromEnv ? "env" : account ? "db" : "none",
         hasToken: !!effectiveAccount?.accessToken,
         hasAccountId: !!effectiveAccount?.accountId,
       });
