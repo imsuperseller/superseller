@@ -4,14 +4,14 @@ milestone: v1.0
 milestone_name: milestone
 current_plan: Not started
 status: planning
-stopped_at: Completed 03.1-01-PLAN.md
-last_updated: "2026-03-15T01:42:41.178Z"
+stopped_at: Completed 03.1-02-PLAN.md
+last_updated: "2026-03-15T01:47:03.113Z"
 progress:
   total_phases: 6
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 8
-  completed_plans: 7
-  percent: 88
+  completed_plans: 8
+  percent: 100
 ---
 
 # State: Universal Customer Onboarding System
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-03-13)
 **Phase:** 2 — Onboarding Modules (Asset, Social, Compete)
 **Status:** Ready to plan
 **Current Plan:** Not started
-**Progress:** [█████████░] 88%
+**Progress:** [██████████] 100%
 
 ## Decisions
 
@@ -49,6 +49,8 @@ See: .planning/PROJECT.md (updated 2026-03-13)
 - [Phase 03.1-multi-model-best-shot-routing]: KieAdapter uses getTaskStatus(id,'kling') — plan listed getKieTaskStatus which doesn't exist in kie.ts
 - [Phase 03.1-multi-model-best-shot-routing]: FalAdapter jobId encoded as modelId::requestId for stateless poll/cancel URL construction
 - [Phase 03.1-multi-model-best-shot-routing]: cancelJob is a no-op in KieAdapter — kie.ts has no cancel API
+- [Phase 03.1-02]: selectionFromDefault passes budgetCeiling as maxCost on budget_override — ensures estimatedCost stays within tier
+- [Phase 03.1-02]: Observatory fallback cost set to 0.04 (below cheapest ceiling 0.05) — prevents silent budget violations in pure-fallback path
 
 ## Phase History
 
@@ -88,10 +90,11 @@ None identified.
 | Phase 02 P02 | 4min | 2 tasks | 5 files |
 | Phase 03-character-questionnaire P03-01 | 22min | 2 tasks | 7 files |
 | Phase 03.1-multi-model-best-shot-routing P01 | 4min | 2 tasks | 6 files |
+| Phase 03.1-multi-model-best-shot-routing P02 | 2min | 2 tasks | 3 files |
 
 ## Last Session
 
-- **Stopped at:** Completed 03.1-01-PLAN.md
+- **Stopped at:** Completed 03.1-02-PLAN.md
 - **Timestamp:** 2026-03-13T23:24:43Z
 
 ---
