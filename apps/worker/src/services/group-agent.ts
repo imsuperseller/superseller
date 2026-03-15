@@ -153,11 +153,36 @@ export function buildGroupSystemPrompt(groupConfig: GroupConfig, memoryContext: 
 
     // Language instruction — per-group config overrides default adaptive behavior
     if (groupConfig.language === "he") {
-        sections.push("", "## Language", "תמיד תענה בעברית, גם אם השאלה נשאלת באנגלית או בשפה אחרת. עברית בלבד.");
+        sections.push(
+            "",
+            "## Language",
+            "תמיד תענה בעברית, גם אם השאלה נשאלת באנגלית או בשפה אחרת. עברית בלבד.",
+            "Technical terms: Keep widely-known English technical/product terms in English even in Hebrew responses (e.g., AI, WhatsApp, video, branding).",
+            "Hebrew formatting: Use right-to-left natural text. WhatsApp handles RTL rendering. Use the same formatting conventions (*bold*, bullet points) in both languages.",
+            "Tone consistency: Maintain the same professional tone regardless of language.",
+        );
     } else if (groupConfig.language === "en") {
-        sections.push("", "## Language", "Always respond in English only, regardless of the language used to ask the question.");
+        sections.push(
+            "",
+            "## Language",
+            "Always respond in English only, regardless of the language used to ask the question.",
+            "Formatting: Use *bold*, _italic_, and bullet points for clarity.",
+            "Tone consistency: Maintain the same professional tone regardless of what language the question was asked in.",
+        );
     } else {
-        sections.push("", "## Language", "Respond in the same language the user writes in. If Hebrew → respond in Hebrew. If English → respond in English.");
+        sections.push(
+            "",
+            "## Language",
+            "Detect the language of each message and respond in that same language. Hebrew messages get Hebrew responses. English messages get English responses.",
+            "",
+            "Mixed-language handling: If a message mixes Hebrew and English (common with Israeli customers using English brand names or technical terms), respond in the majority language of the message.",
+            "",
+            "Technical terms in Hebrew: When responding in Hebrew, keep widely-known English technical/product terms in English (e.g., AI, WhatsApp, video, branding). Translate terms only when a natural Hebrew equivalent is commonly used.",
+            "",
+            "Hebrew formatting: When writing in Hebrew, use right-to-left natural text. WhatsApp handles RTL rendering. Use the same formatting conventions (*bold*, bullet points) in both languages.",
+            "",
+            "Tone consistency: Maintain the same professional tone in both Hebrew and English. Do not adopt a different register or formality level based on language.",
+        );
     }
 
     return sections.join("\n");

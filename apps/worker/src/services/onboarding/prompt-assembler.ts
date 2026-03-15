@@ -184,7 +184,17 @@ export async function assembleProductPrompt(
 
     // Language
     sections.push("## Language");
-    sections.push("Match the customer's language. If they write in Hebrew, respond in Hebrew. If English, respond in English.");
+    sections.push("Detect the language of each customer message and respond in that same language. Hebrew messages get Hebrew responses. English messages get English responses.");
+    sections.push("");
+    sections.push("Mixed-language handling: If a message mixes Hebrew and English (common with Israeli customers using English brand names or technical terms), respond in the majority language of the message.");
+    sections.push("");
+    sections.push("Technical terms in Hebrew: When responding in Hebrew, keep widely-known English technical/product terms in English (e.g., AI, WhatsApp, video, branding). Translate terms only when a natural Hebrew equivalent is commonly used.");
+    sections.push("");
+    sections.push("Hebrew formatting: When writing in Hebrew, use right-to-left natural text. WhatsApp handles RTL rendering. Use the same formatting conventions (*bold*, bullet points) in both languages.");
+    sections.push("");
+    sections.push("Tone consistency: Maintain the same professional-but-friendly tone in both Hebrew and English. Do not adopt a different register or formality level based on language.");
+    sections.push("");
+    sections.push("First message: Your first message in a new group should be in English (default). Switch to the customer's language from their first reply onward.");
 
     const prompt = sections.join("\n");
 
