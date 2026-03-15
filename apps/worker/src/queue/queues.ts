@@ -58,6 +58,8 @@ export interface ClaudeClawJobData {
     senderChatId?: string;       // Original sender in group (participant@c.us)
     senderName?: string;         // Display name of sender (from WAHA notifyName)
     messageId?: string;          // WAHA message ID (for reactions + reply quoting)
+    isPollVote?: boolean;        // True if this is a WAHA poll.vote event
+    pollOption?: string;         // The selected poll option label (for isPollVote)
 }
 
 export async function initQueues() {

@@ -101,6 +101,58 @@ export const claudeclawWorker = new Worker<ClaudeClawJobData>(
                 return { handled: result.handler, isGroup: true };
             }
 
+            // ─── Onboarding Pipeline: Admin Command Detection ───
+            // Check if this is an admin message with a pipeline command (APPROVE/RETRY/SKIP/PAUSE)
+            // Admin messages come as direct text from the admin's phone to the group
+            try {
+                const groupCfg = getGroupConfig(chatId);
+                if (groupCfg?.tenantId) {
+                    const { getPipelineState } = await import("../../services/onboarding/pipeline-state");
+                    const pipelineState = await getPipelineState(chatId);
+
+                    if (pipelineState && pipelineState.adminPhone) {
+                        const senderPhone = (senderChatId || "").replace("@c.us", "").replace("@s.whatsapp.net", "");
+                        const isAdminSender = pipelineState.adminPhone.replace(/\D/g, "") === senderPhone.replace(/\D/g, "");
+                        const trimmedBody = (messageBody || "").trim().toUpperCase();
+                        const isCommand = ["APPROVE", "RETRY", "SKIP", "PAUSE"].includes(trimmedBody);
+
+                        if (isAdminSender && isCommand) {
+                            const { handleAdminCommand } = await import("./onboarding.worker");
+                            await handleAdminCommand(chatId, trimmedBody, pipelineState.adminPhone);
+                            logger.info({ msg: "Pipeline admin command handled", chatId, command: trimmedBody });
+                            return { handled: `pipeline-admin-command:${trimmedBody}`, isGroup: true };
+                        }
+
+                        // If pipeline is paused and customer messages, respond with friendly holding message
+                        if (pipelineState.status === "paused" && !isAdminSender) {
+                            await sendText(chatId, "Working on it — we're making sure everything is perfect for you! 🔧", target);
+                            return { handled: "pipeline-paused-response", isGroup: true };
+                        }
+                    }
+                }
+            } catch (err: any) {
+                logger.warn({ msg: "Pipeline admin command check error (non-critical)", error: err.message });
+            }
+
+            // ─── Onboarding Pipeline: Poll Vote Detection ───
+            // WAHA delivers poll votes — check if this is a poll vote event
+            // The job data would include a special flag or the message body would match a module label
+            try {
+                const groupCfg = getGroupConfig(chatId);
+                if (groupCfg?.tenantId && job.data.isPollVote && job.data.pollOption) {
+                    const { handlePipelineEvent } = await import("./onboarding.worker");
+                    await handlePipelineEvent({
+                        type: "poll-vote",
+                        groupId: chatId,
+                        tenantId: groupCfg.tenantId,
+                        selectedLabel: job.data.pollOption,
+                    });
+                    return { handled: "pipeline-poll-vote", isGroup: true };
+                }
+            } catch (err: any) {
+                logger.warn({ msg: "Pipeline poll vote handling error (non-critical)", error: err.message });
+            }
+
             // ─── Onboarding Module Router ───
             // Check if an onboarding module should handle this message
             // (before falling through to general Claude chat)
@@ -125,6 +177,22 @@ export const claudeclawWorker = new Worker<ClaudeClawJobData>(
                         const sp = (senderChatId || "").replace("@c.us", "").replace("@s.whatsapp.net", "");
                         await logGroupMessage({ groupId: chatId, tenantId: groupCfg.tenantId, senderPhone: sp, content: messageBody });
                         await logGroupMessage({ groupId: chatId, tenantId: groupCfg.tenantId, content: moduleResult.response, isAgent: true });
+
+                        // If module completed, fire pipeline event
+                        if (moduleResult.completed && moduleResult.moduleType) {
+                            try {
+                                const { handlePipelineEvent } = await import("./onboarding.worker");
+                                await handlePipelineEvent({
+                                    type: "module-completed",
+                                    groupId: chatId,
+                                    tenantId: groupCfg.tenantId,
+                                    completedModule: moduleResult.moduleType as import("../../services/onboarding/modules/types").ModuleType,
+                                });
+                            } catch (pipelineErr: any) {
+                                logger.warn({ msg: "Pipeline event fire failed (non-critical)", error: pipelineErr.message });
+                            }
+                        }
+
                         return { handled: `onboarding-module:${moduleResult.moduleType}`, isGroup: true };
                     }
                 }

@@ -24,6 +24,8 @@ interface PipelineStateRow {
     current_module: string | null;
     total_cost_cents: number;
     admin_phone: string;
+    retry_counts: Record<string, number> | null;
+    module_costs: Record<string, number> | null;
     created_at: Date;
     updated_at: Date;
 }
@@ -38,6 +40,8 @@ export interface PipelineState {
     currentModule: ModuleType | null;
     totalCostCents: number;
     adminPhone: string;
+    retryCounts: Record<string, number>;
+    moduleCosts: Record<string, number>;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -49,6 +53,8 @@ export interface PipelineStateUpdate {
     currentModule?: ModuleType | null;
     totalCostCents?: number;
     adminPhone?: string;
+    retryCounts?: Record<string, number>;
+    moduleCosts?: Record<string, number>;
 }
 
 function rowToPipelineState(row: PipelineStateRow): PipelineState {
@@ -62,6 +68,8 @@ function rowToPipelineState(row: PipelineStateRow): PipelineState {
         currentModule: (row.current_module || null) as ModuleType | null,
         totalCostCents: row.total_cost_cents || 0,
         adminPhone: row.admin_phone || "",
+        retryCounts: row.retry_counts || {},
+        moduleCosts: row.module_costs || {},
         createdAt: row.created_at,
         updatedAt: row.updated_at,
     };
@@ -85,9 +93,23 @@ export async function initPipelineStateTable(): Promise<void> {
             current_module TEXT,
             total_cost_cents INTEGER NOT NULL DEFAULT 0,
             admin_phone TEXT NOT NULL DEFAULT '',
+            retry_counts JSONB NOT NULL DEFAULT '{}',
+            module_costs JSONB NOT NULL DEFAULT '{}',
             created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
             updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
         )
+    `);
+
+    // Add new columns to existing tables (idempotent — IF NOT EXISTS via DO block)
+    await query(`
+        DO $$ BEGIN
+            IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='onboarding_pipeline' AND column_name='retry_counts') THEN
+                ALTER TABLE onboarding_pipeline ADD COLUMN retry_counts JSONB NOT NULL DEFAULT '{}';
+            END IF;
+            IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='onboarding_pipeline' AND column_name='module_costs') THEN
+                ALTER TABLE onboarding_pipeline ADD COLUMN module_costs JSONB NOT NULL DEFAULT '{}';
+            END IF;
+        END $$
     `);
 
     await query(`
@@ -114,7 +136,8 @@ export async function initPipelineStateTable(): Promise<void> {
 export async function getPipelineState(groupId: string): Promise<PipelineState | null> {
     const row = await queryOne<PipelineStateRow>(
         `SELECT id, group_id, tenant_id, status, available_modules, completed_modules,
-                current_module, total_cost_cents, admin_phone, created_at, updated_at
+                current_module, total_cost_cents, admin_phone, retry_counts, module_costs,
+                created_at, updated_at
          FROM onboarding_pipeline
          WHERE group_id = $1`,
         [groupId],
@@ -161,23 +184,34 @@ export async function upsertPipelineState(
         setClauses.push(`admin_phone = $${paramIdx++}`);
         values.push(updates.adminPhone);
     }
+    if (updates.retryCounts !== undefined) {
+        setClauses.push(`retry_counts = $${paramIdx++}::jsonb`);
+        values.push(JSON.stringify(updates.retryCounts));
+    }
+    if (updates.moduleCosts !== undefined) {
+        setClauses.push(`module_costs = $${paramIdx++}::jsonb`);
+        values.push(JSON.stringify(updates.moduleCosts));
+    }
 
     const insertStatus = updates.status || "active";
     const insertAvailableModules = updates.availableModules || [];
     const insertCompletedModules = updates.completedModules || [];
     const insertCurrentModule = updates.currentModule ?? null;
     const insertAdminPhone = updates.adminPhone || "";
+    const insertRetryCounts = updates.retryCounts || {};
+    const insertModuleCosts = updates.moduleCosts || {};
 
     const row = await queryOne<PipelineStateRow>(
         `INSERT INTO onboarding_pipeline
-            (id, group_id, tenant_id, status, available_modules, completed_modules, current_module, admin_phone)
+            (id, group_id, tenant_id, status, available_modules, completed_modules, current_module, admin_phone, retry_counts, module_costs)
          VALUES
-            (gen_random_uuid()::text, $1, $2, $${paramIdx}, $${paramIdx + 1}::text[], $${paramIdx + 2}::text[], $${paramIdx + 3}, $${paramIdx + 4})
+            (gen_random_uuid()::text, $1, $2, $${paramIdx}, $${paramIdx + 1}::text[], $${paramIdx + 2}::text[], $${paramIdx + 3}, $${paramIdx + 4}, $${paramIdx + 5}::jsonb, $${paramIdx + 6}::jsonb)
          ON CONFLICT (group_id) DO UPDATE SET
             ${setClauses.join(",\n            ")}
          RETURNING id, group_id, tenant_id, status, available_modules, completed_modules,
-                   current_module, total_cost_cents, admin_phone, created_at, updated_at`,
-        [...values, insertStatus, insertAvailableModules, insertCompletedModules, insertCurrentModule, insertAdminPhone],
+                   current_module, total_cost_cents, admin_phone, retry_counts, module_costs,
+                   created_at, updated_at`,
+        [...values, insertStatus, insertAvailableModules, insertCompletedModules, insertCurrentModule, insertAdminPhone, JSON.stringify(insertRetryCounts), JSON.stringify(insertModuleCosts)],
     );
 
     return row ? rowToPipelineState(row) : null;
@@ -189,9 +223,10 @@ export async function upsertPipelineState(
 export async function getAllActivePipelines(): Promise<PipelineState[]> {
     const rows = await query<PipelineStateRow>(
         `SELECT id, group_id, tenant_id, status, available_modules, completed_modules,
-                current_module, total_cost_cents, admin_phone, created_at, updated_at
+                current_module, total_cost_cents, admin_phone, retry_counts, module_costs,
+                created_at, updated_at
          FROM onboarding_pipeline
-         WHERE status = 'active'
+         WHERE status NOT IN ('complete', 'failed')
          ORDER BY created_at ASC`,
     );
 
