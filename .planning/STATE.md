@@ -4,14 +4,14 @@ milestone: v1.0
 milestone_name: milestone
 current_plan: Not started
 status: planning
-stopped_at: Completed 04-character-video-gen-delivery/04-01-PLAN.md
-last_updated: "2026-03-15T02:21:24.745Z"
+stopped_at: Completed 04-character-video-gen-delivery/04-03-PLAN.md
+last_updated: "2026-03-15T02:27:31.630Z"
 progress:
   total_phases: 6
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 11
-  completed_plans: 10
-  percent: 91
+  completed_plans: 11
+  percent: 100
 ---
 
 # State: Universal Customer Onboarding System
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-03-13)
 **Phase:** 2 — Onboarding Modules (Asset, Social, Compete)
 **Status:** Ready to plan
 **Current Plan:** Not started
-**Progress:** [█████████░] 91%
+**Progress:** [██████████] 100%
 
 ## Decisions
 
@@ -56,6 +56,8 @@ See: .planning/PROJECT.md (updated 2026-03-13)
 - [Phase 04-01]: Import path for db/client from modules/ subdirectory is ../../../db/client (3 levels up)
 - [Phase 04-01]: Background generation via setImmediate — WhatsApp handler returns immediately, pipeline runs async
 - [Phase 04-01]: Partial success: 3+ of 5 scenes = proceed to awaiting-composition; fewer = PipelineRun failed, module reset to intro for retry
+- [Phase 04-03]: CharacterRevealProps import path from modules/ is 4 levels up (../../../../remotion/src/types)
+- [Phase 04-03]: Auto-trigger composition pipeline from runGenerationPipeline directly — no WhatsApp trigger needed
 
 ## Phase History
 
@@ -98,10 +100,11 @@ None identified.
 | Phase 03.1-multi-model-best-shot-routing P02 | 2min | 2 tasks | 3 files |
 | Phase 04-character-video-gen-delivery P02 | 3min | 2 tasks | 3 files |
 | Phase 04-character-video-gen-delivery P04-01 | 3 | 1 tasks | 3 files |
+| Phase 04-character-video-gen-delivery P04-03 | 4min | 1 tasks | 1 files |
 
 ## Last Session
 
-- **Stopped at:** Completed 04-character-video-gen-delivery/04-01-PLAN.md
+- **Stopped at:** Completed 04-character-video-gen-delivery/04-03-PLAN.md
 - **Timestamp:** 2026-03-13T23:24:43Z
 
 ---
