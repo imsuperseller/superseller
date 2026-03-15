@@ -1,5 +1,27 @@
 # Milestones
 
+## v1.2 Production-Ready Onboarding (Shipped: 2026-03-15)
+
+**Phases completed:** 3 phases, 7 plans | 13 commits | 37 files | +4,174 LOC
+**Timeline:** 1 day (2026-03-15)
+**Git range:** `feat(12-01)..feat(14-01)` | `d276693a..5565e278`
+
+**Delivered:** Zero-touch onboarding from payment to WhatsApp — PayPal/Stripe webhooks auto-create tenants, voice notes are transcribed via Whisper before AI processing, and the agent auto-detects Hebrew/English to respond in the customer's language.
+
+**Key accomplishments:**
+1. PayPal + Stripe subscription webhooks auto-trigger tenant creation + WhatsApp onboarding pipeline
+2. Pre-checkout page with phone collection for both payment providers + branded success page
+3. Webhook health monitoring with auto-alerts (>20% failure rate) in admin System Monitor
+4. Voice note transcription via OpenAI Whisper API with R2 storage, cost tracking, 5-min limit
+5. Bilingual Hebrew/English auto-detection across all 4 agent prompt paths (onboarding, groups, ClaudeClaw, character)
+
+**Tech debt:**
+- INT-01: Subscriptions page routes to old checkout flow, not new /checkout/[product]
+- INT-02: PayPal custom_id key mismatch — 'bn' vs 'productName' (defaults to generic name)
+- INT-03: Stripe webhook creates duplicate ServiceInstance for new checkout sessions
+
+---
+
 ## v1.1 Intelligent Content Engine (Shipped: 2026-03-15)
 
 **Phases completed:** 4 phases, 8 plans | 12 commits | 59 files | +6,439 LOC

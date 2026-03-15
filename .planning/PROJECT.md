@@ -4,14 +4,9 @@
 
 A universal WhatsApp-first customer onboarding system for SuperSeller AI. Every new customer — regardless of which product they bought — gets a WhatsApp group auto-created with an AI agent. The agent dynamically assembles its behavior from the customer's subscribed products/services, then activates conversational modules (asset collection, social setup, competitor research, character questionnaire, video generation) based on what the customer bought. Includes BullMQ pipeline orchestration with admin commands, cost tracking, and stale detection.
 
-## Current Milestone: v1.2 Production-Ready Onboarding
+## Current State
 
-**Goal:** Make the onboarding system production-ready by auto-triggering from payment webhooks, understanding voice notes, and handling Hebrew/English switching.
-
-**Target features:**
-- Auto-trigger onboarding from PayPal/Stripe subscription webhooks
-- Voice note transcription via Whisper before AI processing
-- Multi-language auto-detection and response (Hebrew/English)
+Shipped v1.2. The onboarding system is production-ready: payment webhooks auto-trigger tenant creation, voice notes are transcribed before AI processing, and the agent handles Hebrew/English switching natively.
 
 ## Core Value
 
@@ -43,12 +38,13 @@ Every customer gets an AI agent in a WhatsApp group from Day 1. Zero friction. T
 - ✓ Prompt effectiveness tracking API — v1.1
 - ✓ Per-clip cost attribution (model_id + provider in api_expenses) — v1.1
 - ✓ BeforeAfterComposition parametric Remotion template (dual aspect ratio) — v1.1
+- ✓ Auto-trigger onboarding from PayPal/Stripe subscription webhooks — v1.2
+- ✓ Voice note transcription via Whisper with Hebrew support — v1.2
+- ✓ Multi-language auto-detection and response (Hebrew/English) — v1.2
 
-### Active (v1.2)
+### Active
 
-- [ ] Auto-trigger from PayPal/Stripe subscription webhook (new customer)
-- [ ] Voice note transcription via Whisper before processing
-- [ ] Multi-language auto-detection and response
+(None — next milestone not yet defined. Run `/gsd:new-milestone` to start.)
 
 ### Backlog (v1.3+)
 
@@ -64,10 +60,10 @@ Every customer gets an AI agent in a WhatsApp group from Day 1. Zero friction. T
 
 ## Context
 
-Shipped v1.1 with +6,439 LOC TypeScript (cumulative ~20,652 LOC) across 59 files in 1 day.
-Tech stack: Node.js worker + BullMQ + WAHA + ClaudeClaw + Kie.ai + fal.ai + Remotion + R2 + PostgreSQL.
-Cumulative: 11 phases, 23 plans, 64 requirements — all satisfied.
-v1.0 tech debt (4 items, 0 blockers) still open. v1.1 adds: FAL_WEBHOOK_VERIFY default=false, fal.ai billing-on-failure unknown.
+Shipped v1.2 with +4,174 LOC TypeScript (cumulative ~24,826 LOC) across 37 files in 1 day.
+Tech stack: Node.js worker + BullMQ + WAHA + ClaudeClaw + Kie.ai + fal.ai + Remotion + R2 + PostgreSQL + OpenAI Whisper.
+Cumulative: 14 phases, 30 plans, 77 requirements — all satisfied.
+v1.0 tech debt (4 items) still open. v1.1 tech debt: FAL_WEBHOOK_VERIFY default=false. v1.2 adds: 3 integration items (checkout nav gap, PayPal key mismatch, Stripe duplicate SI).
 
 **Admin project ID:** `cmmpgo3k60000h5zuaxfqac80`
 
@@ -96,6 +92,12 @@ v1.0 tech debt (4 items, 0 blockers) still open. v1.1 adds: FAL_WEBHOOK_VERIFY d
 | veo:: prefix for job ID routing | Disambiguates Veo vs Kling pollStatus without DB schema change | ✓ Good — zero-migration solution |
 | Flat props schema for Remotion | No nested branding object in BeforeAfterComposition | ✓ Good — simpler API for parametric templates |
 | MIN_SAMPLES=20 for quality aggregation | Prevents noise from small samples corrupting Observatory scores | ✓ Good — below-threshold models retain static seeds |
+| Direct SQL for WebhookEvent migration | Avoids dropping 20+ production tables from Prisma schema drift | ✓ Good — zero-downtime schema addition |
+| Worker auth outside try/catch | WORKER_API_SECRET 401 returns before schema validation | ✓ Good — fast-fail for unauthorized requests |
+| PayPal custom_id compact keys | 127 char PayPal limit requires {bn, svc} not full names | ✓ Good — fits all needed data |
+| OpenAI Whisper API over local Ollama | Better accuracy for Hebrew, predictable costs at $0.006/min | ✓ Good — cost-effective for voice volume |
+| effectiveBody pattern | transcribedText ∥ messageBody — single variable for all handlers | ✓ Good — clean transcription integration |
+| Language instructions in English only | No dual-language system prompts; Claude handles language switching from English instructions | ✓ Good — simpler maintenance |
 
 ---
-*Last updated: 2026-03-15 after v1.2 milestone started*
+*Last updated: 2026-03-15 after v1.2 milestone*

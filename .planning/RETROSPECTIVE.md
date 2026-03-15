@@ -94,6 +94,52 @@
 
 ---
 
+## Milestone: v1.2 — Production-Ready Onboarding
+
+**Shipped:** 2026-03-15
+**Phases:** 3 | **Plans:** 7 | **Commits:** 13
+
+### What Was Built
+- PayPal + Stripe subscription webhook → automatic tenant creation + WhatsApp onboarding pipeline
+- Pre-checkout page with phone collection for both payment providers + branded success page
+- WebhookEvent idempotency table preventing duplicate onboarding from repeated webhook fires
+- Webhook health monitoring with auto-alerts (>20% failure rate) in admin System Monitor
+- Voice note transcription via OpenAI Whisper API with R2 storage, cost tracking, 5-min limit
+- effectiveBody pattern wiring transcribed voice text through all 5 ClaudeClaw handler sites
+- Bilingual Hebrew/English auto-detection instructions across all 4 agent prompt paths
+
+### What Worked
+- Additive trigger pattern: onboardNewCustomer() added after existing webhook logic with non-blocking try/catch — zero risk to existing payment processing
+- Direct SQL migration for WebhookEvent table avoided Prisma push dropping 20+ production tables from schema drift
+- effectiveBody pattern (transcribedText || messageBody) cleanly integrated transcription without touching existing handler logic
+- Language instructions written entirely in English — Claude handles language switching from English instructions, no dual-language prompt complexity
+- Milestone audit caught 3 integration issues (checkout nav gap, PayPal key mismatch, Stripe duplicate SI) before shipping
+
+### What Was Inefficient
+- summary-extract CLI still returns null for one_liner field — required manual SUMMARY.md reading (3rd milestone with this issue)
+- ROADMAP.md plan checkboxes unchecked again despite summaries existing (recurring across all 3 milestones)
+- Phase 14 progress table row had misaligned columns
+
+### Patterns Established
+- WebhookEvent idempotency: unique constraint on (provider, eventId) + P2002 catch = skip duplicate
+- fetchWithRetry: 3 attempts, 2s/4s/8s backoff for worker HTTP calls
+- Worker auth: x-worker-secret header checked outside try/catch for fast-fail on unauthorized requests
+- maybeTranscribeAudio() shared helper for both group and DM paths
+- Compact PayPal custom_id JSON: {phone, bn(40), svc(20)} to fit 127 char limit
+
+### Key Lessons
+1. Milestone audit is essential — caught 3 real integration gaps that would have been production issues
+2. Direct SQL migration is safer than Prisma push when schema drift exists from pre-GSD development
+3. English-only language instructions work well — simpler to maintain than dual-language prompts
+4. Voice transcription cost tracking ($0.006/min) should be templated for future API integrations
+
+### Cost Observations
+- Model mix: balanced profile (sonnet for execution, opus for orchestration)
+- Sessions: 1 session, ~2 hours
+- Notable: Only external API cost is Whisper transcription; all other work is code-only
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -102,6 +148,7 @@
 |-----------|---------|--------|------------|
 | v1.0 | 63 | 7 | First milestone — established GSD workflow, module architecture, audit-before-ship pattern |
 | v1.1 | 12 | 4 | Multi-provider activation, quality feedback loop, parametric templates — single-day execution |
+| v1.2 | 13 | 3 | Payment webhook automation, voice transcription, bilingual agent — production-ready onboarding |
 
 ### Cumulative Quality
 
@@ -109,9 +156,12 @@
 |-----------|-------------|----------|-------------------|
 | v1.0 | 46/46 | 100% | 0 (all built on existing infra) |
 | v1.1 | 18/18 | 100% | 1 (supertest devDependency for webhook testing) |
+| v1.2 | 13/13 | 100% | 0 (OpenAI Whisper via fetch, no new packages) |
 
 ### Top Lessons (Verified Across Milestones)
 
-1. Milestone audit before archival catches real bugs — enforce as mandatory step
+1. Milestone audit before archival catches real bugs — enforce as mandatory step (confirmed v1.0, v1.1, v1.2)
 2. Documentation traceability is a separate concern from code completion — track explicitly
-3. ROADMAP.md plan checkboxes drift from actual completion — recurring in both v1.0 and v1.1
+3. ROADMAP.md plan checkboxes drift from actual completion — recurring in all 3 milestones, needs automation
+4. summary-extract CLI one_liner returns null — recurring in all 3 milestones, needs fix or deprecation
+5. English-only language instructions work for bilingual Claude agents — no need for dual-language prompts
