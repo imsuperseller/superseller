@@ -11,6 +11,7 @@ import { marketplaceReplenisherWorker, initMarketplaceReplenisher } from "./queu
 import { remotionWorker, initRemotionWorker } from "./queue/workers/remotion.worker";
 import { crewVideoWorker, initCrewVideoWorker } from "./queue/workers/crew-video.worker";
 import { onboardingWorker, initOnboardingWorker } from "./queue/workers/onboarding.worker";
+import { characterRegenWorker, initCharacterRegenWorker } from "./queue/workers/character-regen.worker";
 import { initChangeRequestTable } from "./services/onboarding/change-request-intake";
 import { setupBullBoard } from "./bull-board";
 import { initWahaSessions } from "./services/waha-session-manager";
@@ -79,6 +80,7 @@ async function bootstrap() {
     await initRemotionWorker();
     await initCrewVideoWorker();
     await initOnboardingWorker();
+    await initCharacterRegenWorker();
     await initChangeRequestTable();
     logger.info("✅ Workers initialized");
 
@@ -113,6 +115,7 @@ async function bootstrap() {
         await remotionWorker.close();
         await crewVideoWorker.close();
         await onboardingWorker.close();
+        await characterRegenWorker.close();
         process.exit(0);
     });
 }
