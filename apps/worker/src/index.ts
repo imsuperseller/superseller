@@ -10,6 +10,7 @@ import { claudeclawWorker, initClaudeClaw } from "./queue/workers/claudeclaw.wor
 import { marketplaceReplenisherWorker, initMarketplaceReplenisher } from "./queue/workers/marketplace-replenisher.worker";
 import { remotionWorker, initRemotionWorker } from "./queue/workers/remotion.worker";
 import { crewVideoWorker, initCrewVideoWorker } from "./queue/workers/crew-video.worker";
+import { onboardingWorker, initOnboardingWorker } from "./queue/workers/onboarding.worker";
 import { setupBullBoard } from "./bull-board";
 import { initWahaSessions } from "./services/waha-session-manager";
 import { startHealthMonitor } from "./services/health-monitor";
@@ -76,6 +77,7 @@ async function bootstrap() {
     await initMarketplaceReplenisher();
     await initRemotionWorker();
     await initCrewVideoWorker();
+    await initOnboardingWorker();
     logger.info("✅ Workers initialized");
 
     // 5. WAHA Multi-Session Bootstrap
@@ -108,6 +110,7 @@ async function bootstrap() {
         await marketplaceReplenisherWorker.close();
         await remotionWorker.close();
         await crewVideoWorker.close();
+        await onboardingWorker.close();
         process.exit(0);
     });
 }
