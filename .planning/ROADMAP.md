@@ -57,7 +57,7 @@ Plans:
   1. A shot routed to fal.ai produces a completed video via `FalAdapter` using the correct model ID (`fal-ai/sora-2/image-to-video/pro` or `wan/v2.6/image-to-video`)
   2. `POST /api/webhooks/fal` receives fal.ai callbacks, is idempotent on `request_id`, and updates the job record on completion
   3. A `dialogue` shot type routed to Veo 3.1 calls `POST /api/v1/veo/generate` (not the Kling task endpoint) and polls at `/api/v1/veo/record-info` until complete
-**Plans:** TBD
+**Plans:** 2 plans
 
 Plans:
 - [ ] 08-01: FalAdapter activation — model-specific request body + webhook endpoint (PROV-01, PROV-02)
