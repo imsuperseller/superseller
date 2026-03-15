@@ -206,7 +206,7 @@ Phase 5 can start partially after Phase 1 is done (queue + routing skeleton).
 **Requirements:** SOCIAL-02, PIPE-02
 **Gap Closure:** Closes gaps from v1.0-MILESTONE-AUDIT.md
 
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 
 Plans:
 - [ ] 06-01-PLAN.md — Wire poll.vote webhook to BullMQ + honor pipeline currentModule in module router

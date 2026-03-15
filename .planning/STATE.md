@@ -4,14 +4,14 @@ milestone: v1.0
 milestone_name: milestone
 current_plan: Not started
 status: completed
-stopped_at: Completed 06-02-PLAN.md
-last_updated: "2026-03-15T03:34:54.664Z"
+stopped_at: Completed 06-01-PLAN.md
+last_updated: "2026-03-15T03:35:27.482Z"
 progress:
   total_phases: 7
-  completed_phases: 6
+  completed_phases: 7
   total_plans: 15
-  completed_plans: 14
-  percent: 93
+  completed_plans: 15
+  percent: 100
 ---
 
 # State: Universal Customer Onboarding System
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-03-13)
 **Phase:** 2 — Onboarding Modules (Asset, Social, Compete)
 **Status:** Milestone complete
 **Current Plan:** Not started
-**Progress:** [█████████░] 93%
+**Progress:** [██████████] 100%
 
 ## Decisions
 
@@ -65,6 +65,8 @@ See: .planning/PROJECT.md (updated 2026-03-13)
 - [Phase 05-02]: POST /api/onboarding/start: bootstrapOnboardingGroup first (creates WA group), then enqueues BullMQ — group creation is synchronous prerequisite
 - [Phase 05-02]: isPollVote + pollOption added to ClaudeClawJobData so WAHA webhook handler can set these for poll.vote events
 - [Phase 06-02]: requirements_satisfied is the canonical field name for requirement IDs in SUMMARY.md frontmatter
+- [Phase 06-fix-social-intro-poll-vote]: poll.vote handler placed before message-only filter in routes.ts — WAHA poll votes reach BullMQ with isPollVote=true and pollOption
+- [Phase 06-fix-social-intro-poll-vote]: routeToModule() step 2b: getPipelineState currentModule check activates customer poll-selected module before priority walk
 
 ## Phase History
 
@@ -111,10 +113,11 @@ None identified.
 | Phase 05-pipeline-orchestration P01 | 3min | 2 tasks | 7 files |
 | Phase 05-pipeline-orchestration P02 | 5min | 2 tasks | 5 files |
 | Phase 06-fix-social-intro-poll-vote P02 | 2min | 1 tasks | 2 files |
+| Phase 06-fix-social-intro-poll-vote P01 | 4 | 2 tasks | 2 files |
 
 ## Last Session
 
-- **Stopped at:** Completed 06-02-PLAN.md
+- **Stopped at:** Completed 06-01-PLAN.md
 - **Timestamp:** 2026-03-13T23:24:43Z
 
 ---
