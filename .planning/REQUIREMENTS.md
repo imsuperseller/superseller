@@ -53,25 +53,25 @@ Requirements for Production-Ready Onboarding milestone.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| HOOK-01 | — | Pending |
-| HOOK-02 | — | Pending |
-| HOOK-03 | — | Pending |
-| HOOK-04 | — | Pending |
-| HOOK-05 | — | Pending |
-| VOICE-01 | — | Pending |
-| VOICE-02 | — | Pending |
-| VOICE-03 | — | Pending |
-| VOICE-04 | — | Pending |
-| LANG-01 | — | Pending |
-| LANG-02 | — | Pending |
-| LANG-03 | — | Pending |
-| LANG-04 | — | Pending |
+| HOOK-01 | Phase 12 | Pending |
+| HOOK-02 | Phase 12 | Pending |
+| HOOK-03 | Phase 12 | Pending |
+| HOOK-04 | Phase 12 | Pending |
+| HOOK-05 | Phase 12 | Pending |
+| VOICE-01 | Phase 13 | Pending |
+| VOICE-02 | Phase 13 | Pending |
+| VOICE-03 | Phase 13 | Pending |
+| VOICE-04 | Phase 13 | Pending |
+| LANG-01 | Phase 14 | Pending |
+| LANG-02 | Phase 14 | Pending |
+| LANG-03 | Phase 14 | Pending |
+| LANG-04 | Phase 14 | Pending |
 
 **Coverage:**
 - v1.2 requirements: 13 total
-- Mapped to phases: 0
-- Unmapped: 13 ⚠️
+- Mapped to phases: 13
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-03-15*
-*Last updated: 2026-03-15 after initial definition*
+*Last updated: 2026-03-15 — phase traceability added (phases 12-14)*
