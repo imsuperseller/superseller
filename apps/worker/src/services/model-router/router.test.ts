@@ -182,6 +182,66 @@ describe('routeShot()', () => {
         await expect(routeShot(req)).resolves.toBeDefined();
     });
 
+    // ── Provider inference tests (PROV-03) ──────────────────────────────────
+
+    it('Observatory fal model gets FalAdapter', async () => {
+        vi.mocked(getRecommendedModel).mockResolvedValue(makeSelection({
+            modelId: 'fal-ai/wan-i2v',
+            costPerUnit: 0.03, // within budget ceiling
+        }));
+
+        const req: ShotRequest = {
+            shotType: 'social',
+            budgetTier: 'budget',
+            prompt: 'Short social clip',
+        };
+
+        const result = await routeShot(req);
+
+        expect(result.adapter).toBeInstanceOf(FalAdapter);
+        expect(result.selection.modelId).toBe('fal-ai/wan-i2v');
+    });
+
+    it('Observatory kie model gets KieAdapter', async () => {
+        vi.mocked(getRecommendedModel).mockResolvedValue(makeSelection({
+            modelId: 'kling-3.0/video',
+            costPerUnit: 0.08, // within standard ceiling
+        }));
+
+        const req: ShotRequest = {
+            shotType: 'narrative',
+            budgetTier: 'standard',
+            prompt: 'A story unfolds in the desert',
+        };
+
+        const result = await routeShot(req);
+
+        expect(result.adapter).toBeInstanceOf(KieAdapter);
+        expect(result.selection.modelId).toBe('kling-3.0/video');
+    });
+
+    it('budget override with fal default still infers fal from modelId', async () => {
+        // Observatory returns expensive model; budget enforcement kicks in and uses selectionFromDefault
+        // social SHOT_DEFAULT_MODELS has modelId 'fal-ai/wan-i2v' -> still infers FalAdapter
+        vi.mocked(getRecommendedModel).mockResolvedValue(makeSelection({
+            modelId: 'some-expensive-model',
+            costPerUnit: 0.99, // exceeds budget ceiling of 0.05
+        }));
+
+        const req: ShotRequest = {
+            shotType: 'social',
+            budgetTier: 'budget',
+            prompt: 'Short social reel',
+        };
+
+        const result = await routeShot(req);
+
+        // Budget override falls back to SHOT_DEFAULT_MODELS['social'].modelId = 'fal-ai/wan-i2v'
+        // Provider is inferred from modelId prefix -> FalAdapter
+        expect(result.adapter).toBeInstanceOf(FalAdapter);
+        expect(result.estimatedCost).toBeLessThanOrEqual(BUDGET_CEILINGS.budget);
+    });
+
     it('RouterResult contains all required fields', async () => {
         vi.mocked(getRecommendedModel).mockResolvedValue(makeSelection({
             costPerUnit: 0.08,

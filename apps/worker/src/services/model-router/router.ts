@@ -120,9 +120,9 @@ export async function routeShot(req: ShotRequest): Promise<RouterResult> {
         source = 'budget_override';
     }
 
-    // Step 4: Instantiate correct adapter based on default provider for shot type
-    // (Observatory may recommend a different modelId but the provider comes from SHOT_DEFAULT_MODELS)
-    const provider = defaultHint.provider;
+    // Step 4: Infer provider from Observatory-recommended modelId
+    // fal.ai model IDs always start with "fal-ai/"; all others route to Kie
+    const provider: 'kie' | 'fal' = selection.modelId.startsWith('fal-ai/') ? 'fal' : 'kie';
     const adapter = adapterForProvider(provider);
 
     // Step 5: Estimate cost
