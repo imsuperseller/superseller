@@ -25,6 +25,7 @@ import {
     createChangeRequest,
     updateChangeRequestStatus,
     getPendingChangeRequest,
+    getInProgressChangeRequest,
     estimateChangeCost,
 } from "./change-request-intake";
 import { sendText, sendPoll } from "../waha-client";
@@ -288,21 +289,49 @@ export async function handleChangeRequestPollVote(
                 }
             }
 
-            // For scene-change: no CharacterBible version needed
+            // For scene-change: dispatch to character-regen queue with concurrency guard
             if (cr.intent === "scene-change") {
+                // Concurrency guard: only one active regen per tenant at a time
+                const inProgress = await getInProgressChangeRequest(groupId);
+                if (inProgress) {
+                    await sendText(
+                        groupId,
+                        "A scene is currently being regenerated. Please wait for it to complete before requesting another change.",
+                    );
+                    logger.info({
+                        msg: "change-request-handler: concurrent regen blocked",
+                        groupId,
+                        changeRequestId,
+                        existingChangeRequestId: inProgress.id,
+                    });
+                    return;
+                }
+
+                // Dispatch to character-regen queue
+                const { characterRegenQueue } = await import("../../queue/queues");
+                await characterRegenQueue.add("regen-scene", {
+                    changeRequestId,
+                    sceneIndex: (cr.scene_number ?? 1) - 1,  // scene_number is 1-based; sceneIndex is 0-based
+                    tenantId,
+                    groupId,
+                });
+
                 logger.info({
-                    msg: "change-request-handler: scene-change confirmed",
+                    msg: "change-request-handler: scene regen job dispatched",
                     groupId,
                     changeRequestId,
                     sceneNumber: cr.scene_number,
+                    sceneIndex: (cr.scene_number ?? 1) - 1,
                 });
             }
 
-            // NOTE: Do NOT dispatch to any BullMQ queue here — Phase 17 will add character-regen queue dispatch
-            await sendText(
-                groupId,
-                "Change request confirmed! We'll start working on it shortly.",
-            );
+            // For scene-change: worker sends ack (REGEN-03). For character-change: send confirmation here (Phase 18 flow differs).
+            if (cr.intent !== "scene-change") {
+                await sendText(
+                    groupId,
+                    "Change request confirmed! We'll start working on it shortly.",
+                );
+            }
 
             logger.info({
                 msg: "change-request-handler: change request confirmed",
