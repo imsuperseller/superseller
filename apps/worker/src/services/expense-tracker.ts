@@ -33,6 +33,9 @@ export const COST_RATES: Record<string, Record<string, number>> = {
   anthropic: {
     haiku_message: 0.02, // ~$0.02/follower research (follower-research.ts)
   },
+  openai: {
+    whisper_transcription: 0.006, // $0.006/min — computed dynamically based on audio duration
+  },
   fal: {
     sora_2_per_second_720p: 0.30,   // fal-ai/sora-2/image-to-video/pro, 720p
     sora_2_per_second_1080p: 0.50,  // fal-ai/sora-2/image-to-video/pro, 1080p
