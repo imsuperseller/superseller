@@ -97,7 +97,7 @@ Plans:
 | 08. Provider Activation | v1.1 | 2/2 | Complete | 2026-03-15 |
 | 09. Quality Feedback Loop | v1.1 | 3/3 | Complete | 2026-03-15 |
 | 10. Remotion Templates | v1.1 | 1/1 | Complete | 2026-03-15 |
-| 12. Payment Webhooks | 4/4 | Complete   | 2026-03-15 | - |
+| 12. Payment Webhooks | 4/4 | Complete    | 2026-03-15 | - |
 | 13. Voice Note Transcription | v1.2 | 0/TBD | Not started | - |
 | 14. Language Detection | v1.2 | 0/TBD | Not started | - |
 
