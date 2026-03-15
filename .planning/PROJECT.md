@@ -35,6 +35,9 @@ Every customer gets an AI agent in a WhatsApp group from Day 1. Zero friction. T
 - ✓ BullMQ pipeline orchestration with module routing — v1.0
 - ✓ Admin commands (APPROVE/RETRY/SKIP/PAUSE) via WhatsApp — v1.0
 - ✓ Cost tracking via trackExpense() + PipelineRun — v1.0
+- ✓ Per-clip generation metadata and quality scoring — v1.1 Phase 09
+- ✓ Nightly quality aggregation feeding Observatory model routing — v1.1 Phase 09
+- ✓ Prompt effectiveness tracking API — v1.1 Phase 09
 - ✓ Poll-based module selection (WhatsApp polls → pipeline advance) — v1.0
 - ✓ Stale detection (48h customer nudge, 7d admin alert) — v1.0
 - ✓ Admin status API (GET /api/onboarding/status/:tenantId) — v1.0
@@ -85,4 +88,4 @@ Tech stack: Node.js worker + BullMQ + WAHA + ClaudeClaw + Kie.ai + Remotion + R2
 | Direct fetch for Claude API | @anthropic-ai/sdk not installed in worker | ✓ Good — no new dependency |
 
 ---
-*Last updated: 2026-03-15 after v1.0 milestone*
+*Last updated: 2026-03-15 after Phase 09 (Quality Feedback Loop)*
