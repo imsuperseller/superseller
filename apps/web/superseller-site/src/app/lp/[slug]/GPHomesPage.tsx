@@ -903,7 +903,7 @@ export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | nul
                   playsInline
                   preload="metadata"
                   className="w-full aspect-video bg-black"
-                  src="https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/gp-homes/shai-personal-message.mp4"
+                  src="/media/gp-homes/shai-message.mp4"
                 >
                   Your browser does not support the video tag.
                 </video>
