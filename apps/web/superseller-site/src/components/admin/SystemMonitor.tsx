@@ -39,6 +39,24 @@ interface AnomalyData {
   ratio: number;
 }
 
+interface WebhookMetricSummary {
+  provider: string;
+  total: number;
+  completed: number;
+  failed: number;
+  processing: number;
+  lastProcessed: string | null;
+}
+
+interface WebhookFailureSummary {
+  id: string;
+  provider: string;
+  eventType: string;
+  errorMessage: string | null;
+  retryCount: number;
+  createdAt: string;
+}
+
 interface MonitoringData {
   services: ServiceHealthData[];
   uptimes: Record<string, { h24: number; h168: number }>;
@@ -68,14 +86,24 @@ export default function SystemMonitor() {
   const [loading, setLoading] = useState(true);
   const [running, setRunning] = useState(false);
   const [selectedService, setSelectedService] = useState<string | null>(null);
-  const [view, setView] = useState<'services' | 'alerts' | 'expenses'>('services');
+  const [view, setView] = useState<'services' | 'alerts' | 'expenses' | 'webhooks'>('services');
+  const [webhookMetrics, setWebhookMetrics] = useState<WebhookMetricSummary[]>([]);
+  const [webhookFailures, setWebhookFailures] = useState<WebhookFailureSummary[]>([]);
 
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/admin/monitoring');
-      const json = await res.json();
+      const [monRes, sysRes] = await Promise.all([
+        fetch('/api/admin/monitoring'),
+        fetch('/api/admin/system-monitoring', { cache: 'no-store' }),
+      ]);
+      const json = await monRes.json();
       if (json.success) setData(json);
+      if (sysRes.ok) {
+        const sysJson = await sysRes.json();
+        if (sysJson.webhookMetrics) setWebhookMetrics(sysJson.webhookMetrics);
+        if (sysJson.recentFailures) setWebhookFailures(sysJson.recentFailures);
+      }
     } catch (err) {
       console.error('Failed to fetch monitoring data:', err);
     } finally {
@@ -219,11 +247,12 @@ export default function SystemMonitor() {
       </div>
 
       {/* Tab Navigation */}
-      <div className="flex gap-2">
+      <div className="flex gap-2 flex-wrap">
         {[
           { id: 'services', label: 'Services', icon: Activity },
           { id: 'alerts', label: 'Alerts', icon: Bell },
           { id: 'expenses', label: 'Expenses', icon: DollarSign },
+          { id: 'webhooks', label: 'Webhook Health', icon: Zap },
         ].map(tab => (
           <button
             key={tab.id}
@@ -424,6 +453,106 @@ export default function SystemMonitor() {
               </div>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Webhook Health View */}
+      {view === 'webhooks' && (
+        <div className="space-y-6">
+          {/* Overall success rate badge */}
+          {(() => {
+            const totalAll = webhookMetrics.reduce((sum, r) => sum + r.total, 0);
+            const totalCompleted = webhookMetrics.reduce((sum, r) => sum + r.completed, 0);
+            const successRate = totalAll > 0 ? (totalCompleted / totalAll) * 100 : 100;
+            const badgeColor =
+              totalAll === 0 ? 'text-slate-400 bg-slate-500/10 border-slate-500/20' :
+              successRate >= 95 ? 'text-green-400 bg-green-500/10 border-green-500/20' :
+              successRate >= 80 ? 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' :
+              'text-red-400 bg-red-500/10 border-red-500/20';
+            return (
+              <div className="flex items-center gap-4">
+                <p className="text-sm text-slate-400 font-bold uppercase tracking-widest">Last 24 Hours</p>
+                <span className={`px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-widest border ${badgeColor}`}>
+                  {totalAll === 0 ? 'No Events' : `${successRate.toFixed(1)}% Success Rate`}
+                </span>
+              </div>
+            );
+          })()}
+
+          {/* Per-provider table */}
+          {webhookMetrics.length === 0 ? (
+            <div className="rounded-[2rem] border border-white/5 bg-white/[0.01] p-8 text-center">
+              <Zap className="w-10 h-10 text-slate-600 mx-auto mb-3" />
+              <p className="text-slate-400 text-sm font-medium">No webhook events in the last 24 hours.</p>
+              <p className="text-slate-600 text-xs mt-1">Events will appear here after the first payment webhook fires.</p>
+            </div>
+          ) : (
+            <div className="rounded-[2rem] border border-white/5 bg-white/[0.02] p-6 overflow-x-auto">
+              <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-4">Per-Provider Summary</h3>
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-[10px] uppercase tracking-widest text-slate-500">
+                    <th className="text-left pb-3 pr-6">Provider</th>
+                    <th className="text-right pb-3 pr-6">Total (24h)</th>
+                    <th className="text-right pb-3 pr-6">Success</th>
+                    <th className="text-right pb-3 pr-6">Failed</th>
+                    <th className="text-right pb-3 pr-6">Processing</th>
+                    <th className="text-right pb-3">Last Processed</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/5">
+                  {webhookMetrics.map((row) => (
+                    <tr key={row.provider} className="text-white">
+                      <td className="py-3 pr-6 font-black uppercase text-xs tracking-widest">{row.provider}</td>
+                      <td className="py-3 pr-6 text-right font-mono text-slate-300">{row.total}</td>
+                      <td className="py-3 pr-6 text-right font-mono text-green-400">{row.completed}</td>
+                      <td className="py-3 pr-6 text-right font-mono text-red-400">{row.failed}</td>
+                      <td className="py-3 pr-6 text-right font-mono text-yellow-400">{row.processing}</td>
+                      <td className="py-3 text-right font-mono text-slate-500 text-[10px]">
+                        {row.lastProcessed ? new Date(row.lastProcessed).toLocaleTimeString() : '—'}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {/* Recent failures */}
+          {webhookFailures.length > 0 ? (
+            <div className="space-y-3">
+              <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Recent Failures</h3>
+              {webhookFailures.map((f) => (
+                <div key={f.id} className="p-5 rounded-[2rem] border border-red-500/20 bg-red-500/5">
+                  <div className="flex items-start justify-between mb-2">
+                    <div>
+                      <span className="text-[10px] font-black uppercase tracking-widest text-red-400">
+                        {f.provider}
+                      </span>
+                      <span className="text-[10px] text-slate-500 mx-2">&middot;</span>
+                      <span className="text-[10px] text-slate-400">{f.eventType}</span>
+                    </div>
+                    <span className="text-[10px] text-slate-500 font-mono">
+                      {new Date(f.createdAt).toLocaleString()}
+                    </span>
+                  </div>
+                  {f.errorMessage && (
+                    <p className="text-xs text-slate-300 mb-1">{f.errorMessage}</p>
+                  )}
+                  {f.retryCount > 0 && (
+                    <p className="text-[10px] text-slate-600">
+                      {f.retryCount} retry attempt{f.retryCount !== 1 ? 's' : ''}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : webhookMetrics.length > 0 ? (
+            <div className="flex items-center gap-3 p-5 rounded-[2rem] border border-green-500/20 bg-green-500/5">
+              <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
+              <p className="text-green-400 text-sm font-bold">No failures in the last 24 hours.</p>
+            </div>
+          ) : null}
         </div>
       )}
 

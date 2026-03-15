@@ -23,6 +23,24 @@ interface DockerContainer {
   state: 'running' | 'stopped' | 'error';
 }
 
+interface WebhookMetric {
+  provider: string;
+  total: number;
+  completed: number;
+  failed: number;
+  processing: number;
+  lastProcessed: string | null;
+}
+
+interface WebhookFailure {
+  id: string;
+  provider: string;
+  eventType: string;
+  errorMessage: string | null;
+  retryCount: number;
+  createdAt: string;
+}
+
 interface SystemData {
   metrics: {
     cpu: number;
@@ -41,6 +59,8 @@ interface SystemData {
   pm2: PM2Process[];
   docker: DockerContainer[];
   alerts: string[];
+  webhookMetrics: WebhookMetric[];
+  recentFailures: WebhookFailure[];
   fetchedAt: string;
 }
 
@@ -242,6 +262,107 @@ export default function SystemMonitoring() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Webhook Health */}
+      <WebhookHealthSection
+        metrics={data!.webhookMetrics || []}
+        recentFailures={data!.recentFailures || []}
+      />
+    </div>
+  );
+}
+
+function WebhookHealthSection({
+  metrics,
+  recentFailures,
+}: {
+  metrics: WebhookMetric[];
+  recentFailures: WebhookFailure[];
+}) {
+  const totalCompleted = metrics.reduce((sum, r) => sum + r.completed, 0);
+  const totalAll = metrics.reduce((sum, r) => sum + r.total, 0);
+  const successRate = totalAll > 0 ? (totalCompleted / totalAll) * 100 : 100;
+
+  const successBadge =
+    successRate >= 95
+      ? 'bg-green-500/10 text-green-400 border-green-500/20'
+      : successRate >= 80
+        ? 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
+        : 'bg-red-500/10 text-red-400 border-red-500/20';
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h3 className="text-sm font-black uppercase tracking-[0.2em] text-slate-400">Webhook Health (24h)</h3>
+        <span className={`px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest border ${successBadge}`}>
+          {totalAll === 0 ? 'No Events' : `${successRate.toFixed(1)}% Success`}
+        </span>
+      </div>
+
+      {/* Per-provider summary */}
+      {metrics.length === 0 ? (
+        <Card>
+          <CardContent className="pt-4">
+            <p className="text-slate-500 text-sm">No webhook events in the last 24 hours.</p>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-[10px] uppercase tracking-widest text-slate-500">
+                <th className="text-left pb-2 pr-4">Provider</th>
+                <th className="text-right pb-2 pr-4">Total</th>
+                <th className="text-right pb-2 pr-4">Success</th>
+                <th className="text-right pb-2 pr-4">Failed</th>
+                <th className="text-right pb-2 pr-4">Processing</th>
+                <th className="text-right pb-2">Last Processed</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-white/5">
+              {metrics.map((row) => (
+                <tr key={row.provider} className="text-white">
+                  <td className="py-2 pr-4 font-bold uppercase text-xs">{row.provider}</td>
+                  <td className="py-2 pr-4 text-right font-mono text-slate-300">{row.total}</td>
+                  <td className="py-2 pr-4 text-right font-mono text-green-400">{row.completed}</td>
+                  <td className="py-2 pr-4 text-right font-mono text-red-400">{row.failed}</td>
+                  <td className="py-2 pr-4 text-right font-mono text-yellow-400">{row.processing}</td>
+                  <td className="py-2 text-right font-mono text-slate-500 text-[10px]">
+                    {row.lastProcessed ? new Date(row.lastProcessed).toLocaleTimeString() : '—'}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* Recent failures */}
+      {recentFailures.length > 0 && (
+        <Card className="border-red-500/20">
+          <CardHeader>
+            <CardTitle className="text-red-400 text-sm">Recent Webhook Failures</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {recentFailures.map((f) => (
+                <div key={f.id} className="p-3 rounded-xl bg-red-500/5 border border-red-500/10">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-red-400">{f.provider} &middot; {f.eventType}</span>
+                    <span className="text-[10px] text-slate-500 font-mono">{new Date(f.createdAt).toLocaleTimeString()}</span>
+                  </div>
+                  {f.errorMessage && (
+                    <p className="text-xs text-slate-400 truncate">{f.errorMessage}</p>
+                  )}
+                  {f.retryCount > 0 && (
+                    <p className="text-[10px] text-slate-600 mt-1">{f.retryCount} retry attempt{f.retryCount !== 1 ? 's' : ''}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

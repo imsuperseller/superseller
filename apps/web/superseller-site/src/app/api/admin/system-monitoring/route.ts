@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { verifySession } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
 
 export const dynamic = 'force-dynamic';
 
@@ -170,6 +171,42 @@ export async function GET() {
       dockerContainers = containerProbes;
     }
 
+    // Webhook processing metrics (last 24 hours)
+    type WebhookMetricRow = {
+      provider: string;
+      total: bigint;
+      completed: bigint;
+      failed: bigint;
+      processing: bigint;
+      last_processed: Date | null;
+    };
+    const webhookMetrics = await prisma.$queryRaw<WebhookMetricRow[]>`
+      SELECT
+        provider,
+        COUNT(*) as total,
+        COUNT(*) FILTER (WHERE status = 'completed') as completed,
+        COUNT(*) FILTER (WHERE status = 'failed') as failed,
+        COUNT(*) FILTER (WHERE status = 'processing') as processing,
+        MAX("processedAt") as last_processed
+      FROM "WebhookEvent"
+      WHERE "createdAt" > NOW() - INTERVAL '24 hours'
+      GROUP BY provider
+    `;
+
+    const recentFailures = await prisma.webhookEvent.findMany({
+      where: { status: 'failed', createdAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) } },
+      orderBy: { createdAt: 'desc' },
+      take: 5,
+      select: {
+        id: true,
+        provider: true,
+        eventType: true,
+        errorMessage: true,
+        retryCount: true,
+        createdAt: true,
+      },
+    });
+
     // Compute alerts
     const alerts: string[] = [];
     if (systemMetrics.cpu > 90) alerts.push('CPU usage critical (>90%)');
@@ -183,11 +220,27 @@ export async function GET() {
       if (c.state !== 'running') alerts.push(`Docker "${c.name}" is ${c.state}`);
     });
 
+    // Alert on high webhook failure rate
+    const totalWebhooks = webhookMetrics.reduce((sum, r) => sum + Number(r.total), 0);
+    const totalFailed = webhookMetrics.reduce((sum, r) => sum + Number(r.failed), 0);
+    if (totalWebhooks > 0 && totalFailed / totalWebhooks > 0.2) {
+      alerts.push(`Webhook failure rate high: ${((totalFailed / totalWebhooks) * 100).toFixed(0)}% failed in last 24h`);
+    }
+
     return NextResponse.json({
       metrics: systemMetrics,
       pm2: pm2Processes,
       docker: dockerContainers,
       alerts,
+      webhookMetrics: webhookMetrics.map(r => ({
+        provider: r.provider,
+        total: Number(r.total),
+        completed: Number(r.completed),
+        failed: Number(r.failed),
+        processing: Number(r.processing),
+        lastProcessed: r.last_processed ? r.last_processed.toISOString() : null,
+      })),
+      recentFailures,
       fetchedAt: new Date().toISOString(),
     });
   } catch (error: any) {
