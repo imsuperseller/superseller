@@ -4,6 +4,18 @@
 
 A universal WhatsApp-first customer onboarding system for SuperSeller AI. Every new customer — regardless of which product they bought — gets a WhatsApp group auto-created with an AI agent. The agent dynamically assembles its behavior from the customer's subscribed products/services, then activates conversational modules (asset collection, social setup, competitor research, character questionnaire, video generation) based on what the customer bought. Includes BullMQ pipeline orchestration with admin commands, cost tracking, and stale detection.
 
+## Current Milestone: v1.1 Intelligent Content Engine
+
+**Goal:** Multi-model content production with self-improving quality routing — activate dormant providers, build feedback loops, and create parametric templates for local businesses.
+
+**Target features:**
+- Activate fal.ai provider (Sora 2, Wan 2.6 budget tier, Kling via fal fallback)
+- Re-integrate Veo 3.1 for dialogue/talking head shots
+- Quality feedback loop (generation → scoring → model routing improvement)
+- Prompt effectiveness tracking and indexing
+- Parametric Remotion template library for local businesses
+- Per-clip cost attribution and generation metadata
+
 ## Core Value
 
 Every customer gets an AI agent in a WhatsApp group from Day 1. Zero friction. The agent knows what the customer bought and handles onboarding, Q&A, asset collection, and delivery — all through WhatsApp. No web forms, no email chains, no manual steps.
