@@ -73,7 +73,7 @@ Plans:
   3. A nightly BullMQ job runs and writes aggregated `avg quality_score` per model to `ai_model_recommendations` — but only when `sample_count >= 20`
   4. Admin can call `GET /api/admin/prompt-effectiveness` and receive ranked avg `performanceScore` by prompt_key, version, and shot_type
   5. `routeShot()` reads `quality_score` from the Observatory's real aggregated data (not static seeds) when selecting models
-**Plans:** 3 plans
+**Plans:** 2/3 plans executed
 
 Plans:
 - [ ] 09-01: generation_meta column + per-clip cost attribution (QUAL-01, QUAL-05)
@@ -107,7 +107,7 @@ Plans:
 | 6. Fix Social + Poll Vote | v1.0 | 2/2 | Complete | 2026-03-14 |
 | 07. Provider Foundation | v1.1 | Complete    | 2026-03-15 | - |
 | 08. Provider Activation | 2/2 | Complete    | 2026-03-15 | - |
-| 09. Quality Feedback Loop | v1.1 | 0/3 | Not started | - |
+| 09. Quality Feedback Loop | 2/3 | In Progress|  | - |
 | 10. Remotion Templates | v1.1 | 0/1 | Not started | - |
 
 ---

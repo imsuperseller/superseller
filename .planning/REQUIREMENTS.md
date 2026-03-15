@@ -20,11 +20,11 @@ Requirements for Intelligent Content Engine milestone. Each maps to roadmap phas
 
 ### Quality Feedback
 
-- [ ] **QUAL-01**: Every generated clip stores generation_meta JSONB on content_entries (model_id, provider, prompt_key, prompt_version, generation_cost_usd, duration_sec, shot_type)
+- [x] **QUAL-01**: Every generated clip stores generation_meta JSONB on content_entries (model_id, provider, prompt_key, prompt_version, generation_cost_usd, duration_sec, shot_type)
 - [ ] **QUAL-02**: Nightly aggregation job computes avg quality_score per model from content_entries.performanceScore
 - [ ] **QUAL-03**: Aggregation job updates ai_model_recommendations.quality_score only when sample_count >= 20
 - [x] **QUAL-04**: Admin can view prompt effectiveness rankings via API (avg performanceScore by prompt_key + version + shot_type)
-- [ ] **QUAL-05**: Per-clip cost attribution logged to api_expenses with provider and model_id metadata
+- [x] **QUAL-05**: Per-clip cost attribution logged to api_expenses with provider and model_id metadata
 - [ ] **QUAL-06**: Router uses Observatory quality_score (real feedback data) when selecting models, not just static scores
 
 ### Remotion Templates
@@ -75,11 +75,11 @@ Deferred to next milestone. Tracked but not in current roadmap.
 | PROV-01 | Phase 08 | Complete |
 | PROV-02 | Phase 08 | Complete |
 | PROV-04 | Phase 08 | Complete |
-| QUAL-01 | Phase 09 | Pending |
+| QUAL-01 | Phase 09 | Complete |
 | QUAL-02 | Phase 09 | Pending |
 | QUAL-03 | Phase 09 | Pending |
 | QUAL-04 | Phase 09 | Complete |
-| QUAL-05 | Phase 09 | Pending |
+| QUAL-05 | Phase 09 | Complete |
 | QUAL-06 | Phase 09 | Pending |
 | TMPL-01 | Phase 10 | Pending |
 | TMPL-02 | Phase 10 | Pending |
