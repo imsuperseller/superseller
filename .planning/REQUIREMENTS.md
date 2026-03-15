@@ -14,10 +14,10 @@ Requirements for Character Iteration milestone. Each maps to roadmap phases.
 
 ### Change Request Intake
 
-- [ ] **INTAKE-01**: Customer can send natural-language change request in WhatsApp group after receiving character video
+- [x] **INTAKE-01**: Customer can send natural-language change request in WhatsApp group after receiving character video
 - [x] **INTAKE-02**: System classifies intent as scene-level change, character-level change, positive feedback, or unrelated
 - [x] **INTAKE-03**: System extracts target scene number from message ("scene 3", "the third one")
-- [ ] **INTAKE-04**: System shows credit cost estimate and gets customer confirmation via WhatsApp poll before any generation
+- [x] **INTAKE-04**: System shows credit cost estimate and gets customer confirmation via WhatsApp poll before any generation
 
 ### Scene Regeneration
 
@@ -67,10 +67,10 @@ Requirements for Character Iteration milestone. Each maps to roadmap phases.
 |-------------|-------|--------|
 | DEBT-01 | Phase 15 | Complete |
 | DEBT-02 | Phase 15 | Complete |
-| INTAKE-01 | Phase 16 | Pending |
+| INTAKE-01 | Phase 16 | Complete |
 | INTAKE-02 | Phase 16 | Complete |
 | INTAKE-03 | Phase 16 | Complete |
-| INTAKE-04 | Phase 16 | Pending |
+| INTAKE-04 | Phase 16 | Complete |
 | CHAR-01 | Phase 16 | Complete |
 | REGEN-01 | Phase 17 | Pending |
 | REGEN-02 | Phase 17 | Pending |
