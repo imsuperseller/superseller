@@ -8,9 +8,11 @@ import type { ProviderAdapter } from './types';
 vi.mock('../../kie', () => ({
     createKlingTask: vi.fn(),
     getTaskStatus: vi.fn(),
+    createVeoTask: vi.fn(),
+    getVeoTaskStatus: vi.fn(),
 }));
 
-import { createKlingTask, getTaskStatus } from '../../kie';
+import { createKlingTask, getTaskStatus, createVeoTask, getVeoTaskStatus } from '../../kie';
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -155,6 +157,135 @@ describe('KieAdapter', () => {
             const cost = adapter.estimateCost(req, 0.1);
             expect(cost).toBeCloseTo(0.1, 5); // 0.1 * 5 / 5
         });
+    });
+
+    // ── Veo 3.1 routing ─────────────────────────────────────────────────────
+
+    describe('submitJob (veo)', () => {
+        const veoRequest: ShotRequest = {
+            shotType: 'dialogue',
+            budgetTier: 'standard',
+            prompt: 'A talking head avatar speaks to camera',
+            imageUrl: 'https://example.com/avatar.jpg',
+            durationSeconds: 8,
+            tenantId: 'tenant-001',
+            jobId: 'job-veo-1',
+        };
+
+        it('calls createVeoTask (not createKlingTask) when modelId contains "veo"', async () => {
+            (createVeoTask as any).mockResolvedValue('veo-task-abc');
+
+            const result = await adapter.submitJob(veoRequest, 'veo-3.1-fast/video');
+
+            expect(createVeoTask).toHaveBeenCalledWith(
+                'A talking head avatar speaks to camera',
+                expect.objectContaining({
+                    image_url: 'https://example.com/avatar.jpg',
+                    duration: 8,
+                    mode: 'fast',
+                    aspect_ratio: '16:9',
+                    sound: false,
+                })
+            );
+            expect(createKlingTask).not.toHaveBeenCalled();
+        });
+
+        it('returns externalJobId prefixed with "veo::" when modelId contains "veo"', async () => {
+            (createVeoTask as any).mockResolvedValue('veo-task-abc');
+
+            const result = await adapter.submitJob(veoRequest, 'veo-3.1-fast/video');
+
+            expect(result.externalJobId).toBe('veo::veo-task-abc');
+            expect(result.provider).toBe('kie');
+        });
+
+        it('still calls createKlingTask (not createVeoTask) when modelId does NOT contain "veo"', async () => {
+            (createKlingTask as any).mockResolvedValue('kling-task-xyz');
+
+            const result = await adapter.submitJob(videoRequest, 'kling-3.0/video');
+
+            expect(createKlingTask).toHaveBeenCalled();
+            expect(createVeoTask).not.toHaveBeenCalled();
+            expect(result.externalJobId).toBe('kling-task-xyz');
+        });
+    });
+
+    describe('pollStatus (veo)', () => {
+        it('calls getVeoTaskStatus (not getTaskStatus) when jobId starts with "veo::"', async () => {
+            (getVeoTaskStatus as any).mockResolvedValue({
+                task_id: 'veo-task-abc',
+                status: 'processing',
+            });
+
+            await adapter.pollStatus('veo::veo-task-abc');
+
+            expect(getVeoTaskStatus).toHaveBeenCalledWith('veo-task-abc');
+            expect(getTaskStatus).not.toHaveBeenCalled();
+        });
+
+        it('strips the "veo::" prefix before calling getVeoTaskStatus', async () => {
+            (getVeoTaskStatus as any).mockResolvedValue({
+                task_id: 'veo-task-abc',
+                status: 'pending',
+            });
+
+            await adapter.pollStatus('veo::veo-task-abc');
+
+            // Must pass only the raw task ID, NOT 'veo::veo-task-abc'
+            expect(getVeoTaskStatus).toHaveBeenCalledWith('veo-task-abc');
+        });
+
+        it('still calls getTaskStatus("kling") when jobId does NOT start with "veo::"', async () => {
+            (getTaskStatus as any).mockResolvedValue({ task_id: 'kling-task-1', status: 'processing' });
+
+            await adapter.pollStatus('kling-task-1');
+
+            expect(getTaskStatus).toHaveBeenCalledWith('kling-task-1', 'kling');
+            expect(getVeoTaskStatus).not.toHaveBeenCalled();
+        });
+
+        it('maps completed Veo response with video_url to AdapterPollResult', async () => {
+            (getVeoTaskStatus as any).mockResolvedValue({
+                task_id: 'veo-task-abc',
+                status: 'completed',
+                result: { video_url: 'https://cdn.kie.ai/veo-result.mp4' },
+            });
+
+            const result = await adapter.pollStatus('veo::veo-task-abc');
+
+            expect(result.status).toBe('completed');
+            expect(result.resultUrl).toBe('https://cdn.kie.ai/veo-result.mp4');
+        });
+
+        it('maps failed Veo response to AdapterPollResult with error', async () => {
+            (getVeoTaskStatus as any).mockResolvedValue({
+                task_id: 'veo-task-abc',
+                status: 'failed',
+                error: 'Veo generation failed',
+            });
+
+            const result = await adapter.pollStatus('veo::veo-task-abc');
+
+            expect(result.status).toBe('failed');
+            expect(result.error).toBe('Veo generation failed');
+        });
+    });
+});
+
+// ── SHOT_DEFAULT_MODELS assertions ───────────────────────────────────────────
+import { SHOT_DEFAULT_MODELS } from '../shot-types';
+
+describe('SHOT_DEFAULT_MODELS', () => {
+    it('dialogue.modelId matches DB ai_models row "veo-3.1-fast/video"', () => {
+        expect(SHOT_DEFAULT_MODELS.dialogue.modelId).toBe('veo-3.1-fast/video');
+    });
+
+    it('environment.modelId matches real fal.ai Sora 2 endpoint', () => {
+        expect(SHOT_DEFAULT_MODELS.environment.modelId).toBe('fal-ai/sora-2/image-to-video/pro');
+    });
+
+    it('social.modelId matches real fal.ai Wan 2.6 endpoint', () => {
+        expect(SHOT_DEFAULT_MODELS.social.modelId).toBe('wan/v2.6/image-to-video');
     });
 });
 

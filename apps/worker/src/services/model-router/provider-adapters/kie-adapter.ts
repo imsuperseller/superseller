@@ -5,7 +5,7 @@
  * to Kie.ai. Reuses the established auth + retry logic from kie.ts.
  */
 
-import { createKlingTask, getTaskStatus } from '../../kie';
+import { createKlingTask, getTaskStatus, createVeoTask, getVeoTaskStatus } from '../../kie';
 import { logger } from '../../../utils/logger';
 import type { ProviderAdapter, AdapterJobResult, AdapterPollResult } from './types';
 import type { ShotRequest } from '../shot-types';
@@ -26,7 +26,12 @@ export class KieAdapter implements ProviderAdapter {
         return this._submitVideoJob(req, modelId);
     }
 
-    private async _submitVideoJob(req: ShotRequest, _modelId: string): Promise<AdapterJobResult> {
+    private async _submitVideoJob(req: ShotRequest, modelId: string): Promise<AdapterJobResult> {
+        // Route Veo 3.1 shots to createVeoTask; all other shots use createKlingTask
+        if (modelId.includes('veo')) {
+            return this._submitVeoJob(req, modelId);
+        }
+
         // createKlingTask returns a task_id string directly
         const taskId = await createKlingTask({
             prompt: req.prompt,
@@ -43,6 +48,28 @@ export class KieAdapter implements ProviderAdapter {
 
         return {
             externalJobId: taskId,
+            provider: 'kie',
+        };
+    }
+
+    private async _submitVeoJob(req: ShotRequest, _modelId: string): Promise<AdapterJobResult> {
+        const taskId = await createVeoTask(req.prompt, {
+            image_url: req.imageUrl,
+            duration: req.durationSeconds ?? 8,
+            mode: 'fast',
+            aspect_ratio: '16:9',
+            sound: false,
+        });
+
+        logger.info({
+            msg: 'KieAdapter: veo job submitted',
+            taskId,
+            shotType: req.shotType,
+        });
+
+        // 'veo::' prefix encodes provider variant for pollStatus routing
+        return {
+            externalJobId: `veo::${taskId}`,
             provider: 'kie',
         };
     }
@@ -82,6 +109,26 @@ export class KieAdapter implements ProviderAdapter {
     }
 
     async pollStatus(jobId: string): Promise<AdapterPollResult> {
+        // Route Veo jobs by 'veo::' prefix; everything else is Kling
+        if (jobId.startsWith('veo::')) {
+            const veoTaskId = jobId.slice(5);
+            const response = await getVeoTaskStatus(veoTaskId);
+
+            let resultUrl: string | undefined;
+            if (response.status === 'completed' && response.result) {
+                resultUrl = response.result.video_url
+                    ?? (response.result.resultUrls?.[0])
+                    ?? response.result.audio_url
+                    ?? response.result.image_url;
+            }
+
+            return {
+                status: response.status,
+                resultUrl,
+                error: response.error,
+            };
+        }
+
         const response = await getTaskStatus(jobId, 'kling');
 
         let resultUrl: string | undefined;

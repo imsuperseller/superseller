@@ -43,7 +43,7 @@ export interface ShotModelHint {
 export const SHOT_DEFAULT_MODELS: Record<ShotType, ShotModelHint> = {
     dialogue: {
         provider: 'kie',
-        modelId: 'veo-3.1',
+        modelId: 'veo-3.1-fast/video',
         useCase: 'avatar_talking_head',
     },
     narrative: {
@@ -53,7 +53,7 @@ export const SHOT_DEFAULT_MODELS: Record<ShotType, ShotModelHint> = {
     },
     environment: {
         provider: 'fal',
-        modelId: 'fal-ai/sora',
+        modelId: 'fal-ai/sora-2/image-to-video/pro',
         useCase: 'video_clip_generation',
     },
     product: {
@@ -63,7 +63,7 @@ export const SHOT_DEFAULT_MODELS: Record<ShotType, ShotModelHint> = {
     },
     social: {
         provider: 'fal',
-        modelId: 'fal-ai/wan-i2v',
+        modelId: 'wan/v2.6/image-to-video',
         useCase: 'video_clip_generation',
     },
     music: {

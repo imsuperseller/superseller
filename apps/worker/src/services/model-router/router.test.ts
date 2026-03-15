@@ -222,7 +222,7 @@ describe('routeShot()', () => {
 
     it('budget override with fal default still infers fal from modelId', async () => {
         // Observatory returns expensive model; budget enforcement kicks in and uses selectionFromDefault
-        // social SHOT_DEFAULT_MODELS has modelId 'fal-ai/wan-i2v' -> still infers FalAdapter
+        // social SHOT_DEFAULT_MODELS has modelId 'wan/v2.6/image-to-video' -> still infers FalAdapter
         vi.mocked(getRecommendedModel).mockResolvedValue(makeSelection({
             modelId: 'some-expensive-model',
             costPerUnit: 0.99, // exceeds budget ceiling of 0.05
@@ -236,8 +236,8 @@ describe('routeShot()', () => {
 
         const result = await routeShot(req);
 
-        // Budget override falls back to SHOT_DEFAULT_MODELS['social'].modelId = 'fal-ai/wan-i2v'
-        // Provider is inferred from modelId prefix -> FalAdapter
+        // Budget override falls back to SHOT_DEFAULT_MODELS['social'].modelId = 'wan/v2.6/image-to-video'
+        // Provider is inferred from modelId prefix (wan/ -> fal) -> FalAdapter
         expect(result.adapter).toBeInstanceOf(FalAdapter);
         expect(result.estimatedCost).toBeLessThanOrEqual(BUDGET_CEILINGS.budget);
     });

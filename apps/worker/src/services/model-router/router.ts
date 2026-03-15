@@ -121,8 +121,9 @@ export async function routeShot(req: ShotRequest): Promise<RouterResult> {
     }
 
     // Step 4: Infer provider from Observatory-recommended modelId
-    // fal.ai model IDs always start with "fal-ai/"; all others route to Kie
-    const provider: 'kie' | 'fal' = selection.modelId.startsWith('fal-ai/') ? 'fal' : 'kie';
+    // fal.ai model IDs start with "fal-ai/" or "wan/" (Wan 2.6 via fal.ai queue); all others route to Kie
+    const isFalModel = selection.modelId.startsWith('fal-ai/') || selection.modelId.startsWith('wan/');
+    const provider: 'kie' | 'fal' = isFalModel ? 'fal' : 'kie';
     const adapter = adapterForProvider(provider);
 
     // Step 5: Estimate cost

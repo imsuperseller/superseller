@@ -45,7 +45,7 @@ describe('SHOT_DEFAULT_MODELS', () => {
 
     it('dialogue uses kie provider', () => {
         expect(SHOT_DEFAULT_MODELS.dialogue.provider).toBe('kie');
-        expect(SHOT_DEFAULT_MODELS.dialogue.modelId).toBe('veo-3.1');
+        expect(SHOT_DEFAULT_MODELS.dialogue.modelId).toBe('veo-3.1-fast/video');
     });
 
     it('narrative uses fal provider', () => {
@@ -55,7 +55,7 @@ describe('SHOT_DEFAULT_MODELS', () => {
 
     it('environment uses fal provider', () => {
         expect(SHOT_DEFAULT_MODELS.environment.provider).toBe('fal');
-        expect(SHOT_DEFAULT_MODELS.environment.modelId).toBe('fal-ai/sora');
+        expect(SHOT_DEFAULT_MODELS.environment.modelId).toBe('fal-ai/sora-2/image-to-video/pro');
     });
 
     it('product uses kie provider', () => {
@@ -65,7 +65,7 @@ describe('SHOT_DEFAULT_MODELS', () => {
 
     it('social uses fal provider', () => {
         expect(SHOT_DEFAULT_MODELS.social.provider).toBe('fal');
-        expect(SHOT_DEFAULT_MODELS.social.modelId).toBe('fal-ai/wan-i2v');
+        expect(SHOT_DEFAULT_MODELS.social.modelId).toBe('wan/v2.6/image-to-video');
     });
 
     it('music uses kie provider', () => {
