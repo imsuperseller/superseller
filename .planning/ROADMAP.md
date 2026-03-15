@@ -78,7 +78,7 @@ Plans:
   3. System correctly extracts scene numbers from natural-language references ("scene 3", "the third one", "the coffee shop scene")
   4. A new CharacterBible version row is inserted for every approved change (old version preserved, rollback possible)
   5. Every change request is logged with intent, scope, and status from the moment it is received
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 Plans:
 - [ ] 16-01-PLAN.md — DB schema + intent classifier + CharacterBible versioning services
 - [ ] 16-02-PLAN.md — Post-delivery routing + credit confirmation poll + pipeline wiring
@@ -134,7 +134,7 @@ Plans:
 | 13. Voice Note Transcription | v1.2 | 2/2 | Complete | 2026-03-15 |
 | 14. Language Detection | v1.2 | 1/1 | Complete | 2026-03-15 |
 | 15. Tech Debt Fixes | v1.3 | 2/2 | Complete | 2026-03-15 |
-| 16. Change Request Intake | v1.3 | 0/2 | Not started | - |
+| 16. Change Request Intake | 1/2 | In Progress|  | - |
 | 17. Scene-Level Regeneration | v1.3 | 0/TBD | Not started | - |
 | 18. Character-Level Changes | v1.3 | 0/TBD | Not started | - |
 | 19. Admin Tooling | v1.3 | 0/TBD | Not started | - |

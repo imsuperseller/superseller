@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Character Iteration
 status: planning
-stopped_at: Phase 16 context gathered
-last_updated: "2026-03-15T19:59:03.423Z"
+stopped_at: Completed 16-change-request-intake 16-01-PLAN.md
+last_updated: "2026-03-15T20:31:06.000Z"
 last_activity: 2026-03-15 — Phase 15 executed (2/2 plans), verified, complete
 progress:
   total_phases: 5
   completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  total_plans: 4
+  completed_plans: 3
 ---
 
 # State: Universal Customer Onboarding System
@@ -52,6 +52,9 @@ Key v1.3 decisions:
 - [Phase 15]: generateScene returns { resultUrl, provider } tuple to enable accurate cost attribution
 - [Phase 15-01]: sendAdminAlert is non-blocking (catches all errors internally) to avoid masking primary failure path
 - [Phase 15-01]: admin.defaultPhone falls back to HEALTH_MONITOR_ALERT_PHONE so no new env var required in production
+- [Phase 16-change-request-intake]: Added COST_RATES.fal.sora_2_scene_1080p=1.00 to expense-tracker.ts for auditable SORA_COST_PER_SCENE_CENTS derivation
+- [Phase 16-change-request-intake]: classifyChangeRequest never throws — returns ambiguous fallback on API failure or parse error
+- [Phase 16-change-request-intake]: CharacterBible versioning: INSERT new row with version+1 + changeDelta JSONB, never UPDATE existing rows
 
 ### Pending Todos
 
@@ -65,9 +68,9 @@ Key v1.3 decisions:
 
 ## Session Continuity
 
-Last session: 2026-03-15T19:59:03.421Z
-Stopped at: Phase 16 context gathered
-Resume file: .planning/phases/16-change-request-intake/16-CONTEXT.md
+Last session: 2026-03-15T20:31:05.998Z
+Stopped at: Completed 16-change-request-intake 16-01-PLAN.md
+Resume file: None
 
 ---
 *Last updated: 2026-03-15 — Phase 15 complete, transitioning to Phase 16*
