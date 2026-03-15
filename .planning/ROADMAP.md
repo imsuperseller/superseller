@@ -89,10 +89,10 @@ Plans:
   2. Rendering with `aspectRatio: '16x9'` produces a landscape video; `aspectRatio: '9x16'` produces a portrait video with correct dimensions
   3. Props `beforeImageUrl`, `afterImageUrl`, `serviceLabel`, `brandColor`, `logoUrl`, and `tagline` all render visibly in the output without hardcoded defaults
   4. The wipe/split-screen transition is visible and smooth between before and after images
-**Plans:** TBD
+**Plans:** 1 plan
 
 Plans:
-- [ ] 10-01: BeforeAfterComposition build + Root.tsx registration (TMPL-01, TMPL-02, TMPL-03, TMPL-04)
+- [ ] 10-01-PLAN.md — BeforeAfterComposition props schema, composition component, and Root.tsx registration (TMPL-01, TMPL-02, TMPL-03, TMPL-04)
 
 ## Progress
 
@@ -108,8 +108,8 @@ Plans:
 | 07. Provider Foundation | v1.1 | Complete    | 2026-03-15 | - |
 | 08. Provider Activation | 2/2 | Complete    | 2026-03-15 | - |
 | 09. Quality Feedback Loop | 2/3 | Complete    | 2026-03-15 | - |
-| 10. Remotion Templates | v1.1 | 0/1 | Not started | - |
+| 10. Remotion Templates | v1.1 | 0/1 | Planning complete | - |
 
 ---
 *Created: 2026-03-13*
-*Updated: 2026-03-15 — v1.1 roadmap added (Phases 07-10)*
+*Updated: 2026-03-15 — Phase 10 plan created (1 plan, 2 tasks)*
