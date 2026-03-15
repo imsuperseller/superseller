@@ -206,10 +206,10 @@ Phase 5 can start partially after Phase 1 is done (queue + routing skeleton).
 **Requirements:** SOCIAL-02, PIPE-02
 **Gap Closure:** Closes gaps from v1.0-MILESTONE-AUDIT.md
 
-**Plans:** TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 06-01-PLAN.md — Fix social-setup intro handler + poll.vote webhook wiring + module router fix
+- [ ] 06-01-PLAN.md — Wire poll.vote webhook to BullMQ + honor pipeline currentModule in module router
 - [ ] 06-02-PLAN.md — Documentation cleanup: REQUIREMENTS.md traceability + SUMMARY.md frontmatter
 
 **Success Criteria:**
@@ -252,4 +252,4 @@ Phase 6 fixes audit gaps in Phases 2 and 5.
 
 ---
 *Created: 2026-03-13*
-*Updated: 2026-03-15 — Phase 06 added (gap closure from milestone audit)*
+Updated: 2026-03-15 — Phase 06 plans finalized (2 plans, 1 wave)
