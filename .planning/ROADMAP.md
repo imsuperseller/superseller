@@ -69,7 +69,11 @@ Plans:
   2. Customer sends a voice note in English and the agent replies correctly
   3. The original voice note audio file is accessible in R2 storage after processing
   4. The transcribed text that was passed to the agent is recoverable (stored alongside the voice note)
-**Plans**: TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 13-01-PLAN.md — Transcription service: Whisper API client, DB table, R2 storage, audio extraction
+- [ ] 13-02-PLAN.md — Wire transcription into ClaudeClaw worker + admin monitoring metrics
 
 ### Phase 14: Language Detection
 **Goal**: The agent automatically detects whether the customer is writing in Hebrew or English and responds in that same language throughout all onboarding modules
@@ -98,9 +102,9 @@ Plans:
 | 09. Quality Feedback Loop | v1.1 | 3/3 | Complete | 2026-03-15 |
 | 10. Remotion Templates | v1.1 | 1/1 | Complete | 2026-03-15 |
 | 12. Payment Webhooks | 4/4 | Complete    | 2026-03-15 | - |
-| 13. Voice Note Transcription | v1.2 | 0/TBD | Not started | - |
+| 13. Voice Note Transcription | v1.2 | 0/2 | Planning complete | - |
 | 14. Language Detection | v1.2 | 0/TBD | Not started | - |
 
 ---
 *Created: 2026-03-13*
-*Updated: 2026-03-15 — Phase 12 plan 03 complete (checkout pages + Stripe session API)*
+*Updated: 2026-03-15 — Phase 13 plans created (2 plans, 2 waves)*
