@@ -39,6 +39,7 @@ export const COST_RATES: Record<string, Record<string, number>> = {
   fal: {
     sora_2_per_second_720p: 0.30,   // fal-ai/sora-2/image-to-video/pro, 720p
     sora_2_per_second_1080p: 0.50,  // fal-ai/sora-2/image-to-video/pro, 1080p
+    sora_2_scene_1080p: 1.00,       // fal-ai/sora-2 1080p 10s scene = $1.00 (matches character-video-gen.ts SORA_COST_PER_SCENE)
     wan_2_6_per_second_720p: 0.10,  // wan/v2.6/image-to-video, 720p
     wan_2_6_per_second_1080p: 0.15, // wan/v2.6/image-to-video, 1080p
   },
