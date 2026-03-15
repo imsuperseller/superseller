@@ -26,6 +26,27 @@ const FAL_STATUS_MAP: Record<string, AdapterPollResult['status']> = {
     FAILED: 'failed',
 };
 
+/** Sora 2 valid duration enum values (seconds, numeric) */
+const SORA_DURATION_ENUM = [4, 8, 12, 16, 20] as const;
+/** Wan 2.6 valid duration enum values (seconds, string) */
+const WAN_DURATION_ENUM = [5, 10, 15] as const;
+
+/** Snap a numeric value to the nearest value in an enum array */
+function snapToNearest(value: number, enumValues: readonly number[]): number {
+    return enumValues.reduce((prev, curr) =>
+        Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev
+    );
+}
+
+/**
+ * Module-level registry mapping fal.ai requestId → BullMQ job info.
+ * Populated by submitJob; consumed by the fal-webhook handler for job lookup.
+ * Bounded to 10,000 entries — oldest entries cleared when limit is reached.
+ */
+export const falRequestRegistry = new Map<string, { modelId: string; jobId: string }>();
+
+const FAL_REQUEST_REGISTRY_MAX = 10_000;
+
 export class FalAdapter implements ProviderAdapter {
     private readonly apiKey: string;
 
@@ -45,19 +66,66 @@ export class FalAdapter implements ProviderAdapter {
     }
 
     /**
+     * Build model-specific request body for fal.ai queue submission.
+     * - Sora 2: numeric duration enum, resolution, aspect_ratio, delete_video: false
+     * - Wan 2.6: string duration enum, resolution
+     * - Default: numeric duration (backward compat)
+     */
+    private _buildRequestBody(req: ShotRequest, modelId: string): Record<string, any> {
+        const webhookUrl = process.env.WORKER_PUBLIC_URL
+            ? `${process.env.WORKER_PUBLIC_URL}/api/webhooks/fal`
+            : undefined;
+
+        const baseInput = {
+            prompt: req.prompt,
+            image_url: req.imageUrl,
+        };
+
+        let modelInput: Record<string, any>;
+
+        if (modelId.includes('sora-2') || modelId.includes('sora')) {
+            // Sora 2: numeric duration enum, 1080p, no video deletion
+            const rawDuration = req.durationSeconds ?? 5;
+            const duration = snapToNearest(rawDuration, SORA_DURATION_ENUM);
+            modelInput = {
+                ...baseInput,
+                duration,
+                resolution: '1080p',
+                aspect_ratio: 'auto',
+                delete_video: false,
+            };
+        } else if (modelId.includes('wan')) {
+            // Wan 2.6: string duration enum, 1080p
+            const rawDuration = req.durationSeconds ?? 5;
+            const durationNum = snapToNearest(rawDuration, WAN_DURATION_ENUM);
+            modelInput = {
+                ...baseInput,
+                duration: String(durationNum),
+                resolution: '1080p',
+            };
+        } else {
+            // Default fallback: generic body (backward compat)
+            modelInput = {
+                ...baseInput,
+                duration: req.durationSeconds ?? 5,
+            };
+        }
+
+        const body: Record<string, any> = { input: modelInput };
+        if (webhookUrl) {
+            body.webhook_url = webhookUrl;
+        }
+        return body;
+    }
+
+    /**
      * Submit a job to fal.ai queue.
      * Returns externalJobId encoded as "{modelId}::{requestId}".
      */
     async submitJob(req: ShotRequest, modelId: string): Promise<AdapterJobResult> {
         const url = `${FAL_QUEUE_BASE}/${modelId}`;
 
-        const body = {
-            input: {
-                prompt: req.prompt,
-                image_url: req.imageUrl,
-                duration: req.durationSeconds ?? 5,
-            },
-        };
+        const body = this._buildRequestBody(req, modelId);
 
         const response = await fetch(url, {
             method: 'POST',
@@ -77,6 +145,18 @@ export class FalAdapter implements ProviderAdapter {
             requestId: data.request_id,
             modelId,
             shotType: req.shotType,
+            webhookEnabled: !!process.env.WORKER_PUBLIC_URL,
+        });
+
+        // Register requestId → job info for webhook handler lookup
+        if (falRequestRegistry.size >= FAL_REQUEST_REGISTRY_MAX) {
+            // Evict oldest entry when at capacity
+            const oldestKey = falRequestRegistry.keys().next().value;
+            if (oldestKey) falRequestRegistry.delete(oldestKey);
+        }
+        falRequestRegistry.set(data.request_id, {
+            modelId,
+            jobId: req.jobId ?? '',
         });
 
         // Encode modelId into jobId so pollStatus/cancelJob know the endpoint

@@ -334,4 +334,132 @@ describe('FalAdapter', () => {
             expect(cost).toBeCloseTo(0.1, 5);
         });
     });
+
+    describe('submitJob model-specific bodies', () => {
+        function mockSuccessResponse() {
+            mockFetch.mockResolvedValue(
+                new Response(JSON.stringify({ request_id: 'fal-req-test' }), {
+                    status: 200,
+                    headers: { 'Content-Type': 'application/json' },
+                })
+            );
+        }
+
+        function getSubmittedBody(): Record<string, any> {
+            const callArgs = mockFetch.mock.calls[0];
+            const options = callArgs[1] as RequestInit;
+            return JSON.parse(options.body as string);
+        }
+
+        beforeEach(() => {
+            delete process.env.WORKER_PUBLIC_URL;
+        });
+
+        // ── Sora 2 ────────────────────────────────────────────────────────
+
+        it('Sora 2: sends duration as number enum (nearest to 10 → 8)', async () => {
+            mockSuccessResponse();
+            await adapter.submitJob({ ...videoRequest, durationSeconds: 10 }, 'fal-ai/sora-2/image-to-video/pro');
+            const body = getSubmittedBody();
+            expect(typeof body.input.duration).toBe('number');
+            expect([4, 8, 12, 16, 20]).toContain(body.input.duration);
+        });
+
+        it('Sora 2: sends resolution: "1080p" and aspect_ratio: "auto"', async () => {
+            mockSuccessResponse();
+            await adapter.submitJob(videoRequest, 'fal-ai/sora-2/image-to-video/pro');
+            const body = getSubmittedBody();
+            expect(body.input.resolution).toBe('1080p');
+            expect(body.input.aspect_ratio).toBe('auto');
+        });
+
+        it('Sora 2: sends delete_video: false', async () => {
+            mockSuccessResponse();
+            await adapter.submitJob(videoRequest, 'fal-ai/sora-2/image-to-video/pro');
+            const body = getSubmittedBody();
+            expect(body.input.delete_video).toBe(false);
+        });
+
+        it('Sora 2: clamps duration 3 → 4 (nearest enum)', async () => {
+            mockSuccessResponse();
+            await adapter.submitJob({ ...videoRequest, durationSeconds: 3 }, 'fal-ai/sora-2/image-to-video/pro');
+            const body = getSubmittedBody();
+            expect(body.input.duration).toBe(4);
+        });
+
+        it('Sora 2: clamps duration 25 → 20 (max enum)', async () => {
+            mockSuccessResponse();
+            await adapter.submitJob({ ...videoRequest, durationSeconds: 25 }, 'fal-ai/sora-2/image-to-video/pro');
+            const body = getSubmittedBody();
+            expect(body.input.duration).toBe(20);
+        });
+
+        // ── Wan 2.6 ───────────────────────────────────────────────────────
+
+        it('Wan 2.6: sends duration as string (10 → "10")', async () => {
+            mockSuccessResponse();
+            await adapter.submitJob({ ...videoRequest, durationSeconds: 10 }, 'fal-ai/wan-i2v/video');
+            const body = getSubmittedBody();
+            expect(typeof body.input.duration).toBe('string');
+            expect(['5', '10', '15']).toContain(body.input.duration);
+        });
+
+        it('Wan 2.6: sends resolution: "1080p"', async () => {
+            mockSuccessResponse();
+            await adapter.submitJob(videoRequest, 'fal-ai/wan-i2v/video');
+            const body = getSubmittedBody();
+            expect(body.input.resolution).toBe('1080p');
+        });
+
+        it('Wan 2.6: clamps duration 3 → "5" (nearest enum, stringified)', async () => {
+            mockSuccessResponse();
+            await adapter.submitJob({ ...videoRequest, durationSeconds: 3 }, 'fal-ai/wan-i2v/video');
+            const body = getSubmittedBody();
+            expect(body.input.duration).toBe('5');
+        });
+
+        it('Wan 2.6: clamps duration 20 → "15" (max enum, stringified)', async () => {
+            mockSuccessResponse();
+            await adapter.submitJob({ ...videoRequest, durationSeconds: 20 }, 'fal-ai/wan-i2v/video');
+            const body = getSubmittedBody();
+            expect(body.input.duration).toBe('15');
+        });
+
+        // ── Default fallback ──────────────────────────────────────────────
+
+        it('Default fallback: sends duration as number for unknown model', async () => {
+            mockSuccessResponse();
+            await adapter.submitJob({ ...videoRequest, durationSeconds: 7 }, 'fal-ai/kling-video/v2.1/pro/image-to-video');
+            const body = getSubmittedBody();
+            expect(typeof body.input.duration).toBe('number');
+            expect(body.input.duration).toBe(7);
+        });
+
+        // ── webhook_url injection ─────────────────────────────────────────
+
+        it('includes webhook_url at top level when WORKER_PUBLIC_URL is set', async () => {
+            process.env.WORKER_PUBLIC_URL = 'https://worker.example.com';
+            mockSuccessResponse();
+            await adapter.submitJob(videoRequest, 'fal-ai/sora-2/image-to-video/pro');
+            const body = getSubmittedBody();
+            expect(body.webhook_url).toBe('https://worker.example.com/api/webhooks/fal');
+        });
+
+        it('omits webhook_url when WORKER_PUBLIC_URL is not set', async () => {
+            delete process.env.WORKER_PUBLIC_URL;
+            mockSuccessResponse();
+            await adapter.submitJob(videoRequest, 'fal-ai/sora-2/image-to-video/pro');
+            const body = getSubmittedBody();
+            expect(body.webhook_url).toBeUndefined();
+        });
+
+        it('webhook_url is top-level (not inside input)', async () => {
+            process.env.WORKER_PUBLIC_URL = 'https://worker.example.com';
+            mockSuccessResponse();
+            await adapter.submitJob(videoRequest, 'fal-ai/wan-i2v/video');
+            const body = getSubmittedBody();
+            expect(body.webhook_url).toBeDefined();
+            expect(body.input.webhook_url).toBeUndefined();
+        });
+    });
 });
