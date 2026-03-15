@@ -132,7 +132,7 @@ Legal entity: "Rensto LLC (DBA SuperSeller Agency)" — but the *brands* must st
 | Decision | Answer |
 |----------|--------|
 | **Dashboard** | Admin monitoring tab at `superseller.agency/admin` → "System Monitor" |
-| **Health checks** | 10 services: PostgreSQL, Worker, Vercel, Ollama, Kie.ai, Gemini, Resend, PayPal, Prisma, n8n |
+| **Health checks** | 10 services: PostgreSQL, Worker, Vercel, Ollama, Kie.ai, Gemini, Resend, PayPal, Prisma, n8n. Note: Stripe also active for per-customer billing (Elite Pro). Health check via Stripe API dashboard — not yet automated. |
 | **Alerts** | Rule-based with cooldown. Channels: email (Resend) + audit_log (PostgreSQL). Auto-resolve on recovery. |
 | **Expense tracking** | Per-call API cost tracking. Anomaly = daily > 2x 7-day rolling average. |
 
@@ -316,3 +316,18 @@ Legal entity: "Rensto LLC (DBA SuperSeller Agency)" — but the *brands* must st
 ## 23. DEFERRED
 
 - Add anything affecting architecture, domains, or deployment as we go. Mark "deferred" in DECISIONS if needed.
+
+---
+
+## 24. VEO 3.1 RE-INTEGRATION (Mar 2026)
+
+**Date:** March 2026
+**Requirement:** PROV-08
+
+| Decision | Answer |
+|----------|--------|
+| **Reverse Feb 2026 Kling-only mandate?** | **Yes** — Veo 3.1 re-integrated for dialogue/talking-head shots. |
+| **Provider** | Kie.ai (`/api/v1/veo/generate`) — not a new provider. |
+| **Why removed (Feb 2026)** | Instability and cost concerns during the Kling-only simplification mandate. |
+| **Why re-integrate now** | 1) Veo 3.1 handles dialogue/talking-head shots (distinct capability Kling lacks). 2) Multi-model routing layer (Phase 3.1) now enforces budget ceilings and provides fallback. 3) Observatory quality scoring (Phase 09) will validate the decision over time with real performance data. |
+| **Risk mitigation** | Budget ceiling enforcement in routeShot(), Observatory quality_score tracking, expense-tracker cost logging per clip. |
