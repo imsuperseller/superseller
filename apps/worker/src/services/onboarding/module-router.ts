@@ -15,6 +15,7 @@
 import { logger } from "../../utils/logger";
 import { fetchTenantProducts, type ProductInfo } from "./prompt-assembler";
 import { getActiveModule, getModuleState, upsertModuleState } from "./module-state";
+import { getPipelineState } from "./pipeline-state";
 import type { ModuleHandleResult, ModuleType, OnboardingModule } from "./modules/types";
 
 // ── Module Registry ──────────────────────────────────────────
@@ -163,6 +164,48 @@ export async function routeToModule(params: {
 
     if (products.length === 0) {
         return { handled: false };
+    }
+
+    // 2b. Check if pipeline has a currentModule set (from poll vote selection)
+    // This takes priority over the default priority walk
+    const pipelineState = await getPipelineState(groupId);
+    if (pipelineState?.currentModule) {
+        const targetType = pipelineState.currentModule;
+        const entry = MODULE_REGISTRY.find((e) => e.type === targetType);
+
+        if (entry && productsMatchModule(products, entry.triggerProducts)) {
+            // Check if this module is already complete
+            const existingState = await getModuleState(groupId, targetType);
+            if (!existingState || existingState.phase !== "complete") {
+                logger.info({
+                    msg: "Activating pipeline-selected module",
+                    moduleType: targetType,
+                    groupId,
+                    tenantId,
+                    source: "pipeline_currentModule",
+                });
+
+                // Create state with phase 'intro'
+                await upsertModuleState(groupId, tenantId, targetType, "intro", {});
+
+                let introMessage = INTRO_MESSAGES[targetType];
+                try {
+                    const { module } = await entry.loader();
+                    if (module?.getIntroMessage) {
+                        introMessage = module.getIntroMessage("your business");
+                    }
+                } catch {
+                    // Use fallback intro
+                }
+
+                return {
+                    handled: true,
+                    response: introMessage,
+                    moduleType: targetType,
+                    completed: false,
+                };
+            }
+        }
     }
 
     // 3. Walk priority order, find first module that should activate and isn't complete
