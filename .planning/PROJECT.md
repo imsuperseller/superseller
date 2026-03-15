@@ -4,10 +4,14 @@
 
 A universal WhatsApp-first customer onboarding system for SuperSeller AI. Every new customer — regardless of which product they bought — gets a WhatsApp group auto-created with an AI agent. The agent dynamically assembles its behavior from the customer's subscribed products/services, then activates conversational modules (asset collection, social setup, competitor research, character questionnaire, video generation) based on what the customer bought. Includes BullMQ pipeline orchestration with admin commands, cost tracking, and stale detection.
 
-## Current State
+## Current Milestone: v1.2 Production-Ready Onboarding
 
-**Shipped:** v1.1 Intelligent Content Engine (2026-03-15)
-**Next:** Planning v1.2 (run `/gsd:new-milestone`)
+**Goal:** Make the onboarding system production-ready by auto-triggering from payment webhooks, understanding voice notes, and handling Hebrew/English switching.
+
+**Target features:**
+- Auto-trigger onboarding from PayPal/Stripe subscription webhooks
+- Voice note transcription via Whisper before AI processing
+- Multi-language auto-detection and response (Hebrew/English)
 
 ## Core Value
 
@@ -40,11 +44,14 @@ Every customer gets an AI agent in a WhatsApp group from Day 1. Zero friction. T
 - ✓ Per-clip cost attribution (model_id + provider in api_expenses) — v1.1
 - ✓ BeforeAfterComposition parametric Remotion template (dual aspect ratio) — v1.1
 
-### Active
+### Active (v1.2)
 
 - [ ] Auto-trigger from PayPal/Stripe subscription webhook (new customer)
 - [ ] Voice note transcription via Whisper before processing
 - [ ] Multi-language auto-detection and response
+
+### Backlog (v1.3+)
+
 - [ ] Module: Voice AI setup (FrontDesk Telnyx configuration)
 - [ ] Client-requested character changes + scene regeneration
 
@@ -91,4 +98,4 @@ v1.0 tech debt (4 items, 0 blockers) still open. v1.1 adds: FAL_WEBHOOK_VERIFY d
 | MIN_SAMPLES=20 for quality aggregation | Prevents noise from small samples corrupting Observatory scores | ✓ Good — below-threshold models retain static seeds |
 
 ---
-*Last updated: 2026-03-15 after v1.1 milestone*
+*Last updated: 2026-03-15 after v1.2 milestone started*

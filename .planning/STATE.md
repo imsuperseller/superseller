@@ -1,11 +1,11 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.2
-milestone_name: ""
+milestone_name: "Production-Ready Onboarding"
 status: planning
-stopped_at: "v1.1 milestone completed — ready for /gsd:new-milestone"
-last_updated: "2026-03-15T16:35:00.000Z"
-last_activity: 2026-03-15 — v1.1 Intelligent Content Engine shipped
+stopped_at: "Defining requirements for v1.2"
+last_updated: "2026-03-15T17:00:00.000Z"
+last_activity: 2026-03-15 — Milestone v1.2 started
 progress:
   total_phases: 0
   completed_phases: 0
@@ -21,16 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-15)
 
 **Core value:** Every customer gets an AI agent in a WhatsApp group from Day 1 — product-aware, zero friction
-**Current focus:** Planning next milestone
+**Current focus:** v1.2 Production-Ready Onboarding
 
 ## Current Position
 
-Phase: None (between milestones)
-Plan: N/A
-Status: v1.1 shipped, ready for `/gsd:new-milestone`
-Last activity: 2026-03-15 — v1.1 Intelligent Content Engine completed
-
-Progress: Milestone complete — 11 phases, 23 plans across v1.0 + v1.1
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-15 — Milestone v1.2 started
 
 ## Accumulated Context
 
@@ -46,8 +44,8 @@ See PROJECT.md Key Decisions table for full history.
 ## Session Continuity
 
 Last session: 2026-03-15
-Stopped at: v1.1 milestone completed
+Stopped at: Defining v1.2 requirements
 Resume file: None
 
 ---
-*Last updated: 2026-03-15 — v1.1 milestone shipped*
+*Last updated: 2026-03-15 — v1.2 milestone started*
