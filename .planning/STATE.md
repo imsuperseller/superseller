@@ -4,14 +4,14 @@ milestone: v1.0
 milestone_name: milestone
 current_plan: Not started
 status: planning
-stopped_at: Phase 5 context gathered
-last_updated: "2026-03-15T02:50:34.462Z"
+stopped_at: Completed 05-01-PLAN.md
+last_updated: "2026-03-15T03:03:25.742Z"
 progress:
   total_phases: 6
   completed_phases: 5
-  total_plans: 11
-  completed_plans: 11
-  percent: 100
+  total_plans: 13
+  completed_plans: 12
+  percent: 92
 ---
 
 # State: Universal Customer Onboarding System
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-03-13)
 **Phase:** 2 — Onboarding Modules (Asset, Social, Compete)
 **Status:** Ready to plan
 **Current Plan:** Not started
-**Progress:** [██████████] 100%
+**Progress:** [█████████░] 92%
 
 ## Decisions
 
@@ -58,6 +58,9 @@ See: .planning/PROJECT.md (updated 2026-03-13)
 - [Phase 04-01]: Partial success: 3+ of 5 scenes = proceed to awaiting-composition; fewer = PipelineRun failed, module reset to intro for retry
 - [Phase 04-03]: CharacterRevealProps import path from modules/ is 4 levels up (../../../../remotion/src/types)
 - [Phase 04-03]: Auto-trigger composition pipeline from runGenerationPipeline directly — no WhatsApp trigger needed
+- [Phase 05-01]: attempts:1 on customerOnboardingQueue — state machine manages retries, not BullMQ
+- [Phase 05-01]: Worker job ends after first poll — pipeline advances via handlePipelineEvent from claudeclaw message flow
+- [Phase 05-01]: advancePipelineAfterApproval() exported for Plan 02 admin APPROVE command wiring
 
 ## Phase History
 
@@ -101,10 +104,11 @@ None identified.
 | Phase 04-character-video-gen-delivery P02 | 3min | 2 tasks | 3 files |
 | Phase 04-character-video-gen-delivery P04-01 | 3 | 1 tasks | 3 files |
 | Phase 04-character-video-gen-delivery P04-03 | 4min | 1 tasks | 1 files |
+| Phase 05-pipeline-orchestration P01 | 3min | 2 tasks | 7 files |
 
 ## Last Session
 
-- **Stopped at:** Phase 5 context gathered
+- **Stopped at:** Completed 05-01-PLAN.md
 - **Timestamp:** 2026-03-13T23:24:43Z
 
 ---

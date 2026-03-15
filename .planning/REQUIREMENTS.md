@@ -69,8 +69,8 @@
 
 ### Pipeline Orchestration (PIPE)
 
-- [ ] **PIPE-01**: BullMQ `customer-onboarding` queue orchestrates the full flow
-- [ ] **PIPE-02**: Pipeline determines which modules to run based on tenant's products
+- [x] **PIPE-01**: BullMQ `customer-onboarding` queue orchestrates the full flow
+- [x] **PIPE-02**: Pipeline determines which modules to run based on tenant's products
 - [ ] **PIPE-03**: Pipeline handles failures gracefully — retries, alerts on permanent failure
 - [ ] **PIPE-04**: Pipeline tracks total cost via trackExpense() and PipelineRun
 - [ ] **PIPE-05**: Admin can view onboarding status via admin API
