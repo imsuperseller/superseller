@@ -84,7 +84,10 @@ Plans:
   2. Customer sends an English message and agent responds in English — no manual configuration required
   3. Customer switches from Hebrew to English mid-conversation and the agent switches with them on the next response
   4. Hebrew text in WhatsApp messages renders right-to-left correctly (not garbled)
-**Plans**: TBD
+**Plans:** 1 plan
+
+Plans:
+- [ ] 14-01-PLAN.md — Bilingual language instructions across all agent prompt paths
 
 ## Progress
 
@@ -101,10 +104,10 @@ Plans:
 | 08. Provider Activation | v1.1 | 2/2 | Complete | 2026-03-15 |
 | 09. Quality Feedback Loop | v1.1 | 3/3 | Complete | 2026-03-15 |
 | 10. Remotion Templates | v1.1 | 1/1 | Complete | 2026-03-15 |
-| 12. Payment Webhooks | 4/4 | Complete    | 2026-03-15 | - |
-| 13. Voice Note Transcription | 2/2 | Complete    | 2026-03-15 | - |
-| 14. Language Detection | v1.2 | 0/TBD | Not started | - |
+| 12. Payment Webhooks | v1.2 | 4/4 | Complete | 2026-03-15 |
+| 13. Voice Note Transcription | v1.2 | 2/2 | Complete | 2026-03-15 |
+| 14. Language Detection | v1.2 | 0/1 | Not started | - |
 
 ---
 *Created: 2026-03-13*
-*Updated: 2026-03-15 — Phase 13 plans created (2 plans, 2 waves)*
+*Updated: 2026-03-15 — Phase 14 plan created (1 plan, 1 wave)*
