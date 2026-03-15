@@ -30,7 +30,7 @@
 - [x] **CHAR-04**: Agent confirms collected info with client, generates CharacterBible in DB via Claude
 - [ ] **CHAR-05**: System generates reference character video via Kie.ai Sora 2 API
 - [ ] **CHAR-06**: System generates 5 test scene videos via Kie.ai Sora 2 (job site, studio, street, office, stylized)
-- [ ] **CHAR-07**: Remotion "CharacterReveal" composition wraps 5 scenes with branded overlays (logo, name, colors)
+- [x] **CHAR-07**: Remotion "CharacterReveal" composition wraps 5 scenes with branded overlays (logo, name, colors)
 - [ ] **CHAR-08**: FFmpeg renders final MP4 on RackNerd, uploaded to R2 as TenantAsset
 - [ ] **CHAR-09**: WAHA delivers character reveal video to WhatsApp group with summary message
 - [ ] **CHAR-10**: All generation steps tracked via PipelineRun with cost via trackExpense()
