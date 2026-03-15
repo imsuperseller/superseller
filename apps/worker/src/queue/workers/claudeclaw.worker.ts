@@ -23,8 +23,51 @@ import {
     startTyping,
     stopTyping,
     isWahaConfigured,
+    downloadMedia,
     WahaTarget,
 } from "../../services/waha-client";
+import { transcribeVoiceNote } from "../../services/voice-transcription";
+
+// ─── Voice Note Transcription Helper ─────────────────────────
+async function maybeTranscribeAudio(job: Job<ClaudeClawJobData>, target?: WahaTarget): Promise<string | null> {
+    const { hasMedia, mediaType, messageId, chatId } = job.data;
+
+    // Only handle audio and video types
+    const isAudio = mediaType === "audio";
+    const isVideo = mediaType === "video";
+    if (!hasMedia || (!isAudio && !isVideo) || !messageId) return null;
+
+    // Determine content type
+    const contentType = isAudio ? "audio/ogg" : "video/mp4";
+
+    // Download media from WAHA
+    const buffer = await downloadMedia(messageId, chatId, target);
+    if (!buffer) {
+        logger.warn({ msg: "Voice transcription: failed to download media", messageId, chatId });
+        return null;
+    }
+
+    // Find tenantId if in a group
+    let tenantId = "unknown";
+    if (job.data.isGroup) {
+        try {
+            const { getGroupConfig } = await import("../../services/group-agent");
+            const cfg = getGroupConfig(chatId);
+            if (cfg?.tenantId) tenantId = cfg.tenantId;
+        } catch {}
+    }
+
+    const result = await transcribeVoiceNote({
+        audioBuffer: buffer,
+        contentType,
+        tenantId,
+        chatId,
+        messageId,
+    });
+
+    if (!result || !result.text.trim()) return null;
+    return result.text;
+}
 
 export const claudeclawWorker = new Worker<ClaudeClawJobData>(
     "claudeclaw",
@@ -52,6 +95,21 @@ export const claudeclawWorker = new Worker<ClaudeClawJobData>(
             } = await import("../../services/group-memory");
 
             const senderPhone = (senderChatId || "").replace("@c.us", "").replace("@s.whatsapp.net", "");
+
+            // ─── Voice Note Transcription (audio/video → text) ───
+            // Transcribe BEFORE other processing so the text can be used as effectiveBody
+            let transcribedText: string | null = null;
+            if (hasMedia && (mediaType === "audio" || mediaType === "video") && messageId) {
+                try {
+                    await startTyping(chatId, target);
+                    transcribedText = await maybeTranscribeAudio(job, target);
+                    if (transcribedText) {
+                        logger.info({ msg: "Voice note transcribed", chatId, textLength: transcribedText.length });
+                    }
+                } catch (err: any) {
+                    logger.warn({ msg: "Voice transcription failed (non-critical)", error: err.message });
+                }
+            }
 
             // ─── Media Ingestion (Elite Pro asset pipeline) ───
             // If media was sent, download → R2 → DB → ✅ react.
@@ -81,21 +139,32 @@ export const claudeclawWorker = new Worker<ClaudeClawJobData>(
                 }
             }
 
-            // If this was a media-only message (no @mention, no slash command), stop here.
+            // If this was an audio/video message with no transcription and no text body,
+            // send a friendly error and stop (transcription failed or media was unreadable).
+            if (hasMedia && (mediaType === "audio" || mediaType === "video") && !transcribedText && !messageBody?.trim()) {
+                await sendText(chatId, "I couldn't understand that voice note. Could you type it out or send another?", target);
+                return { handled: "voice-transcription-failed", isGroup: true };
+            }
+
+            // If this was a non-audio media-only message (no @mention, no slash command), stop here.
             // The ✅ reaction from ingestGroupMedia is confirmation enough for the sender.
-            if (hasMedia && !messageBody?.trim() && ingestedAsset) {
+            // Voice notes with transcriptions should NOT early-return — they continue as text messages.
+            if (hasMedia && !messageBody?.trim() && ingestedAsset && !transcribedText) {
                 return { handled: "group-media-ingested", assetType: ingestedAsset.assetType, isGroup: true };
             }
 
+            // Use transcription as effective message body if available
+            const effectiveBody = transcribedText || messageBody;
+
             // Try quick handlers first (slash commands, feedback, approvals)
-            const result = await handleGroupMessage(chatId, senderChatId || "", messageBody, target);
+            const result = await handleGroupMessage(chatId, senderChatId || "", effectiveBody, target);
 
             if (result.handled && result.response) {
                 await sendText(chatId, result.response, target);
                 // Log both the user message and the quick-handler response
                 const groupConfig = getGroupConfig(chatId);
                 if (groupConfig) {
-                    await logGroupMessage({ groupId: chatId, tenantId: groupConfig.tenantId, senderPhone, content: messageBody });
+                    await logGroupMessage({ groupId: chatId, tenantId: groupConfig.tenantId, senderPhone, content: effectiveBody });
                     await logGroupMessage({ groupId: chatId, tenantId: groupConfig.tenantId, content: result.response, isAgent: true });
                 }
                 return { handled: result.handler, isGroup: true };
@@ -163,7 +232,7 @@ export const claudeclawWorker = new Worker<ClaudeClawJobData>(
                     const moduleResult = await routeToModule({
                         groupId: chatId,
                         tenantId: groupCfg.tenantId,
-                        messageBody: messageBody || "",
+                        messageBody: effectiveBody || "",
                         hasMedia: !!hasMedia,
                         mediaUrl: mediaUrl || undefined,
                         mediaType: mediaType || undefined,
@@ -175,7 +244,7 @@ export const claudeclawWorker = new Worker<ClaudeClawJobData>(
                         await sendText(chatId, moduleResult.response, target);
                         // Log both messages
                         const sp = (senderChatId || "").replace("@c.us", "").replace("@s.whatsapp.net", "");
-                        await logGroupMessage({ groupId: chatId, tenantId: groupCfg.tenantId, senderPhone: sp, content: messageBody });
+                        await logGroupMessage({ groupId: chatId, tenantId: groupCfg.tenantId, senderPhone: sp, content: effectiveBody });
                         await logGroupMessage({ groupId: chatId, tenantId: groupCfg.tenantId, content: moduleResult.response, isAgent: true });
 
                         // If module completed, fire pipeline event
@@ -204,12 +273,12 @@ export const claudeclawWorker = new Worker<ClaudeClawJobData>(
             const groupConfig = getGroupConfig(chatId);
             if (groupConfig) {
                 // Log incoming message
-                await logGroupMessage({ groupId: chatId, tenantId: groupConfig.tenantId, senderPhone, content: messageBody });
+                await logGroupMessage({ groupId: chatId, tenantId: groupConfig.tenantId, senderPhone, content: effectiveBody });
 
                 await startTyping(chatId, target);
 
                 // Assemble 3-tier memory context
-                const memoryContext = await assembleGroupContext(chatId, groupConfig.tenantId, messageBody);
+                const memoryContext = await assembleGroupContext(chatId, groupConfig.tenantId, effectiveBody);
 
                 // Trigger background memory extraction if interval reached
                 await maybeExtractMemories(chatId, groupConfig.tenantId);
@@ -225,7 +294,7 @@ export const claudeclawWorker = new Worker<ClaudeClawJobData>(
 
                 const groupSystemPrompt = buildGroupSystemPrompt(groupConfig, memoryContext);
                 const events = sdkQuery({
-                    prompt: messageBody,
+                    prompt: effectiveBody,
                     options: {
                         cwd: config.claudeclaw.projectDir,
                         systemPrompt: groupSystemPrompt,
@@ -301,14 +370,22 @@ export const claudeclawWorker = new Worker<ClaudeClawJobData>(
         // Build message with media context if present
         let message = messageBody;
         if (hasMedia && mediaUrl) {
-            const mediaPrefix = mediaType === "audio"
-                ? `[Voice note received — transcription not available yet. The user sent an audio message.]`
-                : mediaType === "image"
-                    ? `[The user sent an image. Image URL for analysis: ${mediaUrl}]`
-                    : mediaType === "video"
-                        ? `[The user sent a video file: ${mediaUrl}]`
-                        : `[The user sent a file: ${mediaUrl}]`;
-            message = `${mediaPrefix}\n${messageBody || "(no caption)"}`;
+            if (mediaType === "audio" || mediaType === "video") {
+                // Transcribe voice note / video audio
+                const transcribed = await maybeTranscribeAudio(job, target);
+                if (transcribed) {
+                    message = transcribed;
+                } else {
+                    // Transcription failed — send friendly error
+                    await stopTyping(chatId, target);
+                    await sendText(chatId, "I couldn't understand that voice note. Could you type it out or send another?", target);
+                    return { handled: "voice-transcription-failed" };
+                }
+            } else if (mediaType === "image") {
+                message = `[The user sent an image. Image URL for analysis: ${mediaUrl}]\n${messageBody || "(no caption)"}`;
+            } else {
+                message = `[The user sent a file: ${mediaUrl}]\n${messageBody || "(no caption)"}`;
+            }
         }
 
         // Call Claude Agent SDK
@@ -403,6 +480,10 @@ export async function initClaudeClaw(): Promise<void> {
     // Init onboarding module state table
     const { initModuleStateTable } = await import("../../services/onboarding/module-state");
     await initModuleStateTable();
+
+    // Init voice transcription table
+    const { initVoiceTranscriptionTable } = await import("../../services/voice-transcription");
+    await initVoiceTranscriptionTable();
 
     // Clean up expired sessions
     await cleanExpiredSessions();
