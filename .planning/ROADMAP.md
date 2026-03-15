@@ -29,7 +29,7 @@
 - [x] **Phase 07: Provider Foundation** - Decision doc, router bug fix, DB seed, cost rates, and input validation — everything required before any fal.ai traffic goes live (completed 2026-03-15)
 - [x] **Phase 08: Provider Activation** - Live fal.ai generation (Sora 2 + Wan 2.6) with webhook handling, and Veo 3.1 dialogue re-integration via Kie.ai (completed 2026-03-15)
 - [x] **Phase 09: Quality Feedback Loop** - Per-clip generation metadata, nightly aggregation, and Observatory score updates that feed back into routing decisions (completed 2026-03-15)
-- [ ] **Phase 10: Remotion Templates** - BeforeAfterComposition for local businesses — parametric, dual aspect ratio, brand-configurable
+- [x] **Phase 10: Remotion Templates** - BeforeAfterComposition for local businesses — parametric, dual aspect ratio, brand-configurable (completed 2026-03-15)
 
 ## Phase Details
 
@@ -89,7 +89,7 @@ Plans:
   2. Rendering with `aspectRatio: '16x9'` produces a landscape video; `aspectRatio: '9x16'` produces a portrait video with correct dimensions
   3. Props `beforeImageUrl`, `afterImageUrl`, `serviceLabel`, `brandColor`, `logoUrl`, and `tagline` all render visibly in the output without hardcoded defaults
   4. The wipe/split-screen transition is visible and smooth between before and after images
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 
 Plans:
 - [ ] 10-01-PLAN.md — BeforeAfterComposition props schema, composition component, and Root.tsx registration (TMPL-01, TMPL-02, TMPL-03, TMPL-04)
@@ -108,7 +108,7 @@ Plans:
 | 07. Provider Foundation | v1.1 | Complete    | 2026-03-15 | - |
 | 08. Provider Activation | 2/2 | Complete    | 2026-03-15 | - |
 | 09. Quality Feedback Loop | 2/3 | Complete    | 2026-03-15 | - |
-| 10. Remotion Templates | v1.1 | 0/1 | Planning complete | - |
+| 10. Remotion Templates | 1/1 | Complete   | 2026-03-15 | - |
 
 ---
 *Created: 2026-03-13*

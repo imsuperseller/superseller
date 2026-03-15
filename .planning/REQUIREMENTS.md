@@ -29,10 +29,10 @@ Requirements for Intelligent Content Engine milestone. Each maps to roadmap phas
 
 ### Remotion Templates
 
-- [ ] **TMPL-01**: BeforeAfterComposition renders split-screen/wipe transition with parametric brand colors, service label, and CTA
-- [ ] **TMPL-02**: BeforeAfterComposition supports both 16x9 and 9x16 aspect ratios
-- [ ] **TMPL-03**: BeforeAfterComposition accepts parametric props (beforeImageUrl, afterImageUrl, serviceLabel, brandColor, logoUrl, tagline)
-- [ ] **TMPL-04**: BeforeAfterComposition is registered in Root.tsx and renderable via renderComposition()
+- [x] **TMPL-01**: BeforeAfterComposition renders split-screen/wipe transition with parametric brand colors, service label, and CTA
+- [x] **TMPL-02**: BeforeAfterComposition supports both 16x9 and 9x16 aspect ratios
+- [x] **TMPL-03**: BeforeAfterComposition accepts parametric props (beforeImageUrl, afterImageUrl, serviceLabel, brandColor, logoUrl, tagline)
+- [x] **TMPL-04**: BeforeAfterComposition is registered in Root.tsx and renderable via renderComposition()
 
 ## v1.2 Requirements
 
@@ -81,10 +81,10 @@ Deferred to next milestone. Tracked but not in current roadmap.
 | QUAL-04 | Phase 09 | Complete |
 | QUAL-05 | Phase 09 | Complete |
 | QUAL-06 | Phase 09 | Complete |
-| TMPL-01 | Phase 10 | Pending |
-| TMPL-02 | Phase 10 | Pending |
-| TMPL-03 | Phase 10 | Pending |
-| TMPL-04 | Phase 10 | Pending |
+| TMPL-01 | Phase 10 | Complete |
+| TMPL-02 | Phase 10 | Complete |
+| TMPL-03 | Phase 10 | Complete |
+| TMPL-04 | Phase 10 | Complete |
 
 **Coverage:**
 - v1.1 requirements: 18 total
