@@ -27,7 +27,7 @@
 **Milestone Goal:** Multi-model content production with self-improving quality routing — activate dormant providers, build feedback loops, and create parametric templates for local businesses.
 
 - [x] **Phase 07: Provider Foundation** - Decision doc, router bug fix, DB seed, cost rates, and input validation — everything required before any fal.ai traffic goes live (completed 2026-03-15)
-- [ ] **Phase 08: Provider Activation** - Live fal.ai generation (Sora 2 + Wan 2.6) with webhook handling, and Veo 3.1 dialogue re-integration via Kie.ai
+- [x] **Phase 08: Provider Activation** - Live fal.ai generation (Sora 2 + Wan 2.6) with webhook handling, and Veo 3.1 dialogue re-integration via Kie.ai (completed 2026-03-15)
 - [ ] **Phase 09: Quality Feedback Loop** - Per-clip generation metadata, nightly aggregation, and Observatory score updates that feed back into routing decisions
 - [ ] **Phase 10: Remotion Templates** - BeforeAfterComposition for local businesses — parametric, dual aspect ratio, brand-configurable
 
@@ -57,7 +57,7 @@ Plans:
   1. A shot routed to fal.ai produces a completed video via `FalAdapter` using the correct model ID (`fal-ai/sora-2/image-to-video/pro` or `wan/v2.6/image-to-video`)
   2. `POST /api/webhooks/fal` receives fal.ai callbacks, is idempotent on `request_id`, and updates the job record on completion
   3. A `dialogue` shot type routed to Veo 3.1 calls `POST /api/v1/veo/generate` (not the Kling task endpoint) and polls at `/api/v1/veo/record-info` until complete
-**Plans:** 2 plans
+**Plans:** 2/2 plans complete
 
 Plans:
 - [ ] 08-01: FalAdapter activation — model-specific request body + webhook endpoint (PROV-01, PROV-02)
@@ -106,7 +106,7 @@ Plans:
 | 5. Pipeline Orchestration | v1.0 | 2/2 | Complete | 2026-03-14 |
 | 6. Fix Social + Poll Vote | v1.0 | 2/2 | Complete | 2026-03-14 |
 | 07. Provider Foundation | v1.1 | Complete    | 2026-03-15 | - |
-| 08. Provider Activation | v1.1 | 0/2 | Not started | - |
+| 08. Provider Activation | 2/2 | Complete   | 2026-03-15 | - |
 | 09. Quality Feedback Loop | v1.1 | 0/3 | Not started | - |
 | 10. Remotion Templates | v1.1 | 0/1 | Not started | - |
 

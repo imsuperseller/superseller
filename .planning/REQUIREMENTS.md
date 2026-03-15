@@ -12,7 +12,7 @@ Requirements for Intelligent Content Engine milestone. Each maps to roadmap phas
 - [x] **PROV-01**: System can route shots to fal.ai provider with correct model IDs (sora-2/image-to-video/pro, wan/v2.6/image-to-video)
 - [x] **PROV-02**: System can receive fal.ai webhook callbacks for long-running generations (>10min)
 - [x] **PROV-03**: Router instantiates correct adapter (Kie or Fal) based on Observatory result, not static provider hint
-- [ ] **PROV-04**: System can generate dialogue/talking-head video via Veo 3.1 on kie.ai (/api/v1/veo/generate)
+- [x] **PROV-04**: System can generate dialogue/talking-head video via Veo 3.1 on kie.ai (/api/v1/veo/generate)
 - [x] **PROV-05**: ai_models table seeded with Sora 2, Wan 2.6, Veo 3.1 rows including correct pricing and capability flags
 - [x] **PROV-06**: expense-tracker COST_RATES includes fal.ai provider rates as fallback
 - [x] **PROV-07**: Input format validation before provider submission (image type, dimensions) to prevent format rejection errors
@@ -74,7 +74,7 @@ Deferred to next milestone. Tracked but not in current roadmap.
 | PROV-07 | Phase 07 | Complete |
 | PROV-01 | Phase 08 | Complete |
 | PROV-02 | Phase 08 | Complete |
-| PROV-04 | Phase 08 | Pending |
+| PROV-04 | Phase 08 | Complete |
 | QUAL-01 | Phase 09 | Pending |
 | QUAL-02 | Phase 09 | Pending |
 | QUAL-03 | Phase 09 | Pending |

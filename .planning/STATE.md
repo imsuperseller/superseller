@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Intelligent Content Engine
 status: executing
-stopped_at: "Completed 08-01-PLAN.md: FalAdapter model-specific bodies + webhook endpoint"
-last_updated: "2026-03-15T05:47:17.463Z"
+stopped_at: "Completed 08-02-PLAN.md: KieAdapter Veo 3.1 branch + model ID alignment"
+last_updated: "2026-03-15T05:52:38.945Z"
 last_activity: "2026-03-15 — 07-01 completed: router bug fix + DECISIONS.md #24"
 progress:
   total_phases: 4
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 4
-  completed_plans: 3
+  completed_plans: 4
   percent: 10
 ---
 
@@ -46,6 +46,7 @@ Progress: [█░░░░░░░░░] 10%
 | 07 Provider Foundation | 1 | ~10 min | ~10 min |
 | Phase 07 P02 | 4 | 3 tasks | 4 files |
 | Phase 08-provider-activation P01 | 65 | 2 tasks | 6 files |
+| Phase 08-provider-activation P02 | 12 | 1 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -65,6 +66,9 @@ Decisions from 07-01 execution:
 - [Phase 08-01]: Sora 2 duration as numeric enum [4,8,12,16,20] snapped to nearest; delete_video:false required to prevent Sora 2 auto-deletion
 - [Phase 08-01]: falRequestRegistry Map exported from fal-adapter.ts enables webhook requestId→jobId lookup without DB schema changes (no fal_request_id column needed)
 - [Phase 08-01]: FAL_WEBHOOK_VERIFY=false default gates ED25519 check — exact message format requires live job validation before enabling in production
+- [Phase 08-02]: 'veo::' prefix on externalJobId is the routing key for KieAdapter pollStatus disambiguation without DB schema changes
+- [Phase 08-02]: Router fal.ai inference extended: 'wan/' prefix added alongside 'fal-ai/' to correctly identify Wan 2.6 as fal.ai model
+- [Phase 08-02]: SHOT_DEFAULT_MODELS.dialogue.modelId corrected to 'veo-3.1-fast/video' matching Phase 07 DB seed; environment and social model IDs aligned to real fal.ai API paths
 
 ### Critical Constraints
 
@@ -80,8 +84,8 @@ Decisions from 07-01 execution:
 
 ## Session Continuity
 
-Last session: 2026-03-15T05:47:17.461Z
-Stopped at: Completed 08-01-PLAN.md: FalAdapter model-specific bodies + webhook endpoint
+Last session: 2026-03-15T05:52:38.943Z
+Stopped at: Completed 08-02-PLAN.md: KieAdapter Veo 3.1 branch + model ID alignment
 Resume file: None
 
 ---
