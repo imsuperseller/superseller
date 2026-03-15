@@ -47,7 +47,7 @@ metrics:
   completed: "2026-03-14"
   tasks: 2
   files: 7
-requirements: [PIPE-01, PIPE-02]
+requirements_satisfied: [PIPE-01, PIPE-02]
 ---
 
 # Phase 05 Plan 01: BullMQ Onboarding Pipeline — Summary
