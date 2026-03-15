@@ -9,6 +9,8 @@ import { PropertyTourPropsSchema } from "./types/composition-props";
 import { HairShowreelComposition } from "./HairShowreelComposition";
 import { SocialMockupComposition } from "./SocialMockupComposition";
 import { CharacterRevealComposition } from "./CharacterRevealComposition";
+import { BeforeAfterComposition } from "./BeforeAfterComposition";
+import { BeforeAfterPropsSchema } from "./types/before-after-props";
 import type { CharacterRevealProps } from "./types/character-reveal-props";
 import { FPS, calculateTotalDuration, sec } from "./config/timing";
 
@@ -41,6 +43,17 @@ const DEFAULT_PROPS = {
         logoWidth: 120,
         logoPosition: "top-right" as const,
     },
+};
+
+const BEFORE_AFTER_DEFAULT_PROPS = {
+    beforeImageUrl: "https://example.com/before.jpg",
+    afterImageUrl: "https://example.com/after.jpg",
+    serviceLabel: "Kitchen Remodel",
+    tagline: "See the difference",
+    brandColor: "#F97316",
+    ctaText: "Book Now",
+    logoPosition: "top-right" as const,
+    logoWidth: 120,
 };
 
 const calcMeta = async ({ props }: { props: typeof DEFAULT_PROPS }) => {
@@ -439,6 +452,26 @@ export const RemotionRoot: React.FC = () => {
                     bgColor: "#1a1a1a",
                     phonePosition: "center" as const,
                 }}
+            />
+
+            {/* ─── Before/After (local business template) ─────── */}
+            <Composition
+                id="BeforeAfter-16x9"
+                component={BeforeAfterComposition}
+                width={1920}
+                height={1080}
+                fps={FPS}
+                durationInFrames={sec(8)}
+                defaultProps={BEFORE_AFTER_DEFAULT_PROPS}
+            />
+            <Composition
+                id="BeforeAfter-9x16"
+                component={BeforeAfterComposition}
+                width={1080}
+                height={1920}
+                fps={FPS}
+                durationInFrames={sec(8)}
+                defaultProps={BEFORE_AFTER_DEFAULT_PROPS}
             />
         </>
     );
