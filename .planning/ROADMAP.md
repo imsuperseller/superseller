@@ -28,7 +28,7 @@
 
 - [x] **Phase 07: Provider Foundation** - Decision doc, router bug fix, DB seed, cost rates, and input validation — everything required before any fal.ai traffic goes live (completed 2026-03-15)
 - [x] **Phase 08: Provider Activation** - Live fal.ai generation (Sora 2 + Wan 2.6) with webhook handling, and Veo 3.1 dialogue re-integration via Kie.ai (completed 2026-03-15)
-- [ ] **Phase 09: Quality Feedback Loop** - Per-clip generation metadata, nightly aggregation, and Observatory score updates that feed back into routing decisions
+- [x] **Phase 09: Quality Feedback Loop** - Per-clip generation metadata, nightly aggregation, and Observatory score updates that feed back into routing decisions (completed 2026-03-15)
 - [ ] **Phase 10: Remotion Templates** - BeforeAfterComposition for local businesses — parametric, dual aspect ratio, brand-configurable
 
 ## Phase Details
@@ -73,7 +73,7 @@ Plans:
   3. A nightly BullMQ job runs and writes aggregated `avg quality_score` per model to `ai_model_recommendations` — but only when `sample_count >= 20`
   4. Admin can call `GET /api/admin/prompt-effectiveness` and receive ranked avg `performanceScore` by prompt_key, version, and shot_type
   5. `routeShot()` reads `quality_score` from the Observatory's real aggregated data (not static seeds) when selecting models
-**Plans:** 2/3 plans executed
+**Plans:** 3/3 plans complete
 
 Plans:
 - [ ] 09-01: generation_meta column + per-clip cost attribution (QUAL-01, QUAL-05)
@@ -107,7 +107,7 @@ Plans:
 | 6. Fix Social + Poll Vote | v1.0 | 2/2 | Complete | 2026-03-14 |
 | 07. Provider Foundation | v1.1 | Complete    | 2026-03-15 | - |
 | 08. Provider Activation | 2/2 | Complete    | 2026-03-15 | - |
-| 09. Quality Feedback Loop | 2/3 | In Progress|  | - |
+| 09. Quality Feedback Loop | 2/3 | Complete    | 2026-03-15 | - |
 | 10. Remotion Templates | v1.1 | 0/1 | Not started | - |
 
 ---
