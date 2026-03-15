@@ -802,6 +802,45 @@ async function handleClaudeClawWebhook(req: Request, res: Response, mode: "perso
         const event = req.body?.event;
         const payload = req.body?.payload || req.body;
 
+        // ── Poll vote events: extract vote and enqueue for pipeline ──
+        if (event === "poll.vote") {
+            const votePayload = payload?.vote || payload;
+            const selectedOption = votePayload?.selectedOptions?.[0]?.name;
+            const voteChatId = votePayload?.chatId || payload?.from || payload?.chatId;
+
+            if (!selectedOption || !voteChatId) {
+                return res.json({ status: "ignored", reason: "poll_vote_no_selection" });
+            }
+
+            // Only process group poll votes (onboarding polls are in groups)
+            if (!voteChatId.includes("@g.us")) {
+                return res.json({ status: "ignored", reason: "poll_vote_not_group" });
+            }
+
+            const { isRegisteredGroup } = await import("../services/group-agent");
+            if (!isRegisteredGroup(voteChatId)) {
+                return res.json({ status: "ignored", reason: "unregistered_group" });
+            }
+
+            const { claudeclawQueue } = await import("../queue/queues");
+            await claudeclawQueue.add(`poll-vote-${Date.now()}`, {
+                chatId: voteChatId,
+                messageBody: selectedOption,
+                hasMedia: false,
+                timestamp: Date.now(),
+                wahaUrl: (req.query.waha_url as string) || undefined,
+                wahaSession: (req.query.waha_session as string) || undefined,
+                mode,
+                isGroup: true,
+                senderChatId: votePayload?.participant || "",
+                isPollVote: true,
+                pollOption: selectedOption,
+            });
+
+            logger.info({ msg: "Poll vote enqueued", groupId: voteChatId, option: selectedOption });
+            return res.json({ status: "enqueued", type: "poll_vote" });
+        }
+
         // Only process incoming text/media messages (not status updates, acks, etc.)
         if (event && event !== "message" && event !== "message.any") {
             return res.json({ status: "ignored", event });
