@@ -8,6 +8,8 @@ import { CrewDemoV3Composition } from "./CrewDemoV3Composition";
 import { PropertyTourPropsSchema } from "./types/composition-props";
 import { HairShowreelComposition } from "./HairShowreelComposition";
 import { SocialMockupComposition } from "./SocialMockupComposition";
+import { CharacterRevealComposition } from "./CharacterRevealComposition";
+import type { CharacterRevealProps } from "./types/character-reveal-props";
 import { FPS, calculateTotalDuration, sec } from "./config/timing";
 
 const DEFAULT_PROPS = {
@@ -360,6 +362,25 @@ export const RemotionRoot: React.FC = () => {
                     accentColor: "#C9A96E",
                     bgColor: "#1a1a1a",
                     ctaText: "Book Your Transformation",
+                }}
+            />
+
+            {/* ─── Character Reveal ───────────────────────────── */}
+            <Composition<CharacterRevealProps>
+                id="CharacterReveal-16x9"
+                component={CharacterRevealComposition}
+                durationInFrames={sec(32)}
+                fps={FPS}
+                width={1920}
+                height={1080}
+                defaultProps={{
+                    characterName: "Brand Character",
+                    businessName: "Business Name",
+                    tagline: "Your AI-powered brand identity",
+                    accentColor: "#C9A96E",
+                    bgColor: "#0A0A0A",
+                    sceneClips: [],
+                    sceneLabels: ["Studio Portrait", "Scene 1", "Scene 2", "Scene 3", "Artistic Closer"],
                 }}
             />
 
