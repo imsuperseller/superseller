@@ -57,6 +57,14 @@ interface WebhookFailureSummary {
   createdAt: string;
 }
 
+interface VoiceTranscriptionMetrics {
+  totalCount: number;
+  successCount: number;
+  last24h: number;
+  avgDurationSeconds: number;
+  successRate: string;
+}
+
 interface MonitoringData {
   services: ServiceHealthData[];
   uptimes: Record<string, { h24: number; h168: number }>;
@@ -86,9 +94,10 @@ export default function SystemMonitor() {
   const [loading, setLoading] = useState(true);
   const [running, setRunning] = useState(false);
   const [selectedService, setSelectedService] = useState<string | null>(null);
-  const [view, setView] = useState<'services' | 'alerts' | 'expenses' | 'webhooks'>('services');
+  const [view, setView] = useState<'services' | 'alerts' | 'expenses' | 'webhooks' | 'voice'>('services');
   const [webhookMetrics, setWebhookMetrics] = useState<WebhookMetricSummary[]>([]);
   const [webhookFailures, setWebhookFailures] = useState<WebhookFailureSummary[]>([]);
+  const [voiceMetrics, setVoiceMetrics] = useState<VoiceTranscriptionMetrics | null>(null);
 
   const fetchData = useCallback(async () => {
     try {
@@ -103,6 +112,7 @@ export default function SystemMonitor() {
         const sysJson = await sysRes.json();
         if (sysJson.webhookMetrics) setWebhookMetrics(sysJson.webhookMetrics);
         if (sysJson.recentFailures) setWebhookFailures(sysJson.recentFailures);
+        if (sysJson.voiceTranscriptions) setVoiceMetrics(sysJson.voiceTranscriptions);
       }
     } catch (err) {
       console.error('Failed to fetch monitoring data:', err);
@@ -253,6 +263,7 @@ export default function SystemMonitor() {
           { id: 'alerts', label: 'Alerts', icon: Bell },
           { id: 'expenses', label: 'Expenses', icon: DollarSign },
           { id: 'webhooks', label: 'Webhook Health', icon: Zap },
+          { id: 'voice', label: 'Voice Transcription', icon: TrendingUp },
         ].map(tab => (
           <button
             key={tab.id}
@@ -553,6 +564,57 @@ export default function SystemMonitor() {
               <p className="text-green-400 text-sm font-bold">No failures in the last 24 hours.</p>
             </div>
           ) : null}
+        </div>
+      )}
+
+      {/* Voice Transcription View */}
+      {view === 'voice' && (
+        <div className="space-y-6">
+          {voiceMetrics === null ? (
+            <div className="rounded-[2rem] border border-white/5 bg-white/[0.01] p-8 text-center">
+              <TrendingUp className="w-10 h-10 text-slate-600 mx-auto mb-3" />
+              <p className="text-slate-400 text-sm font-medium">No transcription data available.</p>
+              <p className="text-slate-600 text-xs mt-1">Voice transcriptions will appear here after the first voice note is processed.</p>
+            </div>
+          ) : (
+            <>
+              {/* Stats Grid */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="p-6 rounded-[2rem] border border-white/5 bg-white/[0.02]">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Total</p>
+                  <p className="text-2xl font-black text-white">{voiceMetrics.totalCount}</p>
+                  <p className="text-xs text-slate-500 mt-1">all time</p>
+                </div>
+                <div className="p-6 rounded-[2rem] border border-white/5 bg-white/[0.02]">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Last 24h</p>
+                  <p className="text-2xl font-black text-white">{voiceMetrics.last24h}</p>
+                </div>
+                <div className={`p-6 rounded-[2rem] border ${voiceMetrics.successRate === 'N/A' ? 'border-white/5 bg-white/[0.02]' : voiceMetrics.totalCount > 0 && voiceMetrics.successCount / voiceMetrics.totalCount >= 0.95 ? 'border-green-500/20 bg-green-500/10' : 'border-yellow-500/20 bg-yellow-500/10'}`}>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Success Rate</p>
+                  <p className={`text-2xl font-black ${voiceMetrics.successRate === 'N/A' ? 'text-slate-400' : voiceMetrics.totalCount > 0 && voiceMetrics.successCount / voiceMetrics.totalCount >= 0.95 ? 'text-green-400' : 'text-yellow-400'}`}>
+                    {voiceMetrics.successRate}
+                  </p>
+                  {voiceMetrics.totalCount > 0 && (
+                    <p className="text-xs text-slate-500 mt-1">{voiceMetrics.successCount} / {voiceMetrics.totalCount}</p>
+                  )}
+                </div>
+                <div className="p-6 rounded-[2rem] border border-white/5 bg-white/[0.02]">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Avg Duration</p>
+                  <p className="text-2xl font-black text-white">
+                    {voiceMetrics.avgDurationSeconds > 0 ? `${voiceMetrics.avgDurationSeconds.toFixed(1)}s` : '—'}
+                  </p>
+                </div>
+              </div>
+
+              {voiceMetrics.totalCount === 0 && (
+                <div className="rounded-[2rem] border border-white/5 bg-white/[0.01] p-8 text-center">
+                  <TrendingUp className="w-10 h-10 text-slate-600 mx-auto mb-3" />
+                  <p className="text-slate-400 text-sm font-medium">No voice notes transcribed yet.</p>
+                  <p className="text-slate-600 text-xs mt-1">The table exists and is ready — stats will populate after the first voice note is processed.</p>
+                </div>
+              )}
+            </>
+          )}
         </div>
       )}
 

@@ -193,6 +193,32 @@ export async function GET() {
       GROUP BY provider
     `;
 
+    // Voice transcription metrics (all time + last 24h)
+    type VoiceTranscriptionMetricRow = {
+      total_count: bigint;
+      success_count: bigint;
+      last_24h: bigint;
+      avg_duration_seconds: number;
+    };
+    const voiceMetricsRows = await prisma.$queryRaw<VoiceTranscriptionMetricRow[]>`
+      SELECT
+        COUNT(*)::bigint as total_count,
+        COUNT(CASE WHEN transcription != '' THEN 1 END)::bigint as success_count,
+        COUNT(CASE WHEN created_at > NOW() - INTERVAL '24 hours' THEN 1 END)::bigint as last_24h,
+        COALESCE(AVG(duration_seconds), 0)::float as avg_duration_seconds
+      FROM voice_transcriptions
+    `.catch(() => [{ total_count: BigInt(0), success_count: BigInt(0), last_24h: BigInt(0), avg_duration_seconds: 0 }]);
+    const vtm = voiceMetricsRows[0] ?? { total_count: BigInt(0), success_count: BigInt(0), last_24h: BigInt(0), avg_duration_seconds: 0 };
+    const vtTotal = Number(vtm.total_count);
+    const vtSuccess = Number(vtm.success_count);
+    const voiceTranscriptions = {
+      totalCount: vtTotal,
+      successCount: vtSuccess,
+      last24h: Number(vtm.last_24h),
+      avgDurationSeconds: Number(vtm.avg_duration_seconds),
+      successRate: vtTotal > 0 ? ((vtSuccess / vtTotal) * 100).toFixed(1) + '%' : 'N/A',
+    };
+
     const recentFailures = await prisma.webhookEvent.findMany({
       where: { status: 'failed', createdAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) } },
       orderBy: { createdAt: 'desc' },
@@ -241,6 +267,7 @@ export async function GET() {
         lastProcessed: r.last_processed ? r.last_processed.toISOString() : null,
       })),
       recentFailures,
+      voiceTranscriptions,
       fetchedAt: new Date().toISOString(),
     });
   } catch (error: any) {
