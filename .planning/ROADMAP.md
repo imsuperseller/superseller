@@ -49,7 +49,7 @@
 
 - [x] **Phase 15: Tech Debt Fixes** — Wire admin failure alerts and fix cost tracking provider attribution (completed 2026-03-15)
 - [x] **Phase 16: Change Request Intake** — Natural-language intent classification, CharacterBible versioning, credit confirmation gate (completed 2026-03-15)
-- [ ] **Phase 17: Scene-Level Regeneration** — Single-scene regen loop with mixed-scene assembly and WhatsApp delivery
+- [x] **Phase 17: Scene-Level Regeneration** — Single-scene regen loop with mixed-scene assembly and WhatsApp delivery (completed 2026-03-15)
 - [ ] **Phase 18: Character-Level Changes** — CharacterBible delta + multi-scene regen with admin approval gate
 - [ ] **Phase 19: Admin Tooling** — Version history, rollback, change request audit log in admin portal
 
@@ -92,7 +92,7 @@ Plans:
   2. Per-scene status (`approved / pending / rejected`) is tracked in the database and drives which scenes are re-rendered versus reused
   3. Customer receives exactly two WhatsApp messages: an acknowledgment at request start and the new video at completion — nothing in between
   4. Remotion CharacterReveal re-renders correctly with a mix of original and newly generated scene URLs
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 Plans:
 - [ ] 17-01-PLAN.md — Queue infrastructure + generateScene export + sceneStatuses init + concurrency guard
 - [ ] 17-02-PLAN.md — Dispatch wiring + full regen worker processing + mixed-scene assembly + WhatsApp delivery
@@ -138,7 +138,7 @@ Plans:
 | 14. Language Detection | v1.2 | 1/1 | Complete | 2026-03-15 |
 | 15. Tech Debt Fixes | v1.3 | 2/2 | Complete | 2026-03-15 |
 | 16. Change Request Intake | v1.3 | 2/2 | Complete | 2026-03-15 |
-| 17. Scene-Level Regeneration | 1/2 | In Progress|  | - |
+| 17. Scene-Level Regeneration | 2/2 | Complete   | 2026-03-15 | - |
 | 18. Character-Level Changes | v1.3 | 0/TBD | Not started | - |
 | 19. Admin Tooling | v1.3 | 0/TBD | Not started | - |
 

@@ -23,7 +23,7 @@ Requirements for Character Iteration milestone. Each maps to roadmap phases.
 
 - [x] **REGEN-01**: System regenerates a single specified scene without touching other approved scenes
 - [x] **REGEN-02**: Per-scene status tracking (approved/pending/rejected) on scene records
-- [ ] **REGEN-03**: Customer receives acknowledgment at request start and new video at completion (two messages only)
+- [x] **REGEN-03**: Customer receives acknowledgment at request start and new video at completion (two messages only)
 
 ### Character Changes
 
@@ -34,7 +34,7 @@ Requirements for Character Iteration milestone. Each maps to roadmap phases.
 
 ### Video Assembly
 
-- [ ] **ASSEM-01**: CharacterReveal Remotion composition accepts per-scene URL props (mixed old + new scenes)
+- [x] **ASSEM-01**: CharacterReveal Remotion composition accepts per-scene URL props (mixed old + new scenes)
 - [ ] **ASSEM-02**: Re-rendered video delivered to WhatsApp with approve/change options
 
 ### Admin & Audit
@@ -74,8 +74,8 @@ Requirements for Character Iteration milestone. Each maps to roadmap phases.
 | CHAR-01 | Phase 16 | Complete |
 | REGEN-01 | Phase 17 | Complete |
 | REGEN-02 | Phase 17 | Complete |
-| REGEN-03 | Phase 17 | Pending |
-| ASSEM-01 | Phase 17 | Pending |
+| REGEN-03 | Phase 17 | Complete |
+| ASSEM-01 | Phase 17 | Complete |
 | CHAR-02 | Phase 18 | Pending |
 | CHAR-03 | Phase 18 | Pending |
 | CHAR-04 | Phase 18 | Pending |

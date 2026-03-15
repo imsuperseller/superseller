@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Character Iteration
 status: planning
-stopped_at: Completed 17-01-PLAN.md
-last_updated: "2026-03-15T22:50:22.834Z"
+stopped_at: Completed 17-02-PLAN.md
+last_updated: "2026-03-15T22:55:19.995Z"
 last_activity: 2026-03-15 — Phase 15 executed (2/2 plans), verified, complete
 progress:
   total_phases: 5
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 6
-  completed_plans: 5
+  completed_plans: 6
 ---
 
 # State: Universal Customer Onboarding System
@@ -59,6 +59,8 @@ Key v1.3 decisions:
 - [Phase 16-change-request-intake]: Dynamic import for change-request-handler in character-video-gen delivered case avoids circular dependency at module load time
 - [Phase 16-change-request-intake]: Poll vote disambiguation: check getPendingChangeRequest first before falling through to handlePipelineEvent — resolves Research Pitfall 2 (poll vote collision)
 - [Phase 17-01]: character-regen worker uses concurrency:2; processCharacterRegen() throws NotImplemented (Plan 02 fills logic); sceneStatuses derives from data.sceneUrls ?? []
+- [Phase 17]: renderComposition used directly (not remotionQueue) — regen worker must not depend on queue consumer availability
+- [Phase 17]: tmpDir cleanup in finally block ensures cleanup on all paths including unhandled errors
 
 ### Pending Todos
 
@@ -72,8 +74,8 @@ Key v1.3 decisions:
 
 ## Session Continuity
 
-Last session: 2026-03-15T22:50:22.832Z
-Stopped at: Completed 17-01-PLAN.md
+Last session: 2026-03-15T22:55:15.877Z
+Stopped at: Completed 17-02-PLAN.md
 Resume file: None
 
 ---
