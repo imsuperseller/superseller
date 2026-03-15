@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Character Iteration
 status: planning
-stopped_at: Phase 15 context gathered
-last_updated: "2026-03-15T19:40:20.908Z"
+stopped_at: Completed 15-02-PLAN.md
+last_updated: "2026-03-15T19:52:20.487Z"
 last_activity: 2026-03-15 — v1.3 roadmap created (phases 15-19)
 progress:
   total_phases: 5
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_plans: 2
+  completed_plans: 1
 ---
 
 # State: Universal Customer Onboarding System
@@ -48,6 +48,8 @@ Key v1.3 decisions:
 - Extend `character-video-gen` with post-delivery phases (not new module) — preserves collectedData context
 - Versioned-insert pattern for CharacterBible — INSERT new row, never UPDATE; ORDER BY createdAt DESC LIMIT 1
 - `character-regen` BullMQ queue on same Redis connection — no new infrastructure
+- [Phase 15]: normalizeProvider() exported from expense-tracker.ts so callers only need one import
+- [Phase 15]: generateScene returns { resultUrl, provider } tuple to enable accurate cost attribution
 
 ### Pending Todos
 
@@ -63,9 +65,9 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-15T19:40:20.901Z
-Stopped at: Phase 15 context gathered
-Resume file: .planning/phases/15-tech-debt-fixes/15-CONTEXT.md
+Last session: 2026-03-15T19:52:20.485Z
+Stopped at: Completed 15-02-PLAN.md
+Resume file: None
 
 ---
 *Last updated: 2026-03-15 — v1.3 roadmap complete (phases 15-19)*

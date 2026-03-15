@@ -47,7 +47,7 @@
 
 **Milestone Goal:** Let customers request changes to their AI character and regenerate scenes through WhatsApp — iterative refinement until they're satisfied, with credit transparency and admin oversight.
 
-- [ ] **Phase 15: Tech Debt Fixes** — Wire admin failure alerts and fix cost tracking provider attribution
+- [x] **Phase 15: Tech Debt Fixes** — Wire admin failure alerts and fix cost tracking provider attribution (completed 2026-03-15)
 - [ ] **Phase 16: Change Request Intake** — Natural-language intent classification, CharacterBible versioning, credit confirmation gate
 - [ ] **Phase 17: Scene-Level Regeneration** — Single-scene regen loop with mixed-scene assembly and WhatsApp delivery
 - [ ] **Phase 18: Character-Level Changes** — CharacterBible delta + multi-scene regen with admin approval gate
@@ -63,7 +63,7 @@
   1. When a Remotion render fails after all retries, admin receives a WhatsApp message with the error and the customer receives a "our team will follow up" message — no silent failures
   2. Cost entries in `api_expenses` show the correct provider (`fal` or `kie.ai`) based on which model actually ran the job, not a hardcoded label
   3. Pipelines missing `admin_phone` fall back to the configured default admin number rather than throwing a null error
-**Plans:** 2 plans
+**Plans:** 2/2 plans complete
 Plans:
 - [ ] 15-01-PLAN.md — Admin failure alerts + customer messaging + admin phone fallback
 - [ ] 15-02-PLAN.md — Cost tracking provider attribution fix + backfill migration
@@ -130,7 +130,7 @@ Plans:
 | 12. Payment Webhooks | v1.2 | 4/4 | Complete | 2026-03-15 |
 | 13. Voice Note Transcription | v1.2 | 2/2 | Complete | 2026-03-15 |
 | 14. Language Detection | v1.2 | 1/1 | Complete | 2026-03-15 |
-| 15. Tech Debt Fixes | v1.3 | 0/2 | Planning | - |
+| 15. Tech Debt Fixes | 2/2 | Complete   | 2026-03-15 | - |
 | 16. Change Request Intake | v1.3 | 0/TBD | Not started | - |
 | 17. Scene-Level Regeneration | v1.3 | 0/TBD | Not started | - |
 | 18. Character-Level Changes | v1.3 | 0/TBD | Not started | - |
