@@ -45,7 +45,7 @@
 ### Module: Social Media Setup (SOCIAL)
 
 - [x] **SOCIAL-01**: Agent activates social setup when customer has SocialHub/Buzz product
-- [ ] **SOCIAL-02**: Agent collects social media credentials and preferences (platforms, posting frequency, content style)
+- [x] **SOCIAL-02**: Agent collects social media credentials and preferences (platforms, posting frequency, content style)
 - [x] **SOCIAL-03**: Agent stores preferences in ServiceInstance.configuration JSON
 - [x] **SOCIAL-04**: Agent explains what SocialHub will do and sets expectations
 
@@ -70,7 +70,7 @@
 ### Pipeline Orchestration (PIPE)
 
 - [x] **PIPE-01**: BullMQ `customer-onboarding` queue orchestrates the full flow
-- [ ] **PIPE-02**: Pipeline determines which modules to run based on tenant's products
+- [x] **PIPE-02**: Pipeline determines which modules to run based on tenant's products
 - [x] **PIPE-03**: Pipeline handles failures gracefully — retries, alerts on permanent failure
 - [x] **PIPE-04**: Pipeline tracks total cost via trackExpense() and PipelineRun
 - [x] **PIPE-05**: Admin can view onboarding status via admin API

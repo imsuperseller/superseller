@@ -4,14 +4,14 @@ milestone: v1.0
 milestone_name: milestone
 current_plan: Not started
 status: completed
-stopped_at: Completed 05-02-PLAN.md
-last_updated: "2026-03-15T03:14:30.139Z"
+stopped_at: Completed 06-02-PLAN.md
+last_updated: "2026-03-15T03:34:54.664Z"
 progress:
-  total_phases: 6
+  total_phases: 7
   completed_phases: 6
-  total_plans: 13
-  completed_plans: 13
-  percent: 100
+  total_plans: 15
+  completed_plans: 14
+  percent: 93
 ---
 
 # State: Universal Customer Onboarding System
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-03-13)
 **Phase:** 2 — Onboarding Modules (Asset, Social, Compete)
 **Status:** Milestone complete
 **Current Plan:** Not started
-**Progress:** [██████████] 100%
+**Progress:** [█████████░] 93%
 
 ## Decisions
 
@@ -64,6 +64,7 @@ See: .planning/PROJECT.md (updated 2026-03-13)
 - [Phase 05-02]: APPROVE with no remaining modules → awaiting-approval for final sign-off, not immediate completion
 - [Phase 05-02]: POST /api/onboarding/start: bootstrapOnboardingGroup first (creates WA group), then enqueues BullMQ — group creation is synchronous prerequisite
 - [Phase 05-02]: isPollVote + pollOption added to ClaudeClawJobData so WAHA webhook handler can set these for poll.vote events
+- [Phase 06-02]: requirements_satisfied is the canonical field name for requirement IDs in SUMMARY.md frontmatter
 
 ## Phase History
 
@@ -109,10 +110,11 @@ None identified.
 | Phase 04-character-video-gen-delivery P04-03 | 4min | 1 tasks | 1 files |
 | Phase 05-pipeline-orchestration P01 | 3min | 2 tasks | 7 files |
 | Phase 05-pipeline-orchestration P02 | 5min | 2 tasks | 5 files |
+| Phase 06-fix-social-intro-poll-vote P02 | 2min | 1 tasks | 2 files |
 
 ## Last Session
 
-- **Stopped at:** Completed 05-02-PLAN.md
+- **Stopped at:** Completed 06-02-PLAN.md
 - **Timestamp:** 2026-03-13T23:24:43Z
 
 ---
