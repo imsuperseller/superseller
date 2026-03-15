@@ -1,490 +1,496 @@
 # Architecture Research
 
-**Domain:** Intelligent Content Engine — Multi-Model Video Production with Self-Improving Quality Routing
-**Researched:** 2026-03-14
-**Confidence:** HIGH (based on direct codebase analysis)
+**Domain:** Character Change Requests + Scene Regeneration — WhatsApp-driven iterative character refinement
+**Researched:** 2026-03-15
+**Confidence:** HIGH (direct codebase analysis — all integration points read from source)
 
 ---
 
-## Standard Architecture
+## System Overview
 
-### System Overview
+The existing pipeline ends at `character-video-gen` module state `complete`. The module already invites changes at two points (line 584 caption: "Reply here if you'd like any changes" and line 770 response), but the `complete` case has no change-request parser — it just re-confirms completion. This milestone wires in what happens after that invitation.
+
+The fundamental architecture question: does a change request reuse the existing `character-video-gen` module state machine by adding new phases, or does it become a separate module?
+
+**Answer: new phases inside the existing module, not a new module.**
+
+The `module-router.ts` only routes to a module while its state is `!= complete`. Once `complete`, control falls to general Claude chat. Adding a change-request listener as a new module would require registering it in MODULE_REGISTRY and deciding activation conditions — unnecessary complexity. The cleaner fit is extending `character-video-gen` with post-delivery phases, keeping the module open (not in `complete`) until the client explicitly signs off.
+
+---
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                    TRIGGER LAYER                                     │
-│  WhatsApp Group Message → claudeclaw.worker → module-router          │
-│  BullMQ Job → onboarding.worker → character-video-gen module         │
-└──────────────────────────────┬──────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                     WHATSAPP TRIGGER LAYER                       │
+│                                                                  │
+│  Client WhatsApp message → claudeclaw.worker.ts                  │
+│    → module-router.ts checks active module for group             │
+│    → character-video-gen module is active (not complete)         │
+│    → handleMessage() dispatched to character-video-gen           │
+└──────────────────────────────┬──────────────────────────────────┘
                                │
-┌──────────────────────────────▼──────────────────────────────────────┐
-│                    MODEL ROUTING LAYER (EXISTING)                    │
-│                                                                      │
-│  routeShot(ShotRequest)        ← PRIMARY ENTRY POINT                │
-│    │                                                                 │
-│    ├─► getRecommendedModel()   ← Observatory DB lookup + 5min cache  │
-│    ├─► Budget ceiling check    ← BUDGET_CEILINGS per tier            │
-│    ├─► adapterForProvider()    ← KieAdapter | FalAdapter             │
-│    └─► logDecision()           ← ai_model_decisions table            │
-│                                                                      │
-│  [NEW] Quality Feedback Hook   ← reads RouterResult, writes scores   │
-└──────────┬───────────────────────────┬──────────────────────────────┘
-           │                           │
-┌──────────▼────────┐       ┌──────────▼────────────────────────────┐
-│  KieAdapter       │       │  FalAdapter                           │
-│  (wraps kie.ts)   │       │  (native fetch, queue.fal.run)        │
-│  Kling 3.0        │       │  Sora 2 (fal-ai/sora)                │
-│  Suno v5          │       │  Wan 2.6 (fal-ai/wan-i2v)            │
-│  Veo 3.1          │       │  Kling via fal fallback               │
-└──────────┬────────┘       └──────────┬────────────────────────────┘
-           │                           │
-┌──────────▼───────────────────────────▼────────────────────────────┐
-│                    COMPOSITION LAYER (EXISTING)                    │
-│                                                                    │
-│  remotion-renderer.ts → renderComposition(compositionId, props)   │
-│                                                                    │
-│  Root.tsx (Composition Registry):                                  │
-│    PropertyTour-{16x9|9x16|1x1|4x5}   ← real estate              │
-│    CrewReveal-{16x9|9x16}              ← crew intro               │
-│    CrewDemo-{16x9|9x16}               ← agent product             │
-│    CrewDemoV2, V3                      ← video embed variants      │
-│    HairShowreel-{16x9|9x16}           ← local biz (hair)          │
-│    CharacterReveal-16x9               ← character in a box        │
-│    SocialMockup-*                      ← IG mockups                │
-│  [NEW] LocalBizShowreel-{16x9|9x16}  ← parametric local biz       │
-│  [NEW] DialogueScene-{16x9|9x16}     ← veo 3.1 talking heads      │
-│                                                                    │
-└──────────────────────────┬─────────────────────────────────────────┘
-                           │
-┌──────────────────────────▼─────────────────────────────────────────┐
-│                    DATA LAYER                                       │
-│                                                                    │
-│  Existing tables:                                                  │
-│    ai_models, ai_model_recommendations, ai_model_decisions         │
-│    PipelineRun, api_expenses, prompt_configs                       │
-│    onboarding_pipeline, onboarding_module_state                    │
-│    CharacterBible, Brand, Tenant, ServiceInstance                  │
-│                                                                    │
-│  [NEW] tables:                                                     │
-│    generation_quality_scores   ← feedback loop scores per run      │
-│    prompt_effectiveness        ← extends prompt_configs tracking   │
-│                                                                    │
-└────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────▼──────────────────────────────────┐
+│              CHARACTER-VIDEO-GEN MODULE (MODIFIED)               │
+│                                                                  │
+│  Existing phases:                                                │
+│    intro → generating → awaiting-composition                     │
+│            → composing → uploading → delivering                  │
+│                                                                  │
+│  New phases (post-delivery):                                     │
+│    delivered → awaiting-change-request                           │
+│    → [branch on intent]                                          │
+│       ├─► change-bible:  re-run character-bible-generator        │
+│       │   → regenerate-all: full 5-scene regen                  │
+│       ├─► regenerate-scene: targeted scene regen (1-N scenes)    │
+│       └─► signed-off: module truly complete                      │
+│                                                                  │
+└──────────┬──────────────────┬────────────────────────────────────┘
+           │                  │
+┌──────────▼────────┐ ┌───────▼─────────────────────────────────┐
+│ character-bible   │ │  scene-regeneration pipeline             │
+│ generator.ts      │ │                                          │
+│ (existing)        │ │  - parse change request via Claude       │
+│ generateCharacter │ │  - identify affected scene indices       │
+│ Bible()           │ │  - call routeShot() for each             │
+│                   │ │  - poll + R2 upload                      │
+│ [NEW] updateChar- │ │  - re-run composition pipeline            │
+│ acterBible()      │ │  - deliver updated video via WAHA        │
+└──────────┬────────┘ └──────────────────────────────────────────┘
+           │
+┌──────────▼────────────────────────────────────────────────────┐
+│                      DATA LAYER                                │
+│                                                                │
+│  CharacterBible — version column (Int, starts at 1)           │
+│    existing row: UPDATE in place, increment version            │
+│    OR: INSERT new row (ORDER BY createdAt DESC LIMIT 1 query  │
+│         in fetchCharacterBible already picks latest)          │
+│                                                                │
+│  onboarding_module_state — phase + collected_data             │
+│    collected_data.sceneUrls[] — R2 keys per scene             │
+│    collected_data.changeHistory[] — log of what changed       │
+│    collected_data.revealUrl — current delivered reveal URL    │
+│                                                                │
+│  PipelineRun — pipelineType: 'character-video-regen'          │
+│    tracks cost + model per regen run (not mixed with orig)    │
+│                                                                │
+│  api_expenses — trackExpense() per regenerated scene          │
+│                                                                │
+└────────────────────────────────────────────────────────────────┘
 ```
 
-### Component Responsibilities
+---
+
+## Component Responsibilities
 
 | Component | File | Responsibility | Status |
 |-----------|------|---------------|--------|
-| Model Router | `services/model-router/router.ts` | routeShot() — select model + adapter | Exists |
-| Observatory | `services/model-selector.ts` | getRecommendedModel() — DB-driven model selection | Exists |
-| KieAdapter | `provider-adapters/kie-adapter.ts` | Kling 3.0, Veo, Suno — wraps kie.ts | Exists |
-| FalAdapter | `provider-adapters/fal-adapter.ts` | fal.ai queue — Sora 2, Wan 2.6, Kling fallback | Exists (stub only) |
-| Shot Types | `model-router/shot-types.ts` | ShotType taxonomy, SHOT_DEFAULT_MODELS, budget ceilings | Exists |
-| Remotion Renderer | `services/remotion-renderer.ts` | renderComposition(), renderPropertyTour() | Exists |
-| Root.tsx | `remotion/src/Root.tsx` | Composition registry — all template IDs registered here | Exists |
-| Pipeline Run | `services/pipeline-run.ts` | createPipelineRun(), updatePipelineRun() | Exists |
-| Expense Tracker | `services/expense-tracker.ts` | trackExpense() → api_expenses | Exists |
-| Prompt Store | `services/prompt-store.ts` | getPrompt(), renderPrompt() — DB-driven prompts | Exists |
-| Quality Scorer | `services/quality-scorer.ts` | Score generation output, feed back to observatory | **New** |
-| Prompt Index | `services/prompt-index.ts` | Track which prompts produce high-quality results | **New** |
-| Veo Adapter | `provider-adapters/veo-adapter.ts` OR extend KieAdapter | Veo 3.1 via Kie.ai endpoint for dialogue shots | **New** |
-| Local Biz Templates | `remotion/src/LocalBizShowreelComposition.tsx` | Parametric template for any local business niche | **New** |
+| Module Router | `services/onboarding/module-router.ts` | Routes messages to active module by phase | No change — `complete` renamed to `signed-off` |
+| Module State | `services/onboarding/module-state.ts` | Persists phase + collectedData across restarts | No change needed |
+| character-video-gen | `services/onboarding/modules/character-video-gen.ts` | Full generation + delivery + change loop | MODIFY: add 4 new phases, intent parser, regen dispatcher |
+| character-bible-generator | `services/onboarding/character-bible-generator.ts` | generateCharacterBible() from questionnaire data | MODIFY: add updateCharacterBible() for delta changes |
+| Change Intent Parser | `services/onboarding/change-intent-parser.ts` | Claude call → structured ChangeRequest | NEW |
+| Scene Regen Dispatcher | inside character-video-gen OR standalone service | Loop N scenes, call routeShot(), upload to R2 | NEW (inline or extracted) |
+| Model Router | `services/model-router/router.ts` | routeShot() — already used for initial gen | No change — reuse as-is |
+| Pipeline Run | `services/pipeline-run.ts` | createPipelineRun() / updatePipelineRun() | No change — create new run for each regen |
+| Expense Tracker | `services/expense-tracker.ts` | trackExpense() per scene | No change — call per regenerated scene |
+| WAHA Client | `services/waha-client.ts` | sendVideo() for delivery | No change |
+| Composition pipeline | inside character-video-gen (runCompositionPipeline) | Remotion render + R2 + WhatsApp | Reuse as-is — pass new scene URLs |
 
 ---
 
-## Recommended Project Structure (New Files Only)
+## New vs Modified: Explicit Breakdown
+
+### NEW (net-new files)
+
+**`services/onboarding/change-intent-parser.ts`**
+
+Single responsibility: take a raw WhatsApp message and return a structured `ChangeRequest` object. Uses Claude API (same pattern as `character-bible-generator.ts`). Returns one of:
+- `{ type: 'change-bible', field: 'personality' | 'visualStyle' | 'name' | 'audience', newValue: string }`
+- `{ type: 'regen-scenes', sceneIndices: number[] }` (e.g. [0,2] for scenes 1 and 3)
+- `{ type: 'regen-all' }` (redo everything)
+- `{ type: 'sign-off' }` (happy, done)
+- `{ type: 'unclear' }` (ask clarifying question)
+
+This isolation means the intent parser can be tested independently of the generation pipeline.
+
+### MODIFIED (existing files with additions)
+
+**`services/onboarding/modules/character-video-gen.ts`**
+
+Add to `ModuleType` union: no change needed — the module type string stays `"character-video-gen"`.
+
+Rename internal `complete` phase to `signed-off` (or keep `complete` as true termination and add new phases before it). The `module-router.ts` checks `phase !== 'complete'` to keep a module active. This means:
+
+Option A: Keep `complete` as the terminal state, add intermediate `delivered` and `awaiting-change` phases before it. Module stays active (not `complete`) through change iteration.
+
+Option B: Module transitions to `complete` after delivery, and a new `character-iteration` module handles changes.
+
+**Option A is correct.** The existing `character-video-gen` module has all the context (sceneUrls, pipelineRunId, bibleId) in `collectedData`. Spinning up a second module loses that state without re-fetching.
+
+New phases to add inside the existing state machine:
 
 ```
-apps/worker/src/
-├── services/
-│   ├── model-router/
-│   │   ├── router.ts                      # MODIFY: add quality hook after RouterResult
-│   │   ├── shot-types.ts                  # MODIFY: add 'dialogue' → veo-3.1 via fal or kie
-│   │   └── provider-adapters/
-│   │       ├── fal-adapter.ts             # MODIFY: activate real fal.ai calls (Sora 2, Wan 2.6)
-│   │       ├── kie-adapter.ts             # MODIFY: add Veo 3.1 endpoint branch
-│   │       └── types.ts                   # No change needed
-│   ├── quality-scorer.ts                  # NEW: score generation output quality
-│   └── prompt-index.ts                    # NEW: effectiveness tracking for prompts
-│
-apps/worker/remotion/src/
-├── Root.tsx                               # MODIFY: register new compositions
-├── LocalBizShowreelComposition.tsx        # NEW: parametric local biz template
-├── DialogueSceneComposition.tsx           # NEW: veo 3.1 talking head template
-└── types/
-    ├── local-biz-showreel-props.ts        # NEW: props for local biz template
-    └── dialogue-scene-props.ts            # NEW: props for dialogue template
+(existing) delivering → delivered → awaiting-change-request
+                                      │
+                                      ├─► change-bible
+                                      │      │
+                                      │      └─► (updateCharacterBible) → regenerating-all
+                                      │                                       │
+                                      │                                       └─► awaiting-composition (reuse existing)
+                                      │
+                                      ├─► regenerating-scenes
+                                      │      │
+                                      │      └─► awaiting-composition (reuse existing)
+                                      │
+                                      └─► signed-off (= true complete)
+```
+
+The `awaiting-composition` and subsequent phases already handle composition → upload → deliver. They can be re-entered by setting `phase = 'awaiting-composition'` with updated `sceneUrls` in `collectedData`. This is the critical reuse point.
+
+**`services/onboarding/character-bible-generator.ts`**
+
+Add `updateCharacterBible(tenantId, bibleId, delta)`. Delta contains only the changed fields. Claude prompt changes: instead of "create a character from scratch," prompt becomes "update this existing character profile with these changes, keep everything else the same."
+
+The database operation: either `UPDATE CharacterBible SET ... WHERE id = $1` with `version = version + 1`, or INSERT a new row (the `fetchCharacterBible` query already uses `ORDER BY createdAt DESC LIMIT 1`, so inserting a new version is a zero-schema-change approach).
+
+**Recommended: INSERT new row** — preserves full change history, zero schema migration, existing fetch query works unchanged.
+
+---
+
+## Data Flow: Iterative Change Request
+
+```
+Client WhatsApp: "I want her to look more professional, less casual"
+    │
+    ▼
+claudeclaw.worker.ts
+    │
+    ▼
+module-router.ts
+    ├─► getActiveModule(groupId)
+    │   └─► returns character-video-gen with phase='awaiting-change-request'
+    └─► module.handleMessage(params, state)
+
+character-video-gen.handleMessage() — case 'awaiting-change-request':
+    │
+    ├─► change-intent-parser.parseIntent(messageBody)
+    │       │
+    │       └─► Claude API call (200ms, ~$0.001)
+    │           → ChangeRequest { type: 'change-bible', field: 'visualStyle', newValue: '...' }
+    │
+    ├─► [if type=change-bible]
+    │   ├─► upsertModuleState(... 'change-bible' ...)
+    │   ├─► updateCharacterBible(tenantId, currentBibleId, delta)
+    │   │       └─► INSERT new CharacterBible row (version=2)
+    │   │
+    │   ├─► WA response: "Got it! Updating the character and regenerating all scenes. Takes a few minutes..."
+    │   │
+    │   └─► setImmediate → runGenerationPipeline() (reuse existing)
+    │           └─► transitions to 'generating' → 'awaiting-composition' → 'composing' → 'uploading' → 'delivering' → 'delivered' → 'awaiting-change-request'
+    │
+    ├─► [if type=regen-scenes]
+    │   ├─► upsertModuleState(... 'regenerating-scenes', { scenesToRegen: [0,2] } ...)
+    │   ├─► WA response: "Regenerating scenes 1 and 3. Give me a few minutes!"
+    │   └─► setImmediate → runSceneRegenPipeline({ sceneIndices: [0,2] })
+    │           ├─► For each index: routeShot() → submitJob → poll → download → R2
+    │           ├─► Merge with existing sceneUrls (replace indices 0 and 2)
+    │           └─► transitions to 'awaiting-composition' (reuses existing runCompositionPipeline)
+    │
+    ├─► [if type=regen-all]
+    │   └─► Same as change-bible but without bible update — directly triggers runGenerationPipeline()
+    │
+    ├─► [if type=sign-off]
+    │   ├─► upsertModuleState(... 'complete' ...)
+    │   └─► WA response: "Your character is finalized! Moving on."
+    │
+    └─► [if type=unclear]
+        └─► WA response: clarifying question, stay in 'awaiting-change-request'
 ```
 
 ---
 
 ## Architectural Patterns
 
-### Pattern 1: Quality Feedback Hook on RouterResult
+### Pattern 1: Phase Re-Entry for Composition Reuse
 
-**What:** After `routeShot()` returns a `RouterResult` and the generation completes (success or failure), call `qualityScorer.record()` with the actual result. The scorer writes to `generation_quality_scores`. The Observatory's daily-sync reads these scores to update `ai_model_recommendations`.
+**What:** After targeted scene regen, the module sets `collectedData.sceneUrls` to the merged array (old scenes + newly generated ones) and transitions to `phase = 'awaiting-composition'`. The existing `runCompositionPipeline()` executes without modification.
 
-**When to use:** Every call to `routeShot()` that produces a final result (not intermediate poll).
+**When to use:** Both `regen-scenes` and `change-bible` → regen-all paths.
 
-**Integration point:** `character-video-gen.ts` line 249 (after `pollResult.status === 'completed'`), and the video-pipeline worker after each clip completes.
+**Trade-offs:** Saves ~200 lines of duplicated render/upload/deliver code. Risk: the composition pipeline reads `collectedData.pipelineRunId` — for regen runs a new PipelineRun is created, so `collectedData.pipelineRunId` must be updated before phase transition.
 
-**Why not in router.ts itself:** The router cannot know the final quality — it only submits the job. Quality is known after polling completes, which happens in the calling module.
-
+**Example:**
 ```typescript
-// Pattern: call after adapter.pollStatus() returns completed
-if (pollResult.status === 'completed' && pollResult.resultUrl) {
-    // existing: return resultUrl
-    // NEW: record quality asynchronously (non-blocking, never throws)
-    qualityScorer.record({
-        shotType: routerResult.shotType,
-        modelId: routerResult.selection.modelId,
-        provider: jobResult.provider,
-        pipelineRunId,
-        tenantId,
-        qualityScore: null,      // filled later by human approval or auto-scorer
-        success: true,
-        costCents: Math.round(routerResult.estimatedCost * 100),
-    }).catch(() => {});
-}
-```
-
-### Pattern 2: New Remotion Templates as Parametric Compositions
-
-**What:** Every new local business niche gets the same `LocalBizShowreelComposition` with different props — not a new composition. Register once in `Root.tsx` with a single composition ID and wide-open props schema.
-
-**Why:** The current pattern (HairShowreel with hardcoded Hair Approach URLs in defaultProps) creates one composition per customer. Parametric design means one composition handles all niches via `inputProps` at render time.
-
-**Registration in Root.tsx:**
-```tsx
-<Composition
-    id="LocalBizShowreel-16x9"
-    component={LocalBizShowreelComposition}
-    width={1920}
-    height={1080}
-    fps={FPS}
-    durationInFrames={sec(30)}
-    defaultProps={LOCAL_BIZ_DEFAULT_PROPS}
-/>
-```
-
-**Calling from remotion-renderer.ts:**
-```typescript
-await renderComposition({
-    compositionId: 'LocalBizShowreel-16x9',
-    inputProps: localBizProps,  // tenant-specific, passed at render time
-    outputPath,
-    concurrency: 2,
+// In runSceneRegenPipeline():
+const newPipelineRunId = await createPipelineRun({
+    tenantId,
+    pipelineType: 'character-video-regen',
+    status: 'running',
+    inputJson: { scenesToRegen: sceneIndices, originalRunId: data.pipelineRunId },
+    modelUsed: 'sora-2-pro-text-to-video',
 });
+
+// merge new scene URLs with existing
+const mergedSceneUrls = [...data.sceneUrls];
+for (const result of regenResults) {
+    mergedSceneUrls[result.sceneIndex] = result.r2Url;
+}
+
+// Re-enter awaiting-composition with updated state
+await upsertModuleState(groupId, tenantId, 'character-video-gen', 'awaiting-composition', {
+    ...data,
+    sceneUrls: mergedSceneUrls,
+    pipelineRunId: newPipelineRunId,    // ← critical: update to new run
+    regenHistory: [...(data.regenHistory ?? []), { at: new Date().toISOString(), scenes: sceneIndices }],
+});
+
+// Auto-trigger composition
+await runCompositionPipeline({ groupId, tenantId, data: updatedData });
 ```
 
-### Pattern 3: FalAdapter Activation Without Breaking KieAdapter
+### Pattern 2: Claude-Powered Intent Classification
 
-**What:** The current `SHOT_DEFAULT_MODELS` in `shot-types.ts` already declares `fal` as the provider for `narrative`, `environment`, and `social` shot types. The `FalAdapter` class exists and has complete implementation. The only missing piece is `FAL_API_KEY` in the environment and validation that the fal.ai request body format matches each specific model.
+**What:** `change-intent-parser.ts` calls Claude with a structured prompt: given the CharacterBible summary + the client message, classify the intent and extract parameters. Returns typed `ChangeRequest`.
 
-**Critical detail:** Each fal.ai model has different input schemas. The current `FalAdapter.submitJob()` sends a generic `{ prompt, image_url, duration }` body. `fal-ai/sora` expects `{ prompt, duration }` (no image_url). `fal-ai/wan-i2v` expects `{ image_url, prompt }`. `fal-ai/kling-video/v2.1/pro/image-to-video` expects `{ prompt, image_url, duration }`.
+**When to use:** Every message in `awaiting-change-request` phase.
 
-**Fix pattern:** Add a model-specific body builder inside FalAdapter before activating in production:
+**Trade-offs:** Costs ~$0.001 per classification. Adds ~200ms latency before responding. The alternative (keyword matching) is fragile — clients say "make her more polished" not "change visualStyle." Claude classification is worth the cost.
+
+**Example prompt structure:**
 ```typescript
-private buildRequestBody(req: ShotRequest, modelId: string): Record<string, unknown> {
-    if (modelId.includes('sora')) {
-        return { prompt: req.prompt, duration: req.durationSeconds ?? 5 };
-    }
-    if (modelId.includes('wan-i2v')) {
-        return { image_url: req.imageUrl, prompt: req.prompt };
-    }
-    // default: Kling-compatible
-    return { prompt: req.prompt, image_url: req.imageUrl, duration: req.durationSeconds ?? 5 };
+const prompt = `You are parsing a client's change request for their AI brand character.
+
+Current character:
+Name: ${bible.name}
+Personality: ${bible.metadata?.brand_tone ?? 'professional'}
+Visual Style: ${bible.visualStyle}
+
+Client message: "${messageBody}"
+
+Classify this request. Respond with ONLY a JSON object:
+{
+  "type": "change-bible" | "regen-scenes" | "regen-all" | "sign-off" | "unclear",
+  "field": "personality" | "visualStyle" | "name" | "audience" | null,
+  "newValue": "the new description" | null,
+  "sceneIndices": [0,1,2,3,4] | null,
+  "clarifyingQuestion": "..." | null
+}`;
+```
+
+### Pattern 3: INSERT New CharacterBible Row for Versioning
+
+**What:** Each bible update inserts a new row rather than updating in place. `fetchCharacterBible()` uses `ORDER BY createdAt DESC LIMIT 1`, so it naturally picks the latest. No schema change. Full history retained.
+
+**When to use:** Any `change-bible` type request.
+
+**Trade-offs:** Slight storage overhead (a few KB per version). Benefit: rollback is trivial — just soft-delete the latest row. The `version` column in the existing schema already supports this (increment on insert).
+
+**Example:**
+```typescript
+// In updateCharacterBible():
+await query(`
+    INSERT INTO "CharacterBible" (id, "tenantId", name, "personaDescription", "visualStyle",
+                                   "soraHandle", metadata, version, "createdAt", "updatedAt")
+    SELECT gen_random_uuid()::text, "tenantId", name,
+           $2, COALESCE($3, "visualStyle"),  -- apply delta: null = keep existing
+           "soraHandle",
+           $4::jsonb,
+           version + 1,
+           NOW(), NOW()
+    FROM "CharacterBible"
+    WHERE "tenantId" = $1
+    ORDER BY "createdAt" DESC
+    LIMIT 1
+`, [tenantId, newPersonaDescription, newVisualStyle, JSON.stringify(newMetadata)]);
+```
+
+---
+
+## Integration Points: Exact Touch Points per File
+
+### `character-video-gen.ts` (primary modification target)
+
+1. **Phase machine**: Add cases `'delivered'`, `'awaiting-change-request'`, `'change-bible'`, `'regenerating-scenes'`, `'signed-off'` to the `switch(state.phase)` block.
+
+2. **Rename terminal state**: Currently `'complete'` returns `completed: true`. Change final successful completion (sign-off path) to still use `'complete'` but add an intermediate `'delivered'` phase. The module stays active in `'delivered'` → `'awaiting-change-request'` and only moves to `'complete'` on sign-off.
+
+3. **Import**: Add `import { parseChangeIntent } from '../change-intent-parser'` and `import { updateCharacterBible } from '../character-bible-generator'`.
+
+4. **`runCompositionPipeline()`**: No changes. It reads `data.sceneUrls` and `data.pipelineRunId` from collectedData — both are updated by the regen dispatcher before re-entry.
+
+5. **`runGenerationPipeline()`**: No changes. The change-bible path calls this directly — it already fetches the latest CharacterBible (ORDER BY createdAt DESC), so inserting a new bible row is sufficient to pick it up.
+
+6. **Caption**: Change delivery caption from "Reply here if you'd like any changes" (which currently goes nowhere) to an explicit confirmation: "Your character is ready! Reply with any changes you'd like, or say *done* to finalize."
+
+### `character-bible-generator.ts` (minor modification)
+
+Add `updateCharacterBible(tenantId, delta: Partial<CharacterData>)` function that:
+1. Fetches the current bible row
+2. Merges delta fields (only non-null values overwrite)
+3. Re-calls Claude with the existing + updated fields to re-synthesize `personaDescription` and `scenario_prompts`
+4. INSERTs the new row with `version + 1`
+5. Returns the new bible ID
+
+### `module-router.ts` (no change needed)
+
+The router checks `phase !== 'complete'` to keep a module active. As long as the change-request phases are not `'complete'`, messages continue routing to `character-video-gen`. No modification required.
+
+### `onboarding.worker.ts` (no change needed)
+
+The `handlePipelineEvent` fires when `moduleResult.completed === true`. The `completed: true` return only happens when phase transitions to `'complete'` (sign-off). Change iteration happens internally — no pipeline events fired mid-iteration.
+
+### `types.ts` (minor: add new phases to documentation)
+
+The `ModuleState.phase` field is typed as `string` (not a union), so no TypeScript change is required. Documentation comment update only.
+
+### Database (no schema migration required)
+
+All state is stored in:
+- `onboarding_module_state.phase` (TEXT) — add new phase strings at runtime
+- `onboarding_module_state.collected_data` (JSONB) — add `regenHistory`, `changeCount` fields
+- `CharacterBible` — INSERT new rows (existing schema, `version` column already exists)
+- `PipelineRun` — use existing table with `pipelineType: 'character-video-regen'`
+
+No migrations. No new tables.
+
+---
+
+## Data Flow: Delivery Phase Transition (Critical Detail)
+
+The current `'complete'` phase returns `completed: true` which fires `handlePipelineEvent({ type: 'module-completed' })`. This transitions the pipeline to `awaiting-approval` and notifies admin. The change-request milestone must NOT fire this event during iteration.
+
+**Solution:** Only return `completed: true` from the `'signed-off'` (true complete) case, not from `'delivered'`. The `'delivered'` case returns `completed: false` and stays active.
+
+```typescript
+// Old complete case (line 766-774) — SPLIT into two cases:
+
+case 'delivered': {
+    // Module delivered video but awaiting client response
+    // Transition to awaiting-change-request on next message
+    await upsertModuleState(groupId, tenantId, 'character-video-gen', 'awaiting-change-request', data);
+    return {
+        handled: true,
+        response: "Your character reveal video has been delivered! Reply with any changes, or say *done* to finalize.",
+        moduleType: 'character-video-gen',
+        completed: false,  // ← keeps module active, does NOT fire pipeline event
+    };
+}
+
+case 'signed-off': {
+    return {
+        handled: true,
+        response: `Your character ${data.characterName ?? ''} is finalized! We're all set.`,
+        moduleType: 'character-video-gen',
+        completed: true,   // ← fires pipeline event → admin approval flow
+    };
 }
 ```
-
-### Pattern 4: Prompt Effectiveness Tracking (Extend, Don't Replace)
-
-**What:** The existing `prompt_configs` table and `prompt-store.ts` manage prompt templates with version numbers. Prompt effectiveness tracking adds a parallel `prompt_effectiveness` table that records which prompt versions (by `service + prompt_key + version`) lead to high-quality outputs.
-
-**Why not extend prompt_configs:** The configs table is the write source for prompts. Effectiveness is read-only aggregate data produced by the quality feedback loop. Mixing them creates a circular dependency (prompt selection depends on outcome, outcome depends on prompt selected).
-
-**New table shape:**
-```sql
-CREATE TABLE IF NOT EXISTS prompt_effectiveness (
-    id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
-    service TEXT NOT NULL,
-    prompt_key TEXT NOT NULL,
-    prompt_version INTEGER NOT NULL,
-    quality_score NUMERIC(4,2),       -- 0.00-1.00 aggregate
-    success_count INTEGER DEFAULT 0,
-    failure_count INTEGER DEFAULT 0,
-    total_cost_cents INTEGER DEFAULT 0,
-    last_scored_at TIMESTAMPTZ,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-```
-
----
-
-## Data Flow
-
-### Flow 1: Generation with Quality Recording (New)
-
-```
-character-video-gen (or any producer)
-    │
-    ├─► routeShot({ shotType, budgetTier, prompt, tenantId })
-    │       │
-    │       ├─► getRecommendedModel(useCase)     [observatory — 5min cache]
-    │       ├─► budget ceiling check
-    │       ├─► adapterForProvider()             [KieAdapter | FalAdapter]
-    │       └─► logDecision() → ai_model_decisions
-    │
-    ├─► adapter.submitJob()                       [fal.ai or Kie.ai API]
-    │
-    ├─► adapter.pollStatus() loop until complete
-    │
-    ├─► on complete: resultUrl obtained
-    │       │
-    │       ├─► [existing] download → R2 upload → trackExpense()
-    │       └─► [NEW] qualityScorer.record()     → generation_quality_scores
-    │
-    └─► updatePipelineRun(status: completed)
-```
-
-### Flow 2: Observatory Self-Improvement Loop (New)
-
-```
-Daily cron (or triggered by admin)
-    │
-    └─► qualityAggregator.run()
-            │
-            ├─► SELECT AVG(quality_score) FROM generation_quality_scores
-            │   GROUP BY model_id, shot_type, last 7 days
-            │
-            ├─► UPDATE ai_model_recommendations
-            │   SET recommended_model_id = best_performing_model
-            │   WHERE use_case = shot_use_case
-            │
-            └─► clearModelCache()               [invalidate 5min model cache]
-```
-
-### Flow 3: New Remotion Template Render (Parametric)
-
-```
-Admin or automated trigger
-    │
-    ├─► build LocalBizShowreelProps from tenant data (Brand, ServiceInstance, TenantAsset)
-    │
-    ├─► renderComposition({
-    │       compositionId: 'LocalBizShowreel-16x9',
-    │       inputProps: props,
-    │       outputPath: '/tmp/...'
-    │   })
-    │       │
-    │       └─► Root.tsx: <LocalBizShowreelComposition {...inputProps} />
-    │
-    ├─► uploadToR2(outputPath, r2Key)
-    │
-    └─► sendVideo(groupId, r2Url, caption)    [WhatsApp delivery]
-```
-
-### Flow 4: FalAdapter Activation Path
-
-```
-routeShot({ shotType: 'narrative', ... })
-    │
-    ├─► SHOT_DEFAULT_MODELS['narrative'].provider = 'fal'   [already set]
-    ├─► adapterForProvider('fal') → new FalAdapter()        [already set]
-    │
-    └─► FalAdapter.submitJob(req, 'fal-ai/kling-video/v2.1/pro/image-to-video')
-            │
-            POST https://queue.fal.run/{modelId}
-            Authorization: Key {FAL_API_KEY}       ← must be set in .env
-            body: { input: { prompt, image_url, duration } }
-            │
-            └─► returns { request_id }
-                    │
-                    └─► externalJobId = "{modelId}::{request_id}"
-
-FalAdapter.pollStatus("{modelId}::{request_id}")
-    │
-    GET https://queue.fal.run/{modelId}/requests/{requestId}/status
-    │
-    └─► { status: 'COMPLETED', output: { video: { url: '...' } } }
-```
-
----
-
-## Integration Points — New vs Existing
-
-### router.ts Modifications
-
-The router does NOT need internal changes to support quality feedback. The quality hook lives in the calling code (each module that calls `routeShot`). However, `routeShot` should expose `externalJobId` passthrough so callers can correlate quality scores to decisions logged in `ai_model_decisions`.
-
-Recommended: add `jobId` to `RouterResult` (currently it is not returned, only logged).
-
-### shot-types.ts Modifications
-
-Current `dialogue` shot type points to `veo-3.1` via `kie` provider. Veo 3.1 uses a different Kie.ai endpoint (`/api/v1/veo/generate`) not the standard Kling endpoint. The `KieAdapter._submitVideoJob()` currently calls `createKlingTask()` for all video shot types. Veo 3.1 requires branching inside `KieAdapter.submitJob()` or a dedicated `VeoAdapter`.
-
-Recommended: branch inside `KieAdapter` based on `modelId.startsWith('veo-')`, calling a `createVeoTask()` function in `kie.ts`.
-
-### Root.tsx Registration (New Templates)
-
-New compositions follow the exact pattern of existing ones. Registration in `Root.tsx` is the only change required — the renderer picks up compositions by ID string. No changes to `remotion-renderer.ts` needed.
-
-### DB Tables Required
-
-| Table | Action | Notes |
-|-------|--------|-------|
-| `generation_quality_scores` | CREATE | New — quality feedback loop |
-| `prompt_effectiveness` | CREATE | New — prompt score aggregates |
-| `ai_model_decisions` | No change | Already logs routeShot decisions |
-| `ai_model_recommendations` | No change | Observatory reads/writes this |
-| `PipelineRun` | No change | Already tracks cost + model |
-| `prompt_configs` | No change | Prompt store — read only by pipeline |
-
-### External Services
-
-| Service | Integration Pattern | Activation Status | Notes |
-|---------|---------------------|-------------------|-------|
-| fal.ai (Sora 2) | FalAdapter → queue.fal.run | Code ready, needs FAL_API_KEY | Request body must be `{ prompt, duration }` (no image_url) |
-| fal.ai (Wan 2.6) | FalAdapter → queue.fal.run | Code ready, needs FAL_API_KEY | `fal-ai/wan-i2v` needs `{ image_url, prompt }` |
-| fal.ai (Kling fallback) | FalAdapter → queue.fal.run | Code ready, needs FAL_API_KEY | Same body as Kie.ai Kling |
-| Veo 3.1 (via Kie.ai) | KieAdapter → Kie.ai /veo/generate | Needs branching in KieAdapter | Different endpoint than Kling |
-| Remotion (new templates) | renderComposition() by ID | No infra change needed | Register in Root.tsx only |
 
 ---
 
 ## Build Order (Dependency-Constrained)
 
-### Phase 1: Foundation — FalAdapter Activation
+### Step 1: Change Intent Parser (no dependencies, standalone)
 
-**What:** Make real fal.ai calls work for narrative, environment, and social shot types. No new infrastructure — the adapter and router already exist.
+**File:** `services/onboarding/change-intent-parser.ts`
 
-**Files to change:**
-1. `provider-adapters/fal-adapter.ts` — add model-specific request body builder
-2. `.env` — add `FAL_API_KEY`
-3. `shot-types.ts` — verify `fal-ai/sora`, `fal-ai/wan-i2v` model IDs match fal.ai docs
+Standalone Claude API call returning typed `ChangeRequest`. Has no dependencies on generation infrastructure. Write and test independently with unit tests.
 
-**Why first:** Every other feature (quality scoring, self-learning) depends on having real generation data from multiple providers. Can't score what doesn't generate.
+**Acceptance criteria:** Parser correctly classifies at least 10 sample messages covering the 5 intent types. Test with actual WhatsApp-style messages ("make it more casual", "redo scene 2", "looks perfect", "I'm not sure").
 
-**Memory impact:** No new memory pressure — FalAdapter uses native fetch, no new process.
+### Step 2: updateCharacterBible() in character-bible-generator.ts (no dependencies)
 
-### Phase 2: Veo 3.1 Re-Integration for Dialogue
+**File:** `services/onboarding/character-bible-generator.ts`
 
-**What:** Branch `KieAdapter.submitJob()` to route dialogue shots to `/api/v1/veo/generate` endpoint on Kie.ai instead of the Kling endpoint.
+Add `updateCharacterBible()` function. Test: insert a CharacterBible, call update with delta, verify new row inserted with `version = 2` and `fetchCharacterBible()` returns it.
 
-**Files to change:**
-1. `services/kie.ts` — add `createVeoTask()` function
-2. `provider-adapters/kie-adapter.ts` — branch on `modelId.startsWith('veo-')`
+**No dependency on Step 1.**
 
-**Why second:** Dialogue shot type is the most differentiated (talking heads). Once fal.ai is working for other types, completing the model coverage for dialogue rounds out the multi-model story.
+### Step 3: Phase machine extension in character-video-gen.ts (depends on Steps 1 and 2)
 
-**No dependency on Phase 1** — can be parallelized.
+**File:** `services/onboarding/modules/character-video-gen.ts`
 
-### Phase 3: Quality Feedback Loop
+Add new phase cases. Wire intent parser and bible updater. Split existing `'complete'` into `'delivered'` and `'signed-off'`. Add `runSceneRegenPipeline()` function (targeted regen loop, merges into existing sceneUrls, re-enters `awaiting-composition`).
 
-**What:** Add `generation_quality_scores` table, `quality-scorer.ts` service, and wire it into `character-video-gen.ts` (and `video-pipeline.worker.ts` for the broader pipeline).
+This is the highest-risk file — it's the largest module and the one already in production. Make changes surgically: add new cases to the switch without touching existing ones.
 
-**Files to change:**
-1. New SQL migration — `generation_quality_scores` table
-2. New `services/quality-scorer.ts`
-3. `services/onboarding/modules/character-video-gen.ts` — add `qualityScorer.record()` after each completed scene
-4. `services/model-selector.ts` or new `daily-sync.ts` — aggregate scores → update observatory
+### Step 4: Integration test on staging (depends on Step 3)
 
-**Depends on:** Phase 1 (need real fal.ai data to score) and Phase 2 (need veo data to score dialogue).
-
-**Memory impact:** Table write only — no new in-process memory.
-
-### Phase 4: Prompt Effectiveness Tracking
-
-**What:** Add `prompt_effectiveness` table. After quality scores are recorded, aggregate by `(service, prompt_key, version)` and update effectiveness table.
-
-**Files to change:**
-1. New SQL migration — `prompt_effectiveness` table
-2. New `services/prompt-index.ts` — joins `generation_quality_scores` to `prompt_configs` via pipelineRunId
-
-**Depends on:** Phase 3 (quality scores must exist before prompt effectiveness can be measured).
-
-**Note:** `prompt_configs` already has `version` column. The link between a generation and its prompt version is via `PipelineRun.inputJson` (store which prompt version was used when generating).
-
-### Phase 5: Parametric Remotion Templates
-
-**What:** Build `LocalBizShowreelComposition.tsx` as a fully parametric template that accepts `businessName`, `niche`, `motionClips[]`, `photos[]`, `accentColor`, `ctaText`. Register in `Root.tsx`.
-
-**Files to change:**
-1. New `remotion/src/types/local-biz-showreel-props.ts`
-2. New `remotion/src/LocalBizShowreelComposition.tsx`
-3. `remotion/src/Root.tsx` — register `LocalBizShowreel-16x9` and `LocalBizShowreel-9x16`
-
-**Why last:** Templates are a product delivery layer. They don't depend on quality routing to function, but having quality routing working first means the clips that feed into templates are optimized.
-
-**Memory impact:** Remotion rendering is the most memory-intensive operation. Each concurrent render thread uses ~400MB on the 6GB VPS. Current `concurrency: 2` setting in `remotion-renderer.ts` is correct and must not change.
-
----
-
-## Scaling Considerations (6GB VPS Constraint)
-
-| Concern | Current | With New Features | Mitigation |
-|---------|---------|-------------------|------------|
-| Remotion render memory | ~800MB peak (2 threads) | Same — concurrency: 2 enforced | Never increase concurrency |
-| Parallel fal.ai requests | 5 scenes concurrent (character-video-gen) | Same pattern | No new parallelism needed |
-| Quality score writes | 0 | Low — one INSERT per completed generation | Non-blocking, never fails pipeline |
-| Model cache memory | Map with 10-20 entries max | Add 2-3 entries for new models | Negligible |
-| PM2 worker process | ~300MB baseline | +50MB estimate for new tables/services | No process split needed |
+Walk a full character session on the staging group:
+1. Complete questionnaire → video generated → delivered
+2. Send change request → parser fires → regen → new video delivered
+3. Send sign-off → pipeline event fires → admin notified
 
 ---
 
 ## Anti-Patterns to Avoid
 
-### Anti-Pattern 1: Separate Observatory for fal.ai
+### Anti-Pattern 1: New Module for Change Requests
 
-**What people do:** Create a second Observatory table or selector specifically for fal.ai models.
+**What people do:** Register a `character-iteration` module in MODULE_REGISTRY to handle post-delivery changes.
 
-**Why wrong:** The existing `ai_models` table and `ai_model_recommendations` are provider-agnostic. The `model_id` column stores identifiers like `fal-ai/sora` already. Adding fal.ai models is a data migration (INSERT rows), not a schema or code change.
+**Why wrong:** The module router deactivates `character-video-gen` when it reaches `complete`, then looks for the next module. A `character-iteration` module would need to know it should only activate after `character-video-gen` is complete — creating implicit ordering that the registry doesn't support. It would also lose all the context (sceneUrls, pipelineRunId, bibleId) stored in character-video-gen's collectedData.
 
-**Do this instead:** INSERT fal.ai model rows into `ai_models` with correct `cost_per_5s_usd` values. The Observatory already handles them.
+**Do this instead:** Keep change requests inside `character-video-gen` by adding post-delivery phases. The module's collectedData already carries everything needed.
 
-### Anti-Pattern 2: Quality Score in router.ts
+### Anti-Pattern 2: Keyword-Matching for Intent Classification
 
-**What people do:** Try to close the feedback loop inside `routeShot()` itself.
+**What people do:** `if (msg.includes('scene 2')) → regen scene 2`.
 
-**Why wrong:** `routeShot()` only submits jobs — it returns before the job completes. Quality can only be assessed after polling completes, which happens minutes later in the calling module. Adding a callback or promise chain inside the router breaks its clean separation.
+**Why wrong:** Clients say "that second scene doesn't look right" or "can we redo the office one?" Keywords miss these. The classifier also needs to distinguish "make her look more professional" (bible change) from "regen scene 3" (targeted regen) from "looks great!" (sign-off).
 
-**Do this instead:** Quality recording lives in the modules that call `routeShot()` and own the polling loop. The router stays stateless.
+**Do this instead:** Claude intent classification with structured JSON output. Cost is negligible (~$0.001). The existing `character-bible-generator.ts` already proves this pattern works.
 
-### Anti-Pattern 3: Per-Niche Remotion Compositions
+### Anti-Pattern 3: Updating CharacterBible In-Place
 
-**What people do:** Copy `HairShowreelComposition.tsx` and rename it `RestaurantShowreel`, `PlumberShowreel`, etc.
+**What people do:** `UPDATE CharacterBible SET visualStyle = $1, version = version + 1 WHERE tenantId = $2`.
 
-**Why wrong:** Each composition registration in `Root.tsx` increases bundle size. The renderer bundles the entire project once on startup. More compositions = slower startup, more memory on a 6GB VPS.
+**Why wrong:** Loses the previous state. If the client says "actually I preferred the original style," rollback requires storing the old value separately. There's no audit trail.
 
-**Do this instead:** One `LocalBizShowreelComposition` with a `niche` prop that drives the visual treatment (color palette, intro text style). Test with `defaultProps` for the initial niche, override at render time for others.
+**Do this instead:** INSERT new row. `fetchCharacterBible()` already uses `ORDER BY createdAt DESC LIMIT 1` — no query change needed. The `version` column auto-increments. Full history is preserved.
 
-### Anti-Pattern 4: Blocking Pipeline on Quality Scoring
+### Anti-Pattern 4: Firing module-completed During Change Iteration
 
-**What people do:** `await qualityScorer.record(...)` before returning from the generation loop.
+**What people do:** Return `completed: true` after delivering the updated video.
 
-**Why wrong:** Quality scoring is observational. The customer's video should not wait for a DB write that's only useful for future routing. A failure in quality recording must never block delivery.
+**Why wrong:** This triggers `handlePipelineEvent({ type: 'module-completed' })` which transitions the pipeline to `awaiting-approval`, sends admin notification, and sends the next module poll to the client. Change iteration is not done — the client may have more requests.
 
-**Do this instead:** `qualityScorer.record(...).catch(() => {})` — fire and forget, same pattern as `logDecision()` in `router.ts`.
+**Do this instead:** Only return `completed: true` from the `signed-off` phase. The `delivered` and `awaiting-change-request` phases return `completed: false` to keep the module active.
+
+### Anti-Pattern 5: Running Composition Pipeline for Every Scene Change
+
+**What people do:** Full 5-scene regeneration for any change request.
+
+**Why wrong:** Full regeneration costs ~$5.00 (5 Sora scenes). If the client wants one scene changed, regenerating 4 good scenes wastes money and time (10+ minutes).
+
+**Do this instead:** The intent parser identifies specific scene indices to regen. Only those scenes are submitted to the model router. The remaining `sceneUrls` are merged from the existing `collectedData.sceneUrls`. Composition is re-run (CPU only, ~$0) to produce the new reveal video.
+
+---
+
+## Scaling Considerations
+
+| Concern | Impact | Mitigation |
+|---------|--------|------------|
+| Parallel change requests from same group | Low (WhatsApp concurrency is serial in practice) | claudeclaw.worker concurrency: 1 already prevents races |
+| Accumulating CharacterBible versions | Low (few KB per row) | No action needed for current scale |
+| Change history in collectedData JSONB | Low (JSONB compressed, bounded) | Cap regenHistory at 20 entries |
+| Credit burn from excessive regen | Medium (client could request infinite changes) | Add `changeCount` cap to collectedData (default: 5 free changes, then admin approval) |
 
 ---
 
 ## Sources
 
 - Direct codebase analysis (HIGH confidence):
-  - `/apps/worker/src/services/model-router/router.ts` — routing logic
-  - `/apps/worker/src/services/model-selector.ts` — observatory pattern
-  - `/apps/worker/src/services/model-router/provider-adapters/fal-adapter.ts` — fal.ai implementation
-  - `/apps/worker/src/services/model-router/shot-types.ts` — shot taxonomy
-  - `/apps/worker/remotion/src/Root.tsx` — composition registry
-  - `/apps/worker/src/services/remotion-renderer.ts` — render entry point
-  - `/apps/worker/src/services/onboarding/modules/character-video-gen.ts` — existing generation pattern
-  - `/apps/worker/src/services/prompt-store.ts` — prompt management pattern
-  - `/apps/worker/src/queue/queues.ts` — 7 BullMQ queues
-  - `/apps/worker/src/services/pipeline-run.ts` — run lifecycle
-  - `/apps/worker/src/services/expense-tracker.ts` — cost tracking
+  - `/apps/worker/src/services/onboarding/modules/character-video-gen.ts` — existing phase machine, integration points
+  - `/apps/worker/src/services/onboarding/modules/character-questionnaire.ts` — module pattern reference
+  - `/apps/worker/src/services/onboarding/module-router.ts` — routing logic, active module detection
+  - `/apps/worker/src/services/onboarding/module-state.ts` — state persistence
+  - `/apps/worker/src/services/onboarding/character-bible-generator.ts` — Claude API call pattern
+  - `/apps/worker/src/services/onboarding/pipeline-state.ts` — pipeline state, completed: true firing
+  - `/apps/worker/src/queue/workers/claudeclaw.worker.ts` — message flow, handlePipelineEvent call
+  - `/apps/worker/src/queue/workers/onboarding.worker.ts` — handlePipelineEvent, admin notification
+  - `/apps/web/superseller-site/prisma/schema.prisma` — CharacterBible schema (version column exists)
+  - `/apps/worker/src/services/onboarding/modules/types.ts` — OnboardingModule interface
 
 ---
-*Architecture research for: Intelligent Content Engine (v1.1 milestone)*
-*Researched: 2026-03-14*
+*Architecture research for: Character Change Requests + Scene Regeneration milestone*
+*Researched: 2026-03-15*

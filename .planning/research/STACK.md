@@ -1,194 +1,305 @@
 # Stack Research
 
-**Domain:** Intelligent Content Engine — Multi-model AI video production with quality feedback loops
-**Researched:** 2026-03-14
-**Confidence:** HIGH (API endpoints and model IDs verified against official fal.ai and kie.ai docs)
+**Domain:** Character Iteration — WhatsApp-driven change requests and selective scene regeneration
+**Researched:** 2026-03-15
+**Confidence:** HIGH (based on direct codebase analysis + confirmed existing patterns)
 
 ---
 
-## Context: What Already Exists (DO NOT Rebuild)
+## Context: What This Milestone Adds
 
-The worker already has these working — research only covers net-new additions:
+This is a subsequent milestone. The v1.0/v1.1 stack (BullMQ, Sora 2 via fal.ai, Kie.ai, Remotion, WAHA, pgvector, Claude direct fetch) is validated and active. Do NOT re-research those.
 
-| Existing | Location | Status |
-|----------|----------|--------|
-| `FalAdapter` (queue REST, native fetch) | `apps/worker/src/services/model-router/provider-adapters/fal-adapter.ts` | DORMANT — code written, never activated |
-| `KieAdapter` + `kie.ts` | `apps/worker/src/services/kie.ts` | ACTIVE — Kling 3.0 production |
-| `routeShot()` model router | `apps/worker/src/services/model-router/router.ts` | ACTIVE — Observatory + budget enforcement |
-| `SHOT_DEFAULT_MODELS` | `apps/worker/src/services/model-router/shot-types.ts` | ACTIVE — model IDs need correction (see below) |
-| BullMQ 7-queue orchestration | `apps/worker/src/` | ACTIVE |
-| Remotion 4.0.429, 8 compositions | `apps/worker/` | ACTIVE |
-| `trackExpense()`, `api_expenses` table | `apps/worker-packages/db` | ACTIVE |
-| `content_entries` with `performanceScore`, `engagementRate` | `apps/worker-packages/db/src/schema.ts` | ACTIVE — columns exist, no writer yet |
-| pgvector 0.8.1 HNSW, Ollama nomic-embed-text 768-dim | RackNerd | ACTIVE — used for RAG |
+This milestone adds four net-new capabilities:
+
+1. **Conversation state for iterative change loops** — customer says "make the hair darker" and the agent tracks which field changed, not a full restart
+2. **Diff-based CharacterBible updates** — patch only changed fields, version-stamp the result, keep history
+3. **Selective scene regeneration** — regenerate only affected scenes, not all 5
+4. **Approval/rejection flow** — customer sees proposed change, approves or rejects before credits are consumed
 
 ---
 
-## Critical Model ID Corrections
+## What Already Exists (DO NOT Rebuild)
 
-The current `SHOT_DEFAULT_MODELS` has stale fal.ai model IDs. These must be updated before activation:
-
-| Shot Type | Current (Wrong) | Correct (Verified) | Why |
-|-----------|----------------|-------------------|-----|
-| `environment` | `fal-ai/sora` | `fal-ai/sora-2/image-to-video/pro` | Sora 2 is current; `fal-ai/sora` is v1 |
-| `social` | `fal-ai/wan-i2v` | `wan/v2.6/image-to-video` | `fal-ai/wan-i2v` = Wan 2.1; v2.6 is current and has Flash tier |
-| `dialogue` | `veo-3.1` (kie) | Separate endpoint: `POST /api/v1/veo/generate` with `model: "veo3"` | Veo 3.1 is NOT via `/api/v1/jobs/createTask` — it has its own route |
-
-**Source:** fal.ai model pages (verified), docs.kie.ai/veo3-api (verified)
-
----
-
-## Recommended Stack Additions
-
-### fal.ai Provider — Activate Existing Adapter
-
-The `FalAdapter` is written correctly (native fetch, queue REST pattern). No new library needed for basic Sora 2 and Wan 2.6 activation. The adapter already handles the `queue.fal.run/{modelId}` pattern.
-
-**What changes:** Model IDs in `shot-types.ts` + input body shape in `fal-adapter.ts` `submitJob()`.
-
-**Input body differences by model:**
-
-| Model | fal ID | Key Input Fields |
-|-------|--------|-----------------|
-| Sora 2 I2V | `fal-ai/sora-2/image-to-video/pro` | `prompt`, `image_url`, `duration` (4/8/12/16/20s), `resolution` (720p/1080p), `character_ids` (optional) |
-| Wan 2.6 I2V | `wan/v2.6/image-to-video` | `prompt`, `image_url`, `resolution` (720p/1080p), `duration` (5/10/15s), `audio_url` (optional), `negative_prompt`, `multi_shots` |
-| Wan 2.6 Flash | `wan/v2.6/image-to-video/flash` | Same as above — $0.05/s vs $0.10/s |
-
-**Output response differences:**
-
-| Model | Output path |
-|-------|------------|
-| Sora 2 | `data.output.video.url` (VideoFile object) |
-| Wan 2.6 | `data.output.video.url` (VideoFile object with resolution/fps/frame_count metadata) |
-
-The existing `pollStatus()` in `fal-adapter.ts` handles both — it already checks `data.output.video?.url ?? data.output.video_url`. Wan 2.6 adds useful `actual_prompt` field worth logging.
-
-### Sora 2 References API (Character Consistency)
-
-This is a separate fal.ai endpoint, not part of the standard queue flow. It requires a two-step pattern:
-
-1. **Create character:** `POST https://queue.fal.run/fal-ai/sora-2/characters` with `{ video_url, name }` → returns `{ id: "char_...", name }`
-2. **Use in generation:** Pass `character_ids: ["char_..."]` in the Sora 2 I2V submission body
-
-**Implementation:** Add `createSoraCharacter(videoUrl: string, name: string): Promise<string>` to `FalAdapter`. The character_id is stored on `CharacterBible` or in a new `character_references` column (JSONB). No new library needed — same auth headers, same fetch pattern.
-
-### Veo 3.1 Re-integration (Kie.ai — New Endpoint)
-
-Veo was deprecated in Feb 2026 because it was accessed via the wrong endpoint. Veo 3.1 uses a **dedicated route**, not `createTask`:
-
-| Property | Value |
-|----------|-------|
-| Generate endpoint | `POST https://api.kie.ai/api/v1/veo/generate` |
-| Poll endpoint | `GET https://api.kie.ai/api/v1/veo/record-info?taskId=` |
-| Auth | `Bearer YOUR_API_KEY` (same key as Kling) |
-| model param | `veo3` (quality, ~$2.00/8s) or `veo3_fast` ($0.40/8s) |
-| generationType | `TEXT_2_VIDEO`, `FIRST_AND_LAST_FRAMES_2_VIDEO`, or `REFERENCE_2_VIDEO` |
-| aspect_ratio | `16:9` (default), `9:16`, `Auto` |
-
-**Implementation:** Add `createVeoTask()` and `pollVeoTask()` functions to `apps/worker/src/services/kie.ts`. The `KieAdapter` routes `dialogue` shot type to these new functions. The comment in `kie.ts` line 15 (`// Veo is DEPRECATED...`) gets replaced with the new implementation.
-
-**Cost routing in shot-types.ts:** `dialogue` stays on `provider: 'kie'` but needs `useCase: 'veo3_talking_head'` to distinguish from Kling in Observatory.
-
-### Quality Feedback Loop — Heuristic Scorer
-
-No external library needed. The `content_entries.performanceScore` column already exists. What's missing is a writer.
-
-**Approach:** FFmpeg-based heuristic scoring via `child_process.spawn` (already used in the worker for video assembly). No new npm package required.
-
-**Three heuristics via FFmpeg (no reference video needed):**
-
-| Metric | FFmpeg Command | What it signals |
-|--------|---------------|-----------------|
-| Blur score | `ffmpeg -vf blurdetect=high=0.1 -f null /dev/null` — parse `blur_ratio` | Motion blur, out-of-focus |
-| Entropy (detail richness) | `ffprobe -show_frames` → calculate spatial entropy from `pkt_size` variance | Low entropy = flat/boring frame |
-| Motion score | `ffmpeg -vf mpdecimate -f null /dev/null` — parse dropped frame count | Static/frozen output |
-
-**Output:** Composite 0–1 score written to `content_entries.performanceScore`. This score feeds back to `ai_model_decisions` via a new `generationScore` column — enabling the router to prefer models that score higher for specific shot types over time.
-
-**What NOT to use:** VMAF/SSIM require a reference video (the "original" to compare against). AI-generated content has no reference. Netflix VMAF is Python-only and requires a C library build. These are not applicable here.
-
-### Prompt Effectiveness Tracking and Indexing
-
-**Approach:** Extend the existing pgvector RAG infrastructure already on RackNerd (Ollama nomic-embed-text, 768-dim HNSW index) with a `prompt_library` table.
-
-**New table:** `prompt_library`
-```sql
-id            uuid primary key
-shotType      text  -- ShotType enum
-promptText    text
-embedding     vector(768)  -- nomic-embed-text via existing Ollama
-avgScore      float8        -- rolling average of content_entries.performanceScore
-useCount      int4
-tenantId      uuid (nullable — some prompts are global templates)
-createdAt     timestamptz
-```
-
-**No new npm package needed.** The worker already uses `pg` directly. The existing pgvector HNSW index handles similarity search. Query: cosine distance on `embedding` to find highest-scoring similar prompts before generating.
-
-**pgvector-node** (`npm install pgvector`) is the only addition if you want typed vector serialization. Version 0.2.1 (current). Optional — raw SQL `$1::vector` also works with the existing `pg` client.
-
-### Per-Clip Cost Attribution
-
-**Approach:** `trackExpense()` already exists. What's missing is a `clipId` dimension.
-
-**Implementation:** Pass `clipId` (new ULID) to `trackExpense()` calls. Add `clip_id` column to `api_expenses` table (nullable — job-level costs stay as-is). No new library. Schema migration only.
-
-### Remotion Parametric Template Library
-
-**Approach:** Remotion 4.0.429 already installed and supports fully parametric compositions via `defaultProps` + `calculateMetadata`. No new version needed.
-
-**Pattern:** Each local business template is a `<Composition>` with a typed `BusinessVideoProps` interface:
-
-```typescript
-interface BusinessVideoProps {
-  businessName: string;
-  tagline: string;
-  primaryColor: string;
-  logoUrl?: string;
-  clips: Array<{ videoUrl: string; durationSeconds: number; caption?: string }>;
-  ctaText: string;
-  ctaPhone?: string;
-}
-```
-
-`calculateMetadata` derives `durationInFrames` from the clips array length. Templates are registered in a new `template-registry.ts` — no library, just a typed map of composition IDs to prop validators (using the existing `zod@^4.3.6`).
+| Existing | Location | Relevant to This Milestone |
+|----------|----------|-----------------------------|
+| `onboarding_module_state` table | `module-state.ts` | Stores `phase` + `collectedData` JSONB per `(group_id, module_type)` — extend for iteration context |
+| `upsertModuleState()` | `module-state.ts` | Atomic phase + data update — reuse as-is |
+| `CharacterBible` table | Prisma schema + `character-bible-generator.ts` | Has `version INT`, `active BOOL`, `metadata JSONB` — already supports versioning |
+| `generateCharacterBible()` | `character-bible-generator.ts` | Calls Claude, inserts row — needs a sibling `updateCharacterBible()` variant |
+| `generateScene()` + `generateAllScenes()` | `character-video-gen.ts` | Full 5-scene pipeline — needs a `regenerateScene(sceneIndex, prompt)` variant |
+| `PipelineRun` table | Prisma schema | Already tracks `pipelineType`, `costCents`, `outputJson` — use `pipelineType: "character-iteration"` |
+| `trackExpense()` | `expense-tracker.ts` | Existing cost tracking — use as-is |
+| `ModuleState` / `ModuleHandleResult` types | `modules/types.ts` | `ModuleType` union needs `"character-iteration"` added |
+| `routeShot()` | `model-router/router.ts` | Single-scene routing — already works for individual scene generation |
 
 ---
 
-## Core Technologies (Net New Only)
+## Recommended Stack — Net New Only
+
+### Core Technologies
 
 | Technology | Version | Purpose | Why Recommended |
 |------------|---------|---------|-----------------|
-| `@fal-ai/client` | 1.9.4 | Optional typed SDK for Sora 2 character creation | Provides TypeScript types for `CreateCharacterOutput` response. The existing `FalAdapter` native fetch works for queue calls; SDK is useful only for the `/characters` endpoint which isn't in queue format. Install only if typed response is worth the dependency. |
-| `pgvector` | 0.2.1 | Typed vector serialization for prompt_library queries | Only needed if you want `toSql()` / `fromSql()` type helpers. Raw SQL `$1::vector` also works. Optional but clean. |
+| Native `pg` Pool (existing) | `^8.18.0` | CharacterBible versioning queries, iteration state reads | Already in worker. No new client needed — raw SQL handles the versioned-insert + deactivate-old pattern. |
+| Claude API (direct fetch, existing) | `claude-sonnet-4-20250514` | Parse natural language change requests into structured field diffs | Already used in `character-bible-generator.ts` via `fetch()`. Same pattern: send diff prompt, receive JSON. |
+| `zod` (existing) | `^4.3.6` | Validate the diff JSON returned by Claude before applying | Already installed. Add a `CharacterDiffSchema` to validate Claude's structured diff output. |
+| BullMQ (existing) | `^5.67.3` | Queue individual scene regeneration jobs | Already has 7 queues. Add a `character-regen` queue for single-scene regeneration jobs — same pattern as existing queues. |
 
-**Assessment: Both are optional.** The existing native fetch + raw pg client can handle all new functionality without adding dependencies. Add them only if TypeScript type coverage is a priority.
+**No new npm packages required.** Every capability can be built on the existing foundation.
+
+### Supporting Libraries
+
+| Library | Version | Purpose | When to Use |
+|---------|---------|---------|-------------|
+| `zod` (existing) | `^4.3.6` | `CharacterDiffSchema` — validate Claude's parsed change JSON | Every time a customer submits a change request before touching DB |
+| `pg` Pool (existing) | `^8.18.0` | `character_iteration_history` table inserts, CharacterBible version upserts | Every approved change |
+| BullMQ (existing) | `^5.67.3` | Enqueue `character-regen` jobs for selective scene regeneration | When customer approves a change that affects specific scenes |
+
+### Development Tools
+
+| Tool | Purpose | Notes |
+|------|---------|-------|
+| TypeScript (existing) | Type-safe diff structure | Define `CharacterDiff` interface — enforces partial update shape |
+| Existing `logger` | Structured logging for iteration attempts | Same `{ msg, tenantId, phase }` pattern throughout |
 
 ---
 
-## Supporting Libraries (No New Install Required)
+## Architecture: The Four Building Blocks
 
-| Existing Library | New Use for v1.1 |
-|-----------------|-----------------|
-| `pg` (^8.18.0) | `prompt_library` table queries, pgvector cosine search |
-| `zod` (^4.3.6) | `BusinessVideoProps` schema validation in template registry |
-| `bullmq` (^5.67.3) | New `quality-scoring` queue for async score computation post-generation |
-| `remotion` (^4.0.429) | Parametric template compositions, `calculateMetadata` for dynamic duration |
-| `child_process` (Node built-in) | FFmpeg heuristic scoring — blur, entropy, motion detection |
+### 1. Conversation State for Iterative Loops
+
+**Problem:** The existing `character-video-gen` module has phases `intro → generating → awaiting-composition → composing → uploading → delivering → complete`. Once it reaches `complete`, there is no path back for "change my character's hair color."
+
+**Solution:** A new `character-iteration` module with its own phase machine. This is a NEW `ModuleType` — not a phase within `character-video-gen`. Customers who reach the `complete` phase of `character-video-gen` transition here when they send a change request.
+
+**New `ModuleType` to add to `modules/types.ts`:**
+```typescript
+export type ModuleType =
+    | "asset-collection"
+    | "character-questionnaire"
+    | "character-video-gen"
+    | "character-iteration"     // NEW
+    | "social-setup"
+    | "competitor-research";
+```
+
+**Phase machine for `character-iteration`:**
+```
+idle
+  │ (any message after character-video-gen complete)
+  ▼
+parsing-request
+  │ Claude parses: "make the hair darker" → { field: "visualStyle", change: "darker hair" }
+  ▼
+awaiting-approval
+  │ Show customer: "I'll update [visualStyle] to add darker hair. This will regenerate scenes 1, 3, 4."
+  │ Reply YES to proceed, NO to cancel.
+  ▼
+applying-change      (on YES)
+  │ Patch CharacterBible, version++, deactivate old
+  ▼
+regenerating
+  │ Queue selective scene regeneration via BullMQ
+  ▼
+composing
+  │ Re-render Remotion with new scenes (only affected slots replaced)
+  ▼
+delivering
+  │ Send updated reveal video via WAHA
+  ▼
+idle                 (back to idle — ready for next change)
+```
+
+**State stored in `collectedData` JSONB:**
+```typescript
+interface IterationCollectedData {
+    characterBibleId: string;         // current bible ID
+    pendingDiff?: CharacterDiff;      // proposed change, waiting for approval
+    affectedSceneIndices?: number[];  // which scenes need regeneration
+    currentSceneUrls: string[];       // current R2 URLs (to avoid re-fetching)
+    iterationCount: number;           // how many changes applied so far
+    lastRevealUrl?: string;           // last delivered video URL
+    pipelineRunId?: string;           // current iteration run ID
+}
+```
+
+### 2. Diff-Based CharacterBible Updates
+
+**Problem:** `generateCharacterBible()` always INSERT a new row. For changes, we need to:
+- Identify WHICH fields changed
+- Apply only those changes
+- Keep the old version accessible (for rollback)
+- Increment version number
+
+**Solution:** Add `updateCharacterBible()` to `character-bible-generator.ts` using a versioned-insert pattern.
+
+**DB pattern (raw SQL, no schema change):**
+```sql
+-- 1. Deactivate old version
+UPDATE "CharacterBible" SET active = false WHERE id = $oldId;
+
+-- 2. Insert new version (copy old, apply diff)
+INSERT INTO "CharacterBible" (id, "tenantId", name, "personaDescription", "visualStyle",
+  "soraHandle", metadata, version, active, "createdAt", "updatedAt")
+SELECT gen_random_uuid()::text, "tenantId", name,
+  COALESCE($newPersonaDesc, "personaDescription"),
+  COALESCE($newVisualStyle, "visualStyle"),
+  "soraHandle", metadata, version + 1, true, NOW(), NOW()
+FROM "CharacterBible" WHERE id = $oldId
+RETURNING id, version;
+```
+
+`CharacterBible` already has `version INT DEFAULT 1` and `active BOOLEAN DEFAULT true`. No schema migration needed for the bible itself.
+
+**What Claude parses (the diff):**
+```typescript
+interface CharacterDiff {
+    field: "name" | "personaDescription" | "visualStyle" | "audience" | "scenarios";
+    originalValue: string;
+    requestedChange: string;          // Customer's words: "make it darker"
+    proposedValue: string;            // Claude's suggestion: "dark brown hair, deep shadows"
+    affectedSceneTypes: Array<"narrative" | "dialogue">;  // which scene types need regen
+}
+```
+
+**Claude prompt for parsing change requests:**
+A new `parseChangeRequest()` function (200 lines max) in `character-bible-generator.ts`. Sends: current CharacterBible fields + customer message. Receives: `CharacterDiff` JSON. Same `callClaude()` function already exists.
+
+### 3. Selective Scene Regeneration
+
+**Problem:** Regenerating all 5 scenes for a minor change wastes $5 in Sora 2 credits. "Make the hair darker" only affects visually-driven scenes, not the dialogue scenes.
+
+**Solution:** A `character-regen` BullMQ queue. Each job specifies `{ tenantId, sceneIndex, prompt, shotType }`. Completion triggers Remotion re-composition only for affected slots.
+
+**Scene-to-field mapping (static, no DB needed):**
+```typescript
+const SCENE_FIELD_MAP: Record<number, Array<"name" | "visualStyle" | "scenarios" | "personaDescription">> = {
+    0: ["name", "visualStyle", "personaDescription"],      // Scene 0: Studio portrait — visual
+    1: ["scenarios", "personaDescription"],                // Scene 1-3: Scenario-driven
+    2: ["scenarios", "personaDescription"],
+    3: ["scenarios", "personaDescription"],
+    4: ["visualStyle", "personaDescription"],              // Scene 4: Artistic closer — visual
+};
+
+function getAffectedScenes(diff: CharacterDiff): number[] {
+    return Object.entries(SCENE_FIELD_MAP)
+        .filter(([_, fields]) => fields.includes(diff.field))
+        .map(([idx]) => parseInt(idx));
+}
+```
+
+**New `character-regen` queue:**
+```typescript
+// In apps/worker/src/queue/queues.ts — add:
+export const characterRegenQueue = new Queue("character-regen", { connection: redis });
+
+// Job data shape:
+interface CharacterRegenJobData {
+    tenantId: string;
+    groupId: string;
+    sceneIndex: number;
+    prompt: string;
+    shotType: "narrative" | "dialogue";
+    pipelineRunId: string;
+    iterationId: string;   // groups all regen jobs for this change
+}
+```
+
+**Composition after selective regen:** The existing `runCompositionPipeline()` accepts `sceneUrls: string[]`. After selective regen, merge updated scene URLs with unchanged scene URLs (stored in `currentSceneUrls` from `collectedData`) before passing to Remotion.
+
+### 4. Approval/Rejection Flow
+
+**Problem:** Changes should not consume credits until the customer confirms. "Make the hair darker" → show the proposed change → customer says YES before API calls happen.
+
+**Solution:** The `awaiting-approval` phase shows the diff summary. No API calls happen until YES.
+
+**Approval message template:**
+```
+I'll make this change to [Character Name]:
+
+*What changes:* [field label] — [proposedValue excerpt]
+*Scenes to regenerate:* Scenes [1, 3, 4] (~$X.XX in credits)
+*Scenes kept as-is:* Scenes [2, 5]
+
+Reply *yes* to apply this change, or *no* to cancel.
+```
+
+**Cost estimate before approval:** `affectedScenes.length * SORA_COST_PER_SCENE` — same constant already in `character-video-gen.ts`. Show this in the approval message.
+
+**Rejection path:** Phase → `idle`, `pendingDiff` cleared from `collectedData`. No DB writes, no cost.
+
+---
+
+## New Files Required
+
+```
+apps/worker/src/services/onboarding/
+├── modules/
+│   └── character-iteration.ts         # NEW: handles iteration phase machine
+└── character-bible-updater.ts         # NEW: updateCharacterBible(), parseChangeRequest()
+
+apps/worker/src/queue/
+├── queues.ts                          # MODIFY: add characterRegenQueue
+└── workers/
+    └── character-regen.worker.ts      # NEW: processes single-scene regen jobs
+```
+
+**Modified files:**
+- `modules/types.ts` — add `"character-iteration"` to `ModuleType` union
+- `modules/character-video-gen.ts` — on `complete` phase, detect change-request intent and hand off to `character-iteration` module
+
+---
+
+## DB Changes
+
+### New Table: `character_iteration_history`
+
+The existing `CharacterBible` versioning (`version`, `active`) handles the bible state. But we need an audit trail of what changed and why — especially for billing.
+
+```sql
+CREATE TABLE IF NOT EXISTS character_iteration_history (
+    id          TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+    tenant_id   TEXT NOT NULL,
+    group_id    TEXT NOT NULL,
+    bible_id_before TEXT NOT NULL,       -- old CharacterBible ID
+    bible_id_after  TEXT,                -- new CharacterBible ID (null if rejected)
+    diff_json   JSONB NOT NULL,          -- CharacterDiff — what changed
+    status      TEXT NOT NULL DEFAULT 'pending',  -- pending | approved | rejected | completed | failed
+    scenes_regenerated  INT[] DEFAULT '{}',       -- which scene indices were rebuilt
+    cost_cents  INT DEFAULT 0,
+    pipeline_run_id TEXT,
+    requested_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    approved_at  TIMESTAMPTZ,
+    completed_at TIMESTAMPTZ
+);
+CREATE INDEX IF NOT EXISTS idx_cih_tenant ON character_iteration_history(tenant_id);
+CREATE INDEX IF NOT EXISTS idx_cih_status ON character_iteration_history(status);
+```
+
+**Why a separate table vs extending `PipelineRun`:** `PipelineRun.inputJson` / `outputJson` are generic blobs. The iteration table has typed columns for `scenes_regenerated` (int array), `bible_id_before/after` (critical for rollback), and `status` that maps to the approval flow — none of which fit cleanly in PipelineRun's schema. PipelineRun is still created for cost tracking (via `trackExpense()`); this table tracks the change request lifecycle.
+
+### No Changes to `onboarding_module_state`
+
+The existing table already supports the new module via `module_type = 'character-iteration'`. `collectedData` JSONB holds the `IterationCollectedData` shape defined above. No migration needed.
+
+### No Changes to `CharacterBible`
+
+`version`, `active`, `metadata` columns already exist in Prisma schema. The versioned-insert SQL pattern handles everything.
 
 ---
 
 ## Installation
 
-If adding optional typed packages:
+No new npm packages. Everything runs on existing dependencies.
 
 ```bash
-# In apps/worker/
-npm install pgvector@0.2.1
-npm install @fal-ai/client@1.9.4
+# Verify existing packages are at expected versions (no install needed):
+# bullmq@^5.67.3  ✓
+# zod@^4.3.6      ✓
+# pg@^8.18.0      ✓
+# ioredis@^5.9.2  ✓
 ```
-
-Everything else is a code change, not a dependency addition.
 
 ---
 
@@ -196,11 +307,11 @@ Everything else is a code change, not a dependency addition.
 
 | Recommended | Alternative | Why Not |
 |-------------|-------------|---------|
-| FFmpeg heuristic scoring (no-reference) | Netflix VMAF | VMAF requires a reference video — impossible for AI-generated content. Also Python-only, C library build, not viable in Node.js worker. |
-| pgvector + Ollama nomic-embed-text (existing) | Dedicated vector DB (Pinecone, Weaviate) | Already have pgvector HNSW on RackNerd. Adding another service for prompt indexing is overengineering. |
-| Native fetch in FalAdapter | @fal-ai/client SDK | SDK adds 200KB dependency for a pattern already working with 40 lines of fetch. Use SDK only for the Characters endpoint if typed response is needed. |
-| Veo 3.1 via kie.ai (existing key) | Veo 3.1 direct via Google Vertex AI | kie.ai is 25% of Google pricing ($0.40/8s vs ~$1.60). Same API key already in use. Google direct adds OAuth complexity for no gain. |
-| Wan 2.6 Flash for `social` budget tier | Wan 2.6 Standard | Flash = $0.05/s vs $0.10/s — matches `budget` tier ceiling of $0.05/unit. Indistinguishable quality for short social clips. |
+| New `character-iteration` ModuleType | Add iteration phases to `character-video-gen` | `character-video-gen` already has 7 phases. Adding iteration phases to the same module creates an ambiguous `complete` state — is it complete-initial or complete-after-changes? Separate module = clean separation. |
+| Versioned-insert pattern for CharacterBible | Mutable UPDATE on existing row | Loses history. If customer wants to roll back ("the old hair was better"), we'd have no prior bible to restore from. Versioned-insert + `active` flag costs one extra row and enables rollback at zero code cost. |
+| Selective scene regen via BullMQ `character-regen` queue | Inline async regeneration inside `character-iteration.ts` | BullMQ gives retry logic, job-level failure isolation, and visibility in admin. A single inline `await generateScene()` that fails leaves the module in an unknown state. Queue jobs can be individually retried. |
+| Approval gate before any API call | Optimistic: generate first, ask to keep or discard | Optimistic approach burns credits on rejected changes. At $1/scene and 3 affected scenes, that's $3 per rejected change. The approval gate adds one message exchange but prevents unintended credit burn. |
+| Parse change intent with Claude (JSON diff) | Pattern matching / regex on message | Regex can't handle "make it more business casual" or Hebrew equivalents. Claude already handles this in the character-bible-generator — same pattern extends naturally. The diff schema keeps Claude's output structured and validated with zod. |
 
 ---
 
@@ -208,35 +319,41 @@ Everything else is a code change, not a dependency addition.
 
 | Avoid | Why | Use Instead |
 |-------|-----|-------------|
-| `fluent-ffmpeg` | 1.2MB dependency for a wrapper over `child_process.spawn`. Already use spawn directly in worker. | `child_process.spawn('ffmpeg', [...])` directly |
-| `@fal-ai/serverless-client` | Deprecated — replaced by `@fal-ai/client` 1.0+ | `@fal-ai/client` (if SDK needed at all) |
-| Any Python quality-assessment library | Not executable from Node.js worker without shell escape complexity | FFmpeg built-in filters (`blurdetect`, `mpdecimate`) |
-| Separate prompt database / vector store | Duplicates existing pgvector infrastructure | Extend existing `pgvector` index with `prompt_library` table |
-| `@anthropic-ai/sdk` in worker | Already decided against in v1.0 (see PROJECT.md decisions) — direct fetch works | `fetch()` to Claude API directly |
+| Full CharacterBible regeneration on every change request | $10-15 per change (all 5 scenes + compose). Economically untenable for "make the font bigger" style requests. | Selective scene regen: only regenerate `getAffectedScenes(diff)` — typically 1-3 scenes |
+| Separate vector DB for change history | pgvector is already on RackNerd. Change history is structured data, not semantic search. | `character_iteration_history` table with typed columns |
+| Streaming Claude responses for diff parsing | Adds complexity. The diff JSON is small (~200 tokens). Wait-for-complete is fine. | Simple `await callClaude(prompt)` — same as existing |
+| UI/admin for change approval | WhatsApp IS the interface. Approval via WhatsApp message is the design. | `awaiting-approval` phase in `character-iteration` module |
+| `@anthropic-ai/sdk` | Worker already calls Claude via `fetch()` directly (intentional decision — avoids SDK dependency). | `callClaude()` in `character-bible-generator.ts` — extend to `character-bible-updater.ts` |
+| Separate microservice for iteration | Iteration is one BullMQ queue + one module. The worker process handles it. | Add `character-regen.worker.ts` inside the existing worker process |
 
 ---
 
 ## Stack Patterns by Variant
 
-**If budget tier is `budget` for `social` shots:**
-- Use `wan/v2.6/image-to-video/flash` (not standard)
-- $0.05/s fits within `BUDGET_CEILINGS.budget = 0.05`
-- Add `flash` variant to `SHOT_DEFAULT_MODELS.social` with fallback to standard
+**If customer requests a name change only:**
+- `affectedScenes = []` (no scene regen needed — prompts use `name` but it doesn't visually matter)
+- Skip BullMQ queue entirely — apply CharacterBible update, re-send existing reveal with updated caption
+- Cost: $0 in AI credits
 
-**If `dialogue` shot needs audio (talking head with voice):**
-- Veo 3.1 quality (`veo3`) generates synchronized audio natively
-- Veo 3.1 fast (`veo3_fast`) does not guarantee audio sync — use for muted scenes only
-- Route: `budgetTier === 'premium'` → `veo3`, anything else → `veo3_fast`
+**If customer requests a visual style change:**
+- `affectedScenes = [0, 4]` (studio portrait + artistic closer — both visual-driven)
+- Queue 2 `character-regen` jobs
+- Cost: ~$2.00
 
-**If Sora 2 character consistency is needed across multiple shots:**
-- Create character once, store `char_...` ID in `CharacterBible.characterReferenceId` (new column)
-- Pass stored ID in all subsequent Sora 2 submissions for that tenant
-- Sora 2 accepts up to 2 character IDs per generation
+**If customer requests a scenario change:**
+- `affectedScenes = [1, 2, 3]` (all scenario slots)
+- Queue 3 `character-regen` jobs
+- Cost: ~$3.00
 
-**If quality score feedback needs real-time routing adjustment:**
-- Write score to `content_entries.performanceScore` immediately post-generation
-- Update `ai_models.avgQualityScore` (new column on existing table) via aggregation query
-- `routeShot()` reads `avgQualityScore` from Observatory — existing `getRecommendedModel()` can weight by this
+**If customer requests a full character overhaul (>3 fields changed):**
+- Treat as full regeneration — redirect to `character-video-gen` with phase reset to `intro`
+- Threshold: if `affectedScenes.length >= 4`, suggest starting fresh vs. selective regen
+- Show customer the cost comparison in the approval message
+
+**If Hebrew change request detected (existing bilingual support):**
+- Claude already handles Hebrew in `callClaude()` — no change needed
+- Diff JSON is always English internally regardless of input language
+- WhatsApp approval message sent in detected language (use existing language-detection from ClaudeClaw)
 
 ---
 
@@ -244,38 +361,37 @@ Everything else is a code change, not a dependency addition.
 
 | Package | Compatible With | Notes |
 |---------|-----------------|-------|
-| `remotion@4.0.429` | Node.js 20+ | Already installed — no change needed |
-| `pgvector@0.2.1` | `pg@^8.x`, PostgreSQL 13+ with pgvector 0.8.1 | Compatible with existing DB setup |
-| `@fal-ai/client@1.9.4` | Node.js 18+ (fetch built-in) | Compatible with worker runtime |
-| `bullmq@^5.67.3` | `ioredis@^5.9.2` | Already installed — add `quality-scoring` queue same as existing pattern |
-| `zod@^4.3.6` | TypeScript 5.x | Already installed — use for `BusinessVideoProps` schema |
+| `bullmq@^5.67.3` | `ioredis@^5.9.2` | New `character-regen` queue uses same Redis connection as existing queues |
+| `zod@^4.3.6` | TypeScript 5.x | `CharacterDiffSchema` follows same pattern as existing zod schemas in worker |
+| `pg@^8.18.0` | PostgreSQL 14+ | `character_iteration_history` uses standard pg types, no extensions needed |
+| `claude-sonnet-4-20250514` | Anthropic API 2023-06-01 | Same model + API version already in `character-bible-generator.ts` |
 
 ---
 
 ## Environment Variables Required
 
-| Variable | Already Exists | Notes |
-|----------|---------------|-------|
-| `FAL_API_KEY` | NO — FalAdapter reads it but it's never been set | Must be provisioned before fal.ai activation. Format: `key_...` from fal.ai dashboard |
-| `KIE_API_KEY` | YES — already used for Kling | Same key works for Veo 3.1 — no new credential needed |
-| `OLLAMA_BASE_URL` | YES — RAG already uses it | Reuse for prompt embedding |
+| Variable | Status | Notes |
+|----------|--------|-------|
+| `ANTHROPIC_API_KEY` | Already set | Used by `callClaude()` — no new credential |
+| `FAL_API_KEY` | Must be set | For scene regeneration via Sora 2 on fal.ai (same requirement as v1.1) |
+| `KIE_API_KEY` | Already set | For dialogue scene regen via Kling/Veo |
+| `REDIS_URL` | Already set | BullMQ `character-regen` queue uses same Redis |
 
 ---
 
 ## Sources
 
-- [fal.ai Sora 2 I2V API](https://fal.ai/models/fal-ai/sora-2/image-to-video/pro/api) — model ID `fal-ai/sora-2/image-to-video/pro`, character_ids parameter, response schema (HIGH confidence — official docs)
-- [fal.ai Sora 2 Characters endpoint](https://fal.ai/models/fal-ai/sora-2/characters) — `POST /characters`, `CreateCharacterOutput` (HIGH confidence — official docs)
-- [fal.ai Wan 2.6 I2V API](https://fal.ai/models/wan/v2.6/image-to-video/api) — model ID `wan/v2.6/image-to-video`, input schema, Flash variant (HIGH confidence — official docs)
-- [docs.kie.ai Veo 3.1 Generate](https://docs.kie.ai/veo3-api/generate-veo-3-video) — endpoint `POST /api/v1/veo/generate`, model params `veo3`/`veo3_fast` (HIGH confidence — official docs)
-- [docs.kie.ai Veo 3.1 Quickstart](https://docs.kie.ai/veo3-api/quickstart) — poll endpoint `/api/v1/veo/record-info?taskId=` (HIGH confidence — official docs)
-- [@fal-ai/client npm](https://www.npmjs.com/package/@fal-ai/client) — version 1.9.4 current (HIGH confidence — npm registry)
-- [pgvector npm](https://www.npmjs.com/package/pgvector) — version 0.2.1 current (HIGH confidence — verified via `npm view`)
-- [pgvector-node Drizzle integration](https://github.com/pgvector/pgvector-node) — Drizzle ORM compatibility confirmed (MEDIUM confidence — GitHub)
-- [fal.ai Wan 2.1 legacy](https://fal.ai/models/fal-ai/wan-i2v/api) — confirms `fal-ai/wan-i2v` = Wan 2.1, not 2.6 (HIGH confidence — official docs)
-- [kie.ai Veo 3.1 pricing](https://kie.ai/v3-api-pricing) — $0.40/8s (fast), $2.00/8s (quality) (MEDIUM confidence — pricing pages can change)
+- Direct codebase analysis (HIGH confidence):
+  - `apps/worker/src/services/onboarding/module-state.ts` — `onboarding_module_state` schema, `upsertModuleState()` pattern
+  - `apps/worker/src/services/onboarding/modules/character-questionnaire.ts` — phase machine pattern
+  - `apps/worker/src/services/onboarding/modules/character-video-gen.ts` — scene generation, composition pipeline, polling pattern
+  - `apps/worker/src/services/onboarding/character-bible-generator.ts` — `callClaude()`, `generateCharacterBible()`, insert pattern
+  - `apps/worker/src/services/onboarding/modules/types.ts` — `ModuleType`, `OnboardingModule`, `ModuleState` interfaces
+  - `apps/web/superseller-site/prisma/schema.prisma` lines 1903-1923 — `CharacterBible` model fields (`version`, `active`, `metadata`)
+  - `apps/worker-packages/db/src/schema.ts` — `onboarding_module_state` not in Drizzle schema (raw SQL only) — confirmed pattern
+- `apps/worker/package.json` — confirmed `bullmq@^5.67.3`, `zod@^4.3.6`, `pg@^8.18.0`, `ioredis@^5.9.2` (HIGH confidence — direct file read)
 
 ---
 
-*Stack research for: v1.1 Intelligent Content Engine — SuperSeller AI video pipeline*
-*Researched: 2026-03-14*
+*Stack research for: Character Iteration milestone — WhatsApp change requests + selective scene regeneration*
+*Researched: 2026-03-15*

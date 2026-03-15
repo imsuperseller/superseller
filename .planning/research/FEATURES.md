@@ -1,28 +1,27 @@
 # Feature Research
 
-**Domain:** Multi-model AI video production with self-improving quality routing
-**Researched:** 2026-03-14
-**Confidence:** HIGH (existing codebase verified + official fal.ai docs + market research)
+**Domain:** Iterative AI character design — client change requests and selective scene regeneration
+**Researched:** 2026-03-15
+**Confidence:** HIGH (existing codebase inspected + industry UX pattern research verified via ShapeOfAI, HeyGen Video Agent, LTX Studio Elements docs)
 
 ---
 
 ## Context: What Already Exists
 
-This is a SUBSEQUENT milestone. The following infrastructure is production-ready and must NOT be re-built:
+This is a SUBSEQUENT milestone added on top of the WhatsApp-first character onboarding system. The following infrastructure is production-ready and must NOT be re-built:
 
-| Existing Component | Location | Status |
-|---|---|---|
-| Model Observatory (`ai_models`, `ai_model_recommendations`, `ai_model_decisions` tables) | Prisma schema + model-selector.ts | Production |
-| Model Router with 6 shot types (dialogue, narrative, environment, product, social, music) | model-router/router.ts + shot-types.ts | Production |
-| FalAdapter (queue submit + poll, webhook-ready) | model-router/provider-adapters/fal-adapter.ts | Production |
-| KieAdapter | model-router/provider-adapters/kie-adapter.ts | Production |
-| Prompt Store (`prompt_configs` table, TTL cache, versioned templates) | services/prompt-store.ts | Production |
-| Cost tracking (`api_expenses` table, trackExpense()) | services/expense-tracker.ts | Production |
-| 8 Remotion compositions (PropertyTour, CrewReveal, CrewDemoV1/V2/V3, HairShowreel, CharacterReveal, SocialMockup) | remotion/src/*.tsx | Production |
-| Content engagement metrics (impressions, reach, likes, performanceScore in content_entries) | Drizzle schema | Production |
-| Budget tiers (budget=$0.05, standard=$0.12, premium=$999) | shot-types.ts BUDGET_CEILINGS | Production |
+| Existing Component | Location / Status |
+|---|---|
+| Character questionnaire (personality, visual style, industry, brand colors) | Production — onboarding flow |
+| `CharacterBible` table — Claude-generated character definition | Production — stores the full creative brief |
+| Best Shot routing — optimal model per scene type | Production — model-router |
+| 5-scene generation per character, 3-of-5 partial success tolerance | Production — character-video-gen worker |
+| `CharacterReveal` Remotion composition — final assembled video | Production |
+| WhatsApp delivery with APPROVE / RETRY / SKIP admin commands | Production — pipeline hooks |
+| Poll-based module advancement | Production — WAHA integration |
+| `PipelineRun` tracking — hooks for status events | Production |
 
-**The new features build ON TOP of this infrastructure. The routing layer already knows about fal.ai — the FalAdapter exists and fal.ai endpoints are wired into SHOT_DEFAULT_MODELS. The gap is: providers are declared but not fully activated, there is no quality feedback signal flowing back into routing decisions, and the Remotion template library has no local-business-specific templates.**
+**The gap this milestone closes:** Once a client receives their CharacterReveal video and wants changes ("make her look more professional," "redo scene 3 — the background is wrong"), there is no supported path. Today the only option is a full pipeline re-run from scratch, which costs full generation credits and takes the same time as initial generation.
 
 ---
 
@@ -30,105 +29,121 @@ This is a SUBSEQUENT milestone. The following infrastructure is production-ready
 
 ### Table Stakes (Users Expect These)
 
-Features required for v1.1 to function. These must ship for the milestone to be called complete.
+Features clients will assume exist after receiving their character video. Missing any of these makes the product feel unfinished and forces admin intervention for every change request.
 
-| Feature | Why Expected | Complexity | Dependencies |
-|---------|--------------|------------|--------------|
-| **fal.ai provider fully activated** (Sora 2 image-to-video, Wan 2.6 i2v, Veo 3.1 dialogue) | FalAdapter exists but model params need correct fal endpoint strings for each new model; Sora 2 image-to-video costs $0.30/s at 720p, Wan 2.6 costs ~$0.05/s — three distinct pricing rows needed in ai_models | MEDIUM | FalAdapter already written; needs model rows seeded in ai_models + correct fal_endpoint per model + Observatory recommendations updated |
-| **fal.ai webhook receive endpoint** | Current FalAdapter polls; Sora 2 / Veo 3.1 generation can take 60-120s — polling 20× at 30s intervals will time out BullMQ jobs; webhook callback is how fal.ai handles long generation | MEDIUM | Needs a new Express route (`POST /api/webhooks/fal`) to receive fal's POST, resolve the BullMQ job, and trigger the next pipeline step; uses request_id for idempotency |
-| **Per-clip generation metadata on content_entries** | Every generated clip needs model_id, provider, prompt_version, generation_cost, duration_sec attached to content_entries row for feedback loop to work; currently these fields are missing | LOW | Schema migration (add generation_meta JSONB column to content_entries) + populate in model-router after generation completes |
-| **Prompt versioning hooked into generation audit** | prompt_configs already has version field; ai_model_decisions.reasoning JSONB already logs per-shot; gap is that promptKey + version is not captured alongside the generation result in content_entries | LOW | Add prompt_key + prompt_version to generation_meta JSONB; no schema change needed if using JSONB column above |
-| **Cost rates for new providers in expense-tracker** | COST_RATES in expense-tracker.ts hardcodes kie/gemini/resend/r2/anthropic; fal.ai Sora 2 ($0.30/s), Wan 2.6 ($0.05/s), Veo 3.1 ($0.20-$0.40/s) need entries so trackExpense() uses correct rates | LOW | Pure code change in expense-tracker.ts + ai_models rows |
+| Feature | Why Expected | Complexity | Dependencies on Existing |
+|---------|--------------|------------|--------------------------|
+| **Natural-language change request via WhatsApp** | Clients already live in WhatsApp for this product; sending "can you make her look more energetic?" in the same thread is the zero-friction path; any other channel (email, form) contradicts the WhatsApp-first brand | MEDIUM | WAHA inbound message handler; ClaudeClaw router to classify intent; `CharacterBible` must be mutable (currently write-once) |
+| **CharacterBible update from change request** | A change request that doesn't update the CharacterBible means scene 4 might get regenerated with the old character; the bible is the source of truth for all generation prompts — changing one scene without updating it creates drift | MEDIUM | Claude re-generation of CharacterBible diff; `CharacterBible` upsert endpoint; version history to enable rollback |
+| **Selective scene regeneration (pick which scenes to redo)** | Clients who approve scenes 1, 2, 4, 5 should not have to pay to regenerate all 5 again because scene 3 failed; industry standard since at least 2024 (ShapeOfAI documents this as the "regenerate" pattern); HeyGen Video Agent implements "change scene 3" conversationally | MEDIUM | `PipelineRun` scene-level status tracking; individual scene records must be addressable; CharacterReveal must support re-render with a subset of scenes |
+| **Scene-by-scene approval before final assembly** | The existing APPROVE/RETRY/SKIP commands operate at the pipeline level; after iteration, clients need to confirm each regenerated scene individually before Remotion re-assembles the full video; otherwise a re-run of scene 3 could silently replace an approved scene 3 with a worse result | LOW | Pipeline hook enhancement; per-scene status column on scene records (approved / pending / rejected) |
+| **Confirmation before credit spend** | Generating a new scene costs real money ($0.05–$0.40/scene depending on model); clients must receive a cost-transparent confirmation ("Regenerating scene 3 will take ~2 minutes and uses 1 generation credit — confirm?") before any generation starts; this is both ethical and prevents disputes | LOW | Credit/quota check before any regeneration call; WhatsApp confirmation poll before dispatching BullMQ job |
+| **Change request status feedback** ("working on it…" at start, video when done) | Client sends change request, waits 2+ minutes, and receives only silence — this pattern causes re-sends, escalations, and distrust; one status message at submission + one message when complete is the minimum | LOW | WAHA send; no intermediate polling messages (anti-feature below) |
+
+---
 
 ### Differentiators (Competitive Advantage)
 
-Features that elevate the system beyond "just route to fal.ai."
+Features that distinguish iterative character design from a simple "re-run the pipeline" approach.
 
 | Feature | Value Proposition | Complexity | Dependencies |
 |---------|-------------------|------------|--------------|
-| **Quality feedback signal writing back to Observatory** | After a generation completes and a content_entry gets a performanceScore (engagement data), write a normalized quality_score back to ai_model_recommendations.quality_score for that use_case; the Observatory then has real outcome data, not just static editorial scores | HIGH | Requires: (1) generation_meta with model_id on content_entries, (2) a background job that joins content_entries WHERE performanceScore IS NOT NULL to ai_model_decisions and writes aggregated quality signals to ai_model_recommendations; this is the "self-learning" loop |
-| **Prompt effectiveness index** | Track which prompt templates (by prompt_key + version) produce content_entries with higher performanceScore; surface top-performing templates per shot_type so the router can prefer them | HIGH | Requires: generation_meta capturing prompt_key + prompt_version on content_entries; an aggregation query computing avg(performanceScore) GROUP BY prompt_key, version, shot_type; admin endpoint to view rankings |
-| **Before/after video template for local service businesses** | A Remotion composition that shows a problem state (before) transitioning to a resolved state (after) with a split-screen or wipe effect + text overlay + logo; this is the #1 performing video format for trades businesses (HVAC, plumbing, cleaning) per 2026 social data (63% of homeowners prefer authentic before/after over polished ads) | HIGH | New Remotion composition: BeforeAfterComposition (16x9 + 9x16); parametric props: beforeImageUrl, afterImageUrl, serviceLabel, brandColor, logoUrl, tagline; uses existing transition primitives already in remotion/src/components/ |
-| **Social proof / testimonial video template** | A Remotion composition for customer testimonial quotes: animated text, brand colors, customer name + photo bubble; this is the second-highest performing local business content type; reuses existing GlassPanel + AnimatedBg components | MEDIUM | New Remotion composition: TestimonialComposition; parametric props: quote, customerName, customerPhotoUrl, ratingStars, brandColor, logoUrl |
-| **Seasonal / urgency alert template** | Short-form Remotion composition (15-30s vertical) for "Now is the time to X" seasonal urgency content — HVAC tune-up before summer, holiday specials, weather-related emergency calls; drives demand spikes when posted 2 weeks early | MEDIUM | New Remotion composition: SeasonalAlertComposition (9x16 only); parametric props: headline, subtext, ctaText, urgencyIcon, brandColor, backgroundVideoUrl |
-| **Router model score decay** | Current Observatory quality scores are static integers set at seed time; over time a model that degrades (worse outputs, pricing changes) should have its quality_score decay if no positive feedback arrives; implement a simple decay function that reduces quality_score by N% per week if no new performanceScore data arrives | MEDIUM | Background cron; reads ai_model_recommendations.updated_at + quality_score; writes decayed score if stale |
-| **Veo 3.1 native audio activation for dialogue shots** | Veo 3.1 has native audio generation (dialogue + lip sync); currently SHOT_DEFAULT_MODELS.dialogue routes to 'veo-3.1' via Kie but does not pass audio=true flag; activating native audio for dialogue shots means local business owner avatar videos get synchronized speech without needing a separate ElevenLabs TTS step | MEDIUM | FalAdapter.submitJob() needs to accept an `enableAudio` flag; Veo 3.1 endpoint on fal is `fal-ai/veo3.1/image-to-video`; pricing: $0.20/s without audio, $0.40/s with audio — budget ceiling enforcement must account for this |
+| **Targeted change understanding — character vs. scene scope** | Claude classifies whether the change is character-level ("make her look younger" = CharacterBible update + all scenes) vs. scene-level ("redo scene 3 — wrong background" = single scene, same character); character-level changes trigger a CharacterBible diff + selective re-run of all 5 scenes; scene-level changes regenerate one scene without touching the bible; this prevents full re-runs when only one shot is wrong | HIGH | Claude intent classifier in ClaudeClaw router; CharacterBible diff algorithm; scope-aware BullMQ job dispatcher |
+| **Version history with rollback** | Every CharacterBible version and every generated scene is stored with a version number; if a change request makes things worse ("the new scene 3 is worse than the original"), admin can roll back to version N-1 without re-generating; LTX Studio Elements implements this as character "saves" — a versioned asset library | MEDIUM | `character_bible_versions` table; `scene_versions` table or versioned R2 keys; admin rollback command via WhatsApp (`/rollback scene 3`) or admin portal |
+| **Change request history per character** | Every change request, the CharacterBible diff it produced, and which scenes it triggered are stored; this creates an audit trail for billing disputes ("I only changed scene 3, why were all 5 regenerated?") and feeds future iteration patterns (which change types are most common?) | LOW | `character_change_requests` table; log intent classification result + scope determination + scenes triggered + cost incurred |
+| **Partial video delivery after selective regeneration** | When only scene 3 is regenerated, deliver a new CharacterReveal video that assembles the 4 approved scenes + the new scene 3; do NOT require the client to re-approve scenes 1, 2, 4, 5 again; Remotion's parametric rendering means this is a data change only (pass new scene 3 URL, keep existing URLs for others) | MEDIUM | CharacterReveal composition must accept per-scene URLs as props; Remotion re-render with mixed old/new scene inputs |
+| **Admin change request review before execution** | For expensive changes (character-level = all 5 scenes = $0.25–$2.00), admin gets a WhatsApp notification with a summary of what will change and at what cost before it executes; admin can modify the scope (e.g., "only regenerate scenes 2 and 4, not all 5") before approving; prevents runaway credit spend on misunderstood requests | MEDIUM | Admin approval step in pipeline for character-level changes; scene scope editor in admin portal or via WhatsApp commands; bypass for scene-level changes (low cost, no approval needed) |
+
+---
 
 ### Anti-Features (Commonly Requested, Often Problematic)
 
 | Feature | Why Requested | Why Problematic | Alternative |
 |---------|---------------|-----------------|-------------|
-| **Real-time generation status push to customer WhatsApp** | Customers want progress updates during 60-120s Sora 2 generation | Spams WhatsApp group with "processing…" messages; creates noise and erodes trust; WAHA rate limits can trigger if many jobs run simultaneously | Send ONE message when complete: the rendered video. Use BullMQ job progress events internally only. |
-| **Scheduled Kie.ai/fal.ai generation crons** | "Auto-generate weekly content for all tenants" sounds like a product feature | Violates explicit business rule (feedback_no_scheduled_kie.md): never enable scheduled generation without a paying customer + WhatsApp approval + AI-optimized timing | On-demand generation triggered via WhatsApp approval poll. Future: SocialHub pipeline with human-in-the-loop approval. |
-| **Per-model A/B test framework with control groups** | Wants to know "which model is better?" | Adds enormous orchestration complexity; controlling for prompt variation, subject matter, posting time, and audience simultaneously requires statistical rigor that a video production pipeline cannot provide | Use the Observatory quality_score feedback loop: aggregate performanceScore by model over 30+ generations per use_case, then update Observatory. This is statistically simpler and produces actionable routing decisions. |
-| **Replacing Remotion with client-side video editor** | "Customers want to edit their own videos" | Defeats the zero-friction WhatsApp-first value prop; web editor requires customer logins, skills, and time; the parametric template approach (data in → video out) is what makes SuperSeller AI unique | Parametric template library with WhatsApp-driven customization: customer sends preferences via poll/message, system generates the video. No editor needed. |
-| **Model quality scores from user ratings** | "Have customers rate each video" | Creates survey fatigue; local business owners (Israeli/Jewish small biz, Dallas ICPs) will not fill out rating forms; 1-5 stars is too coarse to drive routing decisions | Use engagement data (performanceScore = reach, likes, saves normalized score) as the quality signal — this is already in content_entries and requires zero customer action. |
+| **Mid-generation progress updates via WhatsApp** | Client wants to know scene 3 is "50% done" | Violates business rule (`feedback_no_scheduled_kie.md`); WAHA rate limits trigger under concurrent jobs; "50% done" for AI generation is a lie — models don't emit meaningful progress signals | Send one acknowledgment at request start ("Got it, working on scene 3 — expect your video in ~3 minutes") and one message when complete. No in-between. |
+| **Full character re-generation on every change request** | Simpler to implement — just re-run the full pipeline | Costs full credits ($0.25–$2.00) when the client only wanted one scene changed; erases approved scenes; slower delivery | Scope classification (character-level vs. scene-level) + selective regeneration |
+| **Free unlimited change requests** | Clients want to iterate without friction | No business model for AI generation costs; Kie.ai and fal.ai charge per-generation regardless of how the output is used; unlimited free changes would make this product economically unviable | Credit-based change requests: initial generation included, additional change requests consume credits from client's allocation |
+| **Automatic re-generation on rejection without confirmation** | When client sends "SKIP" or rejects a scene, auto-trigger regeneration | Without a change request accompanying the rejection, there is nothing to change — re-running the same prompt produces the same (or worse) output; wastes credits; creates a frustrating loop | Rejection triggers a change request prompt: "Scene 3 rejected. What should be different?" — then regenerate with the updated brief |
+| **Per-client custom model fine-tuning** | "Train the AI specifically on my character" sounds premium | LoRA/DreamBooth training costs $10–$50+ per character and takes 30–120 minutes; fal.ai charges $0.30–$2.00/min for training; adds model management infrastructure that doesn't exist in this stack; for 5-scene character videos, reference-based consistency (existing approach) is sufficient | Character reference images as Sora 2 `character_ids` or fal.ai image references — no fine-tuning needed for acceptable consistency at this scope |
+| **Natural language scene editor ("make her smile more in the third scene")** | Sounds like surgical precision | NLP → specific scene modification is prompt injection, not editing; the model regenerates the entire scene from a modified prompt; "smile more" in the prompt produces a different background, different lighting, different everything — not just a smile change | Set correct expectation: "I'll regenerate scene 3 with 'more energetic expression' added to the brief. The background and lighting may vary slightly." This is honest about what AI video generation actually does. |
 
 ---
 
 ## Feature Dependencies
 
 ```
-[fal.ai webhook receive endpoint]
-    └──required by──> [Veo 3.1 / Sora 2 long-generation jobs]
-                          └──because──> [BullMQ timeouts at 20 × 30s poll = 10min; Sora 2 can take 15-20min]
+[Natural-language change request via WhatsApp]
+    └──requires──> [ClaudeClaw intent classifier for change vs. new request]
+    └──requires──> [CharacterBible mutable (upsert, not write-once)]
+                       └──requires──> [character_bible_versions table for rollback]
 
-[Per-clip generation metadata on content_entries]
-    └──required by──> [Prompt effectiveness index]
-    └──required by──> [Quality feedback signal → Observatory]
-                          └──required by──> [Router model score decay]
+[Targeted change understanding (character vs. scene scope)]
+    └──required by──> [Selective scene regeneration]
+    └──required by──> [Admin change request review (for character-level only)]
 
-[fal.ai provider models seeded in ai_models]
-    └──required by──> [Cost tracking for new providers]
-    └──required by──> [Observatory recommendations using fal endpoints]
+[Selective scene regeneration]
+    └──requires──> [Per-scene addressable records with status (approved/pending/rejected)]
+    └──requires──> [CharacterReveal composition accepting per-scene URL props]
+                       └──enables──> [Partial video delivery after selective regeneration]
 
-[Before/After Remotion composition]
-    └──independent of model routing; uses existing KenBurns + transition primitives]
+[Confirmation before credit spend]
+    └──required by──> [ALL regeneration paths]
+    └──must precede──> [BullMQ job dispatch for any regeneration]
 
-[Testimonial Remotion composition]
-    └──independent; reuses GlassPanel + AnimatedBg components]
+[Scene-by-scene approval]
+    └──must follow──> [Any regeneration completion]
+    └──gates──> [Remotion CharacterReveal re-assembly]
 
-[Veo 3.1 native audio]
-    └──requires──> [FalAdapter.submitJob() audio flag]
-    └──requires──> [Budget ceiling update for audio cost tier]
+[Version history with rollback]
+    └──requires──> [character_bible_versions table]
+    └──requires──> [Versioned R2 keys for scene assets]
+    └──independent of──> [Core regeneration flow — can be added after]
+
+[Change request history per character]
+    └──requires──> [character_change_requests table]
+    └──low dependency — can be added after core flow ships]
 ```
 
 ### Dependency Notes
 
-- **Webhook endpoint before long-generation activation:** Sora 2 and Veo 3.1 both routinely exceed 10 minutes for high-quality outputs. The existing FalAdapter polls synchronously. Activating these models in production without webhook support will cause BullMQ job timeouts and orphaned generations that cost money but never deliver. The webhook endpoint must ship in the same phase as model activation.
+- **CharacterBible mutability is the foundational blocker:** Currently the CharacterBible is written once during onboarding and treated as immutable. Every downstream feature (change request → bible update → selective regeneration → partial video delivery) requires this to become mutable with versioning. This must be the first schema change.
 
-- **Generation metadata before feedback loop:** The quality feedback loop is entirely dependent on knowing which model generated each content_entry. Without generation_meta, there is nothing to aggregate. The metadata column must ship before any feedback aggregation job is written.
+- **Scope classification before regeneration dispatch:** The intent classifier (character-level vs. scene-level) determines what gets regenerated and at what cost. This classification must happen before any BullMQ job is dispatched — it cannot be retrofitted after dispatch.
 
-- **fal.ai model seed before cost tracking:** expense-tracker.ts COST_RATES are fallback only; primary pricing comes from ai_models table via model-selector.ts. The ai_models rows for Sora 2, Wan 2.6, Veo 3.1 must be seeded with accurate cost_per_second_usd before the pipeline can track fal.ai costs correctly.
+- **CharacterReveal must accept mixed scene inputs:** Currently the composition assembles 5 scenes from a `PipelineRun`. To deliver partial re-renders (4 approved + 1 new), it must accept per-scene URLs as props rather than deriving them all from the same run ID. This is a Remotion props change that affects the final assembly step.
 
-- **Remotion templates are fully independent:** BeforeAfterComposition, TestimonialComposition, and SeasonalAlertComposition have no dependencies on model routing or feedback loops. They can be built in parallel with or after the provider activation work.
+- **Credit confirmation is a hard gate:** Do not implement any regeneration path without the credit confirmation step. The cost transparency principle (from `feedback_predelivery_checklist.md`) requires client-visible cost before any spend.
 
 ---
 
 ## MVP Definition
 
-### Launch With (v1.1 milestone complete)
+### Launch With (v1 of this milestone)
 
-These are the minimum features for v1.1 to deliver its stated goal: "Multi-model content production with self-improving quality routing."
+Minimum set to make character iteration usable. A client receives their CharacterReveal video, sends "can we change scene 3?" via WhatsApp, and gets a re-rendered video with scene 3 updated — without regenerating scenes 1, 2, 4, 5.
 
-- [ ] **fal.ai models seeded** — ai_models rows for fal-ai/sora-2/image-to-video, fal-ai/wan-i2v (Wan 2.6), fal-ai/veo3.1/image-to-video with correct cost_per_second_usd, fal_endpoint, and capability flags
-- [ ] **fal.ai webhook endpoint** — `POST /api/webhooks/fal` on worker; receives fal's completion payload; resolves BullMQ job; idempotent on request_id
-- [ ] **Per-clip generation_meta JSONB on content_entries** — schema migration + populate in model-router post-generation; fields: model_id, provider, prompt_key, prompt_version, generation_cost_usd, duration_sec, shot_type
-- [ ] **Quality feedback aggregation job** — background BullMQ job that reads content_entries WHERE performanceScore IS NOT NULL, joins to generation_meta.model_id, and writes aggregated avg quality_score to ai_model_recommendations per use_case; runs nightly
-- [ ] **Prompt effectiveness query** — admin endpoint `GET /api/admin/prompt-effectiveness` that returns avg performanceScore grouped by prompt_key + version + shot_type; no new tables required
-- [ ] **BeforeAfterComposition** — new Remotion composition (16x9 + 9x16); parametric props; registered in remotion/src/index.ts; tested with real property/service images
+- [ ] **CharacterBible mutability + versioning** — `upsert` endpoint replaces write-once; `character_bible_versions` table stores every version with `change_request_id` FK; rollback is possible via SQL even if no admin UI exists yet
+- [ ] **ClaudeClaw intent classifier — change request routing** — inbound message classified as: (a) scene-level change request, (b) character-level change request, (c) new character request, (d) other; scene ID extraction from message ("scene 3", "the third scene") for case (a)
+- [ ] **Credit confirmation before regeneration** — WhatsApp poll ("Scene 3 regeneration uses 1 credit. Confirm?") before BullMQ dispatch; no generation happens without explicit confirmation
+- [ ] **Selective scene regeneration — scene-level** — re-run one specified scene with updated brief; existing approved scenes untouched; new scene added to R2 with versioned key
+- [ ] **Per-scene status tracking** — `scene_status` column on scene records: `approved | pending | rejected`; updated after each generation and each APPROVE/RETRY/SKIP command
+- [ ] **CharacterReveal re-assembly with mixed inputs** — Remotion composition accepts `sceneUrls: string[]` prop array; re-renders final video using approved old scenes + new regenerated scene
+- [ ] **Change request start acknowledgment + completion delivery** — two WhatsApp messages total: "Working on it — ~3 minutes" at start; new video when complete
 
-### Add After Validation (v1.1.x)
+### Add After Validation (v1.x)
 
-- [ ] **TestimonialComposition** — add after BeforeAfter ships and first customer uses it; trigger: first customer requests a testimonial video via WhatsApp
-- [ ] **SeasonalAlertComposition** — add when first seasonal campaign needed; 9x16 only
-- [ ] **Router model score decay** — add after quality feedback loop has been running for 30+ days and has enough data to decay meaningfully
-- [ ] **Veo 3.1 native audio for dialogue shots** — add after Veo 3.1 baseline is working; requires customer approval before enabling (audio doubles cost)
+Add these once the core scene-level change flow is working and used by at least one client.
+
+- [ ] **Character-level change request support** — changes that require CharacterBible update + multi-scene regeneration; scope confirmation ("This will regenerate all 5 scenes. Confirm?"); admin review gate before dispatch
+- [ ] **Targeted scope classification** — Claude determines which scenes are affected by a character-level change (e.g., "make her hair shorter" probably doesn't require re-running environment/establishing shots); narrows regeneration to semantically-affected scenes only
+- [ ] **Version history UI in admin portal** — view all CharacterBible versions per character; one-click rollback to previous version with confirmation
+- [ ] **Change request history log** — `character_change_requests` table; admin endpoint to view per-character change history with cost and scope for each request
 
 ### Future Consideration (v2+)
 
-- [ ] **Automated Observatory daily sync** — currently Observatory recommendations are updated manually; a daily background job that re-ranks models based on accumulated quality feedback could replace manual curation; defer until feedback loop has 90+ days of data
-- [ ] **Multi-tenant prompt personalization** — different prompt templates per tenant for same shot_type; requires prompt_configs to have a tenant_id scope column; defer until a customer requests brand-specific language
+- [ ] **Multi-round iterative conversation** — "make scene 3 more energetic" → delivers scene → "actually, darker mood" → iterate; requires conversation state management (current session memory, not just single-request classification)
+- [ ] **Client-facing change request portal** — web UI for clients to view their scenes side-by-side, click a scene to request changes, see version history; removes dependency on WhatsApp for change management; deferred because WhatsApp-first is the current product positioning
+- [ ] **Automatic scene drift detection** — after a character-level change, automatically flag scenes whose generated output no longer matches the new CharacterBible (using embedding similarity); proactively suggest "scene 4 may need regeneration based on your character update"; deferred until enough change request history exists to validate the heuristic
 
 ---
 
@@ -136,78 +151,125 @@ These are the minimum features for v1.1 to deliver its stated goal: "Multi-model
 
 | Feature | User Value | Implementation Cost | Priority |
 |---------|------------|---------------------|----------|
-| fal.ai models seeded (Sora 2, Wan 2.6, Veo 3.1) | HIGH — unlocks cheaper/better models | LOW — SQL seed script | P1 |
-| fal.ai webhook endpoint | HIGH — required for long-generation reliability | MEDIUM — new Express route + BullMQ integration | P1 |
-| Per-clip generation_meta on content_entries | HIGH — foundation for all feedback loops | LOW — schema migration + populate in router | P1 |
-| Quality feedback aggregation job | HIGH — this IS the "self-improving" claim | MEDIUM — BullMQ job + SQL aggregation | P1 |
-| BeforeAfterComposition | HIGH — #1 performing local business video format | HIGH — new Remotion composition | P1 |
-| Prompt effectiveness query | MEDIUM — admin insight, not customer-facing | LOW — SQL query + admin endpoint | P2 |
-| TestimonialComposition | HIGH — #2 performing local business format | MEDIUM — reuses existing components | P2 |
-| SeasonalAlertComposition | MEDIUM — campaign-specific | MEDIUM — new composition | P2 |
-| Veo 3.1 native audio | MEDIUM — quality uplift for dialogue | MEDIUM — adapter flag + budget ceiling update | P2 |
-| Router model score decay | LOW — prevents stale scores | MEDIUM — background cron + decay math | P3 |
-| Automated Observatory daily sync | LOW — replaces manual curation | HIGH — full re-ranking logic | P3 |
+| CharacterBible mutability + versioning | HIGH — foundational | LOW — schema + upsert endpoint | P1 |
+| ClaudeClaw intent classifier (change request routing) | HIGH — prerequisite for all flows | MEDIUM — Claude prompt engineering + scene ID extraction | P1 |
+| Credit confirmation before regeneration | HIGH — trust + cost transparency | LOW — WAHA poll + gate in dispatcher | P1 |
+| Selective scene regeneration (scene-level) | HIGH — core value of this milestone | MEDIUM — BullMQ job for single scene + R2 versioned key | P1 |
+| Per-scene status tracking | HIGH — required for selective re-assembly | LOW — column addition + status update hooks | P1 |
+| CharacterReveal mixed-scene re-assembly | HIGH — final delivery requires this | MEDIUM — Remotion props change + re-render trigger | P1 |
+| Change request start + completion messages | HIGH — client trust | LOW — two WAHA sends | P1 |
+| Character-level change request support | MEDIUM — needed for "make her different" requests | HIGH — CharacterBible diff + multi-scene scope logic | P2 |
+| Targeted scope classification (which scenes affected) | MEDIUM — cost savings | HIGH — semantic scene relevance scoring | P2 |
+| Version history UI in admin portal | MEDIUM — admin operational comfort | MEDIUM — admin portal view | P2 |
+| Change request history log | LOW — audit trail, billing | LOW — table + admin endpoint | P2 |
+| Multi-round iterative conversation | MEDIUM — power user UX | HIGH — session state management | P3 |
+| Client-facing change request portal | LOW — contradicts WhatsApp-first | HIGH — new web surface | P3 |
+| Automatic scene drift detection | LOW — speculative value | HIGH — embedding similarity pipeline | P3 |
 
 **Priority key:**
-- P1: Must have for v1.1 launch
+- P1: Must have for milestone launch
 - P2: Should have, add when core is stable
 - P3: Nice to have, future consideration
 
 ---
 
-## Local Business Video Template Analysis
+## Competitor Feature Analysis
 
-Research finding: the 2026 social media landscape for trades businesses (HVAC, plumbing, cleaning, real estate) strongly favors three content formats. SuperSeller AI's existing Remotion library covers none of them.
+How leading AI video / character generation products handle the same problem:
 
-| Template Type | Platform Fit | Why It Works | Complexity | Notes |
-|---|---|---|---|---|
-| **Before/After** (split-screen or wipe) | Instagram Reels, TikTok, Facebook | High save rate, algorithm favors transformation content; 2026 Instagram algorithm boosts before/after carousels; authentic beats polished | HIGH | Wipe transition already exists in remotion/src/transitions; need new composition wrapping it with brand/text overlay |
-| **Customer Testimonial** (quote card + photo) | Instagram, Facebook | Social proof is the #1 conversion driver for local services; homeowners trust peer reviews over brand claims | MEDIUM | GlassPanel + AnimatedBg components already exist; mostly layout work |
-| **Seasonal Urgency** (15-30s vertical) | TikTok, Reels | Posting 2 weeks before demand spikes (AC before summer, heat before winter) captures search intent early; short-form drives awareness | MEDIUM | 9x16 only; simpler than PropertyTour |
+| Feature | HeyGen Video Agent | LTX Studio Elements | ShapeOfAI Regenerate Pattern | Our Approach |
+|---------|-------------------|---------------------|-------------------------------|--------------|
+| Change request input | Conversational ("make scene 3 shorter") in same chat thread | Visual — click scene, type change | N/A — UX pattern only | WhatsApp message in existing group thread |
+| Scope detection | Automatic — small change = one scene, structural change = re-plan | Manual — user selects which scene to change | N/A | Claude intent classifier (character vs. scene level) |
+| Pre-generation confirmation | Shows blueprint before rendering; "Build mode" auto-proceeds, "Chat mode" asks per step | Not documented | Recommended — "set clear expectations for what will change" | WhatsApp poll: credit cost + scope summary before dispatch |
+| Partial regeneration | Yes — "change scene 3" only re-renders scene 3 | Yes — Elements are persistent assets; only the edited scene re-renders | Overwrite vs. branching model | Scene-level: yes. Character-level: targeted scope classification (P2) |
+| Version history | Not documented | Yes — Elements saved across projects, reusable | Branching mode recommended | character_bible_versions table; admin rollback command (P2 UI) |
+| Intermediate status | Chat mode shows step-by-step; Build mode is silent until done | Not documented | Single completion message recommended | One acknowledgment at start + one video at completion. No intermediate messages. |
+| Delivery format | Rendered video in same interface | Rendered video in platform | N/A | New CharacterReveal video sent to WhatsApp group |
 
-**Current gap:** All 8 existing Remotion compositions were built for the real estate / VideoForge vertical (PropertyTour, CrewReveal, CrewDemo) or for SuperSeller's own brand (HairShowreel, CharacterReveal, SocialMockup). None have parametric slots for trades business content (before/after images, service labels, testimonial quotes, seasonal urgency copy). The BeforeAfterComposition is the single highest-value addition.
+**Key differentiator vs. competitors:** This system operates entirely within WhatsApp, requires no client login or platform visit, and delivers the iterated video back to the same group where the relationship lives. HeyGen and LTX require clients to navigate a web interface. For the target ICP (Israeli/Jewish small business owners, Dallas), WhatsApp-native delivery is a meaningful advantage.
 
 ---
 
-## How Self-Learning Routing Works in Practice
+## UX Flow: Scene-Level Change Request (Core Flow)
 
-The vague claim "self-learning model routing" translates to three concrete mechanisms in this codebase:
-
-**Mechanism 1: Outcome capture (generation_meta JSONB)**
-When `routeShot()` completes and a clip is generated, write to content_entries.generation_meta: `{ model_id, provider, prompt_key, prompt_version, shot_type, cost_usd, duration_sec }`. This creates the link between a model decision and its output.
-
-**Mechanism 2: Engagement normalization (performanceScore)**
-SocialHub already writes back impressions, reach, likes to content_entries. performanceScore is a normalized 0-1 score derived from these. No new work needed here — this already exists.
-
-**Mechanism 3: Observatory update (quality feedback job)**
-A nightly BullMQ job runs:
-```sql
-SELECT
-  (generation_meta->>'model_id') AS model_id,
-  AVG(performance_score) AS avg_quality,
-  COUNT(*) AS sample_count
-FROM content_entries
-WHERE performance_score IS NOT NULL
-  AND generation_meta IS NOT NULL
-  AND posted_at > NOW() - INTERVAL '30 days'
-GROUP BY generation_meta->>'model_id'
 ```
-Then for each model_id with sample_count >= 10, update ai_model_recommendations.quality_score. The Observatory now reflects real-world outcome data. The next time routeShot() calls getRecommendedModel(), it picks up the updated score. This is the complete feedback loop.
+Client → WhatsApp: "I don't like scene 3, can we make the background a coffee shop?"
 
-**What it is NOT:** This is not RLHF, not fine-tuning, not neural network weight updates. It is a data-driven recommendation system where historical engagement statistics determine future model selection. That is the correct scope for a production pipeline — tractable, auditable, and reversible.
+ClaudeClaw classifies:
+  → intent: scene_change_request
+  → scene_id: 3
+  → change_description: "background should be a coffee shop"
+  → scope: scene_level (no CharacterBible update needed)
+
+System → WhatsApp poll:
+  "Scene 3 change: [background → coffee shop setting]
+   Uses 1 generation credit.
+   ✅ Confirm  ❌ Cancel"
+
+Client taps Confirm →
+
+BullMQ dispatches single-scene regeneration job:
+  → loads CharacterBible (current version, unchanged)
+  → modifies scene 3 prompt: appends "coffee shop interior background"
+  → routes to Best Shot model for scene 3's shot type
+  → generates via fal.ai / Kie.ai
+
+Worker → WhatsApp: "Working on scene 3 — expect your updated video in ~3 minutes"
+
+Generation completes →
+  → new scene 3 stored in R2 with versioned key (scene_3_v2.mp4)
+  → scene 3 status updated to: pending_approval
+  → CharacterReveal re-renders: [scene1_v1, scene2_v1, scene3_v2, scene4_v1, scene5_v1]
+
+System → WhatsApp: [sends new CharacterReveal video]
+  "Here's your updated character video with the new scene 3.
+   APPROVE to finalize, RETRY if you want more changes."
+```
+
+## UX Flow: Character-Level Change Request (P2 Flow)
+
+```
+Client → WhatsApp: "She looks too formal — can you make her more approachable and casual?"
+
+ClaudeClaw classifies:
+  → intent: character_change_request
+  → scope: character_level (CharacterBible update required)
+  → affected_scenes: [1, 2, 3, 4, 5] — initial conservative estimate
+
+Admin notification → WhatsApp:
+  "Character change request from [client]:
+   'More approachable and casual'
+   Draft CharacterBible update: [diff preview]
+   Estimated scenes to regenerate: [1, 2, 3, 4, 5] — all 5
+   Estimated cost: 5 credits
+   APPROVE-ALL | APPROVE-PARTIAL [specify scenes] | DENY"
+
+Admin approves →
+
+System → client WhatsApp poll:
+  "Character update: [approachable, casual style]
+   Will regenerate [5] scenes. Uses 5 credits.
+   ✅ Confirm  ❌ Cancel"
+
+Client confirms →
+BullMQ dispatches 5 scene-regeneration jobs (same tolerance: 3-of-5 = proceed)
+[... same completion and delivery flow as scene-level ...]
+```
 
 ---
 
 ## Sources
 
-- fal.ai Sora 2 image-to-video API: [https://fal.ai/models/fal-ai/sora-2/image-to-video/pro/api](https://fal.ai/models/fal-ai/sora-2/image-to-video/pro/api) — pricing $0.30/s at 720p, $0.50/s at 1080p (HIGH confidence, verified via WebFetch)
-- fal.ai Queue API webhook pattern: [https://fal.ai/docs/model-apis/model-endpoints/queue](https://fal.ai/docs/model-apis/model-endpoints/queue) — webhook_url param, request_id idempotency (HIGH confidence, verified via WebFetch)
-- Veo 3.1 on fal.ai: [https://blog.fal.ai/veo-3-1-is-now-available-on-fal/](https://blog.fal.ai/veo-3-1-is-now-available-on-fal/) — $0.20/s without audio, $0.40/s with audio, native lip sync (HIGH confidence, official fal.ai blog)
-- Local business video formats: [https://www.truefuturemedia.com/articles/boring-business-boom-hvac-plumbing-pest-control-social-media](https://www.truefuturemedia.com/articles/boring-business-boom-hvac-plumbing-pest-control-social-media) — before/after and testimonials as top performers (MEDIUM confidence, industry publication)
-- 2026 AI video model landscape: [https://www.teamday.ai/blog/best-ai-video-models-2026](https://www.teamday.ai/blog/best-ai-video-models-2026) — Kling 3.0 vs Veo 3.1 vs Sora 2 comparison (MEDIUM confidence, independent benchmark)
-- Existing codebase: apps/worker/src/services/model-router/, apps/worker/src/services/expense-tracker.ts, apps/worker/src/services/model-selector.ts, apps/web/superseller-site/prisma/schema.prisma (HIGH confidence, direct code inspection)
+- ShapeOfAI Regenerate UX Pattern: [https://www.shapeof.ai/patterns/regenerate](https://www.shapeof.ai/patterns/regenerate) — overwrite vs. branching, guided regeneration, "set clear expectations for what will change" (HIGH confidence — official UX pattern library)
+- HeyGen Video Agent January 2026 release: [https://www.heygen.com/blog/heygen-january-2026-release](https://www.heygen.com/blog/heygen-january-2026-release) — conversational scene editing "change scene 3 shorter", pre-build blueprint review, build vs. chat mode (HIGH confidence — official product blog)
+- HeyGen Video Agent help docs: [https://help.heygen.com/en/articles/12402907-how-to-get-started-with-video-agent](https://help.heygen.com/en/articles/12402907-how-to-get-started-with-video-agent) — scope detection (small change = one scene, structural = re-plan), post-render editability (MEDIUM confidence — vendor documentation)
+- LTX Studio Elements / consistent character: [https://ltx.studio/blog/best-ai-character-generator](https://ltx.studio/blog/best-ai-character-generator) — persistent character assets, reuse across projects without regenerating from scratch (MEDIUM confidence — vendor blog)
+- ShapeOfAI regeneration pattern (fetched): Guided regeneration vs. random regeneration; branching vs. overwrite trade-offs; importance of confirming what will change before execution (HIGH confidence — verified via WebFetch)
+- Existing codebase: CharacterBible table, PipelineRun table, CharacterReveal composition, APPROVE/RETRY/SKIP admin commands, WAHA integration, ClaudeClaw router — all confirmed via direct inspection in previous milestone research (HIGH confidence)
+- Business rules: `feedback_no_scheduled_kie.md`, `feedback_predelivery_checklist.md`, `feedback_wire_before_deliver.md` — cost transparency and no mid-generation polling are business constraints, not technical preferences (HIGH confidence — project memory)
 
 ---
 
-*Feature research for: Intelligent Content Engine (v1.1 milestone)*
-*Researched: 2026-03-14*
+*Feature research for: Character Iteration — Client Change Requests + Scene Regeneration (subsequent milestone)*
+*Researched: 2026-03-15*
