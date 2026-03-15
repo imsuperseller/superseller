@@ -855,6 +855,69 @@ export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | nul
         </section>
 
         {/* ================================================================ */}
+        {/* PERSONAL VIDEO MESSAGE */}
+        {/* ================================================================ */}
+        {/* VIDEO PROMPT (25s, @shai-lfc):
+            Medium shot of Shai (@shai-lfc) sitting at a modern desk with a laptop open,
+            looking directly at camera with a confident, warm expression. He's wearing a
+            dark navy polo shirt. Behind him a clean office setup with soft warm lighting.
+            He speaks naturally and gestures occasionally — leaning slightly forward as if
+            sharing something important with a friend. The energy is professional but
+            personal, like a one-on-one conversation. Camera slowly pushes in from medium
+            to tight medium shot over the 25 seconds. Shallow depth of field keeps focus
+            on Shai. Natural daylight mixed with warm desk lamp. No text overlays.
+        */}
+        <section
+          className="py-16 md:py-24"
+          style={{ background: `linear-gradient(135deg, ${NAVY} 0%, #0F2440 100%)` }}
+        >
+          <div className="max-w-4xl mx-auto px-6">
+            <Reveal className="text-center mb-10">
+              <SectionTag light>Personal Message</SectionTag>
+              <h2
+                className="text-3xl md:text-[2.6rem] font-extrabold leading-[1.15] tracking-tight mb-4 text-white"
+              >
+                Nir, I Made This Report{" "}
+                <span style={{ color: ORANGE }}>Specifically for You</span>
+              </h2>
+              <p className="text-base max-w-xl mx-auto text-white/60">
+                25 seconds — hear why I believe GP Homes deserves to dominate Plano.
+              </p>
+            </Reveal>
+
+            <Reveal delay={200}>
+              <div className="relative max-w-2xl mx-auto rounded-2xl overflow-hidden shadow-2xl" style={{ border: `2px solid ${ORANGE}` }}>
+                {/* Replace src with actual video URL after generation */}
+                <video
+                  id="shai-video"
+                  controls
+                  playsInline
+                  preload="metadata"
+                  poster=""
+                  className="w-full aspect-video bg-black"
+                  src=""
+                >
+                  Your browser does not support the video tag.
+                </video>
+                {/* Overlay shown when no video src yet */}
+                <div
+                  className="absolute inset-0 flex flex-col items-center justify-center bg-black/80"
+                  style={{ display: "flex" }}
+                  id="video-placeholder"
+                >
+                  <div className="w-20 h-20 rounded-full flex items-center justify-center mb-4" style={{ background: ORANGE }}>
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </div>
+                  <p className="text-white/60 text-sm">Video loading soon...</p>
+                </div>
+              </div>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ================================================================ */}
         {/* WHAT WE'LL DO — Concrete deliverables */}
         {/* ================================================================ */}
         <section style={{ background: WHITE }} className="py-20 md:py-28">
