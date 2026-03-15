@@ -126,7 +126,7 @@ async function isCreditBillingModel(tenantId: string): Promise<boolean> {
     }
 }
 
-function buildScenePrompts(bible: CharacterBibleRow): { prompt: string; shotType: "narrative" | "dialogue" }[] {
+export function buildScenePrompts(bible: CharacterBibleRow): { prompt: string; shotType: "narrative" | "dialogue" }[] {
     const handle = bible.soraHandle ? `@${bible.soraHandle}` : bible.name;
     const style = bible.visualStyle || "cinematic";
     const scenarioPrompts: string[] = bible.metadata?.scenario_prompts ?? [];
@@ -180,7 +180,7 @@ async function downloadVideo(url: string, localPath: string): Promise<void> {
  * Submit one scene to model-router + poll until complete.
  * Returns resultUrl or throws on unrecoverable failure.
  */
-async function generateScene(params: {
+export async function generateScene(params: {
     tenantId: string;
     sceneIndex: number;
     prompt: string;
@@ -639,6 +639,7 @@ async function runCompositionPipeline(params: {
         revealUrl: revealUrl!,
         deliveredAt: new Date().toISOString(),
         deliveredVia: wahaDelivered ? "whatsapp" : "failed",
+        sceneStatuses: (data.sceneUrls ?? []).map(() => "approved"),
     };
     await upsertModuleState(groupId, tenantId, "character-video-gen", "delivered", completionData);
 

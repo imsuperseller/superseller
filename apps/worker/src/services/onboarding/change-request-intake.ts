@@ -184,6 +184,24 @@ export async function getPendingChangeRequest(groupId: string): Promise<ChangeRe
     );
 }
 
+/**
+ * Get the most recent in-progress change request for a group.
+ * Used as a concurrency guard — prevents dispatching a new regen job while one is running.
+ * Returns null if no in-progress request exists.
+ */
+export async function getInProgressChangeRequest(groupId: string): Promise<ChangeRequestRow | null> {
+    return queryOne<ChangeRequestRow>(
+        `SELECT id, group_id, tenant_id, message_body, intent, scope, scene_number,
+                change_summary, status, estimated_cost_cents, poll_message_id,
+                character_bible_version_id, created_at, updated_at
+         FROM change_requests
+         WHERE group_id = $1 AND status = 'in-progress'
+         ORDER BY created_at DESC
+         LIMIT 1`,
+        [groupId],
+    );
+}
+
 // ── Cost Estimation ────────────────────────────────────────────
 
 /**

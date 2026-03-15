@@ -148,3 +148,22 @@ export interface CrewVideoJobData {
     /** V3: force all clips to std mode (cheaper for testing, ~$0.24/agent vs $0.44) */
     forceStdMode?: boolean;
 }
+
+// ─── CHARACTER SCENE REGENERATION QUEUE ───
+export const characterRegenQueue = new Queue("character-regen", {
+    connection: redisConnection,
+    defaultJobOptions: {
+        attempts: 2,
+        backoff: { type: "exponential", delay: 30000 },
+        removeOnComplete: { age: 86400 * 7 },
+        removeOnFail: { age: 86400 * 30 },
+    },
+});
+
+export interface CharacterRegenJobData {
+    changeRequestId: string;
+    sceneIndex: number;        // 0-based (converted from 1-based scene_number at dispatch)
+    tenantId: string;
+    groupId: string;
+    characterBibleId?: string;
+}
