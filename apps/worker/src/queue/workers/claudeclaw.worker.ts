@@ -204,11 +204,25 @@ export const claudeclawWorker = new Worker<ClaudeClawJobData>(
             }
 
             // ─── Onboarding Pipeline: Poll Vote Detection ───
-            // WAHA delivers poll votes — check if this is a poll vote event
-            // The job data would include a special flag or the message body would match a module label
+            // WAHA delivers poll votes — check if this is a poll vote event.
+            // Disambiguate: change-request confirmation polls take priority over module-selection polls.
             try {
                 const groupCfg = getGroupConfig(chatId);
                 if (groupCfg?.tenantId && job.data.isPollVote && job.data.pollOption) {
+                    // Check if this is a change-request confirmation poll
+                    const { getPendingChangeRequest } = await import("../../services/onboarding/change-request-intake");
+                    const pendingRequest = await getPendingChangeRequest(chatId);
+                    if (pendingRequest) {
+                        const { handleChangeRequestPollVote } = await import("../../services/onboarding/change-request-handler");
+                        await handleChangeRequestPollVote({
+                            groupId: chatId,
+                            tenantId: groupCfg.tenantId,
+                            selectedOption: job.data.pollOption,
+                            changeRequestId: pendingRequest.id,
+                        });
+                        return { handled: "change-request-poll-vote", isGroup: true };
+                    }
+                    // Fall through to module selection / pipeline poll
                     const { handlePipelineEvent } = await import("./onboarding.worker");
                     await handlePipelineEvent({
                         type: "poll-vote",
@@ -480,6 +494,10 @@ export async function initClaudeClaw(): Promise<void> {
     // Init onboarding module state table
     const { initModuleStateTable } = await import("../../services/onboarding/module-state");
     await initModuleStateTable();
+
+    // Init change requests table
+    const { initChangeRequestTable } = await import("../../services/onboarding/change-request-intake");
+    await initChangeRequestTable();
 
     // Init voice transcription table
     const { initVoiceTranscriptionTable } = await import("../../services/voice-transcription");

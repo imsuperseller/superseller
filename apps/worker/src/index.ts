@@ -11,6 +11,7 @@ import { marketplaceReplenisherWorker, initMarketplaceReplenisher } from "./queu
 import { remotionWorker, initRemotionWorker } from "./queue/workers/remotion.worker";
 import { crewVideoWorker, initCrewVideoWorker } from "./queue/workers/crew-video.worker";
 import { onboardingWorker, initOnboardingWorker } from "./queue/workers/onboarding.worker";
+import { initChangeRequestTable } from "./services/onboarding/change-request-intake";
 import { setupBullBoard } from "./bull-board";
 import { initWahaSessions } from "./services/waha-session-manager";
 import { startHealthMonitor } from "./services/health-monitor";
@@ -78,6 +79,7 @@ async function bootstrap() {
     await initRemotionWorker();
     await initCrewVideoWorker();
     await initOnboardingWorker();
+    await initChangeRequestTable();
     logger.info("✅ Workers initialized");
 
     // 5. WAHA Multi-Session Bootstrap
