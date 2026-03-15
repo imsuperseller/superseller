@@ -37,7 +37,7 @@
 
 **Milestone Goal:** Onboarding triggers automatically from payment webhooks, understands voice notes in Hebrew and English, and responds in the customer's language — zero manual steps from payment to WhatsApp group.
 
-- [ ] **Phase 12: Payment Webhooks** — PayPal and Stripe subscription events auto-create tenant and fire onboarding pipeline
+- [x] **Phase 12: Payment Webhooks** — PayPal and Stripe subscription events auto-create tenant and fire onboarding pipeline (completed 2026-03-15)
 - [ ] **Phase 13: Voice Note Transcription** — Whisper transcribes incoming voice notes before agent processes them
 - [ ] **Phase 14: Language Detection** — Agent auto-detects Hebrew/English and responds in kind
 
@@ -52,7 +52,7 @@
   2. A new Stripe subscription webhook fires and a WhatsApp onboarding group exists within seconds — no admin action required
   3. Firing the same webhook event twice results in exactly one onboarding pipeline (no duplicate groups)
   4. A webhook that fails to process is automatically retried and eventually succeeds or alerts admin
-**Plans:** 3/4 plans executed
+**Plans:** 4/4 plans complete
 
 Plans:
 - [ ] 12-01-PLAN.md — Foundation: WebhookEvent schema, shared onboardNewCustomer service, worker API extension
@@ -97,7 +97,7 @@ Plans:
 | 08. Provider Activation | v1.1 | 2/2 | Complete | 2026-03-15 |
 | 09. Quality Feedback Loop | v1.1 | 3/3 | Complete | 2026-03-15 |
 | 10. Remotion Templates | v1.1 | 1/1 | Complete | 2026-03-15 |
-| 12. Payment Webhooks | 3/4 | In Progress|  | - |
+| 12. Payment Webhooks | 4/4 | Complete   | 2026-03-15 | - |
 | 13. Voice Note Transcription | v1.2 | 0/TBD | Not started | - |
 | 14. Language Detection | v1.2 | 0/TBD | Not started | - |
 

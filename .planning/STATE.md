@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Production-Ready Onboarding
 status: planning
-stopped_at: Completed 12-02-PLAN.md
-last_updated: "2026-03-15T16:56:59.480Z"
+stopped_at: Completed 12-04-PLAN.md
+last_updated: "2026-03-15T16:58:07.155Z"
 last_activity: 2026-03-15 — Roadmap created for v1.2 (phases 12-14)
 progress:
   total_phases: 3
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 4
-  completed_plans: 3
+  completed_plans: 4
 ---
 
 # State: Universal Customer Onboarding System
@@ -49,6 +49,7 @@ Progress (v1.2): [░░░░░░░░░░] 0% (3 phases, 0 complete)
 *Updated after each plan completion*
 | Phase 12-payment-webhooks P01 | 4 | 3 tasks | 3 files |
 | Phase 12-payment-webhooks P02 | 5 | 2 tasks | 2 files |
+| Phase 12-payment-webhooks P04 | 18 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -66,6 +67,7 @@ Recent decisions affecting v1.2 work:
 - [Phase 12-plan-03]: PayPal SDK via script tag (not @paypal/react-paypal-js — not installed in project)
 - [Phase 12-payment-webhooks]: onboardNewCustomer is additive in both webhooks — all existing payment processing preserved
 - [Phase 12-payment-webhooks]: PAYPAL_WEBHOOK_ID now mandatory (returns 500 if missing) — not silently skipped
+- [Phase 12-payment-webhooks]: Webhook metrics added to system-monitoring API with bigint->Number coercion for PostgreSQL COUNT aggregates; SystemMonitor.tsx fetches both monitoring APIs in parallel
 
 ### Pending Todos
 
@@ -81,8 +83,8 @@ None captured yet for v1.2.
 
 ## Session Continuity
 
-Last session: 2026-03-15T16:56:59.478Z
-Stopped at: Completed 12-02-PLAN.md
+Last session: 2026-03-15T16:58:07.153Z
+Stopped at: Completed 12-04-PLAN.md
 Resume file: None
 
 ---
