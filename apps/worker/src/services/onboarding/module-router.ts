@@ -47,6 +47,12 @@ const MODULE_REGISTRY: ModuleRegistryEntry[] = [
         triggerProducts: ["VideoForge", "Winner Studio", "Character-in-a-Box"],
     },
     {
+        type: "character-video-gen",
+        loader: () =>
+            import("./modules/character-video-gen").then((m) => ({ module: m.characterVideoGenModule })),
+        triggerProducts: ["VideoForge", "Winner Studio", "Character-in-a-Box"],
+    },
+    {
         type: "social-setup",
         loader: () => import("./modules/social-setup").then((m) => ({ module: m.socialSetupModule })),
         triggerProducts: ["SocialHub", "Buzz"],
@@ -82,6 +88,8 @@ const INTRO_MESSAGES: Record<ModuleType, string> = {
         "Let's start by collecting your brand assets -- logo, photos, and business info. This will help us create amazing content for you!",
     "character-questionnaire":
         "Let's create your AI brand character! I'll ask a few questions about their personality, look, and the scenarios where they'll appear.",
+    "character-video-gen":
+        "I'm now generating your AI character video! This uses advanced AI to bring your brand character to life in 5 unique scenes. This takes a few minutes...",
     "social-setup":
         "Time to set up your social media automation! I'll need your platform preferences and content style.",
     "competitor-research":
