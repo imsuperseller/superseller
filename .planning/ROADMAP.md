@@ -1,7 +1,7 @@
 # Roadmap: Universal Customer Onboarding System
 
 **Created:** 2026-03-13
-**Updated:** 2026-03-14 — Phase 03.1 planned (2 plans)
+**Updated:** 2026-03-15 — Phase 04 planned (3 plans, Wave 1 + Wave 2)
 **Phases:** 6 (includes 03.1 insertion)
 **Core Value:** Every customer gets an AI agent in a WhatsApp group from Day 1 — product-aware, zero friction
 
@@ -123,14 +123,21 @@ Plans:
 - `apps/worker/src/services/model-router/index.ts` — Public barrel export
 
 Plans:
-- [ ] 03.1-01-PLAN.md — Shot type taxonomy + provider adapter contracts (Wave 1)
-- [ ] 03.1-02-PLAN.md — Router logic + Observatory integration + barrel export (Wave 2)
+- [x] 03.1-01-PLAN.md — Shot type taxonomy + provider adapter contracts (Wave 1)
+- [x] 03.1-02-PLAN.md — Router logic + Observatory integration + barrel export (Wave 2)
 
 ## Phase 4: Module — Character Video Generation + Delivery
 
 **Goal:** Generate character videos via Kie.ai Sora 2, wrap in Remotion reveal, deliver via WhatsApp.
 
 **Requirements:** CHAR-05..10
+
+**Plans:** 3 plans
+
+Plans:
+- [ ] 04-01-PLAN.md — Sora 2 scene generation module via routeShot() (Wave 1)
+- [ ] 04-02-PLAN.md — Remotion CharacterReveal composition with branded overlays (Wave 1)
+- [ ] 04-03-PLAN.md — Composition rendering + R2 upload + WhatsApp delivery (Wave 2)
 
 **Success Criteria:**
 1. Kie.ai Sora 2 generates reference + 5 scene videos from CharacterBible prompts
@@ -187,4 +194,4 @@ Phase 5 can start partially after Phase 1 is done (queue + routing skeleton).
 
 ---
 *Created: 2026-03-13*
-*Updated: 2026-03-14 — Phase 03.1 planned (2 plans, Wave 1 + Wave 2)*
+*Updated: 2026-03-15 — Phase 04 planned (3 plans, Wave 1 + Wave 2)*
