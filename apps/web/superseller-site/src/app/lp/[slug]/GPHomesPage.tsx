@@ -891,37 +891,22 @@ export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | nul
                 <span style={{ color: ORANGE }}>Specifically for You</span>
               </h2>
               <p className="text-base max-w-xl mx-auto text-white/60">
-                25 seconds — hear why I believe GP Homes should be dominating Plano.
+                15 seconds. Sound on.
               </p>
             </Reveal>
 
             <Reveal delay={200}>
               <div className="relative max-w-2xl mx-auto rounded-2xl overflow-hidden shadow-2xl" style={{ border: `2px solid ${ORANGE}` }}>
-                {/* Replace src with actual video URL after generation */}
                 <video
                   id="shai-video"
                   controls
                   playsInline
                   preload="metadata"
-                  poster=""
                   className="w-full aspect-video bg-black"
-                  src=""
+                  src="https://pub-f1692e774ca04e3b9e495f7d3c85a759.r2.dev/gp-homes/shai-personal-message.mp4"
                 >
                   Your browser does not support the video tag.
                 </video>
-                {/* Overlay shown when no video src yet */}
-                <div
-                  className="absolute inset-0 flex flex-col items-center justify-center bg-black/80"
-                  style={{ display: "flex" }}
-                  id="video-placeholder"
-                >
-                  <div className="w-20 h-20 rounded-full flex items-center justify-center mb-4" style={{ background: ORANGE }}>
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
-                  </div>
-                  <p className="text-white/60 text-sm">Video loading soon...</p>
-                </div>
               </div>
             </Reveal>
           </div>
