@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: "Intelligent Content Engine"
 current_plan: Not started
-status: defining_requirements
-stopped_at: "Defining requirements"
-last_updated: "2026-03-14"
+status: ready_to_plan
+stopped_at: "Roadmap created — ready to plan Phase 07"
+last_updated: "2026-03-15"
 progress:
-  total_phases: 0
+  total_phases: 4
   completed_phases: 0
-  total_plans: 0
+  total_plans: 8
   completed_plans: 0
   percent: 0
 ---
@@ -18,45 +18,59 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-14)
+See: .planning/PROJECT.md (updated 2026-03-15)
 
 **Core value:** Every customer gets an AI agent in a WhatsApp group from Day 1 — product-aware, zero friction
-**Current focus:** Defining v1.1 requirements
-
-## Current Phase
-
-**Phase:** Not started (defining requirements)
-**Status:** Defining requirements
-**Progress:** [░░░░░░░░░░] 0%
+**Current focus:** Phase 07 — Provider Foundation
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-03-14 — Milestone v1.1 started
+Phase: 07 of 10 (Provider Foundation)
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-03-15 — Roadmap created for v1.1 (Phases 07-10)
 
-## Decisions
+Progress: [░░░░░░░░░░] 0%
 
-(None yet)
+## Performance Metrics
+
+**Velocity:**
+- Total plans completed: 0 (v1.1)
+- Average duration: — (v1.0 baseline: ~45 min/plan)
+- Total execution time: —
+
+**By Phase:**
+
+| Phase | Plans | Total | Avg/Plan |
+|-------|-------|-------|----------|
+| — | — | — | — |
 
 ## Accumulated Context
 
-### From v1.0
-- Phase 03.1 inserted after Phase 3: Multi-Model "Best Shot" Routing
-- Phase 06 added for gap closure from milestone audit
-- fal.ai adapter written but dormant — activate in v1.1
-- Model Observatory has 75+ columns, daily sync, but no feedback loop
-- 8 Remotion compositions exist, only 2 customer-facing
+### Decisions
 
-## Blockers
+Key decisions from v1.0 affecting v1.1:
+- [v1.0] fal.ai adapter written but never called — activate in Phase 08 after safety rails in Phase 07
+- [v1.0] Observatory manually seeded, never updated by pipeline — Phase 09 closes this loop
+- [v1.1] PROV-08 first: write DECISIONS.md entry reversing Feb 2026 Kling-only mandate before touching Veo code
 
-None.
+### Critical Constraints
 
-## Notes
+- Phase 07 must complete before Phase 08 (router bug fix + input validation required before live traffic)
+- Phase 08 must complete before Phase 09 (real generation data required for feedback loop)
+- Phase 10 is independent — can run in parallel with Phase 09 if needed
+- `minSamplesBeforeAdjustment = 20` hardcoded in Phase 09 aggregation job (tunable constant)
 
-- Admin project ID: `cmmpgo3k60000h5zuaxfqac80`
-- v1.0 ended at Phase 06 — v1.1 starts at Phase 07
+### Blockers/Concerns
+
+- [Phase 07] Feb 2026 Veo 3.1 removal reason not fully documented — confirm from findings.md before Phase 07-01
+- [Phase 08] fal.ai billing on failure is unknown — plan one test job before production tenant traffic
+
+## Session Continuity
+
+Last session: 2026-03-15
+Stopped at: Roadmap written, STATE.md initialized, REQUIREMENTS.md traceability updated
+Resume file: None
 
 ---
-*Last updated: 2026-03-14 — Milestone v1.1 started*
+*Last updated: 2026-03-15 — v1.1 roadmap created*

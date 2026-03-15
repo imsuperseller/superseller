@@ -67,30 +67,30 @@ Deferred to next milestone. Tracked but not in current roadmap.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PROV-01 | — | Pending |
-| PROV-02 | — | Pending |
-| PROV-03 | — | Pending |
-| PROV-04 | — | Pending |
-| PROV-05 | — | Pending |
-| PROV-06 | — | Pending |
-| PROV-07 | — | Pending |
-| PROV-08 | — | Pending |
-| QUAL-01 | — | Pending |
-| QUAL-02 | — | Pending |
-| QUAL-03 | — | Pending |
-| QUAL-04 | — | Pending |
-| QUAL-05 | — | Pending |
-| QUAL-06 | — | Pending |
-| TMPL-01 | — | Pending |
-| TMPL-02 | — | Pending |
-| TMPL-03 | — | Pending |
-| TMPL-04 | — | Pending |
+| PROV-08 | Phase 07 | Pending |
+| PROV-03 | Phase 07 | Pending |
+| PROV-05 | Phase 07 | Pending |
+| PROV-06 | Phase 07 | Pending |
+| PROV-07 | Phase 07 | Pending |
+| PROV-01 | Phase 08 | Pending |
+| PROV-02 | Phase 08 | Pending |
+| PROV-04 | Phase 08 | Pending |
+| QUAL-01 | Phase 09 | Pending |
+| QUAL-02 | Phase 09 | Pending |
+| QUAL-03 | Phase 09 | Pending |
+| QUAL-04 | Phase 09 | Pending |
+| QUAL-05 | Phase 09 | Pending |
+| QUAL-06 | Phase 09 | Pending |
+| TMPL-01 | Phase 10 | Pending |
+| TMPL-02 | Phase 10 | Pending |
+| TMPL-03 | Phase 10 | Pending |
+| TMPL-04 | Phase 10 | Pending |
 
 **Coverage:**
 - v1.1 requirements: 18 total
-- Mapped to phases: 0
-- Unmapped: 18 (pending roadmap creation)
+- Mapped to phases: 18
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-14*
-*Last updated: 2026-03-14 after initial definition*
+*Last updated: 2026-03-15 — traceability complete (18/18 mapped to Phases 07-10)*
