@@ -58,10 +58,10 @@
 
 ### Multi-Model Best Shot Routing (ROUTE)
 
-- [ ] **ROUTE-01**: Shot type taxonomy defined as TypeScript types — dialogue, narrative, environment, product, social, music — each with a canonical label, description, and default model mapping
-- [ ] **ROUTE-02**: Budget tier type defined — budget ($0.03-0.05/clip), standard ($0.10/clip), premium ($0.15+/clip) — each tier constrains which models are eligible
-- [ ] **ROUTE-03**: Provider adapter for Kie.ai implements the unified `ProviderAdapter` interface (submit job, poll status, cancel, extract result URL)
-- [ ] **ROUTE-04**: Provider adapter for fal.ai implements the unified `ProviderAdapter` interface via fetch (no SDK — not installed)
+- [x] **ROUTE-01**: Shot type taxonomy defined as TypeScript types — dialogue, narrative, environment, product, social, music — each with a canonical label, description, and default model mapping
+- [x] **ROUTE-02**: Budget tier type defined — budget ($0.03-0.05/clip), standard ($0.10/clip), premium ($0.15+/clip) — each tier constrains which models are eligible
+- [x] **ROUTE-03**: Provider adapter for Kie.ai implements the unified `ProviderAdapter` interface (submit job, poll status, cancel, extract result URL)
+- [x] **ROUTE-04**: Provider adapter for fal.ai implements the unified `ProviderAdapter` interface via fetch (no SDK — not installed)
 - [ ] **ROUTE-05**: `routeShot()` function selects the optimal model for a given `ShotType + BudgetTier` combination, querying `ai_model_recommendations` via `getRecommendedModel()` (Model Observatory)
 - [ ] **ROUTE-06**: Router falls back to hardcoded model map when Observatory query fails — pipeline must never stop
 - [ ] **ROUTE-07**: Every model selection logged to `ai_model_decisions` table (audit trail per Observatory rules)

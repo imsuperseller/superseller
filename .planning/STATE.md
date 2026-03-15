@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_plan: 02-03 complete
-status: executing
-stopped_at: Completed 03-01-PLAN.md
-last_updated: "2026-03-13T23:49:59.798Z"
+current_plan: Not started
+status: planning
+stopped_at: Completed 03.1-01-PLAN.md
+last_updated: "2026-03-15T01:42:41.178Z"
 progress:
-  total_phases: 5
+  total_phases: 6
   completed_phases: 3
-  total_plans: 6
-  completed_plans: 6
-  percent: 100
+  total_plans: 8
+  completed_plans: 7
+  percent: 88
 ---
 
 # State: Universal Customer Onboarding System
@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-03-13)
 ## Current Phase
 
 **Phase:** 2 — Onboarding Modules (Asset, Social, Compete)
-**Status:** Executing
-**Current Plan:** 02-03 complete
-**Progress:** [██████████] 100%
+**Status:** Ready to plan
+**Current Plan:** Not started
+**Progress:** [█████████░] 88%
 
 ## Decisions
 
@@ -46,6 +46,9 @@ See: .planning/PROJECT.md (updated 2026-03-13)
 - [Phase 03-01]: Used direct fetch instead of @anthropic-ai/sdk in character-bible-generator (sdk not installed in worker)
 - [Phase 03-01]: character-questionnaire registered between asset-collection and social-setup (higher priority for video customers)
 - [Phase 03-01]: Vague answer threshold set to 10 chars for personality/visual_style/audience phases only
+- [Phase 03.1-multi-model-best-shot-routing]: KieAdapter uses getTaskStatus(id,'kling') — plan listed getKieTaskStatus which doesn't exist in kie.ts
+- [Phase 03.1-multi-model-best-shot-routing]: FalAdapter jobId encoded as modelId::requestId for stateless poll/cancel URL construction
+- [Phase 03.1-multi-model-best-shot-routing]: cancelJob is a no-op in KieAdapter — kie.ts has no cancel API
 
 ## Phase History
 
@@ -53,6 +56,12 @@ See: .planning/PROJECT.md (updated 2026-03-13)
 - **01-02** (API Endpoint + Verification): COMPLETE — POST /api/onboarding/start wired (1min)
 - **02-01** (Module Foundation): COMPLETE — types, DB state, module router with priority activation (3min)
 - **02-03** (Competitor Research + ClaudeClaw Integration): COMPLETE — competitor module + worker pipeline wiring (2min)
+
+## Accumulated Context
+
+### Roadmap Evolution
+
+- Phase 03.1 inserted after Phase 3: Multi-Model "Best Shot" Routing (INSERTED) — shared model routing layer for all video products, must precede Phase 4 (Character Video Gen)
 
 ## Blockers
 
@@ -78,10 +87,11 @@ None identified.
 | 02-03 | 2min | 2 | 3 |
 | Phase 02 P02 | 4min | 2 tasks | 5 files |
 | Phase 03-character-questionnaire P03-01 | 22min | 2 tasks | 7 files |
+| Phase 03.1-multi-model-best-shot-routing P01 | 4min | 2 tasks | 6 files |
 
 ## Last Session
 
-- **Stopped at:** Completed 03-01-PLAN.md
+- **Stopped at:** Completed 03.1-01-PLAN.md
 - **Timestamp:** 2026-03-13T23:24:43Z
 
 ---
