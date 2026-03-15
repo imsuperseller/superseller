@@ -134,7 +134,13 @@ export function startScheduler(): void {
         }
     }, HOUR, 20 * 60 * 1000);
 
-    logger.info({ msg: "Scheduler started", jobs: 7 });
+    // Nightly quality aggregation — daily (first run after 4 hours to let services stabilize)
+    scheduleJob("quality-aggregation", async () => {
+        const { runQualityAggregation } = await import("../jobs/quality-aggregation");
+        await runQualityAggregation();
+    }, DAY, 4 * HOUR);
+
+    logger.info({ msg: "Scheduler started", jobs: 8 });
 }
 
 export function stopScheduler(): void {
