@@ -42,9 +42,20 @@ const onboardingStartSchema = z.object({
     tenantId: z.string().uuid(),
     clientPhone: z.string().min(8), // Phone number with country code
     triggeredBy: z.string().optional(), // Admin phone or email
+    productName: z.string().optional(), // Passed from webhook-triggered onboarding
+    serviceType: z.string().optional(), // Passed from webhook-triggered onboarding
 });
 
 apiRouter.post("/api/onboarding/start", async (req: Request, res: Response) => {
+    // Auth check: require x-worker-secret header if WORKER_API_SECRET env var is set
+    const workerSecret = process.env.WORKER_API_SECRET;
+    if (workerSecret) {
+        const providedSecret = req.headers["x-worker-secret"];
+        if (providedSecret !== workerSecret) {
+            return res.status(401).json({ error: "Unauthorized" });
+        }
+    }
+
     try {
         const parsed = onboardingStartSchema.safeParse(req.body);
         if (!parsed.success) {
