@@ -857,35 +857,25 @@ export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | nul
         {/* ================================================================ */}
         {/* PERSONAL VIDEO MESSAGE */}
         {/* ================================================================ */}
-        {/* VIDEO PROMPT (25s, @shai-lfc):
+        {/* VIDEO PROMPT (15s, @shai-lfc):
 
-            SETTING: Active construction/remodel worksite — exposed framing, dust,
-            tools on the floor, maybe plastic sheeting. Shai (@shai-lfc) wearing a
-            hard hat slightly crooked, safety vest over a casual t-shirt — clearly
-            not a contractor, which is part of the joke. He walks through the site
-            talking to camera like a selfie video, dodging a dangling wire at one
-            point. Handheld camera, slightly shaky, real — not polished. Natural
-            construction site lighting. Sawdust in the air. No text overlays.
+            SETTING: Active construction worksite — exposed framing, tools,
+            plastic sheeting. Shai (@shai-lfc) in a hard hat slightly crooked,
+            safety vest over t-shirt. Handheld selfie-style, real not polished.
 
-            SCRIPT (what Shai says, ~65 words, 25 seconds):
+            SCRIPT (~35 words, 15 seconds):
 
-            "Nir, Ron — I spent two days stalking your business online.
-            [gestures around the worksite] Your work? Top 7% in Texas.
-            Five stars everywhere. Zero complaints. Incredible.
-            But then I Googled 'remodeling Plano TX'...
-            [makes a face, shakes head] ...you're nowhere.
-            DFW Improved? They're right there. 210 reviews.
-            You? Zero. On Google.
-            [points at camera, half-smile]
-            That's not a quality problem — that's a visibility problem.
-            And that... is exactly what I do."
+            "Nir, Ron — top 7% in Texas. Five stars everywhere.
+            But I Googled 'remodeling Plano'...
+            [shakes head] ...you're nowhere. DFW Improved is.
+            [points at camera]
+            That's not a quality problem. That's my problem now."
 
             BEATS:
-            0-3s:   Shai enters frame walking through site, adjusts hard hat
-            3-10s:  Gestures around, impressed — "top 7%, five stars"
-            10-16s: Face drops, pulls out phone — "I Googled... you're nowhere"
-            16-22s: Shakes head — "DFW Improved, 210 reviews, you zero"
-            22-25s: Confident point at camera — "that's what I do"
+            0-3s:   Walks into frame, adjusts hard hat — "top 7%, five stars"
+            3-8s:   Face drops, shakes head — "I Googled... you're nowhere"
+            8-12s:  "DFW Improved is"
+            12-15s: Points at camera, half-smile — "that's my problem now"
         */}
         <section
           className="py-16 md:py-24"
