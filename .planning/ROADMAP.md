@@ -39,7 +39,7 @@
 
 - [x] **Phase 12: Payment Webhooks** — PayPal and Stripe subscription events auto-create tenant and fire onboarding pipeline (completed 2026-03-15)
 - [x] **Phase 13: Voice Note Transcription** — Whisper transcribes incoming voice notes before agent processes them (completed 2026-03-15)
-- [ ] **Phase 14: Language Detection** — Agent auto-detects Hebrew/English and responds in kind
+- [x] **Phase 14: Language Detection** — Agent auto-detects Hebrew/English and responds in kind (completed 2026-03-15)
 
 ## Phase Details
 
@@ -84,7 +84,7 @@ Plans:
   2. Customer sends an English message and agent responds in English — no manual configuration required
   3. Customer switches from Hebrew to English mid-conversation and the agent switches with them on the next response
   4. Hebrew text in WhatsApp messages renders right-to-left correctly (not garbled)
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 
 Plans:
 - [ ] 14-01-PLAN.md — Bilingual language instructions across all agent prompt paths
@@ -106,7 +106,7 @@ Plans:
 | 10. Remotion Templates | v1.1 | 1/1 | Complete | 2026-03-15 |
 | 12. Payment Webhooks | v1.2 | 4/4 | Complete | 2026-03-15 |
 | 13. Voice Note Transcription | v1.2 | 2/2 | Complete | 2026-03-15 |
-| 14. Language Detection | v1.2 | 0/1 | Not started | - |
+| 14. Language Detection | 1/1 | Complete   | 2026-03-15 | - |
 
 ---
 *Created: 2026-03-13*

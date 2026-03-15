@@ -24,10 +24,10 @@ Requirements for Production-Ready Onboarding milestone.
 
 ### Language
 
-- [ ] **LANG-01**: Agent auto-detects message language (Hebrew/English) per message
-- [ ] **LANG-02**: Agent responds in the same language the customer used
-- [ ] **LANG-03**: System prompts include bilingual instructions for all modules
-- [ ] **LANG-04**: RTL text rendering works correctly in WhatsApp responses
+- [x] **LANG-01**: Agent auto-detects message language (Hebrew/English) per message
+- [x] **LANG-02**: Agent responds in the same language the customer used
+- [x] **LANG-03**: System prompts include bilingual instructions for all modules
+- [x] **LANG-04**: RTL text rendering works correctly in WhatsApp responses
 
 ## Future Requirements (v1.3+)
 
@@ -62,10 +62,10 @@ Requirements for Production-Ready Onboarding milestone.
 | VOICE-02 | Phase 13 | Complete |
 | VOICE-03 | Phase 13 | Complete |
 | VOICE-04 | Phase 13 | Complete |
-| LANG-01 | Phase 14 | Pending |
-| LANG-02 | Phase 14 | Pending |
-| LANG-03 | Phase 14 | Pending |
-| LANG-04 | Phase 14 | Pending |
+| LANG-01 | Phase 14 | Complete |
+| LANG-02 | Phase 14 | Complete |
+| LANG-03 | Phase 14 | Complete |
+| LANG-04 | Phase 14 | Complete |
 
 **Coverage:**
 - v1.2 requirements: 13 total
