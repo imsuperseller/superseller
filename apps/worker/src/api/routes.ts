@@ -24,6 +24,9 @@ function mapPropertyType(raw: string | undefined): string {
 
 import { telnyxVoiceRouter } from "./telnyx-voice-webhook";
 import { bootstrapOnboardingGroup } from "../services/onboarding/group-bootstrap";
+import { customerOnboardingQueue } from "../queue/queues";
+import { createPipelineRun } from "../services/pipeline-run";
+import { MODULE_LABELS } from "../queue/workers/onboarding.worker";
 
 export const apiRouter = Router();
 
@@ -34,6 +37,7 @@ apiRouter.use(telnyxVoiceRouter);
 const onboardingStartSchema = z.object({
     tenantId: z.string().uuid(),
     clientPhone: z.string().min(8), // Phone number with country code
+    triggeredBy: z.string().optional(), // Admin phone or email
 });
 
 apiRouter.post("/api/onboarding/start", async (req: Request, res: Response) => {
@@ -43,22 +47,172 @@ apiRouter.post("/api/onboarding/start", async (req: Request, res: Response) => {
             return res.status(400).json({ error: "Invalid input", details: parsed.error.flatten() });
         }
 
-        const { tenantId, clientPhone } = parsed.data;
+        const { tenantId, clientPhone, triggeredBy } = parsed.data;
 
         logger.info({ msg: "Onboarding start requested", tenantId, clientPhone });
 
+        // 1. Bootstrap the WhatsApp group (still required to create the group)
         const result = await bootstrapOnboardingGroup(tenantId, clientPhone);
+
+        // 2. Create a PipelineRun record for cost/status tracking
+        const pipelineRunId = await createPipelineRun({
+            tenantId,
+            pipelineType: "customer-onboarding",
+            status: "running",
+            inputJson: { groupId: result.groupId, clientPhone, triggeredBy: triggeredBy || "admin" },
+        });
+
+        // 3. Enqueue the BullMQ orchestration job
+        await customerOnboardingQueue.add("onboard", {
+            tenantId,
+            groupId: result.groupId,
+            clientPhone,
+            triggeredBy: triggeredBy || "admin",
+        });
+
+        logger.info({ msg: "Onboarding pipeline enqueued", tenantId, groupId: result.groupId, pipelineRunId });
 
         return res.status(201).json({
             ok: true,
+            success: true,
+            message: "Onboarding pipeline started",
             groupId: result.groupId,
-            pipelineRunId: result.pipelineRunId,
+            pipelineRunId,
             tenantName: result.tenantName,
             products: result.products.map(p => p.productName),
         });
     } catch (err: any) {
         logger.error({ msg: "Onboarding start failed", error: err.message, stack: err.stack });
         return res.status(500).json({ error: "Onboarding failed", message: err.message });
+    }
+});
+
+// ─── ONBOARDING STATUS ───
+
+apiRouter.get("/api/onboarding/status/:tenantId", async (req: Request, res: Response) => {
+    try {
+        const { tenantId } = req.params;
+
+        // 1. Get pipeline state
+        const pipelineRows = await query<{
+            group_id: string;
+            tenant_id: string;
+            status: string;
+            available_modules: string[];
+            completed_modules: string[];
+            current_module: string | null;
+            total_cost_cents: number;
+            admin_phone: string;
+            module_costs: Record<string, number> | null;
+            updated_at: Date;
+        }>(
+            `SELECT group_id, tenant_id, status, available_modules, completed_modules,
+                    current_module, total_cost_cents, admin_phone, module_costs, updated_at
+             FROM onboarding_pipeline
+             WHERE tenant_id = $1
+             ORDER BY updated_at DESC LIMIT 1`,
+            [tenantId],
+        );
+
+        if (!pipelineRows.length) {
+            return res.status(404).json({ error: "No onboarding pipeline found for this tenant" });
+        }
+
+        const pipeline = pipelineRows[0];
+
+        // 2. Get per-module states
+        const moduleStateRows = await query<{
+            module_type: string;
+            phase: string;
+            updated_at: Date;
+            created_at: Date;
+        }>(
+            `SELECT module_type, phase, updated_at, created_at
+             FROM onboarding_module_state
+             WHERE tenant_id = $1`,
+            [tenantId],
+        );
+
+        const moduleStateMap = new Map(moduleStateRows.map((r) => [r.module_type, r]));
+
+        // 3. Get per-module costs from api_expenses (via PipelineRun)
+        const costRows = await query<{ module: string; cost: string }>(
+            `SELECT metadata->>'moduleType' as module, COALESCE(SUM(estimated_cost), 0) as cost
+             FROM api_expenses
+             WHERE job_id IN (
+                 SELECT id FROM "PipelineRun"
+                 WHERE "tenantId" = $1 AND "pipelineType" = 'customer-onboarding'
+             )
+             AND metadata->>'moduleType' IS NOT NULL
+             GROUP BY metadata->>'moduleType'`,
+            [tenantId],
+        ).catch(() => [] as { module: string; cost: string }[]);
+
+        const expenseCostMap = new Map(
+            costRows.map((r) => [r.module, Math.round(parseFloat(r.cost) * 100)]),
+        );
+
+        // 4. Build module list
+        const availableModules = pipeline.available_modules || [];
+        const completedModules = new Set(pipeline.completed_modules || []);
+        const moduleCosts = pipeline.module_costs || {};
+
+        const modules = availableModules.map((moduleType: string) => {
+            const modState = moduleStateMap.get(moduleType);
+            const costCents =
+                moduleCosts[moduleType] ||
+                expenseCostMap.get(moduleType) ||
+                0;
+
+            let status: string;
+            if (completedModules.has(moduleType)) {
+                status = "complete";
+            } else if (pipeline.current_module === moduleType) {
+                status = "active";
+            } else if (modState && modState.phase !== "intro") {
+                status = "in-progress";
+            } else {
+                status = "pending";
+            }
+
+            const entry: Record<string, unknown> = {
+                type: moduleType,
+                status,
+                label: MODULE_LABELS[moduleType as keyof typeof MODULE_LABELS] || moduleType,
+                costCents,
+            };
+
+            if (status === "complete" && modState) {
+                entry.completedAt = modState.updated_at;
+            } else if (status === "active" || status === "in-progress") {
+                entry.startedAt = modState?.created_at || null;
+            }
+
+            return entry;
+        });
+
+        // 5. Progress calculation
+        const completed = completedModules.size;
+        const total = availableModules.length;
+        const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+        return res.json({
+            tenantId,
+            status: pipeline.status,
+            progress: {
+                total,
+                completed,
+                percent,
+            },
+            modules,
+            totalCostCents: pipeline.total_cost_cents || 0,
+            lastActivity: pipeline.updated_at,
+            groupId: pipeline.group_id,
+            adminPhone: pipeline.admin_phone,
+        });
+    } catch (err: any) {
+        logger.error({ msg: "Onboarding status failed", error: err.message, stack: err.stack });
+        return res.status(500).json({ error: "Failed to fetch onboarding status", message: err.message });
     }
 });
 
