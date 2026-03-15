@@ -92,7 +92,10 @@ Plans:
   2. Per-scene status (`approved / pending / rejected`) is tracked in the database and drives which scenes are re-rendered versus reused
   3. Customer receives exactly two WhatsApp messages: an acknowledgment at request start and the new video at completion — nothing in between
   4. Remotion CharacterReveal re-renders correctly with a mix of original and newly generated scene URLs
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 17-01-PLAN.md — Queue infrastructure + generateScene export + sceneStatuses init + concurrency guard
+- [ ] 17-02-PLAN.md — Dispatch wiring + full regen worker processing + mixed-scene assembly + WhatsApp delivery
 
 ### Phase 18: Character-Level Changes
 **Goal**: Customers can request changes to the character itself (appearance, personality, style), triggering a versioned CharacterBible update and selective multi-scene regen after admin approval
@@ -134,11 +137,11 @@ Plans:
 | 13. Voice Note Transcription | v1.2 | 2/2 | Complete | 2026-03-15 |
 | 14. Language Detection | v1.2 | 1/1 | Complete | 2026-03-15 |
 | 15. Tech Debt Fixes | v1.3 | 2/2 | Complete | 2026-03-15 |
-| 16. Change Request Intake | 2/2 | Complete    | 2026-03-15 | - |
-| 17. Scene-Level Regeneration | v1.3 | 0/TBD | Not started | - |
+| 16. Change Request Intake | v1.3 | 2/2 | Complete | 2026-03-15 |
+| 17. Scene-Level Regeneration | v1.3 | 0/2 | Planning | - |
 | 18. Character-Level Changes | v1.3 | 0/TBD | Not started | - |
 | 19. Admin Tooling | v1.3 | 0/TBD | Not started | - |
 
 ---
 *Created: 2026-03-13*
-*Updated: 2026-03-15 — Phase 16 plans created (2 plans, waves 1-2)*
+*Updated: 2026-03-15 — Phase 17 plans created (2 plans, waves 1-2)*
