@@ -640,7 +640,7 @@ async function runCompositionPipeline(params: {
         deliveredAt: new Date().toISOString(),
         deliveredVia: wahaDelivered ? "whatsapp" : "failed",
     };
-    await upsertModuleState(groupId, tenantId, "character-video-gen", "complete", completionData);
+    await upsertModuleState(groupId, tenantId, "character-video-gen", "delivered", completionData);
 
     logger.info({
         msg: "character-video-gen: composition pipeline complete",
@@ -783,7 +783,13 @@ export const characterVideoGenModule: OnboardingModule = {
                 };
             }
 
-            // ── complete: module done ──
+            // ── delivered: video has been delivered, handle change requests ──
+            case "delivered": {
+                const { handleChangeRequest } = await import("../change-request-handler");
+                return await handleChangeRequest({ groupId, tenantId, messageBody: params.messageBody, state });
+            }
+
+            // ── complete: module done (backwards compatibility for existing modules) ──
             case "complete": {
                 return {
                     handled: true,
