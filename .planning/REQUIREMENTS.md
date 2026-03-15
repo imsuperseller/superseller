@@ -1,7 +1,7 @@
 # Requirements: Universal Customer Onboarding System
 
 **Defined:** 2026-03-13
-**Updated:** 2026-03-14 — added ROUTE-01..08 for Phase 03.1 (Multi-Model Best Shot Routing)
+**Updated:** 2026-03-15 — Phase 6 gap closure assignments; 19 requirements updated Pending→Complete
 **Core Value:** Every customer gets an AI agent in a WhatsApp group from Day 1 — zero friction, product-aware onboarding
 
 ## v1 Requirements
@@ -45,7 +45,7 @@
 ### Module: Social Media Setup (SOCIAL)
 
 - [x] **SOCIAL-01**: Agent activates social setup when customer has SocialHub/Buzz product
-- [x] **SOCIAL-02**: Agent collects social media credentials and preferences (platforms, posting frequency, content style)
+- [ ] **SOCIAL-02**: Agent collects social media credentials and preferences (platforms, posting frequency, content style)
 - [x] **SOCIAL-03**: Agent stores preferences in ServiceInstance.configuration JSON
 - [x] **SOCIAL-04**: Agent explains what SocialHub will do and sets expectations
 
@@ -70,7 +70,7 @@
 ### Pipeline Orchestration (PIPE)
 
 - [x] **PIPE-01**: BullMQ `customer-onboarding` queue orchestrates the full flow
-- [x] **PIPE-02**: Pipeline determines which modules to run based on tenant's products
+- [ ] **PIPE-02**: Pipeline determines which modules to run based on tenant's products
 - [x] **PIPE-03**: Pipeline handles failures gracefully — retries, alerts on permanent failure
 - [x] **PIPE-04**: Pipeline tracks total cost via trackExpense() and PipelineRun
 - [x] **PIPE-05**: Admin can view onboarding status via admin API
@@ -116,15 +116,18 @@
 | SOCIAL-01..04 | Phase 2 | Complete (02-02) |
 | COMPETE-01..04 | Phase 2 | Complete (02-03) |
 | CHAR-01..04 | Phase 3 | Complete (03-01) |
-| ROUTE-01..02 | Phase 03.1 | Pending (03.1-01) |
-| ROUTE-03..04 | Phase 03.1 | Pending (03.1-01) |
-| ROUTE-05..08 | Phase 03.1 | Pending (03.1-02) |
-| CHAR-05..10 | Phase 4 | Pending |
-| PIPE-01..05 | Phase 5 | Pending |
+| ROUTE-01..02 | Phase 03.1 | Complete (03.1-01) |
+| ROUTE-03..04 | Phase 03.1 | Complete (03.1-01) |
+| ROUTE-05..08 | Phase 03.1 | Complete (03.1-02) |
+| CHAR-05..10 | Phase 4 | Complete (04-01..03) |
+| PIPE-01 | Phase 5 | Complete (05-01) |
+| PIPE-02 | Phase 6 | Pending (06-01) |
+| PIPE-03..05 | Phase 5 | Complete (05-01..02) |
+| SOCIAL-02 | Phase 6 | Pending (06-01) |
 
 **Coverage:**
 - v1 requirements: 46 total (38 original + 8 ROUTE)
-- Mapped to phases: 46
+- Mapped to phases: 46 (44 complete, 2 pending in Phase 6)
 - Unmapped: 0
 
 ---

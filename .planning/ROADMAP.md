@@ -1,8 +1,8 @@
 # Roadmap: Universal Customer Onboarding System
 
 **Created:** 2026-03-13
-**Updated:** 2026-03-15 — Phase 05 planned (2 plans, Wave 1 + Wave 2)
-**Phases:** 6 (includes 03.1 insertion)
+**Updated:** 2026-03-15 — Phase 06 added (gap closure from milestone audit)
+**Phases:** 7 (includes 03.1 insertion + 06 gap closure)
 **Core Value:** Every customer gets an AI agent in a WhatsApp group from Day 1 — product-aware, zero friction
 
 ## Phase Overview
@@ -198,5 +198,58 @@ Phase 3.1 is shared infrastructure — all video products (Phase 4, VideoForge, 
 Phase 5 can start partially after Phase 1 is done (queue + routing skeleton).
 
 ---
+
+## Phase 6: Fix Broken Flows — Social Intro Loop + Poll Vote Pipeline
+
+**Goal:** Close the 2 remaining requirement gaps (SOCIAL-02, PIPE-02) and 2 broken E2E flows identified by milestone audit. Fix social-setup intro infinite loop, wire poll.vote webhook through to BullMQ, and fix module router to honor pipeline currentModule.
+
+**Requirements:** SOCIAL-02, PIPE-02
+**Gap Closure:** Closes gaps from v1.0-MILESTONE-AUDIT.md
+
+**Plans:** TBD
+
+Plans:
+- [ ] 06-01-PLAN.md — Fix social-setup intro handler + poll.vote webhook wiring + module router fix
+- [ ] 06-02-PLAN.md — Documentation cleanup: REQUIREMENTS.md traceability + SUMMARY.md frontmatter
+
+**Success Criteria:**
+1. Social setup module handles `intro` phase — first user message is parsed, platform names captured, no infinite loop
+2. `poll.vote` WAHA webhook events reach BullMQ via routes.ts (not dropped as "ignored")
+3. `routeToModule()` honors `currentModule` from pipeline state when set
+4. REQUIREMENTS.md traceability table shows "Complete" for all 46 satisfied requirements
+5. SUMMARY.md files for Phases 3, 3.1, 5 have correct `requirements_completed` arrays
+
+**Key files to modify:**
+- `apps/worker/src/services/onboarding/modules/social-setup.ts` — Add `intro` case
+- `apps/worker/src/api/routes.ts` — Add `poll.vote` event handling in webhook handler
+- `apps/worker/src/services/onboarding/module-router.ts` — Honor pipeline `currentModule`
+- `.planning/REQUIREMENTS.md` — Fix traceability table
+- `.planning/phases/*/SUMMARY.md` — Fix frontmatter
+
+---
+
+## Dependencies
+
+```
+Phase 1 (Universal Group + Agent) <- Foundation -- everything depends on this
+    |
+Phase 2 (Light Modules: Asset, Social, Compete) -- can run in parallel with Phase 3
+Phase 3 (Character Questionnaire) -- can run in parallel with Phase 2
+    |
+Phase 3.1 (Multi-Model "Best Shot" Routing) -- shared infra, must precede Phase 4
+    |
+Phase 4 (Character Video Gen + Delivery) -- depends on Phase 3 + 3.1
+    |
+Phase 5 (Pipeline Orchestration) -- wires 1-4 together, can start after Phase 1-2
+    |
+Phase 6 (Fix Social Intro + Poll Vote) -- fixes gaps in Phase 2 + 5
+```
+
+Phase 2 and Phase 3 are independent and can be built in parallel.
+Phase 3.1 is shared infrastructure — all video products (Phase 4, VideoForge, Winner Studio) consume it.
+Phase 5 can start partially after Phase 1 is done (queue + routing skeleton).
+Phase 6 fixes audit gaps in Phases 2 and 5.
+
+---
 *Created: 2026-03-13*
-*Updated: 2026-03-15 — Phase 05 planned (2 plans, Wave 1 + Wave 2)*
+*Updated: 2026-03-15 — Phase 06 added (gap closure from milestone audit)*
