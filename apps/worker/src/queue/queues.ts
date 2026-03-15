@@ -108,6 +108,23 @@ export interface RemotionJobData {
     aspectRatios?: ("16x9" | "9x16" | "1x1" | "4x5")[];
 }
 
+// ─── CUSTOMER ONBOARDING ORCHESTRATION QUEUE ───
+export const customerOnboardingQueue = new Queue("customer-onboarding", {
+    connection: redisConnection,
+    defaultJobOptions: {
+        attempts: 1,              // Pipeline manages its own retries via state machine — not BullMQ
+        removeOnComplete: { age: 86400 * 7 },
+        removeOnFail: { age: 86400 * 30 },
+    },
+});
+
+export interface OnboardingJobData {
+    tenantId: string;
+    groupId: string;        // WhatsApp group chatId
+    clientPhone: string;    // Customer's phone
+    triggeredBy: string;    // Admin who started it (phone or email)
+}
+
 // ─── CREW VIDEO BATCH RENDER + APPROVAL QUEUE ───
 export const crewVideoQueue = new Queue("crew-video", {
     connection: redisConnection,

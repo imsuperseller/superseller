@@ -10,6 +10,8 @@
 // Re-export ProductInfo from prompt-assembler for convenience
 export type { ProductInfo } from "../prompt-assembler";
 
+export type PipelineStatus = 'active' | 'paused' | 'awaiting-approval' | 'complete' | 'failed';
+
 export type ModuleType =
     | "asset-collection"
     | "character-questionnaire"

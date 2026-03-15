@@ -334,6 +334,43 @@ export async function sendVideo(
 }
 
 /**
+ * Send a WhatsApp poll to a group (NOWEB PLUS - polls are received and votes tracked).
+ * Returns the message ID on success, null on failure.
+ */
+export async function sendPoll(
+    chatId: string,
+    question: string,
+    options: string[],
+    target?: WahaTarget,
+): Promise<string | null> {
+    const baseUrl = target?.url || config.waha.url;
+    const session = target?.session || config.waha.session;
+    const url = `${baseUrl}/api/sendPoll`;
+    try {
+        const res = await fetch(url, {
+            method: "POST",
+            headers: getHeaders(),
+            body: JSON.stringify({
+                chatId,
+                name: question,
+                options,
+                multipleAnswers: false,
+                session,
+            }),
+        });
+        if (!res.ok) {
+            logger.warn({ msg: "WAHA sendPoll failed", status: res.status, chatId });
+            return null;
+        }
+        const data = await res.json();
+        return data.key?.id || data.id || null;
+    } catch (err: any) {
+        logger.warn({ msg: "WAHA sendPoll error", error: err.message, chatId });
+        return null;
+    }
+}
+
+/**
  * React to a message with an emoji.
  * Common emojis: ✅ (asset received), 👀 (seen/processing), ❤️ (approved)
  */
