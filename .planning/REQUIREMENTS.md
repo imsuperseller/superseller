@@ -9,7 +9,7 @@ Requirements for Character Iteration milestone. Each maps to roadmap phases.
 
 ### Tech Debt
 
-- [ ] **DEBT-01**: Admin receives WhatsApp notification when render/composition fails (silent failure fix)
+- [x] **DEBT-01**: Admin receives WhatsApp notification when render/composition fails (silent failure fix)
 - [x] **DEBT-02**: Cost tracking attributes fal.ai generations to correct provider (not kie.ai)
 
 ### Change Request Intake
@@ -65,7 +65,7 @@ Requirements for Character Iteration milestone. Each maps to roadmap phases.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DEBT-01 | Phase 15 | Pending |
+| DEBT-01 | Phase 15 | Complete |
 | DEBT-02 | Phase 15 | Complete |
 | INTAKE-01 | Phase 16 | Pending |
 | INTAKE-02 | Phase 16 | Pending |

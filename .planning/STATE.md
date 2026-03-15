@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Character Iteration
-status: planning
-stopped_at: Completed 15-02-PLAN.md
-last_updated: "2026-03-15T19:52:20.487Z"
+status: in_progress
+stopped_at: Completed 15-01-PLAN.md
+last_updated: "2026-03-15T20:00:00.000Z"
 last_activity: 2026-03-15 — v1.3 roadmap created (phases 15-19)
 progress:
   total_phases: 5
@@ -50,6 +50,8 @@ Key v1.3 decisions:
 - `character-regen` BullMQ queue on same Redis connection — no new infrastructure
 - [Phase 15]: normalizeProvider() exported from expense-tracker.ts so callers only need one import
 - [Phase 15]: generateScene returns { resultUrl, provider } tuple to enable accurate cost attribution
+- [Phase 15-01]: sendAdminAlert is non-blocking (catches all errors internally) to avoid masking primary failure path
+- [Phase 15-01]: admin.defaultPhone falls back to HEALTH_MONITOR_ALERT_PHONE so no new env var required in production
 
 ### Pending Todos
 
@@ -57,8 +59,8 @@ None.
 
 ### Blockers/Concerns
 
-- [Phase 15 — must fix]: Render failure silent fail in `character-video-gen.ts` lines 491-498
-- [Phase 15 — must fix]: Cost tracking misattribution — `service: "kie.ai"` hardcoded regardless of actual provider
+- [Phase 15 — FIXED in 15-01]: Render failure silent fail in `character-video-gen.ts` lines 491-498
+- [Phase 15 — FIXED in 15-02]: Cost tracking misattribution — `service: "kie.ai"` hardcoded regardless of actual provider
 - [Phase 17 — gate]: FAL_WEBHOOK_VERIFY=false must be resolved before regen webhooks go live
 - [Phase 17 — risk]: fal.ai @handle cross-session consistency unverified — document adjacency regen policy before shipping
 - [Phase 17 — risk]: Concurrent regen race — budget gate + dispatch must guard against simultaneous change requests
