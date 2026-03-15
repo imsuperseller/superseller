@@ -1,0 +1,94 @@
+# Requirements: Universal Customer Onboarding System
+
+**Defined:** 2026-03-15
+**Core Value:** Every customer gets an AI agent in a WhatsApp group from Day 1 — product-aware, zero friction
+
+## v1.3 Requirements
+
+Requirements for Character Iteration milestone. Each maps to roadmap phases.
+
+### Tech Debt
+
+- [ ] **DEBT-01**: Admin receives WhatsApp notification when render/composition fails (silent failure fix)
+- [ ] **DEBT-02**: Cost tracking attributes fal.ai generations to correct provider (not kie.ai)
+
+### Change Request Intake
+
+- [ ] **INTAKE-01**: Customer can send natural-language change request in WhatsApp group after receiving character video
+- [ ] **INTAKE-02**: System classifies intent as scene-level change, character-level change, positive feedback, or unrelated
+- [ ] **INTAKE-03**: System extracts target scene number from message ("scene 3", "the third one")
+- [ ] **INTAKE-04**: System shows credit cost estimate and gets customer confirmation via WhatsApp poll before any generation
+
+### Scene Regeneration
+
+- [ ] **REGEN-01**: System regenerates a single specified scene without touching other approved scenes
+- [ ] **REGEN-02**: Per-scene status tracking (approved/pending/rejected) on scene records
+- [ ] **REGEN-03**: Customer receives acknowledgment at request start and new video at completion (two messages only)
+
+### Character Changes
+
+- [ ] **CHAR-01**: System updates CharacterBible with requested changes and creates versioned record (old version preserved)
+- [ ] **CHAR-02**: Character-level change triggers multi-scene regeneration for affected scenes
+- [ ] **CHAR-03**: Admin receives review notification with diff preview and cost estimate before character-level regen executes
+- [ ] **CHAR-04**: Admin can approve, modify scope (select which scenes), or deny
+
+### Video Assembly
+
+- [ ] **ASSEM-01**: CharacterReveal Remotion composition accepts per-scene URL props (mixed old + new scenes)
+- [ ] **ASSEM-02**: Re-rendered video delivered to WhatsApp with approve/change options
+
+### Admin & Audit
+
+- [ ] **ADMIN-01**: Every change request logged with intent classification, scope, scenes triggered, and cost
+- [ ] **ADMIN-02**: CharacterBible version history viewable in admin portal
+- [ ] **ADMIN-03**: Admin can rollback CharacterBible to previous version
+
+## Future Requirements
+
+### Deferred (v1.4+)
+
+- **ITER-01**: Multi-round iterative conversation with session state memory
+- **ITER-02**: Client-facing change request portal (web UI)
+- **ITER-03**: Automatic scene drift detection after character-level changes
+
+## Out of Scope
+
+| Feature | Reason |
+|---------|--------|
+| Mid-generation progress updates via WhatsApp | Rate limit risk + no meaningful AI progress signal; one ack + one delivery is sufficient |
+| Full re-generation on every change request | Wastes credits when only one scene needs changing |
+| Free unlimited change requests | No business model for AI generation costs; credit-based |
+| Auto-regeneration on rejection without change brief | Same prompt = same output; require change description first |
+| Per-client custom model fine-tuning | $10-50+ per character, reference-based consistency is sufficient |
+
+## Traceability
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| DEBT-01 | TBD | Pending |
+| DEBT-02 | TBD | Pending |
+| INTAKE-01 | TBD | Pending |
+| INTAKE-02 | TBD | Pending |
+| INTAKE-03 | TBD | Pending |
+| INTAKE-04 | TBD | Pending |
+| REGEN-01 | TBD | Pending |
+| REGEN-02 | TBD | Pending |
+| REGEN-03 | TBD | Pending |
+| CHAR-01 | TBD | Pending |
+| CHAR-02 | TBD | Pending |
+| CHAR-03 | TBD | Pending |
+| CHAR-04 | TBD | Pending |
+| ASSEM-01 | TBD | Pending |
+| ASSEM-02 | TBD | Pending |
+| ADMIN-01 | TBD | Pending |
+| ADMIN-02 | TBD | Pending |
+| ADMIN-03 | TBD | Pending |
+
+**Coverage:**
+- v1.3 requirements: 18 total
+- Mapped to phases: 0
+- Unmapped: 18 ⚠️
+
+---
+*Requirements defined: 2026-03-15*
+*Last updated: 2026-03-15 after initial definition*
