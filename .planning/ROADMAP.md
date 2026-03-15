@@ -73,7 +73,7 @@ Plans:
   3. A nightly BullMQ job runs and writes aggregated `avg quality_score` per model to `ai_model_recommendations` — but only when `sample_count >= 20`
   4. Admin can call `GET /api/admin/prompt-effectiveness` and receive ranked avg `performanceScore` by prompt_key, version, and shot_type
   5. `routeShot()` reads `quality_score` from the Observatory's real aggregated data (not static seeds) when selecting models
-**Plans:** TBD
+**Plans:** 3 plans
 
 Plans:
 - [ ] 09-01: generation_meta column + per-clip cost attribution (QUAL-01, QUAL-05)
