@@ -1,7 +1,7 @@
 # Requirements: Universal Customer Onboarding System
 
 **Defined:** 2026-03-13
-**Updated:** 2026-03-13 — corrected from Character-in-a-Box to universal onboarding
+**Updated:** 2026-03-14 — added ROUTE-01..08 for Phase 03.1 (Multi-Model Best Shot Routing)
 **Core Value:** Every customer gets an AI agent in a WhatsApp group from Day 1 — zero friction, product-aware onboarding
 
 ## v1 Requirements
@@ -56,6 +56,17 @@
 - [x] **COMPETE-03**: Agent stores competitor info in ServiceInstance.configuration or dedicated table
 - [x] **COMPETE-04**: Agent shares initial findings in group when AgentForge research completes
 
+### Multi-Model Best Shot Routing (ROUTE)
+
+- [ ] **ROUTE-01**: Shot type taxonomy defined as TypeScript types — dialogue, narrative, environment, product, social, music — each with a canonical label, description, and default model mapping
+- [ ] **ROUTE-02**: Budget tier type defined — budget ($0.03-0.05/clip), standard ($0.10/clip), premium ($0.15+/clip) — each tier constrains which models are eligible
+- [ ] **ROUTE-03**: Provider adapter for Kie.ai implements the unified `ProviderAdapter` interface (submit job, poll status, cancel, extract result URL)
+- [ ] **ROUTE-04**: Provider adapter for fal.ai implements the unified `ProviderAdapter` interface via fetch (no SDK — not installed)
+- [ ] **ROUTE-05**: `routeShot()` function selects the optimal model for a given `ShotType + BudgetTier` combination, querying `ai_model_recommendations` via `getRecommendedModel()` (Model Observatory)
+- [ ] **ROUTE-06**: Router falls back to hardcoded model map when Observatory query fails — pipeline must never stop
+- [ ] **ROUTE-07**: Every model selection logged to `ai_model_decisions` table (audit trail per Observatory rules)
+- [ ] **ROUTE-08**: All video products (VideoForge, Character-in-a-Box, Winner Studio) can call `routeShot()` instead of hardcoding model names
+
 ### Pipeline Orchestration (PIPE)
 
 - [ ] **PIPE-01**: BullMQ `customer-onboarding` queue orchestrates the full flow
@@ -101,18 +112,21 @@
 | UGRP-01 | Phase 1 | Complete (01-02) |
 | UGRP-02..05 | Phase 1 | Complete (01-01) |
 | PAGENT-01..05 | Phase 1 | Complete (01-01) |
-| ASSET-01..04 | Phase 2 | Pending |
-| SOCIAL-01..04 | Phase 2 | Pending |
-| COMPETE-01..04 | Phase 2 | Pending |
-| CHAR-01..04 | Phase 3 | Pending |
+| ASSET-01..04 | Phase 2 | Complete (02-02) |
+| SOCIAL-01..04 | Phase 2 | Complete (02-02) |
+| COMPETE-01..04 | Phase 2 | Complete (02-03) |
+| CHAR-01..04 | Phase 3 | Complete (03-01) |
+| ROUTE-01..02 | Phase 03.1 | Pending (03.1-01) |
+| ROUTE-03..04 | Phase 03.1 | Pending (03.1-01) |
+| ROUTE-05..08 | Phase 03.1 | Pending (03.1-02) |
 | CHAR-05..10 | Phase 4 | Pending |
 | PIPE-01..05 | Phase 5 | Pending |
 
 **Coverage:**
-- v1 requirements: 38 total
-- Mapped to phases: 38
+- v1 requirements: 46 total (38 original + 8 ROUTE)
+- Mapped to phases: 46
 - Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-13*
-*Last updated: 2026-03-13 — rewritten for universal onboarding (not just Character-in-a-Box)*
+*Last updated: 2026-03-14 — added ROUTE-01..08 for Phase 03.1 (Multi-Model Best Shot Routing)*
