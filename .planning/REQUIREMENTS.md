@@ -21,8 +21,8 @@ Requirements for Character Iteration milestone. Each maps to roadmap phases.
 
 ### Scene Regeneration
 
-- [ ] **REGEN-01**: System regenerates a single specified scene without touching other approved scenes
-- [ ] **REGEN-02**: Per-scene status tracking (approved/pending/rejected) on scene records
+- [x] **REGEN-01**: System regenerates a single specified scene without touching other approved scenes
+- [x] **REGEN-02**: Per-scene status tracking (approved/pending/rejected) on scene records
 - [ ] **REGEN-03**: Customer receives acknowledgment at request start and new video at completion (two messages only)
 
 ### Character Changes
@@ -72,8 +72,8 @@ Requirements for Character Iteration milestone. Each maps to roadmap phases.
 | INTAKE-03 | Phase 16 | Complete |
 | INTAKE-04 | Phase 16 | Complete |
 | CHAR-01 | Phase 16 | Complete |
-| REGEN-01 | Phase 17 | Pending |
-| REGEN-02 | Phase 17 | Pending |
+| REGEN-01 | Phase 17 | Complete |
+| REGEN-02 | Phase 17 | Complete |
 | REGEN-03 | Phase 17 | Pending |
 | ASSEM-01 | Phase 17 | Pending |
 | CHAR-02 | Phase 18 | Pending |

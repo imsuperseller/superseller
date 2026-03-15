@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Character Iteration
 status: planning
-stopped_at: Phase 17 context gathered
-last_updated: "2026-03-15T20:45:17.237Z"
+stopped_at: Completed 17-01-PLAN.md
+last_updated: "2026-03-15T22:50:22.834Z"
 last_activity: 2026-03-15 — Phase 15 executed (2/2 plans), verified, complete
 progress:
   total_phases: 5
   completed_phases: 2
-  total_plans: 4
-  completed_plans: 4
+  total_plans: 6
+  completed_plans: 5
 ---
 
 # State: Universal Customer Onboarding System
@@ -58,6 +58,7 @@ Key v1.3 decisions:
 - [Phase 16-change-request-intake]: initChangeRequestTable added to both initClaudeClaw and index.ts bootstrap for belt-and-suspenders startup guarantee
 - [Phase 16-change-request-intake]: Dynamic import for change-request-handler in character-video-gen delivered case avoids circular dependency at module load time
 - [Phase 16-change-request-intake]: Poll vote disambiguation: check getPendingChangeRequest first before falling through to handlePipelineEvent — resolves Research Pitfall 2 (poll vote collision)
+- [Phase 17-01]: character-regen worker uses concurrency:2; processCharacterRegen() throws NotImplemented (Plan 02 fills logic); sceneStatuses derives from data.sceneUrls ?? []
 
 ### Pending Todos
 
@@ -71,9 +72,9 @@ Key v1.3 decisions:
 
 ## Session Continuity
 
-Last session: 2026-03-15T20:45:17.235Z
-Stopped at: Phase 17 context gathered
-Resume file: .planning/phases/17-scene-level-regeneration/17-CONTEXT.md
+Last session: 2026-03-15T22:50:22.832Z
+Stopped at: Completed 17-01-PLAN.md
+Resume file: None
 
 ---
 *Last updated: 2026-03-15 — Phase 15 complete, transitioning to Phase 16*
