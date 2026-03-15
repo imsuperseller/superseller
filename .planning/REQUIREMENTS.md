@@ -65,30 +65,30 @@ Requirements for Character Iteration milestone. Each maps to roadmap phases.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DEBT-01 | TBD | Pending |
-| DEBT-02 | TBD | Pending |
-| INTAKE-01 | TBD | Pending |
-| INTAKE-02 | TBD | Pending |
-| INTAKE-03 | TBD | Pending |
-| INTAKE-04 | TBD | Pending |
-| REGEN-01 | TBD | Pending |
-| REGEN-02 | TBD | Pending |
-| REGEN-03 | TBD | Pending |
-| CHAR-01 | TBD | Pending |
-| CHAR-02 | TBD | Pending |
-| CHAR-03 | TBD | Pending |
-| CHAR-04 | TBD | Pending |
-| ASSEM-01 | TBD | Pending |
-| ASSEM-02 | TBD | Pending |
-| ADMIN-01 | TBD | Pending |
-| ADMIN-02 | TBD | Pending |
-| ADMIN-03 | TBD | Pending |
+| DEBT-01 | Phase 15 | Pending |
+| DEBT-02 | Phase 15 | Pending |
+| INTAKE-01 | Phase 16 | Pending |
+| INTAKE-02 | Phase 16 | Pending |
+| INTAKE-03 | Phase 16 | Pending |
+| INTAKE-04 | Phase 16 | Pending |
+| CHAR-01 | Phase 16 | Pending |
+| REGEN-01 | Phase 17 | Pending |
+| REGEN-02 | Phase 17 | Pending |
+| REGEN-03 | Phase 17 | Pending |
+| ASSEM-01 | Phase 17 | Pending |
+| CHAR-02 | Phase 18 | Pending |
+| CHAR-03 | Phase 18 | Pending |
+| CHAR-04 | Phase 18 | Pending |
+| ASSEM-02 | Phase 18 | Pending |
+| ADMIN-01 | Phase 19 | Pending |
+| ADMIN-02 | Phase 19 | Pending |
+| ADMIN-03 | Phase 19 | Pending |
 
 **Coverage:**
 - v1.3 requirements: 18 total
-- Mapped to phases: 0
-- Unmapped: 18 ⚠️
+- Mapped to phases: 18
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-03-15*
-*Last updated: 2026-03-15 after initial definition*
+*Last updated: 2026-03-15 — traceability complete (phases 15-19)*
