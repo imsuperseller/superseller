@@ -214,8 +214,8 @@ export const socialSetupModule: OnboardingModule = {
                 newData,
             );
 
-            const platforms = (newData.platforms as string[]) || [];
-            const freq = newData.frequency || "not set";
+            const platforms = ((newData as any).platforms as string[]) || [];
+            const freq = (newData as any).frequency || "not set";
             const style = newData.style || "not set";
 
             return {

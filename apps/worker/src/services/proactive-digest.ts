@@ -109,11 +109,12 @@ async function getSystemHealth(): Promise<string> {
     try {
         const { getHealthSnapshot, formatHealthSummary } = await import("./health-monitor");
         const snapshot = await getHealthSnapshot();
-        const allOk = snapshot.every(s => s.status === "ok");
+        const values = Object.values(snapshot) as any[];
+        const allOk = values.every((s: any) => s.status === "ok");
         if (allOk) return "🟢 *System*: All services healthy";
-        const issues = snapshot.filter(s => s.status !== "ok");
+        const issues = values.filter((s: any) => s.status !== "ok");
         return `⚠️ *System*: ${issues.length} issue(s)\n` +
-            issues.map(i => `  ${i.status === "down" ? "🔴" : "🟡"} ${i.service}: ${i.status}`).join("\n");
+            issues.map((i: any) => `  ${i.status === "down" ? "🔴" : "🟡"} ${i.service}: ${i.status}`).join("\n");
     } catch {
         return "⚠️ System: Health check failed";
     }

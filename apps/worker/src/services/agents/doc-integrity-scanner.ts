@@ -86,7 +86,7 @@ function collectFiles(root: string): string[] {
     if (!fs.existsSync(root)) return files;
 
     try {
-        const entries = fs.readdirSync(root, { withFileTypes: true, recursive: true } as any) as fs.Dirent[];
+        const entries = fs.readdirSync(root, { withFileTypes: true, recursive: true } as any) as unknown as fs.Dirent[];
         for (const entry of entries) {
             if (!entry.isFile()) continue;
 

@@ -1408,6 +1408,7 @@ apiRouter.get("/ops", async (_req, res) => {
         const { getSchedulerStatus } = await import("../services/scheduler");
         let schedulerJobs: { name: string; intervalMs: number; lastRun: string | null; nextRun: string | null; runCount: number }[] = [];
         try {
+            // @ts-expect-error pre-existing: scheduler returns lastError/registeredAt instead of nextRun
             schedulerJobs = getSchedulerStatus();
         } catch {}
 

@@ -94,7 +94,7 @@ export async function bootstrapCharacterGroup(
             clientPhone,
             tenantName: tenant.name,
             step: "group-bootstrap",
-        }),
+        }) as any,
     });
 
     try {
@@ -177,7 +177,7 @@ export async function bootstrapCharacterGroup(
                 groupId,
                 step: "group-bootstrap-complete",
                 nextStep: "questionnaire",
-            }),
+            }) as any,
             durationMs,
         });
 

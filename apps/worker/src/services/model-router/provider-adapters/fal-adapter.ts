@@ -111,11 +111,10 @@ export class FalAdapter implements ProviderAdapter {
             };
         }
 
-        const body: Record<string, any> = { input: modelInput };
         if (webhookUrl) {
-            body.webhook_url = webhookUrl;
+            modelInput.webhook_url = webhookUrl;
         }
-        return body;
+        return modelInput;
     }
 
     /**
