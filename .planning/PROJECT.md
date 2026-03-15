@@ -6,7 +6,16 @@ A universal WhatsApp-first customer onboarding system for SuperSeller AI. Every 
 
 ## Current State
 
-Shipped v1.2. The onboarding system is production-ready: payment webhooks auto-trigger tenant creation, voice notes are transcribed before AI processing, and the agent handles Hebrew/English switching natively.
+Shipped v1.2. Starting v1.3: client-requested character changes + scene regeneration.
+
+## Current Milestone: v1.3 Character Iteration
+
+**Goal:** Let customers request changes to their AI character and regenerate scenes through WhatsApp conversation — iterative refinement until they're happy.
+
+**Target features:**
+- Customer requests character modifications via WhatsApp (appearance, personality, style)
+- Scene regeneration with updated character parameters
+- Approve/reject loop until customer is satisfied
 
 ## Core Value
 
@@ -44,7 +53,9 @@ Every customer gets an AI agent in a WhatsApp group from Day 1. Zero friction. T
 
 ### Active
 
-(None — next milestone not yet defined. Run `/gsd:new-milestone` to start.)
+- [ ] Client-requested character changes via WhatsApp conversation
+- [ ] Scene regeneration with modified character parameters
+- [ ] Iterative refinement loop (request → regenerate → approve/reject)
 
 ### Backlog (v1.3+)
 
