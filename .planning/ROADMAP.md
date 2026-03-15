@@ -43,7 +43,7 @@
   3. `ai_models` table contains seeded rows for Sora 2, Wan 2.6, and Veo 3.1 with correct `cost_per_second_usd`, `provider`, and capability flags
   4. `expense-tracker` COST_RATES map includes fal.ai provider rates for Sora 2 and Wan 2.6 as fallback entries
   5. Image URL format validation (type + dimensions) runs before any `FalAdapter.submitJob()` call, with 4xx responses wrapped in `UnrecoverableError`
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
 - [ ] 07-01: DECISIONS.md entry + router adapter-selection fix (PROV-08, PROV-03)
@@ -57,7 +57,7 @@ Plans:
   1. A shot routed to fal.ai produces a completed video via `FalAdapter` using the correct model ID (`fal-ai/sora-2/image-to-video/pro` or `wan/v2.6/image-to-video`)
   2. `POST /api/webhooks/fal` receives fal.ai callbacks, is idempotent on `request_id`, and updates the job record on completion
   3. A `dialogue` shot type routed to Veo 3.1 calls `POST /api/v1/veo/generate` (not the Kling task endpoint) and polls at `/api/v1/veo/record-info` until complete
-**Plans**: TBD
+**Plans:** TBD
 
 Plans:
 - [ ] 08-01: FalAdapter activation — model-specific request body + webhook endpoint (PROV-01, PROV-02)
@@ -73,7 +73,7 @@ Plans:
   3. A nightly BullMQ job runs and writes aggregated `avg quality_score` per model to `ai_model_recommendations` — but only when `sample_count >= 20`
   4. Admin can call `GET /api/admin/prompt-effectiveness` and receive ranked avg `performanceScore` by prompt_key, version, and shot_type
   5. `routeShot()` reads `quality_score` from the Observatory's real aggregated data (not static seeds) when selecting models
-**Plans**: TBD
+**Plans:** TBD
 
 Plans:
 - [ ] 09-01: generation_meta column + per-clip cost attribution (QUAL-01, QUAL-05)
@@ -89,7 +89,7 @@ Plans:
   2. Rendering with `aspectRatio: '16x9'` produces a landscape video; `aspectRatio: '9x16'` produces a portrait video with correct dimensions
   3. Props `beforeImageUrl`, `afterImageUrl`, `serviceLabel`, `brandColor`, `logoUrl`, and `tagline` all render visibly in the output without hardcoded defaults
   4. The wipe/split-screen transition is visible and smooth between before and after images
-**Plans**: TBD
+**Plans:** TBD
 
 Plans:
 - [ ] 10-01: BeforeAfterComposition build + Root.tsx registration (TMPL-01, TMPL-02, TMPL-03, TMPL-04)
