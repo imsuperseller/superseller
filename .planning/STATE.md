@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Intelligent Content Engine
 status: executing
-stopped_at: Phase 8 context gathered
-last_updated: "2026-03-15T05:19:23.350Z"
+stopped_at: "Completed 08-01-PLAN.md: FalAdapter model-specific bodies + webhook endpoint"
+last_updated: "2026-03-15T05:47:17.463Z"
 last_activity: "2026-03-15 — 07-01 completed: router bug fix + DECISIONS.md #24"
 progress:
   total_phases: 4
   completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  total_plans: 4
+  completed_plans: 3
   percent: 10
 ---
 
@@ -45,6 +45,7 @@ Progress: [█░░░░░░░░░] 10%
 |-------|-------|-------|----------|
 | 07 Provider Foundation | 1 | ~10 min | ~10 min |
 | Phase 07 P02 | 4 | 3 tasks | 4 files |
+| Phase 08-provider-activation P01 | 65 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -61,6 +62,9 @@ Decisions from 07-01 execution:
 - [Phase 07]: COST_RATES exported from expense-tracker for test access; fal block added with Sora 2 and Wan 2.6 rates
 - [Phase 07]: validateImageInput() placed outside FalAdapter — pre-submission guard callable from pipeline, Phase 08 activation point
 - [Phase 07]: Model ID mismatch: SHOT_DEFAULT_MODELS uses veo-3.1 but DB has veo-3.1-fast/video — Phase 08 must resolve before live traffic
+- [Phase 08-01]: Sora 2 duration as numeric enum [4,8,12,16,20] snapped to nearest; delete_video:false required to prevent Sora 2 auto-deletion
+- [Phase 08-01]: falRequestRegistry Map exported from fal-adapter.ts enables webhook requestId→jobId lookup without DB schema changes (no fal_request_id column needed)
+- [Phase 08-01]: FAL_WEBHOOK_VERIFY=false default gates ED25519 check — exact message format requires live job validation before enabling in production
 
 ### Critical Constraints
 
@@ -76,9 +80,9 @@ Decisions from 07-01 execution:
 
 ## Session Continuity
 
-Last session: 2026-03-15T05:19:23.348Z
-Stopped at: Phase 8 context gathered
-Resume file: .planning/phases/08-provider-activation/08-CONTEXT.md
+Last session: 2026-03-15T05:47:17.461Z
+Stopped at: Completed 08-01-PLAN.md: FalAdapter model-specific bodies + webhook endpoint
+Resume file: None
 
 ---
 *Last updated: 2026-03-15 — 07-01 completed: router provider inference fix + Veo 3.1 decision*
