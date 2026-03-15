@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Production-Ready Onboarding
 status: planning
-stopped_at: Completed 13-01-PLAN.md
-last_updated: "2026-03-15T18:00:56.800Z"
+stopped_at: Completed 13-02-PLAN.md
+last_updated: "2026-03-15T18:06:55.788Z"
 last_activity: 2026-03-15 — Roadmap created for v1.2 (phases 12-14)
 progress:
   total_phases: 3
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 6
-  completed_plans: 5
+  completed_plans: 6
 ---
 
 # State: Universal Customer Onboarding System
@@ -51,6 +51,7 @@ Progress (v1.2): [░░░░░░░░░░] 0% (3 phases, 0 complete)
 | Phase 12-payment-webhooks P02 | 5 | 2 tasks | 2 files |
 | Phase 12-payment-webhooks P04 | 18 | 2 tasks | 3 files |
 | Phase 13-voice-note-transcription P01 | 12 | 1 tasks | 3 files |
+| Phase 13-voice-note-transcription P02 | 4 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -72,6 +73,8 @@ Recent decisions affecting v1.2 work:
 - [Phase 13-voice-note-transcription]: OpenAI Whisper API via verbose_json to get language+duration in single call; $0.006/min cost tracked dynamically
 - [Phase 13-voice-note-transcription]: 5-minute max duration limit enforced before API call — pre-check saves R2 upload + API cost on oversized audio
 - [Phase 13-voice-note-transcription]: No retry on 4xx errors (client errors), 3x retry with exponential backoff on 5xx/network errors
+- [Phase 13-voice-note-transcription]: effectiveBody pattern: transcribedText || messageBody propagated to all group path handlers
+- [Phase 13-voice-note-transcription]: maybeTranscribeAudio() helper shared by group path and DM path — no duplication
 
 ### Pending Todos
 
@@ -87,8 +90,8 @@ None captured yet for v1.2.
 
 ## Session Continuity
 
-Last session: 2026-03-15T18:00:50.447Z
-Stopped at: Completed 13-01-PLAN.md
+Last session: 2026-03-15T18:06:55.786Z
+Stopped at: Completed 13-02-PLAN.md
 Resume file: None
 
 ---

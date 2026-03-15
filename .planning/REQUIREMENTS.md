@@ -17,10 +17,10 @@ Requirements for Production-Ready Onboarding milestone.
 
 ### Voice Notes
 
-- [ ] **VOICE-01**: Agent transcribes incoming WhatsApp voice notes before processing
-- [ ] **VOICE-02**: Transcription uses Whisper (local Ollama or API) with Hebrew support
-- [ ] **VOICE-03**: Transcribed text is passed to ClaudeClaw as if user typed it
-- [ ] **VOICE-04**: Original voice note stored in R2 alongside transcription
+- [x] **VOICE-01**: Agent transcribes incoming WhatsApp voice notes before processing
+- [x] **VOICE-02**: Transcription uses Whisper (local Ollama or API) with Hebrew support
+- [x] **VOICE-03**: Transcribed text is passed to ClaudeClaw as if user typed it
+- [x] **VOICE-04**: Original voice note stored in R2 alongside transcription
 
 ### Language
 
@@ -58,10 +58,10 @@ Requirements for Production-Ready Onboarding milestone.
 | HOOK-03 | Phase 12 | Complete |
 | HOOK-04 | Phase 12 | Complete |
 | HOOK-05 | Phase 12 | Complete |
-| VOICE-01 | Phase 13 | Pending |
-| VOICE-02 | Phase 13 | Pending |
-| VOICE-03 | Phase 13 | Pending |
-| VOICE-04 | Phase 13 | Pending |
+| VOICE-01 | Phase 13 | Complete |
+| VOICE-02 | Phase 13 | Complete |
+| VOICE-03 | Phase 13 | Complete |
+| VOICE-04 | Phase 13 | Complete |
 | LANG-01 | Phase 14 | Pending |
 | LANG-02 | Phase 14 | Pending |
 | LANG-03 | Phase 14 | Pending |

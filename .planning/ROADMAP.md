@@ -38,7 +38,7 @@
 **Milestone Goal:** Onboarding triggers automatically from payment webhooks, understands voice notes in Hebrew and English, and responds in the customer's language — zero manual steps from payment to WhatsApp group.
 
 - [x] **Phase 12: Payment Webhooks** — PayPal and Stripe subscription events auto-create tenant and fire onboarding pipeline (completed 2026-03-15)
-- [ ] **Phase 13: Voice Note Transcription** — Whisper transcribes incoming voice notes before agent processes them
+- [x] **Phase 13: Voice Note Transcription** — Whisper transcribes incoming voice notes before agent processes them (completed 2026-03-15)
 - [ ] **Phase 14: Language Detection** — Agent auto-detects Hebrew/English and responds in kind
 
 ## Phase Details
@@ -69,7 +69,7 @@ Plans:
   2. Customer sends a voice note in English and the agent replies correctly
   3. The original voice note audio file is accessible in R2 storage after processing
   4. The transcribed text that was passed to the agent is recoverable (stored alongside the voice note)
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 
 Plans:
 - [ ] 13-01-PLAN.md — Transcription service: Whisper API client, DB table, R2 storage, audio extraction
@@ -102,7 +102,7 @@ Plans:
 | 09. Quality Feedback Loop | v1.1 | 3/3 | Complete | 2026-03-15 |
 | 10. Remotion Templates | v1.1 | 1/1 | Complete | 2026-03-15 |
 | 12. Payment Webhooks | 4/4 | Complete    | 2026-03-15 | - |
-| 13. Voice Note Transcription | 1/2 | In Progress|  | - |
+| 13. Voice Note Transcription | 2/2 | Complete   | 2026-03-15 | - |
 | 14. Language Detection | v1.2 | 0/TBD | Not started | - |
 
 ---
