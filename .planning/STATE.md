@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Production-Ready Onboarding
 status: planning
-stopped_at: Phase 12 context gathered
-last_updated: "2026-03-15T16:26:26.281Z"
-last_activity: 2026-03-15 — Roadmap created for v1.2 (phases 12-14)
+stopped_at: Completed 12-03-PLAN.md
+last_updated: "2026-03-15T17:00:00.000Z"
+last_activity: 2026-03-15 — Phase 12 Plan 03 complete (checkout pages + Stripe session API)
 progress:
   total_phases: 3
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_plans: 4
+  completed_plans: 3
 ---
 
 # State: Universal Customer Onboarding System
@@ -44,9 +44,10 @@ Progress (v1.2): [░░░░░░░░░░] 0% (3 phases, 0 complete)
 |-----------|-------|-------|----------|
 | v1.0 (phases 1-6) | 15 | ~6h | ~24 min |
 | v1.1 (phases 07-10) | 8 | ~3.3h | ~25 min |
-| v1.2 (phases 12-14) | 0 | - | - |
+| v1.2 (phases 12-14) | 3 | ~54 min | ~18 min |
 
 *Updated after each plan completion*
+| Phase 12-payment-webhooks P01 | 4 | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -57,6 +58,11 @@ Recent decisions affecting v1.2 work:
 
 - [v1.0]: Admin trigger first, webhook later — now implementing webhook trigger in HOOK phase
 - [v1.1]: FAL_WEBHOOK_VERIFY=false default — unrelated to v1.2 but open tech debt
+- [Phase 12-payment-webhooks]: Used direct SQL instead of prisma db push for WebhookEvent migration to avoid dropping 20+ production tables from pre-existing schema drift
+- [Phase 12-payment-webhooks]: Worker auth gate: WORKER_API_SECRET check outside try/catch so 401 returns before schema validation
+- [Phase 12-plan-03]: PayPal custom_id uses compact keys (bn, svc) to stay under PayPal 127 char limit
+- [Phase 12-plan-03]: CheckoutForm is 'use client', page.tsx is server component — standard Next.js App Router pattern
+- [Phase 12-plan-03]: PayPal SDK via script tag (not @paypal/react-paypal-js — not installed in project)
 
 ### Pending Todos
 
@@ -72,9 +78,9 @@ None captured yet for v1.2.
 
 ## Session Continuity
 
-Last session: 2026-03-15T16:26:26.279Z
-Stopped at: Phase 12 context gathered
-Resume file: .planning/phases/12-payment-webhooks/12-CONTEXT.md
+Last session: 2026-03-15T16:52:48.686Z
+Stopped at: Completed 12-03-PLAN.md
+Resume file: None
 
 ---
 *Last updated: 2026-03-15 — v1.2 roadmap created, phases 12-14*

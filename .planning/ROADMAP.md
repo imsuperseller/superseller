@@ -52,12 +52,12 @@
   2. A new Stripe subscription webhook fires and a WhatsApp onboarding group exists within seconds — no admin action required
   3. Firing the same webhook event twice results in exactly one onboarding pipeline (no duplicate groups)
   4. A webhook that fails to process is automatically retried and eventually succeeds or alerts admin
-**Plans:** 4 plans
+**Plans:** 2/4 plans executed
 
 Plans:
 - [ ] 12-01-PLAN.md — Foundation: WebhookEvent schema, shared onboardNewCustomer service, worker API extension
 - [ ] 12-02-PLAN.md — Wire PayPal and Stripe webhooks to shared onboarding service
-- [ ] 12-03-PLAN.md — Pre-checkout page (phone collection) and success page
+- [x] 12-03-PLAN.md — Pre-checkout page (phone collection) and success page
 - [ ] 12-04-PLAN.md — Admin webhook monitoring and end-to-end verification
 
 ### Phase 13: Voice Note Transcription
@@ -97,10 +97,10 @@ Plans:
 | 08. Provider Activation | v1.1 | 2/2 | Complete | 2026-03-15 |
 | 09. Quality Feedback Loop | v1.1 | 3/3 | Complete | 2026-03-15 |
 | 10. Remotion Templates | v1.1 | 1/1 | Complete | 2026-03-15 |
-| 12. Payment Webhooks | v1.2 | 0/4 | Planned | - |
+| 12. Payment Webhooks | 2/4 | In Progress|  | - |
 | 13. Voice Note Transcription | v1.2 | 0/TBD | Not started | - |
 | 14. Language Detection | v1.2 | 0/TBD | Not started | - |
 
 ---
 *Created: 2026-03-13*
-*Updated: 2026-03-15 — Phase 12 planned (4 plans in 2 waves)*
+*Updated: 2026-03-15 — Phase 12 plan 03 complete (checkout pages + Stripe session API)*
