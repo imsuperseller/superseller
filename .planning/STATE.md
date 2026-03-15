@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Production-Ready Onboarding
 status: planning
-stopped_at: Phase 13 context gathered
-last_updated: "2026-03-15T17:48:06.610Z"
+stopped_at: Completed 13-01-PLAN.md
+last_updated: "2026-03-15T18:00:56.800Z"
 last_activity: 2026-03-15 — Roadmap created for v1.2 (phases 12-14)
 progress:
   total_phases: 3
   completed_phases: 1
-  total_plans: 4
-  completed_plans: 4
+  total_plans: 6
+  completed_plans: 5
 ---
 
 # State: Universal Customer Onboarding System
@@ -50,6 +50,7 @@ Progress (v1.2): [░░░░░░░░░░] 0% (3 phases, 0 complete)
 | Phase 12-payment-webhooks P01 | 4 | 3 tasks | 3 files |
 | Phase 12-payment-webhooks P02 | 5 | 2 tasks | 2 files |
 | Phase 12-payment-webhooks P04 | 18 | 2 tasks | 3 files |
+| Phase 13-voice-note-transcription P01 | 12 | 1 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -68,6 +69,9 @@ Recent decisions affecting v1.2 work:
 - [Phase 12-payment-webhooks]: onboardNewCustomer is additive in both webhooks — all existing payment processing preserved
 - [Phase 12-payment-webhooks]: PAYPAL_WEBHOOK_ID now mandatory (returns 500 if missing) — not silently skipped
 - [Phase 12-payment-webhooks]: Webhook metrics added to system-monitoring API with bigint->Number coercion for PostgreSQL COUNT aggregates; SystemMonitor.tsx fetches both monitoring APIs in parallel
+- [Phase 13-voice-note-transcription]: OpenAI Whisper API via verbose_json to get language+duration in single call; $0.006/min cost tracked dynamically
+- [Phase 13-voice-note-transcription]: 5-minute max duration limit enforced before API call — pre-check saves R2 upload + API cost on oversized audio
+- [Phase 13-voice-note-transcription]: No retry on 4xx errors (client errors), 3x retry with exponential backoff on 5xx/network errors
 
 ### Pending Todos
 
@@ -83,9 +87,9 @@ None captured yet for v1.2.
 
 ## Session Continuity
 
-Last session: 2026-03-15T17:48:06.608Z
-Stopped at: Phase 13 context gathered
-Resume file: .planning/phases/13-voice-note-transcription/13-CONTEXT.md
+Last session: 2026-03-15T18:00:50.447Z
+Stopped at: Completed 13-01-PLAN.md
+Resume file: None
 
 ---
 *Last updated: 2026-03-15 — v1.2 roadmap created, phases 12-14*
