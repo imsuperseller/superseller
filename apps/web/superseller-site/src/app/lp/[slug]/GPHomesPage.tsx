@@ -858,19 +858,34 @@ export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | nul
         {/* PERSONAL VIDEO MESSAGE */}
         {/* ================================================================ */}
         {/* VIDEO PROMPT (25s, @shai-lfc):
-            Shai (@shai-lfc) standing in front of a beautiful completed kitchen remodel —
-            white shaker cabinets, quartz countertops, pendant lights, the kind of work
-            GP Homes actually does. He's dressed sharp-casual, dark henley, looking
-            straight at camera like he's FaceTiming Nir and Ron. He starts calm and direct,
-            gesturing toward the kitchen behind him as if saying "this is the quality of
-            work you do." Then his expression shifts to concerned — slight head shake,
-            brow furrow — as if explaining "but when someone Googles 'remodeling Plano TX,'
-            DFW Improved shows up and you don't." He holds up his phone toward camera
-            briefly, showing a Google Maps search result. Then his energy lifts — confident
-            smile, open palms — delivering the solution. He points at camera at the end
-            like "let's fix this." Camera starts medium-wide showing the kitchen, slowly
-            tightens to medium close-up on Shai by the end. Warm natural light from
-            kitchen windows. Cinematic shallow depth of field. No text overlays.
+
+            SETTING: Active construction/remodel worksite — exposed framing, dust,
+            tools on the floor, maybe plastic sheeting. Shai (@shai-lfc) wearing a
+            hard hat slightly crooked, safety vest over a casual t-shirt — clearly
+            not a contractor, which is part of the joke. He walks through the site
+            talking to camera like a selfie video, dodging a dangling wire at one
+            point. Handheld camera, slightly shaky, real — not polished. Natural
+            construction site lighting. Sawdust in the air. No text overlays.
+
+            SCRIPT (what Shai says, ~65 words, 25 seconds):
+
+            "Nir, Ron — I spent two days stalking your business online.
+            [gestures around the worksite] Your work? Top 7% in Texas.
+            Five stars everywhere. Zero complaints. Incredible.
+            But then I Googled 'remodeling Plano TX'...
+            [makes a face, shakes head] ...you're nowhere.
+            DFW Improved? They're right there. 210 reviews.
+            You? Zero. On Google.
+            [points at camera, half-smile]
+            That's not a quality problem — that's a visibility problem.
+            And that... is exactly what I do."
+
+            BEATS:
+            0-3s:   Shai enters frame walking through site, adjusts hard hat
+            3-10s:  Gestures around, impressed — "top 7%, five stars"
+            10-16s: Face drops, pulls out phone — "I Googled... you're nowhere"
+            16-22s: Shakes head — "DFW Improved, 210 reviews, you zero"
+            22-25s: Confident point at camera — "that's what I do"
         */}
         <section
           className="py-16 md:py-24"
