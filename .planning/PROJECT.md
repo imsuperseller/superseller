@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A universal WhatsApp-first customer onboarding system for SuperSeller AI. Every new customer — regardless of which product they bought (VideoForge, SocialHub, FB Bot, FrontDesk, Lead Pages, Maps/SEO, Character-in-a-Box) — gets a WhatsApp group auto-created with an AI agent. The agent's behavior is configured per customer based on their subscribed products/services. Product-specific flows (video character creation, social media setup, competitor research, voice AI onboarding) are **modules** the agent activates based on what the customer bought.
+A universal WhatsApp-first customer onboarding system for SuperSeller AI. Every new customer — regardless of which product they bought — gets a WhatsApp group auto-created with an AI agent. The agent dynamically assembles its behavior from the customer's subscribed products/services, then activates conversational modules (asset collection, social setup, competitor research, character questionnaire, video generation) based on what the customer bought. Includes BullMQ pipeline orchestration with admin commands, cost tracking, and stale detection.
 
 ## Core Value
 
@@ -12,59 +12,42 @@ Every customer gets an AI agent in a WhatsApp group from Day 1. Zero friction. T
 
 ### Validated
 
-- ✓ WAHA client with full group management (createGroup, setGroupIcon, sendText, sendVideo, downloadMedia) — existing
-- ✓ Group agent framework (group_agent_config, registry, system prompts, guardrails, 3-tier memory) — existing
-- ✓ ClaudeClaw WhatsApp→Claude bridge with group support — existing
-- ✓ BullMQ queue infrastructure — existing
-- ✓ Tenant model with Brand, ServiceInstance, products — existing
-- ✓ PipelineRun tracking + TenantAsset registry + R2 storage — existing
-- ✓ CharacterBible DB table — existing
-- ✓ PayPal/Stripe webhook handlers with subscription provisioning — existing
-- ✓ Team onboarding page (/onboard/[tenantSlug]) — existing
-- ✓ Remotion renderer (renderComposition for arbitrary compositions) — existing
-- ✓ Kie.ai Sora 2 integration via createTask API — existing pattern in deanna-pitch-video.ts
+- ✓ Universal group auto-creation with product-aware AI agent — v1.0
+- ✓ Dynamic system prompt assembly from tenant's ServiceInstance/products — v1.0
+- ✓ Module: Asset collection (WhatsApp media → R2 → TenantAsset) — v1.0
+- ✓ Module: Social media setup (conversational preference collection) — v1.0
+- ✓ Module: Competitor research briefing (up to 3 competitors) — v1.0
+- ✓ Module: Character questionnaire → CharacterBible via Claude — v1.0
+- ✓ Module: Character video gen (Sora 2 → Remotion CharacterReveal → WhatsApp delivery) — v1.0
+- ✓ Multi-model Best Shot routing with Model Observatory + budget enforcement — v1.0
+- ✓ BullMQ pipeline orchestration with module routing — v1.0
+- ✓ Admin commands (APPROVE/RETRY/SKIP/PAUSE) via WhatsApp — v1.0
+- ✓ Cost tracking via trackExpense() + PipelineRun — v1.0
+- ✓ Poll-based module selection (WhatsApp polls → pipeline advance) — v1.0
+- ✓ Stale detection (48h customer nudge, 7d admin alert) — v1.0
+- ✓ Admin status API (GET /api/onboarding/status/:tenantId) — v1.0
 
 ### Active
 
-- [ ] Universal group auto-creation on customer signup (triggered by PayPal/Stripe webhook OR admin action)
-- [ ] Product-aware agent system prompt assembly (reads tenant's ServiceInstance/products to build prompt)
-- [ ] Module: Onboarding welcome + product explanation
-- [ ] Module: Character-in-a-Box questionnaire → CharacterBible → Sora 2 video gen → Remotion reveal → delivery
-- [ ] Module: Social media setup (collect credentials, preferences, content style)
-- [ ] Module: Asset collection (photos, logos, brand materials via WhatsApp media)
-- [ ] Module: Competitor research briefing (share findings in group)
-- [ ] Admin trigger + monitoring for onboarding pipeline
-- [ ] BullMQ `customer-onboarding` queue for orchestration
-- [ ] PipelineRun tracking at each module step
+- [ ] Auto-trigger from PayPal/Stripe subscription webhook (new customer)
+- [ ] Voice note transcription via Whisper before processing
+- [ ] Multi-language auto-detection and response
+- [ ] Module: Voice AI setup (FrontDesk Telnyx configuration)
+- [ ] Client-requested character changes + scene regeneration
 
 ### Out of Scope
 
-- Web UI forms for onboarding — WhatsApp-first
-- Customer self-service pipeline management — admin-only for v1
-- Auto-trigger from PayPal webhook — admin trigger first, webhook trigger in v2
-- Voice note transcription — text-only responses for v1
-- Multi-language auto-detection — configured per tenant language field
+- Web UI forms for onboarding — WhatsApp-first, PWA works well
+- Customer self-service pipeline management — admin-only for now
+- Music/audio on reveal video — visual-only for v1
+- Offline mode — real-time WhatsApp is core value
 
 ## Context
 
-**9+ products that customers can subscribe to:**
-1. VideoForge (AI property videos) — $79-$299/mo
-2. Winner Studio (AI avatar videos) — 50 credits/video
-3. SocialHub/Buzz (social media management) — $49-$199/mo
-4. FB Marketplace Bot (automated listing) — custom pricing
-5. FrontDesk Voice AI (AI receptionist) — per-call credits
-6. Lead Landing Pages — $500-$2,000+/mo
-7. Character-in-a-Box (AI brand character) — part of video products
-8. Maps/SEO (Google Maps automation) — $297-$1,297/mo
-9. Custom Solutions (Elite Pro style) — $2,000+/mo
-
-**Each customer gets a different mix.** The AI agent must adapt to whatever products the customer has.
-
-**Existing patterns to follow:**
-- Elite Pro already has a WhatsApp group with ClaudeClaw agent
-- Group agent framework supports per-group system prompts
-- `register-customer-group.ts` CLI tool exists for manual registration
-- Sora 2 accessed via Kie.ai API (not fal.ai directly): `POST /v1/jobs/createTask` with `model: "sora-2-pro-text-to-video"`
+Shipped v1.0 with 14,213 LOC TypeScript across 80 files in 3 days.
+Tech stack: Node.js worker + BullMQ + WAHA + ClaudeClaw + Kie.ai + Remotion + R2 + PostgreSQL.
+7 phases, 15 plans, 46 requirements — all satisfied.
+4 tech debt items (0 blockers): render failure silent fail, AgentForge placeholder, 2 pre-existing TS errors.
 
 **Admin project ID:** `cmmpgo3k60000h5zuaxfqac80`
 
@@ -75,16 +58,19 @@ Every customer gets an AI agent in a WhatsApp group from Day 1. Zero friction. T
 - **Module architecture**: Each product onboarding flow is an independent module
 - **Cost tracking**: Every API generation tracked via trackExpense()
 - **Existing infra**: Build on worker BullMQ + WAHA + ClaudeClaw, not new systems
-- **Kie.ai for Sora 2**: Use existing Kie.ai API pattern, NOT fal.ai
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Universal group + custom modules | Every customer gets WhatsApp group; what happens inside depends on products | — Pending |
-| Kie.ai for Sora 2 (not fal.ai) | Existing Kie.ai integration, proven pattern | — Pending |
-| Admin trigger first, webhook later | Get it working manually before automating | — Pending |
-| Module architecture | Product flows are independent, composable modules | — Pending |
+| Universal group + custom modules | Every customer gets WhatsApp group; what happens inside depends on products | ✓ Good — clean separation of concerns |
+| Kie.ai for Sora 2 (not fal.ai) | Existing Kie.ai integration, proven pattern | ✓ Good — fal.ai adapter added as backup via model router |
+| Admin trigger first, webhook later | Get it working manually before automating | ✓ Good — webhook trigger is v2 requirement |
+| Module architecture | Product flows are independent, composable modules | ✓ Good — 5 modules built, easily extensible |
+| Multi-model routing layer | Shared infrastructure for all video products | ✓ Good — Observatory integration + budget enforcement |
+| Poll-based module selection | WhatsApp polls for user choice, not text parsing | ✓ Good — native WAHA NOWEB Plus support |
+| Brand table (not TenantBrand) | Matches current Prisma schema | ✓ Good — avoided schema migration |
+| Direct fetch for Claude API | @anthropic-ai/sdk not installed in worker | ✓ Good — no new dependency |
 
 ---
-*Last updated: 2026-03-13 after user correction — broadened from Character-in-a-Box to universal onboarding*
+*Last updated: 2026-03-15 after v1.0 milestone*
