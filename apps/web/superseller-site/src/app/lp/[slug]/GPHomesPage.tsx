@@ -278,7 +278,7 @@ export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | nul
                   </div>
 
                   <h1 className="text-4xl md:text-[3.2rem] font-black text-white leading-[1.08] tracking-tight mb-6">
-                    Nir, Your Work Is{" "}
+                    Nir &amp; Ron, Your Work Is{" "}
                     <span style={{ color: ORANGE }}>Top 7%</span>
                     <br />
                     But Nobody Can Find You
@@ -861,7 +861,7 @@ export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | nul
             Shai (@shai-lfc) standing in front of a beautiful completed kitchen remodel —
             white shaker cabinets, quartz countertops, pendant lights, the kind of work
             GP Homes actually does. He's dressed sharp-casual, dark henley, looking
-            straight at camera like he's FaceTiming Nir. He starts calm and direct,
+            straight at camera like he's FaceTiming Nir and Ron. He starts calm and direct,
             gesturing toward the kitchen behind him as if saying "this is the quality of
             work you do." Then his expression shifts to concerned — slight head shake,
             brow furrow — as if explaining "but when someone Googles 'remodeling Plano TX,'
@@ -882,11 +882,11 @@ export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | nul
               <h2
                 className="text-3xl md:text-[2.6rem] font-extrabold leading-[1.15] tracking-tight mb-4 text-white"
               >
-                Nir, I Made This Report{" "}
+                Nir &amp; Ron, I Made This Report{" "}
                 <span style={{ color: ORANGE }}>Specifically for You</span>
               </h2>
               <p className="text-base max-w-xl mx-auto text-white/60">
-                25 seconds — hear why I believe GP Homes deserves to dominate Plano.
+                25 seconds — hear why I believe GP Homes should be dominating Plano.
               </p>
             </Reveal>
 
