@@ -1921,3 +1921,22 @@ model CharacterBible {
 
   @@index([tenantId])
 }
+
+/// Idempotency table for payment webhook events — prevents duplicate processing.
+model WebhookEvent {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  provider     String    // "paypal" or "stripe"
+  eventId      String    // Provider's event ID (event.id for Stripe, event.id for PayPal)
+  eventType    String    // e.g., "checkout.session.completed", "BILLING.SUBSCRIPTION.ACTIVATED"
+  status       String    @default("processing") // "processing", "completed", "failed"
+  payload      Json?     // Raw event payload for debugging
+  errorMessage String?
+  retryCount   Int       @default(0)
+  processedAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @default(now()) @updatedAt
+
+  @@unique([provider, eventId])
+  @@index([provider, eventType])
+  @@index([status])
+}
