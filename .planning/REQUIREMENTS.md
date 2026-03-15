@@ -121,13 +121,13 @@
 | ROUTE-05..08 | Phase 03.1 | Complete (03.1-02) |
 | CHAR-05..10 | Phase 4 | Complete (04-01..03) |
 | PIPE-01 | Phase 5 | Complete (05-01) |
-| PIPE-02 | Phase 6 | Pending (06-01) |
+| PIPE-02 | Phase 6 | Complete (06-01) |
 | PIPE-03..05 | Phase 5 | Complete (05-01..02) |
-| SOCIAL-02 | Phase 6 | Pending (06-01) |
+| SOCIAL-02 | Phase 6 | Complete (06-01) |
 
 **Coverage:**
 - v1 requirements: 46 total (38 original + 8 ROUTE)
-- Mapped to phases: 46 (44 complete, 2 pending in Phase 6)
+- Mapped to phases: 46 (46 complete, 0 pending)
 - Unmapped: 0
 
 ---
