@@ -106,7 +106,7 @@ Plans:
 | 10. Remotion Templates | v1.1 | 1/1 | Complete | 2026-03-15 |
 | 12. Payment Webhooks | v1.2 | 4/4 | Complete | 2026-03-15 |
 | 13. Voice Note Transcription | v1.2 | 2/2 | Complete | 2026-03-15 |
-| 14. Language Detection | 1/1 | Complete   | 2026-03-15 | - |
+| 14. Language Detection | 1/1 | Complete    | 2026-03-15 | - |
 
 ---
 *Created: 2026-03-13*
