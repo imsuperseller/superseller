@@ -10,7 +10,7 @@
 | # | Phase | Goal | Requirements | Success Criteria |
 |---|-------|------|--------------|------------------|
 | 1 | Universal Group + Product-Aware Agent | Auto-create WhatsApp group with AI agent that knows customer's products | UGRP-01..05, PAGENT-01..05 | 5 |
-| 2 | 3/3 | Complete   | 2026-03-13 | 4 | 1/3 | In Progress|  | AI-driven brand character questionnaire → CharacterBible | CHAR-01..04 | 4 |
+| 2 | 3/3 | Complete   | 2026-03-13 | 4 | 2/3 | In Progress|  | AI-driven brand character questionnaire → CharacterBible | CHAR-01..04 | 4 |
 | 3.1 | 2/2 | Complete   | 2026-03-15 | 5 |
 | 4 | Module: Character Video Generation + Delivery | Kie.ai Sora 2 → Remotion reveal → WhatsApp delivery | CHAR-05..10 | 4 |
 | 5 | Pipeline Orchestration | BullMQ end-to-end pipeline with module routing, cost tracking, admin visibility | PIPE-01..05 | 4 |
@@ -131,7 +131,7 @@ Plans:
 
 **Requirements:** CHAR-05..10
 
-**Plans:** 1/3 plans executed
+**Plans:** 2/3 plans executed
 
 Plans:
 - [ ] 04-01-PLAN.md — Sora 2 scene generation module via routeShot() (Wave 1)

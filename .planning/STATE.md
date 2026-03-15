@@ -4,14 +4,14 @@ milestone: v1.0
 milestone_name: milestone
 current_plan: Not started
 status: planning
-stopped_at: Completed 04-02-PLAN.md (CharacterReveal Remotion Composition)
-last_updated: "2026-03-15T02:19:31.241Z"
+stopped_at: Completed 04-character-video-gen-delivery/04-01-PLAN.md
+last_updated: "2026-03-15T02:21:24.745Z"
 progress:
   total_phases: 6
   completed_phases: 4
   total_plans: 11
-  completed_plans: 9
-  percent: 82
+  completed_plans: 10
+  percent: 91
 ---
 
 # State: Universal Customer Onboarding System
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-03-13)
 **Phase:** 2 — Onboarding Modules (Asset, Social, Compete)
 **Status:** Ready to plan
 **Current Plan:** Not started
-**Progress:** [████████░░] 82%
+**Progress:** [█████████░] 91%
 
 ## Decisions
 
@@ -53,6 +53,9 @@ See: .planning/PROJECT.md (updated 2026-03-13)
 - [Phase 03.1-02]: Observatory fallback cost set to 0.04 (below cheapest ceiling 0.05) — prevents silent budget violations in pure-fallback path
 - [Phase 04-character-video-gen-delivery]: CharacterReveal uses 16x9 only — no 9x16 variant needed for WhatsApp delivery
 - [Phase 04-character-video-gen-delivery]: SCENE_DURATION=sec(5) matches Sora 2 default 5s clip output (HairShowreel uses sec(4) for Kling)
+- [Phase 04-01]: Import path for db/client from modules/ subdirectory is ../../../db/client (3 levels up)
+- [Phase 04-01]: Background generation via setImmediate — WhatsApp handler returns immediately, pipeline runs async
+- [Phase 04-01]: Partial success: 3+ of 5 scenes = proceed to awaiting-composition; fewer = PipelineRun failed, module reset to intro for retry
 
 ## Phase History
 
@@ -94,10 +97,11 @@ None identified.
 | Phase 03.1-multi-model-best-shot-routing P01 | 4min | 2 tasks | 6 files |
 | Phase 03.1-multi-model-best-shot-routing P02 | 2min | 2 tasks | 3 files |
 | Phase 04-character-video-gen-delivery P02 | 3min | 2 tasks | 3 files |
+| Phase 04-character-video-gen-delivery P04-01 | 3 | 1 tasks | 3 files |
 
 ## Last Session
 
-- **Stopped at:** Completed 04-02-PLAN.md (CharacterReveal Remotion Composition)
+- **Stopped at:** Completed 04-character-video-gen-delivery/04-01-PLAN.md
 - **Timestamp:** 2026-03-13T23:24:43Z
 
 ---
