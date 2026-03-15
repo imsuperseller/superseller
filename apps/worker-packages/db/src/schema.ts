@@ -259,6 +259,7 @@ export const contentEntries = pgTable("content_entries", {
     approvedAt: timestamp("approved_at", { withTimezone: true }),
     // Metadata
     meta: jsonb("meta").default({}), // extensible — new fields go here first
+    generationMeta: jsonb("generation_meta"), // { model_id, provider, prompt_key, prompt_version, generation_cost_usd, duration_sec, shot_type, external_job_id, image_url_used }
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 }, (table) => ({
