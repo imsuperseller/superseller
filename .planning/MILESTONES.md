@@ -1,5 +1,27 @@
 # Milestones
 
+## v1.1 Intelligent Content Engine (Shipped: 2026-03-15)
+
+**Phases completed:** 4 phases, 8 plans | 12 commits | 59 files | +6,439 LOC
+**Timeline:** 1 day (2026-03-15)
+**Git range:** `feat(07-02)..feat(10-01)` | `3a3c649d..26dbefc7`
+
+**Delivered:** Multi-model content production with self-improving quality routing — fal.ai and Veo 3.1 activated, quality feedback loop closes the Observatory scoring gap, and parametric Remotion templates for local businesses.
+
+**Key accomplishments:**
+1. Multi-provider routing — fal.ai (Sora 2, Wan 2.6) activated alongside Kie.ai with adapter pattern
+2. Veo 3.1 re-integrated for dialogue/talking head shots via Kie.ai API
+3. fal.ai webhook endpoint with ED25519 signature verification and idempotent processing
+4. Per-clip generation metadata + quality scoring + per-clip cost attribution
+5. Nightly quality aggregation job feeding Observatory model routing (self-improving)
+6. BeforeAfterComposition parametric Remotion template for local businesses (dual aspect ratio)
+
+**Tech debt:**
+- FAL_WEBHOOK_VERIFY=false default — ED25519 check needs live validation before enabling
+- fal.ai billing on failure unknown — need test job before production tenant traffic
+
+---
+
 ## v1.0 Universal Customer Onboarding System (Shipped: 2026-03-15)
 
 **Phases completed:** 7 phases, 15 plans | 63 commits | 80 files | +14,213 LOC

@@ -4,17 +4,10 @@
 
 A universal WhatsApp-first customer onboarding system for SuperSeller AI. Every new customer — regardless of which product they bought — gets a WhatsApp group auto-created with an AI agent. The agent dynamically assembles its behavior from the customer's subscribed products/services, then activates conversational modules (asset collection, social setup, competitor research, character questionnaire, video generation) based on what the customer bought. Includes BullMQ pipeline orchestration with admin commands, cost tracking, and stale detection.
 
-## Current Milestone: v1.1 Intelligent Content Engine
+## Current State
 
-**Goal:** Multi-model content production with self-improving quality routing — activate dormant providers, build feedback loops, and create parametric templates for local businesses.
-
-**Target features:**
-- Activate fal.ai provider (Sora 2, Wan 2.6 budget tier, Kling via fal fallback)
-- Re-integrate Veo 3.1 for dialogue/talking head shots
-- Quality feedback loop (generation → scoring → model routing improvement)
-- Prompt effectiveness tracking and indexing
-- Parametric Remotion template library for local businesses
-- Per-clip cost attribution and generation metadata
+**Shipped:** v1.1 Intelligent Content Engine (2026-03-15)
+**Next:** Planning v1.2 (run `/gsd:new-milestone`)
 
 ## Core Value
 
@@ -35,12 +28,17 @@ Every customer gets an AI agent in a WhatsApp group from Day 1. Zero friction. T
 - ✓ BullMQ pipeline orchestration with module routing — v1.0
 - ✓ Admin commands (APPROVE/RETRY/SKIP/PAUSE) via WhatsApp — v1.0
 - ✓ Cost tracking via trackExpense() + PipelineRun — v1.0
-- ✓ Per-clip generation metadata and quality scoring — v1.1 Phase 09
-- ✓ Nightly quality aggregation feeding Observatory model routing — v1.1 Phase 09
-- ✓ Prompt effectiveness tracking API — v1.1 Phase 09
 - ✓ Poll-based module selection (WhatsApp polls → pipeline advance) — v1.0
 - ✓ Stale detection (48h customer nudge, 7d admin alert) — v1.0
 - ✓ Admin status API (GET /api/onboarding/status/:tenantId) — v1.0
+- ✓ Multi-provider routing: fal.ai (Sora 2, Wan 2.6) + Kie.ai adapter pattern — v1.1
+- ✓ Veo 3.1 re-integration for dialogue/talking head shots — v1.1
+- ✓ fal.ai webhook endpoint with ED25519 verification — v1.1
+- ✓ Per-clip generation metadata + quality scoring — v1.1
+- ✓ Nightly quality aggregation feeding Observatory model routing — v1.1
+- ✓ Prompt effectiveness tracking API — v1.1
+- ✓ Per-clip cost attribution (model_id + provider in api_expenses) — v1.1
+- ✓ BeforeAfterComposition parametric Remotion template (dual aspect ratio) — v1.1
 
 ### Active
 
@@ -59,10 +57,10 @@ Every customer gets an AI agent in a WhatsApp group from Day 1. Zero friction. T
 
 ## Context
 
-Shipped v1.0 with 14,213 LOC TypeScript across 80 files in 3 days.
-Tech stack: Node.js worker + BullMQ + WAHA + ClaudeClaw + Kie.ai + Remotion + R2 + PostgreSQL.
-7 phases, 15 plans, 46 requirements — all satisfied.
-4 tech debt items (0 blockers): render failure silent fail, AgentForge placeholder, 2 pre-existing TS errors.
+Shipped v1.1 with +6,439 LOC TypeScript (cumulative ~20,652 LOC) across 59 files in 1 day.
+Tech stack: Node.js worker + BullMQ + WAHA + ClaudeClaw + Kie.ai + fal.ai + Remotion + R2 + PostgreSQL.
+Cumulative: 11 phases, 23 plans, 64 requirements — all satisfied.
+v1.0 tech debt (4 items, 0 blockers) still open. v1.1 adds: FAL_WEBHOOK_VERIFY default=false, fal.ai billing-on-failure unknown.
 
 **Admin project ID:** `cmmpgo3k60000h5zuaxfqac80`
 
@@ -86,6 +84,11 @@ Tech stack: Node.js worker + BullMQ + WAHA + ClaudeClaw + Kie.ai + Remotion + R2
 | Poll-based module selection | WhatsApp polls for user choice, not text parsing | ✓ Good — native WAHA NOWEB Plus support |
 | Brand table (not TenantBrand) | Matches current Prisma schema | ✓ Good — avoided schema migration |
 | Direct fetch for Claude API | @anthropic-ai/sdk not installed in worker | ✓ Good — no new dependency |
+| Provider adapter inferred from modelId prefix | fal-ai/ → FalAdapter, wan/ → FalAdapter, else KieAdapter | ✓ Good — extensible, no config needed |
+| Veo 3.1 re-integrated via Kie.ai | Reversed Feb 2026 Kling-only mandate; dialogue shots need Veo | ✓ Good — documented in DECISIONS.md #24 |
+| veo:: prefix for job ID routing | Disambiguates Veo vs Kling pollStatus without DB schema change | ✓ Good — zero-migration solution |
+| Flat props schema for Remotion | No nested branding object in BeforeAfterComposition | ✓ Good — simpler API for parametric templates |
+| MIN_SAMPLES=20 for quality aggregation | Prevents noise from small samples corrupting Observatory scores | ✓ Good — below-threshold models retain static seeds |
 
 ---
-*Last updated: 2026-03-15 after Phase 09 (Quality Feedback Loop)*
+*Last updated: 2026-03-15 after v1.1 milestone*
