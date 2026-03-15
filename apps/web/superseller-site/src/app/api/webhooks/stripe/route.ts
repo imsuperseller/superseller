@@ -4,6 +4,7 @@ import prisma from '@/lib/prisma';
 import { sendEmail } from '@/lib/email';
 import { generateInvoicePdf, type InvoiceData } from '@/lib/services/invoice-pdf';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { ProvisioningService } from '@/lib/services/ProvisioningService';
 
 /**
  * Stripe webhook handler — reactivated for Elite Pro and future Stripe customers.
@@ -342,6 +343,31 @@ export async function POST(req: Request) {
                             `4. Content production begins once prerequisites are met\n\n` +
                             `Questions? Drop them right here in this group!`,
                         );
+                    }
+
+                    // ── 10. Trigger onboarding pipeline (additive) ──
+                    const customerPhone = metadata.phone || '';
+                    if (customerPhone) {
+                        try {
+                            await ProvisioningService.onboardNewCustomer({
+                                provider: 'stripe',
+                                eventId: event.id,
+                                eventType: event.type,
+                                payload: event.data.object,
+                                customerEmail: normalizedEmail,
+                                customerName: customerName || normalizedEmail,
+                                customerPhone,
+                                productName: metadata.productName || 'SuperSeller AI',
+                                serviceType: metadata.serviceType || 'managed_service',
+                                subscriptionId: subscriptionId || session.id,
+                                amount,
+                                metadata,
+                            });
+                        } catch (err: any) {
+                            console.error('[stripe/webhook] Onboarding trigger failed (non-blocking):', err.message);
+                        }
+                    } else {
+                        console.error('[stripe/webhook] MISSING PHONE in metadata — onboarding skipped. Customer:', normalizedEmail, 'Event ID:', event.id, '. Manual follow-up required via admin portal.');
                     }
                 }
                 break;
