@@ -6,10 +6,16 @@ import { ProvisioningService } from '@/lib/services/ProvisioningService';
 import prisma from '@/lib/prisma';
 import { CreditService } from '@/lib/credits';
 
-const webhookId = process.env.PAYPAL_WEBHOOK_ID!;
+const webhookId = process.env.PAYPAL_WEBHOOK_ID;
 const n8nWebhookUrl = process.env.N8N_PAYPAL_WEBHOOK_URL;
 
 export async function POST(req: Request) {
+    // Enforce PAYPAL_WEBHOOK_ID requirement — reject before doing any work
+    if (!webhookId) {
+        console.error('[paypal/webhook] PAYPAL_WEBHOOK_ID not configured — rejecting request');
+        return new NextResponse('PAYPAL_WEBHOOK_ID not configured', { status: 500 });
+    }
+
     const body = await req.text();
     let event: any;
 
@@ -19,8 +25,8 @@ export async function POST(req: Request) {
         return new NextResponse('Invalid JSON', { status: 400 });
     }
 
-    // Verify webhook signature if webhook ID is configured
-    if (webhookId) {
+    // Verify webhook signature
+    {
         const verified = await verifyWebhookSignature({
             authAlgo: req.headers.get('paypal-auth-algo') || '',
             certUrl: req.headers.get('paypal-cert-url') || '',
@@ -85,6 +91,39 @@ export async function POST(req: Request) {
                 }
 
                 console.log(`Subscription ${subscriptionId} activated for ${subscriberEmail}`);
+
+                // ── Trigger onboarding pipeline (additive — existing sub logic above stays) ──
+                const customerPhone = resource.subscriber?.phone?.phone_number?.national_number
+                    || customMetadata.phone
+                    || '';
+                const customerName = `${resource.subscriber?.name?.given_name || ''} ${resource.subscriber?.name?.surname || ''}`.trim()
+                    || customMetadata.businessName
+                    || subscriberEmail;
+
+                if (customerPhone) {
+                    try {
+                        await ProvisioningService.onboardNewCustomer({
+                            provider: 'paypal',
+                            eventId: event.id,
+                            eventType: eventType,
+                            payload: event,
+                            customerEmail: subscriberEmail,
+                            customerName,
+                            customerPhone,
+                            productName: customMetadata.productName || 'SuperSeller AI',
+                            serviceType: customMetadata.serviceType || 'managed_service',
+                            subscriptionId,
+                            amount: Math.round(parseFloat(resource.billing_info?.last_payment?.amount?.value || '0') * 100),
+                            metadata: customMetadata,
+                        });
+                    } catch (err: any) {
+                        console.error('[paypal/webhook] Onboarding trigger failed (non-blocking):', err.message);
+                        // Don't throw — onboarding failure should not break payment processing
+                    }
+                } else {
+                    console.error('[paypal/webhook] MISSING PHONE NUMBER — onboarding skipped. Customer email:', subscriberEmail, 'Event ID:', event.id, '. Manual follow-up required via admin portal.');
+                    // Phone is required for WhatsApp onboarding. Log as error (not warn) so monitoring catches it.
+                }
             }
         }
 
