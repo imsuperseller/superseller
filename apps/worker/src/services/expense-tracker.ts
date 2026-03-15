@@ -44,6 +44,28 @@ export const COST_RATES: Record<string, Record<string, number>> = {
   },
 };
 
+/**
+ * Normalize raw provider strings to standard labels for api_expenses.service column.
+ * Use this when the provider name comes from an external source (model router, webhook, etc.).
+ */
+export const PROVIDER_LABELS: Record<string, string> = {
+  "kie": "kie",
+  "kie.ai": "kie",
+  "fal": "fal",
+  "fal.ai": "fal",
+  "replicate": "replicate",
+  "openai": "openai",
+  "anthropic": "anthropic",
+  "gemini": "gemini",
+  "resend": "resend",
+  "r2": "r2",
+};
+
+/** Normalize a provider string to its standard label. Returns input as-is if not in map. */
+export function normalizeProvider(raw: string): string {
+  return PROVIDER_LABELS[raw.toLowerCase()] ?? raw.toLowerCase();
+}
+
 interface TrackExpenseParams {
   service: string;
   operation: string;

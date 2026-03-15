@@ -25,7 +25,7 @@ import { queryOne, query } from "../../../db/client";
 import { logger } from "../../../utils/logger";
 import { upsertModuleState } from "../module-state";
 import { createPipelineRun, updatePipelineRun } from "../../pipeline-run";
-import { trackExpense } from "../../expense-tracker";
+import { trackExpense, normalizeProvider } from "../../expense-tracker";
 import { uploadToR2 } from "../../r2";
 import { routeShot } from "../../model-router";
 import { renderComposition } from "../../remotion-renderer";
@@ -183,7 +183,7 @@ async function generateScene(params: {
     sceneIndex: number;
     prompt: string;
     shotType: "narrative" | "dialogue";
-}): Promise<string> {
+}): Promise<{ resultUrl: string; provider: string }> {
     const { tenantId, sceneIndex, prompt, shotType } = params;
 
     const routerResult = await routeShot({
@@ -247,7 +247,7 @@ async function generateScene(params: {
         });
 
         if (pollResult.status === "completed" && pollResult.resultUrl) {
-            return pollResult.resultUrl;
+            return { resultUrl: pollResult.resultUrl, provider: jobResult.provider };
         }
 
         if (pollResult.status === "failed") {
@@ -273,11 +273,11 @@ async function generateAllScenes(params: {
 
     const scenePromises = scenePrompts.map(async (scene, i) => {
         // Submit + poll with one retry on failure
-        let resultUrl: string | null = null;
+        let sceneOutput: { resultUrl: string; provider: string } | null = null;
 
         for (let attempt = 0; attempt < 2; attempt++) {
             try {
-                resultUrl = await generateScene({
+                sceneOutput = await generateScene({
                     tenantId,
                     sceneIndex: i,
                     prompt: scene.prompt,
@@ -301,14 +301,14 @@ async function generateAllScenes(params: {
             }
         }
 
-        if (!resultUrl) return null;
+        if (!sceneOutput) return null;
 
         // Download to /tmp
         const localDir = `/tmp/character-video/${tenantId}`;
         const localPath = path.join(localDir, `scene-${i}.mp4`);
 
         try {
-            await downloadVideo(resultUrl, localPath);
+            await downloadVideo(sceneOutput.resultUrl, localPath);
         } catch (dlErr: any) {
             logger.error({ msg: "character-video-gen: download failed", sceneIndex: i, error: dlErr.message });
             return null;
@@ -334,13 +334,13 @@ async function generateAllScenes(params: {
             return null;
         }
 
-        // Track cost
+        // Track cost — use actual provider from model router (not hardcoded)
         await trackExpense({
-            service: "kie.ai",
+            service: normalizeProvider(sceneOutput.provider),
             operation: "sora-2-pro",
             estimatedCost: SORA_COST_PER_SCENE,
             jobId: params.pipelineRunId,
-            metadata: { tenantId, sceneIndex: i, r2Key },
+            metadata: { tenantId, sceneIndex: i, r2Key, provider: sceneOutput.provider },
         });
 
         return {
