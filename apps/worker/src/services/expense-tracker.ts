@@ -9,7 +9,7 @@ import { logger } from "../utils/logger";
 
 // Cost rates (USD) — fallback rates if observatory is unavailable
 // Primary pricing comes from ai_models table via model-selector.ts
-const COST_RATES: Record<string, Record<string, number>> = {
+export const COST_RATES: Record<string, Record<string, number>> = {
   kie: {
     kling_clip_pro: 0.10,
     kling_clip_std: 0.03,
@@ -32,6 +32,12 @@ const COST_RATES: Record<string, Record<string, number>> = {
   },
   anthropic: {
     haiku_message: 0.02, // ~$0.02/follower research (follower-research.ts)
+  },
+  fal: {
+    sora_2_per_second_720p: 0.30,   // fal-ai/sora-2/image-to-video/pro, 720p
+    sora_2_per_second_1080p: 0.50,  // fal-ai/sora-2/image-to-video/pro, 1080p
+    wan_2_6_per_second_720p: 0.10,  // wan/v2.6/image-to-video, 720p
+    wan_2_6_per_second_1080p: 0.15, // wan/v2.6/image-to-video, 1080p
   },
 };
 
