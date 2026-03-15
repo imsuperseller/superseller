@@ -891,7 +891,7 @@ export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | nul
                 <span style={{ color: ORANGE }}>Specifically for You</span>
               </h2>
               <p className="text-base max-w-xl mx-auto text-white/60">
-                15 seconds. Sound on.
+                10 seconds. Sound on.
               </p>
             </Reveal>
 
