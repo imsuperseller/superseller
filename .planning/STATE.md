@@ -4,14 +4,14 @@ milestone: v1.0
 milestone_name: milestone
 current_plan: Not started
 status: planning
-stopped_at: Completed 05-01-PLAN.md
-last_updated: "2026-03-15T03:03:25.742Z"
+stopped_at: Completed 05-02-PLAN.md
+last_updated: "2026-03-15T03:10:30.075Z"
 progress:
   total_phases: 6
-  completed_phases: 5
+  completed_phases: 6
   total_plans: 13
-  completed_plans: 12
-  percent: 92
+  completed_plans: 13
+  percent: 100
 ---
 
 # State: Universal Customer Onboarding System
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-03-13)
 **Phase:** 2 — Onboarding Modules (Asset, Social, Compete)
 **Status:** Ready to plan
 **Current Plan:** Not started
-**Progress:** [█████████░] 92%
+**Progress:** [██████████] 100%
 
 ## Decisions
 
@@ -61,6 +61,9 @@ See: .planning/PROJECT.md (updated 2026-03-13)
 - [Phase 05-01]: attempts:1 on customerOnboardingQueue — state machine manages retries, not BullMQ
 - [Phase 05-01]: Worker job ends after first poll — pipeline advances via handlePipelineEvent from claudeclaw message flow
 - [Phase 05-01]: advancePipelineAfterApproval() exported for Plan 02 admin APPROVE command wiring
+- [Phase 05-02]: APPROVE with no remaining modules → awaiting-approval for final sign-off, not immediate completion
+- [Phase 05-02]: POST /api/onboarding/start: bootstrapOnboardingGroup first (creates WA group), then enqueues BullMQ — group creation is synchronous prerequisite
+- [Phase 05-02]: isPollVote + pollOption added to ClaudeClawJobData so WAHA webhook handler can set these for poll.vote events
 
 ## Phase History
 
@@ -105,10 +108,11 @@ None identified.
 | Phase 04-character-video-gen-delivery P04-01 | 3 | 1 tasks | 3 files |
 | Phase 04-character-video-gen-delivery P04-03 | 4min | 1 tasks | 1 files |
 | Phase 05-pipeline-orchestration P01 | 3min | 2 tasks | 7 files |
+| Phase 05-pipeline-orchestration P02 | 5min | 2 tasks | 5 files |
 
 ## Last Session
 
-- **Stopped at:** Completed 05-01-PLAN.md
+- **Stopped at:** Completed 05-02-PLAN.md
 - **Timestamp:** 2026-03-13T23:24:43Z
 
 ---
