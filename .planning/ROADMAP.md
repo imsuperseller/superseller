@@ -63,7 +63,10 @@
   1. When a Remotion render fails after all retries, admin receives a WhatsApp message with the error and the customer receives a "our team will follow up" message — no silent failures
   2. Cost entries in `api_expenses` show the correct provider (`fal` or `kie.ai`) based on which model actually ran the job, not a hardcoded label
   3. Pipelines missing `admin_phone` fall back to the configured default admin number rather than throwing a null error
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 15-01-PLAN.md — Admin failure alerts + customer messaging + admin phone fallback
+- [ ] 15-02-PLAN.md — Cost tracking provider attribution fix + backfill migration
 
 ### Phase 16: Change Request Intake
 **Goal**: Customers can send natural-language change requests after receiving their character video, see a cost estimate, confirm via poll, and have their intent correctly classified — no generation triggered yet
@@ -127,7 +130,7 @@
 | 12. Payment Webhooks | v1.2 | 4/4 | Complete | 2026-03-15 |
 | 13. Voice Note Transcription | v1.2 | 2/2 | Complete | 2026-03-15 |
 | 14. Language Detection | v1.2 | 1/1 | Complete | 2026-03-15 |
-| 15. Tech Debt Fixes | v1.3 | 0/TBD | Not started | - |
+| 15. Tech Debt Fixes | v1.3 | 0/2 | Planning | - |
 | 16. Change Request Intake | v1.3 | 0/TBD | Not started | - |
 | 17. Scene-Level Regeneration | v1.3 | 0/TBD | Not started | - |
 | 18. Character-Level Changes | v1.3 | 0/TBD | Not started | - |
@@ -135,4 +138,4 @@
 
 ---
 *Created: 2026-03-13*
-*Updated: 2026-03-15 — v1.3 Character Iteration roadmap added (phases 15-19)*
+*Updated: 2026-03-15 — Phase 15 plans created (2 plans, wave 1)*
