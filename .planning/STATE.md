@@ -2,10 +2,10 @@
 gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Character Iteration
-status: planning
-stopped_at: Completed 15-02-PLAN.md
-last_updated: "2026-03-15T19:56:07.823Z"
-last_activity: 2026-03-15 — v1.3 roadmap created (phases 15-19)
+status: executing
+stopped_at: Phase 15 complete, ready to plan Phase 16
+last_updated: "2026-03-15T20:15:00.000Z"
+last_activity: 2026-03-15 — Phase 15 executed (2/2 plans), verified, complete
 progress:
   total_phases: 5
   completed_phases: 1
@@ -20,23 +20,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-15)
 
 **Core value:** Every customer gets an AI agent in a WhatsApp group from Day 1 — product-aware, zero friction
-**Current focus:** Phase 15 — Tech Debt Fixes (v1.3 Character Iteration)
+**Current focus:** Phase 16 — Change Request Intake (v1.3 Character Iteration)
 
 ## Current Position
 
-Phase: 15 of 19 (Tech Debt Fixes)
+Phase: 16 of 19 (Change Request Intake)
 Plan: 0 of TBD in current phase
 Status: Ready to plan
-Last activity: 2026-03-15 — v1.3 roadmap created (phases 15-19)
+Last activity: 2026-03-15 — Phase 15 executed (2/2 plans), verified, complete
 
-Progress (v1.3): [░░░░░░░░░░] 0% (0/5 phases complete)
+Progress (v1.3): [██░░░░░░░░] 20% (1/5 phases complete)
 
 ## Performance Metrics
 
 **Velocity (cumulative):**
-- Total plans completed: 30 (v1.0 + v1.1 + v1.2)
-- Average duration: ~23 min/plan
-- Total execution time: ~11.6 hours
+- Total plans completed: 32 (v1.0 + v1.1 + v1.2 + v1.3)
+- Average duration: ~22 min/plan
+- Total execution time: ~11.9 hours
 
 ## Accumulated Context
 
@@ -55,21 +55,19 @@ Key v1.3 decisions:
 
 ### Pending Todos
 
-None.
+- Run backfill script on production: `npx tsx apps/worker/src/scripts/backfill-expense-providers.ts`
 
 ### Blockers/Concerns
 
-- [Phase 15 — FIXED in 15-01]: Render failure silent fail in `character-video-gen.ts` lines 491-498
-- [Phase 15 — FIXED in 15-02]: Cost tracking misattribution — `service: "kie.ai"` hardcoded regardless of actual provider
 - [Phase 17 — gate]: FAL_WEBHOOK_VERIFY=false must be resolved before regen webhooks go live
 - [Phase 17 — risk]: fal.ai @handle cross-session consistency unverified — document adjacency regen policy before shipping
 - [Phase 17 — risk]: Concurrent regen race — budget gate + dispatch must guard against simultaneous change requests
 
 ## Session Continuity
 
-Last session: 2026-03-15T19:52:20.485Z
-Stopped at: Completed 15-02-PLAN.md
+Last session: 2026-03-15
+Stopped at: Phase 15 complete, ready to plan Phase 16
 Resume file: None
 
 ---
-*Last updated: 2026-03-15 — v1.3 roadmap complete (phases 15-19)*
+*Last updated: 2026-03-15 — Phase 15 complete, transitioning to Phase 16*

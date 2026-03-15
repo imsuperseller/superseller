@@ -109,6 +109,9 @@ v1.0 tech debt (4 items) still open. v1.1 tech debt: FAL_WEBHOOK_VERIFY default=
 | OpenAI Whisper API over local Ollama | Better accuracy for Hebrew, predictable costs at $0.006/min | ✓ Good — cost-effective for voice volume |
 | effectiveBody pattern | transcribedText ∥ messageBody — single variable for all handlers | ✓ Good — clean transcription integration |
 | Language instructions in English only | No dual-language system prompts; Claude handles language switching from English instructions | ✓ Good — simpler maintenance |
+| Non-blocking admin alerts | sendAdminAlert catches errors internally to avoid masking primary failure path | ✓ Good — zero risk of alert code crashing pipeline |
+| normalizeProvider() in expense-tracker | Single import for provider normalization, not a separate util | ✓ Good — clean API surface |
+| generateScene returns { resultUrl, provider } | Provider attribution collocated with result, not in a closure | ✓ Good — accurate cost tracking |
 
 ---
-*Last updated: 2026-03-15 after v1.2 milestone*
+*Last updated: 2026-03-15 after Phase 15*
