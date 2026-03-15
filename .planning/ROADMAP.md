@@ -1,7 +1,7 @@
 # Roadmap: Universal Customer Onboarding System
 
 **Created:** 2026-03-13
-**Updated:** 2026-03-15 — Phase 04 planned (3 plans, Wave 1 + Wave 2)
+**Updated:** 2026-03-15 — Phase 05 planned (2 plans, Wave 1 + Wave 2)
 **Phases:** 6 (includes 03.1 insertion)
 **Core Value:** Every customer gets an AI agent in a WhatsApp group from Day 1 — product-aware, zero friction
 
@@ -134,9 +134,9 @@ Plans:
 **Plans:** 3/3 plans complete
 
 Plans:
-- [ ] 04-01-PLAN.md — Sora 2 scene generation module via routeShot() (Wave 1)
-- [ ] 04-02-PLAN.md — Remotion CharacterReveal composition with branded overlays (Wave 1)
-- [ ] 04-03-PLAN.md — Composition rendering + R2 upload + WhatsApp delivery (Wave 2)
+- [x] 04-01-PLAN.md — Sora 2 scene generation module via routeShot() (Wave 1)
+- [x] 04-02-PLAN.md — Remotion CharacterReveal composition with branded overlays (Wave 1)
+- [x] 04-03-PLAN.md — Composition rendering + R2 upload + WhatsApp delivery (Wave 2)
 
 **Success Criteria:**
 1. Kie.ai Sora 2 generates reference + 5 scene videos from CharacterBible prompts
@@ -158,6 +158,12 @@ Plans:
 
 **Requirements:** PIPE-01..05
 
+**Plans:** 2 plans
+
+Plans:
+- [ ] 05-01-PLAN.md — BullMQ queue + worker + pipeline state + WhatsApp poll flow (Wave 1)
+- [ ] 05-02-PLAN.md — Admin commands, failure handling, cost tracking, status API (Wave 2)
+
 **Success Criteria:**
 1. `customer-onboarding` BullMQ queue routes jobs to appropriate modules
 2. Module selection driven by tenant's ServiceInstance/Subscription records
@@ -168,7 +174,8 @@ Plans:
 **Key files to create/modify:**
 - `apps/worker/src/queue/queues.ts` — Add `customerOnboardingQueue`
 - `apps/worker/src/queue/workers/onboarding.worker.ts` — Main pipeline worker with module routing
-- `apps/worker/src/api/routes.ts` — Add status endpoint
+- `apps/worker/src/services/onboarding/pipeline-state.ts` — Pipeline-level state persistence
+- `apps/worker/src/api/routes.ts` — Add status endpoint + wire start to BullMQ
 
 ---
 
@@ -193,4 +200,4 @@ Phase 5 can start partially after Phase 1 is done (queue + routing skeleton).
 
 ---
 *Created: 2026-03-13*
-*Updated: 2026-03-15 — Phase 04 planned (3 plans, Wave 1 + Wave 2)*
+*Updated: 2026-03-15 — Phase 05 planned (2 plans, Wave 1 + Wave 2)*
