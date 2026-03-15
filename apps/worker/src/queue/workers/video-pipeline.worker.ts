@@ -728,7 +728,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                         }
                         // Track sentinel cost
                         const sentinelCost = config.video.klingMode === "pro" ? 0.10 : 0.03;
-                        await trackExpense({ service: "kie", operation: config.video.klingMode === "pro" ? "kling_clip_pro" : "kling_clip_std", jobId, userId, estimatedCost: sentinelCost, metadata: { clip: sentinel.clip_number, sentinel: true } });
+                        await trackExpense({ service: "kie", operation: config.video.klingMode === "pro" ? "kling_clip_pro" : "kling_clip_std", jobId, userId, estimatedCost: sentinelCost, metadata: { clip: sentinel.clip_number, sentinel: true, model_id: "kling-3.0/video", provider: "kie" } });
                         logger.info({ msg: "Sentinel clip COMPLETED — credits confirmed, launching batch", clip: sentinel.clip_number, videoUrl: sentinelStatus.result.video_url.slice(0, 60), remaining: pendingClips.length - 1 });
 
                         // Store sentinel result so the wait loop below can skip it
@@ -785,7 +785,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
 
                         const klingOp = config.video.klingMode === "pro" ? "kling_clip_pro" : "kling_clip_std";
                         const clipCost = config.video.klingMode === "pro" ? 0.10 : 0.03;
-                        await trackExpense({ service: "kie", operation: klingOp, jobId, userId, estimatedCost: clipCost, metadata: { clip: clip.clip_number } });
+                        await trackExpense({ service: "kie", operation: klingOp, jobId, userId, estimatedCost: clipCost, metadata: { clip: clip.clip_number, model_id: "kling-3.0/video", provider: "kie" } });
                         logger.info({ msg: "Clip generated (parallel)", clip: clip.clip_number, cost: clipCost });
                     }
 
@@ -921,7 +921,7 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                     modelUsed = "kling-3.0/video";
                     const klingOp = config.video.klingMode === "pro" ? "kling_clip_pro" : "kling_clip_std";
                     const clipCost = config.video.klingMode === "pro" ? 0.10 : 0.03;
-                    await trackExpense({ service: "kie", operation: klingOp, jobId, userId, estimatedCost: clipCost, metadata: { clip: clip.clip_number, model: modelUsed } });
+                    await trackExpense({ service: "kie", operation: klingOp, jobId, userId, estimatedCost: clipCost, metadata: { clip: clip.clip_number, model_id: modelUsed || "kling-3.0/video", provider: "kie" } });
                     logger.info({ msg: "Clip generated", clip: clip.clip_number, model: modelUsed, cost: clipCost });
 
                     const videoPath = join(workDir, `clip_${clip.clip_number}.mp4`);
@@ -1160,6 +1160,42 @@ export const videoPipelineWorker = new Worker<VideoPipelineJobData>(
                 [masterUrl, verticalUrl, thumbUrl, masterDuration, squareUrl, portraitUrl, totalCost, clipFiles.length, jobId]
             );
             logger.info({ msg: "Total API cost for job", jobId, totalCost: `$${totalCost.toFixed(4)}`, clips: clipFiles.length });
+
+            // Write generation metadata + quality score to content_entries (non-blocking)
+            try {
+                const SUCCESS_WEIGHT = 0.34;
+                const COST_WEIGHT = 0.33;
+                const DURATION_WEIGHT = 0.33;
+
+                const successScore = 1.0; // In completion path = success
+                const expectedCost = clips.length * (config.video.klingMode === "pro" ? 0.10 : 0.03);
+                const costScore = Math.min(expectedCost / Math.max(totalCost, 0.01), 1.0);
+                const requestedDuration = clips.reduce((sum: number, c: any) => sum + (c.duration_seconds || 5), 0);
+                const durationScore = Math.min(requestedDuration / Math.max(masterDuration, 1), 1.0);
+                const performanceScore = SUCCESS_WEIGHT * successScore + COST_WEIGHT * costScore + DURATION_WEIGHT * durationScore;
+
+                const generationMeta = {
+                    model_id: "kling-3.0/video",
+                    provider: "kie",
+                    prompt_key: "default",
+                    prompt_version: "1.0",
+                    generation_cost_usd: totalCost,
+                    duration_sec: masterDuration,
+                    shot_type: "cinematic",
+                    external_job_id: jobId,
+                    image_url_used: listing?.exterior_photo_url || null,
+                };
+
+                await query(
+                    `INSERT INTO content_entries (id, tenant_id, type, status, media_url, performance_score, generation_meta, created_at, updated_at)
+                     VALUES (gen_random_uuid(), $1, 'reel', 'published', $2, $3, $4, NOW(), NOW())
+                     ON CONFLICT DO NOTHING`,
+                    [userId, masterUrl, performanceScore, JSON.stringify(generationMeta)]
+                );
+                logger.info({ msg: "content_entries row written", jobId, performanceScore: performanceScore.toFixed(3) });
+            } catch (ceErr: any) {
+                logger.warn({ msg: "content_entries write failed (non-blocking)", jobId, error: ceErr.message });
+            }
 
             logger.info({ msg: "Video pipeline complete", jobId });
 
