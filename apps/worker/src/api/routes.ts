@@ -23,6 +23,7 @@ function mapPropertyType(raw: string | undefined): string {
 }
 
 import { telnyxVoiceRouter } from "./telnyx-voice-webhook";
+import { falWebhookRouter } from "./fal-webhook";
 import { bootstrapOnboardingGroup } from "../services/onboarding/group-bootstrap";
 import { customerOnboardingQueue } from "../queue/queues";
 import { createPipelineRun } from "../services/pipeline-run";
@@ -32,6 +33,9 @@ export const apiRouter = Router();
 
 // Mount Telnyx voice webhook (migrated from n8n)
 apiRouter.use(telnyxVoiceRouter);
+
+// Mount fal.ai webhook receiver (async job completions for Sora 2 / Wan 2.6)
+apiRouter.use(falWebhookRouter);
 
 // ─── ONBOARDING ───
 const onboardingStartSchema = z.object({
