@@ -30,6 +30,8 @@ import { uploadToR2 } from "../../r2";
 import { routeShot } from "../../model-router";
 import { renderComposition } from "../../remotion-renderer";
 import { sendVideo } from "../../waha-client";
+import { sendAdminAlert, sendCustomerFailureMessage } from "../../admin-alerts";
+import { getPipelineState } from "../pipeline-state";
 import type { OnboardingModule, ModuleHandleResult, ModuleState } from "./types";
 import type { ProductInfo } from "../prompt-assembler";
 import type { CharacterRevealProps } from "../../../../remotion/src/types/character-reveal-props";
@@ -410,6 +412,14 @@ async function runCompositionPipeline(params: {
             durationMs: Date.now() - startMs,
         });
         await upsertModuleState(groupId, tenantId, "character-video-gen", "awaiting-composition", data);
+        const pipelineStateComp = await getPipelineState(groupId);
+        await sendAdminAlert({
+            error: "CharacterBible not found during composition phase",
+            module: "character-video-gen",
+            groupId,
+            adminPhone: pipelineStateComp?.adminPhone,
+        });
+        await sendCustomerFailureMessage(groupId, "character-video-gen");
         return;
     }
 
@@ -489,13 +499,15 @@ async function runCompositionPipeline(params: {
                 });
                 await upsertModuleState(groupId, tenantId, "character-video-gen", "awaiting-composition", data);
 
-                // Notify the group of the issue
-                try {
-                    await sendVideo(groupId, "", undefined);
-                } catch { /* ignore secondary failure */ }
-
-                // Use a text message fallback since sendVideo needs a URL
-                logger.error({ msg: "character-video-gen: composition failed — group will need manual follow-up", tenantId });
+                // Alert admin and notify customer
+                const pipelineState = await getPipelineState(groupId);
+                await sendAdminAlert({
+                    error: `Remotion render failed: ${renderErr.message}`,
+                    module: "character-video-gen",
+                    groupId,
+                    adminPhone: pipelineState?.adminPhone,
+                });
+                await sendCustomerFailureMessage(groupId, "character-video-gen");
                 return;
             }
         }
@@ -543,6 +555,14 @@ async function runCompositionPipeline(params: {
                     revealPath: outputPath,
                     uploadError: uploadErr.message,
                 });
+                const pipelineStateUpload = await getPipelineState(groupId);
+                await sendAdminAlert({
+                    error: `R2 upload failed: ${uploadErr.message}`,
+                    module: "character-video-gen",
+                    groupId,
+                    adminPhone: pipelineStateUpload?.adminPhone,
+                });
+                await sendCustomerFailureMessage(groupId, "character-video-gen");
                 logger.error({ msg: "character-video-gen: R2 upload permanently failed", tenantId });
                 return;
             }
@@ -818,6 +838,14 @@ async function runGenerationPipeline(params: {
         });
         // Reset to intro so it can be retried
         await upsertModuleState(groupId, tenantId, "character-video-gen", "intro", data);
+        const pipelineStateBible = await getPipelineState(groupId);
+        await sendAdminAlert({
+            error: errMsg,
+            module: "character-video-gen",
+            groupId,
+            adminPhone: pipelineStateBible?.adminPhone,
+        });
+        await sendCustomerFailureMessage(groupId, "character-video-gen");
         return;
     }
 
@@ -855,6 +883,14 @@ async function runGenerationPipeline(params: {
         // Reset to intro to allow retry
         const retryData = { ...data, lastFailedAt: new Date().toISOString(), sceneUrls };
         await upsertModuleState(groupId, tenantId, "character-video-gen", "intro", retryData);
+        const pipelineStateScenes = await getPipelineState(groupId);
+        await sendAdminAlert({
+            error: `Only ${sceneResults.length}/${TOTAL_SCENES} scenes succeeded (minimum ${MIN_SCENES_TO_PROCEED} required)`,
+            module: "character-video-gen",
+            groupId,
+            adminPhone: pipelineStateScenes?.adminPhone,
+        });
+        await sendCustomerFailureMessage(groupId, "character-video-gen");
         return;
     }
 
