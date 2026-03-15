@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Production-Ready Onboarding
 status: planning
-stopped_at: Completed 12-03-PLAN.md
-last_updated: "2026-03-15T17:00:00.000Z"
-last_activity: 2026-03-15 — Phase 12 Plan 03 complete (checkout pages + Stripe session API)
+stopped_at: Completed 12-02-PLAN.md
+last_updated: "2026-03-15T16:56:59.480Z"
+last_activity: 2026-03-15 — Roadmap created for v1.2 (phases 12-14)
 progress:
   total_phases: 3
   completed_phases: 0
@@ -48,6 +48,7 @@ Progress (v1.2): [░░░░░░░░░░] 0% (3 phases, 0 complete)
 
 *Updated after each plan completion*
 | Phase 12-payment-webhooks P01 | 4 | 3 tasks | 3 files |
+| Phase 12-payment-webhooks P02 | 5 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -63,6 +64,8 @@ Recent decisions affecting v1.2 work:
 - [Phase 12-plan-03]: PayPal custom_id uses compact keys (bn, svc) to stay under PayPal 127 char limit
 - [Phase 12-plan-03]: CheckoutForm is 'use client', page.tsx is server component — standard Next.js App Router pattern
 - [Phase 12-plan-03]: PayPal SDK via script tag (not @paypal/react-paypal-js — not installed in project)
+- [Phase 12-payment-webhooks]: onboardNewCustomer is additive in both webhooks — all existing payment processing preserved
+- [Phase 12-payment-webhooks]: PAYPAL_WEBHOOK_ID now mandatory (returns 500 if missing) — not silently skipped
 
 ### Pending Todos
 
@@ -78,8 +81,8 @@ None captured yet for v1.2.
 
 ## Session Continuity
 
-Last session: 2026-03-15T16:52:48.686Z
-Stopped at: Completed 12-03-PLAN.md
+Last session: 2026-03-15T16:56:59.478Z
+Stopped at: Completed 12-02-PLAN.md
 Resume file: None
 
 ---

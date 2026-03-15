@@ -9,8 +9,8 @@ Requirements for Production-Ready Onboarding milestone.
 
 ### Webhook Triggers
 
-- [ ] **HOOK-01**: Onboarding auto-triggers when PayPal subscription webhook fires for new customer
-- [ ] **HOOK-02**: Onboarding auto-triggers when Stripe subscription webhook fires for new customer
+- [x] **HOOK-01**: Onboarding auto-triggers when PayPal subscription webhook fires for new customer
+- [x] **HOOK-02**: Onboarding auto-triggers when Stripe subscription webhook fires for new customer
 - [x] **HOOK-03**: Webhook handler creates Tenant + ServiceInstance before triggering pipeline
 - [x] **HOOK-04**: Duplicate webhook events are idempotent (no double onboarding)
 - [x] **HOOK-05**: Failed webhook processing retries with exponential backoff
@@ -53,8 +53,8 @@ Requirements for Production-Ready Onboarding milestone.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| HOOK-01 | Phase 12 | Pending |
-| HOOK-02 | Phase 12 | Pending |
+| HOOK-01 | Phase 12 | Complete |
+| HOOK-02 | Phase 12 | Complete |
 | HOOK-03 | Phase 12 | Complete |
 | HOOK-04 | Phase 12 | Complete |
 | HOOK-05 | Phase 12 | Complete |
