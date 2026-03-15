@@ -858,14 +858,19 @@ export function GPHomesPage({ page }: { page: LandingPage & { brand: Brand | nul
         {/* PERSONAL VIDEO MESSAGE */}
         {/* ================================================================ */}
         {/* VIDEO PROMPT (25s, @shai-lfc):
-            Medium shot of Shai (@shai-lfc) sitting at a modern desk with a laptop open,
-            looking directly at camera with a confident, warm expression. He's wearing a
-            dark navy polo shirt. Behind him a clean office setup with soft warm lighting.
-            He speaks naturally and gestures occasionally — leaning slightly forward as if
-            sharing something important with a friend. The energy is professional but
-            personal, like a one-on-one conversation. Camera slowly pushes in from medium
-            to tight medium shot over the 25 seconds. Shallow depth of field keeps focus
-            on Shai. Natural daylight mixed with warm desk lamp. No text overlays.
+            Shai (@shai-lfc) standing in front of a beautiful completed kitchen remodel —
+            white shaker cabinets, quartz countertops, pendant lights, the kind of work
+            GP Homes actually does. He's dressed sharp-casual, dark henley, looking
+            straight at camera like he's FaceTiming Nir. He starts calm and direct,
+            gesturing toward the kitchen behind him as if saying "this is the quality of
+            work you do." Then his expression shifts to concerned — slight head shake,
+            brow furrow — as if explaining "but when someone Googles 'remodeling Plano TX,'
+            DFW Improved shows up and you don't." He holds up his phone toward camera
+            briefly, showing a Google Maps search result. Then his energy lifts — confident
+            smile, open palms — delivering the solution. He points at camera at the end
+            like "let's fix this." Camera starts medium-wide showing the kitchen, slowly
+            tightens to medium close-up on Shai by the end. Warm natural light from
+            kitchen windows. Cinematic shallow depth of field. No text overlays.
         */}
         <section
           className="py-16 md:py-24"
