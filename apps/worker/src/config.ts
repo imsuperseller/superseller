@@ -148,6 +148,10 @@ export const config = {
         cooldownMinutes: parseInt(optional("HEALTH_COOLDOWN_MINUTES", "15")),
     },
 
+    admin: {
+        defaultPhone: process.env.ADMIN_PHONE || process.env.HEALTH_MONITOR_ALERT_PHONE || "",
+    },
+
     rag: {
         systemTenant: optional("RAG_SYSTEM_TENANT", "system"),
         codebaseRoot: optional("RAG_CODEBASE_ROOT", process.cwd()),

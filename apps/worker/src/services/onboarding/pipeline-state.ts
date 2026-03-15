@@ -10,6 +10,7 @@
 
 import { query, queryOne } from "../../db/client";
 import { logger } from "../../utils/logger";
+import { config } from "../../config";
 import type { ModuleType } from "./modules/types";
 
 // ── Row shape from DB ────────────────────────────────────────
@@ -197,7 +198,10 @@ export async function upsertPipelineState(
     const insertAvailableModules = updates.availableModules || [];
     const insertCompletedModules = updates.completedModules || [];
     const insertCurrentModule = updates.currentModule ?? null;
-    const insertAdminPhone = updates.adminPhone || "";
+    if (!updates.adminPhone && config.admin.defaultPhone) {
+        logger.warn({ msg: "pipeline-state: using ADMIN_PHONE fallback", groupId, tenantId });
+    }
+    const insertAdminPhone = updates.adminPhone || config.admin.defaultPhone || "";
     const insertRetryCounts = updates.retryCounts || {};
     const insertModuleCosts = updates.moduleCosts || {};
 
