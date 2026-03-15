@@ -26,7 +26,7 @@
 
 **Milestone Goal:** Multi-model content production with self-improving quality routing — activate dormant providers, build feedback loops, and create parametric templates for local businesses.
 
-- [ ] **Phase 07: Provider Foundation** - Decision doc, router bug fix, DB seed, cost rates, and input validation — everything required before any fal.ai traffic goes live
+- [x] **Phase 07: Provider Foundation** - Decision doc, router bug fix, DB seed, cost rates, and input validation — everything required before any fal.ai traffic goes live (completed 2026-03-15)
 - [ ] **Phase 08: Provider Activation** - Live fal.ai generation (Sora 2 + Wan 2.6) with webhook handling, and Veo 3.1 dialogue re-integration via Kie.ai
 - [ ] **Phase 09: Quality Feedback Loop** - Per-clip generation metadata, nightly aggregation, and Observatory score updates that feed back into routing decisions
 - [ ] **Phase 10: Remotion Templates** - BeforeAfterComposition for local businesses — parametric, dual aspect ratio, brand-configurable
@@ -43,7 +43,7 @@
   3. `ai_models` table contains seeded rows for Sora 2, Wan 2.6, and Veo 3.1 with correct `cost_per_second_usd`, `provider`, and capability flags
   4. `expense-tracker` COST_RATES map includes fal.ai provider rates for Sora 2 and Wan 2.6 as fallback entries
   5. Image URL format validation (type + dimensions) runs before any `FalAdapter.submitJob()` call, with 4xx responses wrapped in `UnrecoverableError`
-**Plans:** 2 plans
+**Plans:** 2/2 plans complete
 
 Plans:
 - [ ] 07-01: DECISIONS.md entry + router adapter-selection fix (PROV-08, PROV-03)
@@ -105,7 +105,7 @@ Plans:
 | 4. Character Video Gen | v1.0 | 3/3 | Complete | 2026-03-14 |
 | 5. Pipeline Orchestration | v1.0 | 2/2 | Complete | 2026-03-14 |
 | 6. Fix Social + Poll Vote | v1.0 | 2/2 | Complete | 2026-03-14 |
-| 07. Provider Foundation | v1.1 | 0/2 | Not started | - |
+| 07. Provider Foundation | v1.1 | Complete    | 2026-03-15 | - |
 | 08. Provider Activation | v1.1 | 0/2 | Not started | - |
 | 09. Quality Feedback Loop | v1.1 | 0/3 | Not started | - |
 | 10. Remotion Templates | v1.1 | 0/1 | Not started | - |
