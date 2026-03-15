@@ -134,7 +134,7 @@ Plans:
 | 13. Voice Note Transcription | v1.2 | 2/2 | Complete | 2026-03-15 |
 | 14. Language Detection | v1.2 | 1/1 | Complete | 2026-03-15 |
 | 15. Tech Debt Fixes | v1.3 | 2/2 | Complete | 2026-03-15 |
-| 16. Change Request Intake | 2/2 | Complete   | 2026-03-15 | - |
+| 16. Change Request Intake | 2/2 | Complete    | 2026-03-15 | - |
 | 17. Scene-Level Regeneration | v1.3 | 0/TBD | Not started | - |
 | 18. Character-Level Changes | v1.3 | 0/TBD | Not started | - |
 | 19. Admin Tooling | v1.3 | 0/TBD | Not started | - |
