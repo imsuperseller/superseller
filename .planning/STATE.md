@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Character Iteration
 status: planning
-stopped_at: Phase 18 context gathered
-last_updated: "2026-03-16T01:27:52.016Z"
+stopped_at: Completed 18-01-PLAN.md
+last_updated: "2026-03-16T01:46:15.873Z"
 last_activity: 2026-03-15 — Phase 15 executed (2/2 plans), verified, complete
 progress:
   total_phases: 5
   completed_phases: 3
-  total_plans: 6
-  completed_plans: 6
+  total_plans: 8
+  completed_plans: 7
 ---
 
 # State: Universal Customer Onboarding System
@@ -61,6 +61,8 @@ Key v1.3 decisions:
 - [Phase 17-01]: character-regen worker uses concurrency:2; processCharacterRegen() throws NotImplemented (Plan 02 fills logic); sceneStatuses derives from data.sceneUrls ?? []
 - [Phase 17]: renderComposition used directly (not remotionQueue) — regen worker must not depend on queue consumer availability
 - [Phase 17]: tmpDir cleanup in finally block ensures cleanup on all paths including unhandled errors
+- [Phase 18-01]: VISUAL_FIELDS = Set(['visualStyle','soraHandle']); unknown fields default to visual (safe); NON_VISUAL_FIELDS bypasses regen
+- [Phase 18-01]: getInProgressChangeRequest blocks on pending-admin-approval to prevent concurrent change requests during admin review
 
 ### Pending Todos
 
@@ -74,9 +76,9 @@ Key v1.3 decisions:
 
 ## Session Continuity
 
-Last session: 2026-03-16T01:27:52.008Z
-Stopped at: Phase 18 context gathered
-Resume file: .planning/phases/18-character-level-changes/18-CONTEXT.md
+Last session: 2026-03-16T01:46:15.871Z
+Stopped at: Completed 18-01-PLAN.md
+Resume file: None
 
 ---
 *Last updated: 2026-03-15 — Phase 15 complete, transitioning to Phase 16*

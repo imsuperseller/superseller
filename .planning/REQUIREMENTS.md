@@ -28,9 +28,9 @@ Requirements for Character Iteration milestone. Each maps to roadmap phases.
 ### Character Changes
 
 - [x] **CHAR-01**: System updates CharacterBible with requested changes and creates versioned record (old version preserved)
-- [ ] **CHAR-02**: Character-level change triggers multi-scene regeneration for affected scenes
-- [ ] **CHAR-03**: Admin receives review notification with diff preview and cost estimate before character-level regen executes
-- [ ] **CHAR-04**: Admin can approve, modify scope (select which scenes), or deny
+- [x] **CHAR-02**: Character-level change triggers multi-scene regeneration for affected scenes
+- [x] **CHAR-03**: Admin receives review notification with diff preview and cost estimate before character-level regen executes
+- [x] **CHAR-04**: Admin can approve, modify scope (select which scenes), or deny
 
 ### Video Assembly
 
@@ -76,9 +76,9 @@ Requirements for Character Iteration milestone. Each maps to roadmap phases.
 | REGEN-02 | Phase 17 | Complete |
 | REGEN-03 | Phase 17 | Complete |
 | ASSEM-01 | Phase 17 | Complete |
-| CHAR-02 | Phase 18 | Pending |
-| CHAR-03 | Phase 18 | Pending |
-| CHAR-04 | Phase 18 | Pending |
+| CHAR-02 | Phase 18 | Complete |
+| CHAR-03 | Phase 18 | Complete |
+| CHAR-04 | Phase 18 | Complete |
 | ASSEM-02 | Phase 18 | Pending |
 | ADMIN-01 | Phase 19 | Pending |
 | ADMIN-02 | Phase 19 | Pending |
