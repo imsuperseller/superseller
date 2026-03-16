@@ -58,7 +58,7 @@ Key v1.3 decisions:
 
 ### Pending Todos
 
-- Run backfill script on production: `npx tsx apps/worker/src/scripts/backfill-expense-providers.ts`
+- ✓ ~~Run backfill script on production~~ — ran 2026-03-16, 0 rows needed fixing (all correct)
 
 ### Open Tech Debt (carried forward)
 
