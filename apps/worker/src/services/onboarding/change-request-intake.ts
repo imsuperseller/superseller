@@ -38,6 +38,7 @@ export interface ChangeRequestRow {
     estimated_cost_cents: number | null;
     poll_message_id: string | null;
     character_bible_version_id: string | null;
+    admin_approval_poll_id: string | null;
     created_at: Date;
     updated_at: Date;
 }
@@ -82,6 +83,15 @@ export async function initChangeRequestTable(): Promise<void> {
         DO $$ BEGIN
             IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='CharacterBible' AND column_name='changeDelta') THEN
                 ALTER TABLE "CharacterBible" ADD COLUMN "changeDelta" JSONB;
+            END IF;
+        END $$
+    `);
+
+    // Add admin_approval_poll_id column if not exists (Phase 18 migration)
+    await query(`
+        DO $$ BEGIN
+            IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='change_requests' AND column_name='admin_approval_poll_id') THEN
+                ALTER TABLE change_requests ADD COLUMN admin_approval_poll_id TEXT;
             END IF;
         END $$
     `);
@@ -132,6 +142,7 @@ export interface UpdateChangeRequestExtraFields {
     estimatedCostCents?: number;
     pollMessageId?: string;
     characterBibleVersionId?: string;
+    adminApprovalPollId?: string;
 }
 
 /**
@@ -159,6 +170,10 @@ export async function updateChangeRequestStatus(
         setClauses.push(`character_bible_version_id = $${paramIdx++}`);
         values.push(extraFields.characterBibleVersionId);
     }
+    if (extraFields?.adminApprovalPollId !== undefined) {
+        setClauses.push(`admin_approval_poll_id = $${paramIdx++}`);
+        values.push(extraFields.adminApprovalPollId);
+    }
 
     await query(
         `UPDATE change_requests SET ${setClauses.join(", ")} WHERE id = $1`,
@@ -175,7 +190,7 @@ export async function getPendingChangeRequest(groupId: string): Promise<ChangeRe
     return queryOne<ChangeRequestRow>(
         `SELECT id, group_id, tenant_id, message_body, intent, scope, scene_number,
                 change_summary, status, estimated_cost_cents, poll_message_id,
-                character_bible_version_id, created_at, updated_at
+                character_bible_version_id, admin_approval_poll_id, created_at, updated_at
          FROM change_requests
          WHERE group_id = $1 AND status = 'awaiting-confirmation'
          ORDER BY created_at DESC
@@ -185,20 +200,40 @@ export async function getPendingChangeRequest(groupId: string): Promise<ChangeRe
 }
 
 /**
- * Get the most recent in-progress change request for a group.
- * Used as a concurrency guard — prevents dispatching a new regen job while one is running.
- * Returns null if no in-progress request exists.
+ * Get the most recent in-progress or pending-admin-approval change request for a group.
+ * Used as a concurrency guard — prevents dispatching a new regen job while one is running
+ * or while admin review is pending (Pitfall 3: new requests must block during admin review).
+ * Returns null if no blocking request exists.
  */
 export async function getInProgressChangeRequest(groupId: string): Promise<ChangeRequestRow | null> {
     return queryOne<ChangeRequestRow>(
         `SELECT id, group_id, tenant_id, message_body, intent, scope, scene_number,
                 change_summary, status, estimated_cost_cents, poll_message_id,
-                character_bible_version_id, created_at, updated_at
+                character_bible_version_id, admin_approval_poll_id, created_at, updated_at
          FROM change_requests
-         WHERE group_id = $1 AND status = 'in-progress'
+         WHERE group_id = $1 AND status IN ('in-progress', 'pending-admin-approval')
          ORDER BY created_at DESC
          LIMIT 1`,
         [groupId],
+    );
+}
+
+/**
+ * Get the most recent change request with status 'pending-admin-approval' globally.
+ * Used by handleAdminCharacterApprovalPollVote to find the request awaiting admin decision.
+ * Queries globally (not per groupId) because there's one admin and the concurrency guard
+ * ensures at most one pending-admin-approval at a time.
+ * Returns null if no such request exists.
+ */
+export async function getPendingAdminApprovalRequest(): Promise<ChangeRequestRow | null> {
+    return queryOne<ChangeRequestRow>(
+        `SELECT id, group_id, tenant_id, message_body, intent, scope, scene_number,
+                change_summary, status, estimated_cost_cents, poll_message_id,
+                character_bible_version_id, admin_approval_poll_id, created_at, updated_at
+         FROM change_requests
+         WHERE status = 'pending-admin-approval'
+         ORDER BY created_at DESC
+         LIMIT 1`,
     );
 }
 

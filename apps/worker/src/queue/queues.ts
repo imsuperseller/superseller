@@ -162,8 +162,9 @@ export const characterRegenQueue = new Queue("character-regen", {
 
 export interface CharacterRegenJobData {
     changeRequestId: string;
-    sceneIndex: number;        // 0-based (converted from 1-based scene_number at dispatch)
+    sceneIndex: number;           // 0-based (converted from 1-based scene_number at dispatch); used when affectedSceneIndices absent (Phase 17 path)
     tenantId: string;
     groupId: string;
     characterBibleId?: string;
+    affectedSceneIndices?: number[];  // Phase 18: multi-scene regen indices (0-based). When present, worker iterates all scenes.
 }
