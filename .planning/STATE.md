@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Character Iteration
 status: planning
-stopped_at: Completed 18-01-PLAN.md
-last_updated: "2026-03-16T01:46:15.873Z"
+stopped_at: Completed 18-02-PLAN.md
+last_updated: "2026-03-16T01:52:29.324Z"
 last_activity: 2026-03-15 — Phase 15 executed (2/2 plans), verified, complete
 progress:
   total_phases: 5
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 8
-  completed_plans: 7
+  completed_plans: 8
 ---
 
 # State: Universal Customer Onboarding System
@@ -63,6 +63,8 @@ Key v1.3 decisions:
 - [Phase 17]: tmpDir cleanup in finally block ensures cleanup on all paths including unhandled errors
 - [Phase 18-01]: VISUAL_FIELDS = Set(['visualStyle','soraHandle']); unknown fields default to visual (safe); NON_VISUAL_FIELDS bypasses regen
 - [Phase 18-01]: getInProgressChangeRequest blocks on pending-admin-approval to prevent concurrent change requests during admin review
+- [Phase 18-02]: Admin DM routing placed in DM section of claudeclaw (not group block) since admin responses come as 1:1 DMs with @c.us suffix
+- [Phase 18-02]: affectedIndices derived from affectedSceneIndices ?? [sceneIndex] for clean backwards compat with Phase 17 single-scene path
 
 ### Pending Todos
 
@@ -76,8 +78,8 @@ Key v1.3 decisions:
 
 ## Session Continuity
 
-Last session: 2026-03-16T01:46:15.871Z
-Stopped at: Completed 18-01-PLAN.md
+Last session: 2026-03-16T01:52:29.322Z
+Stopped at: Completed 18-02-PLAN.md
 Resume file: None
 
 ---

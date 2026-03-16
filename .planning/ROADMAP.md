@@ -50,7 +50,7 @@
 - [x] **Phase 15: Tech Debt Fixes** — Wire admin failure alerts and fix cost tracking provider attribution (completed 2026-03-15)
 - [x] **Phase 16: Change Request Intake** — Natural-language intent classification, CharacterBible versioning, credit confirmation gate (completed 2026-03-15)
 - [x] **Phase 17: Scene-Level Regeneration** — Single-scene regen loop with mixed-scene assembly and WhatsApp delivery (completed 2026-03-15)
-- [ ] **Phase 18: Character-Level Changes** — CharacterBible delta + multi-scene regen with admin approval gate
+- [x] **Phase 18: Character-Level Changes** — CharacterBible delta + multi-scene regen with admin approval gate (completed 2026-03-16)
 - [ ] **Phase 19: Admin Tooling** — Version history, rollback, change request audit log in admin portal
 
 ## Phase Details
@@ -106,7 +106,7 @@ Plans:
   2. Admin can approve the full scope, narrow the scope to specific scenes, or deny the request — all via WhatsApp
   3. After admin approval, only the affected scenes are regenerated and the updated reveal video is delivered to the customer with approve/change options
   4. A name-only change (no visual scenes affected) costs $0 AI generation — the existing video is re-delivered with an updated caption
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 Plans:
 - [ ] 18-01-PLAN.md — DB schema extension + queue interface + character-level-changes service module
 - [ ] 18-02-PLAN.md — Admin gate wiring + admin poll routing + multi-scene regen loop + post-delivery poll
@@ -142,7 +142,7 @@ Plans:
 | 15. Tech Debt Fixes | v1.3 | 2/2 | Complete | 2026-03-15 |
 | 16. Change Request Intake | v1.3 | 2/2 | Complete | 2026-03-15 |
 | 17. Scene-Level Regeneration | v1.3 | 2/2 | Complete | 2026-03-15 |
-| 18. Character-Level Changes | 1/2 | In Progress|  | - |
+| 18. Character-Level Changes | 2/2 | Complete   | 2026-03-16 | - |
 | 19. Admin Tooling | v1.3 | 0/TBD | Not started | - |
 
 ---
