@@ -1914,6 +1914,7 @@ model CharacterBible {
   version            Int       @default(1)
   active             Boolean   @default(true)
   metadata           Json?                            // Flexible: { voiceId, modelPreference, etc. }
+  changeDelta        Json?                            // Diff from previous version: { rollback?, fields?, changeRequestId? }
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @default(now()) @updatedAt
 
