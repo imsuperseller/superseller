@@ -35,13 +35,13 @@ Requirements for Character Iteration milestone. Each maps to roadmap phases.
 ### Video Assembly
 
 - [x] **ASSEM-01**: CharacterReveal Remotion composition accepts per-scene URL props (mixed old + new scenes)
-- [ ] **ASSEM-02**: Re-rendered video delivered to WhatsApp with approve/change options
+- [x] **ASSEM-02**: Re-rendered video delivered to WhatsApp with approve/change options
 
 ### Admin & Audit
 
-- [ ] **ADMIN-01**: Every change request logged with intent classification, scope, scenes triggered, and cost
-- [ ] **ADMIN-02**: CharacterBible version history viewable in admin portal
-- [ ] **ADMIN-03**: Admin can rollback CharacterBible to previous version
+- [x] **ADMIN-01**: Every change request logged with intent classification, scope, scenes triggered, and cost
+- [x] **ADMIN-02**: CharacterBible version history viewable in admin portal
+- [x] **ADMIN-03**: Admin can rollback CharacterBible to previous version
 
 ## Future Requirements
 
@@ -79,10 +79,10 @@ Requirements for Character Iteration milestone. Each maps to roadmap phases.
 | CHAR-02 | Phase 18 | Complete |
 | CHAR-03 | Phase 18 | Complete |
 | CHAR-04 | Phase 18 | Complete |
-| ASSEM-02 | Phase 18 | Pending |
-| ADMIN-01 | Phase 19 | Pending |
-| ADMIN-02 | Phase 19 | Pending |
-| ADMIN-03 | Phase 19 | Pending |
+| ASSEM-02 | Phase 18 | Complete |
+| ADMIN-01 | Phase 19 | Complete |
+| ADMIN-02 | Phase 19 | Complete |
+| ADMIN-03 | Phase 19 | Complete |
 
 **Coverage:**
 - v1.3 requirements: 18 total
