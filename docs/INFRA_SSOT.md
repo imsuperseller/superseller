@@ -126,6 +126,7 @@ npm audit --audit-level=high
 | PayPal | api | OAuth token acquisition `api-m.paypal.com/v1/oauth2/token` | 2 failures / 15min cooldown |
 | Prisma Migrations | database | Migration status check | 1 failure / 60min cooldown |
 | n8n | backup | HTTP `172.245.56.50:5678/healthz` | 5 failures / 120min cooldown |
+| Stripe | api | Manual (dashboard) — not yet automated | N/A — monitor when more customers use it |
 
 ### Expense Tracking (MANDATORY — all sessions)
 **Rule**: Every API generation logs cost. Pipeline via `trackExpense()`. Manual sessions via cost table in `progress.md`.
@@ -178,14 +179,14 @@ npm audit --audit-level=high
 
 ---
 
-## 6. Historical Contradictions (Archived)
+## 7. Historical Contradictions (Archived)
 *   Webflow integration (Retired Feb 2026)
 *   BMAD Testing framework (Retired Feb 2026)
 *   Care Plan model (Moving to Self-Serving SaaS model)
 
 ---
 
-## 7. Active Systems Reference
+## 8. Active Systems Reference
 
 ### n8n
 - **URL**: https://n8n.superseller.agency (172.245.56.50:5678)
@@ -221,7 +222,7 @@ QuickBooks MCP: CANCELLED (Mar 8, 2026 — subscription cancelled, saves $600/yr
 ### Quick Reference URLs
 | Service | URL |
 |---------|-----|
-| n8n SuperSeller AI | http://n8n.superseller.agency |
+| n8n SuperSeller AI | https://n8n.superseller.agency |
 | Admin | https://admin.superseller.agency |
 | Vercel | https://vercel.com/dashboard |
 

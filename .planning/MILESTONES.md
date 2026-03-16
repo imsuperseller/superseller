@@ -2,10 +2,20 @@
 
 ## v1.3 Character Iteration (Shipped: 2026-03-16)
 
-**Phases completed:** 5 phases, 10 plans, 6 tasks
+**Phases completed:** 5 phases, 10 plans
+**Timeline:** 2 days (2026-03-15 → 2026-03-16)
+
+**Delivered:** Iterative character refinement through WhatsApp — customers send natural-language change requests, system classifies intent, estimates cost, regenerates affected scenes, and delivers updated reveal video with admin oversight for character-level changes.
 
 **Key accomplishments:**
-- (none recorded)
+1. Natural-language change request intake with Claude-powered intent classification (scene-change vs character-change vs feedback)
+2. Single-scene regeneration: only the target scene re-generated, mixed with original scenes in Remotion CharacterReveal assembly
+3. Character-level changes: visual field detection, admin approval gate via WhatsApp poll (approve all/deny/narrow scope), multi-scene sequential regen
+4. Name-only changes auto-complete at $0 — no admin gate, existing video re-delivered with updated caption
+5. Admin portal CharacterHistoryTab: version timeline with changeDelta diffs, one-click rollback (append-only INSERT), change request audit log with cost tracking
+
+**Tech debt:**
+- fal.ai @handle cross-session consistency unverified — document adjacency regen policy before production
 
 ---
 
@@ -69,8 +79,8 @@
 5. Sora 2 scene generation + Remotion CharacterReveal composition + WhatsApp delivery
 6. BullMQ pipeline orchestration with admin commands (APPROVE/RETRY/SKIP/PAUSE), cost tracking, stale detection
 
-**Tech debt (4 items, 0 blockers):**
-- Render failure silent fail (no WhatsApp fallback notification)
+**Tech debt (3 items, 0 blockers):**
+- Render failure silent fail — RESOLVED in Phase 15 (sendAdminAlert + customer apology message)
 - AgentForge integration is placeholder (competitorResearchPending flag, no consumer)
 - Pre-existing TS errors in social-setup.ts and routes.ts (runtime unaffected)
 

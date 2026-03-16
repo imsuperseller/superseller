@@ -43,7 +43,7 @@ When sources conflict, higher tier wins. If same tier conflicts, brain.md decide
 - **n8n** (RackNerd): Backup for new automation. Existing production workflows (Telnyx voice lead analysis for UAD + MissParty) still run on n8n.
 - **Kie.ai**: Creative AI (Kling 3.0, Suno, Nano Banana) — credit-based APIs. Veo and FAL are deprecated.
 - **Remotion 4.0**: Programmatic video composition (Ken Burns, transitions, branding, multi-format) — zero API cost. See `docs/REMOTION_BIBLE.md`.
-- **PayPal**: Payments, subscriptions, credit ledger (migrated from Stripe Feb 2026).
+- **PayPal (general) + Stripe (per-customer)**: Payments, subscriptions, credit ledger.
 - **PostgreSQL + Redis**: App backends and marketplace products.
 - **Aitable.ai**: Internal dashboards and syncs only (not production app DB).
 

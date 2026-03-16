@@ -48,16 +48,22 @@ Every customer gets an AI agent in a WhatsApp group from Day 1. Zero friction. T
 - ✓ Voice note transcription via Whisper with Hebrew support — v1.2
 - ✓ Multi-language auto-detection and response (Hebrew/English) — v1.2
 
+- ✓ Client-requested character changes via WhatsApp (scene-level + character-level) — v1.3
+- ✓ Scene regeneration with modified character parameters (single + multi-scene) — v1.3
+- ✓ Iterative refinement loop (request → classify → confirm → regen → approve/change) — v1.3
+- ✓ Admin approval gate for character-level changes (approve/deny/narrow scope) — v1.3
+- ✓ CharacterBible version timeline + rollback + cost audit in admin portal — v1.3
+
 ### Active
 
-- [ ] Client-requested character changes via WhatsApp conversation
-- [ ] Scene regeneration with modified character parameters
-- [ ] Iterative refinement loop (request → regenerate → approve/reject)
+(None — v1.4 not yet defined. Run `/gsd:new-milestone` to plan next.)
 
-### Backlog (v1.3+)
+### Backlog
 
 - [ ] Module: Voice AI setup (FrontDesk Telnyx configuration)
-- [ ] Client-requested character changes + scene regeneration
+- [ ] Pre-sale data architecture: prospect research in DB, template-driven landing pages
+- [ ] Video prompt reference images / mood boards for Sora 2
+- [ ] R2 CORS fix for video serving (currently must use same-origin)
 
 ### Out of Scope
 
@@ -68,10 +74,10 @@ Every customer gets an AI agent in a WhatsApp group from Day 1. Zero friction. T
 
 ## Context
 
-Shipped v1.2 with +4,174 LOC TypeScript (cumulative ~24,826 LOC) across 37 files in 1 day.
-Tech stack: Node.js worker + BullMQ + WAHA + ClaudeClaw + Kie.ai + fal.ai + Remotion + R2 + PostgreSQL + OpenAI Whisper.
-Cumulative: 14 phases, 30 plans, 77 requirements — all satisfied.
-v1.0 tech debt (4 items) still open. v1.1 tech debt: FAL_WEBHOOK_VERIFY default=false. v1.2 adds: 3 integration items (checkout nav gap, PayPal key mismatch, Stripe duplicate SI).
+Shipped v1.3 (2026-03-16). Cumulative: 19 phases, 40 plans across 4 milestones.
+Tech stack: Node.js worker + BullMQ + WAHA + ClaudeClaw + Sora 2 (fal.ai/Kie.ai) + Remotion + R2 + PostgreSQL + Prisma/Drizzle + OpenAI Whisper.
+Open tech debt: v1.0 (2 items — AgentForge placeholder, TS errors), v1.1 (2 items — FAL_WEBHOOK_VERIFY, fal.ai billing), v1.2 (3 items — INT-01/02/03 integration bugs), v1.3 (1 item — fal.ai handle consistency).
+Known gap: pre-sale data architecture (customer research in files, not DB; landing pages hardcoded, not template-driven).
 
 **Admin project ID:** `cmmpgo3k60000h5zuaxfqac80`
 
@@ -111,4 +117,4 @@ v1.0 tech debt (4 items) still open. v1.1 tech debt: FAL_WEBHOOK_VERIFY default=
 | generateScene returns { resultUrl, provider } | Provider attribution collocated with result, not in a closure | ✓ Good — accurate cost tracking |
 
 ---
-*Last updated: 2026-03-15 after Phase 15*
+*Last updated: 2026-03-16 after v1.3 milestone completion*

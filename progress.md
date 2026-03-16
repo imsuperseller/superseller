@@ -6,6 +6,30 @@
 
 ---
 
+## 2026-03-15 — GP Homes Meeting Prep + Phase 17 Context/Research
+
+### GP Homes (cmmozkiht0000jei9ozlm4nyt)
+- **Report page sent** to Nir & Ron ahead of in-person meeting
+- **Personal video added**: @shai-lfc 10s construction site video, uploaded to R2 + public/media, wired into /lp/gp-homes-repairs
+- **Video issues fixed**: R2 CORS blocked browser playback → moved to Vercel public/. Original H.264 High profile → re-encoded Constrained Baseline for compatibility. Faststart muxed for streaming.
+- **Page updates**: All references now "Nir & Ron" (was just "Nir"). Hero, video section, prompt.
+- **DB audit**: Tenant + Brand + 11 TenantServices exist. MISSING: ServiceInstance, TenantUser, WhatsApp group, onboarding pipeline. Research stuck in markdown files.
+- **Systemic issue identified**: Pre-sale research layer not in DB. Customer research (KNOWLEDGE.md, GOOGLE_MAPS_RESEARCH.md, SOCIAL_MEDIA_COMPETITIVE_INTEL.md) lives in files, can't be queried/synced/fetched. Video prompts not stored anywhere structured. Landing page hardcoded React, not template-driven.
+
+### Phase 17: Scene-Level Regeneration (GSD)
+- **17-CONTEXT.md**: Auto-generated (all defaults). Decisions: per-scene status in collectedData JSONB, character-regen BullMQ queue, reuse generateScene(), mixed-scene assembly via cloned sceneUrls array, two-message WhatsApp flow, concurrency guard.
+- **17-RESEARCH.md**: Completed by researcher agent. Key finding: Phase 16 "Change request confirmed" sendText must be removed from scene-change branch to avoid 3-message violation of REGEN-03. scene_number is 1-based, sceneIndex 0-based. generateScene() needs export.
+- **Planning paused** to handle GP Homes meeting prep.
+
+| Operation | Count | Unit Cost | Total |
+|-----------|-------|-----------|-------|
+| R2 upload (video) | 2 | $0.00 | $0.00 |
+| ffmpeg re-encode | 2 | $0.00 | $0.00 |
+| Vercel deploys | 4 | $0.00 | $0.00 |
+| **Session total** | | | **$0.00** |
+
+---
+
 ## 2026-03-11: Schema Drift Fix + Critical Test Suite (234 tests)
 
 **Goal**: Fix Prisma↔Drizzle schema drift (audit finding) + add critical test coverage.

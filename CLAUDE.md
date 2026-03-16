@@ -27,7 +27,7 @@
 > - Both use the same `DATABASE_URL`. Shared tables like `User` must be manually synced.
 
 > [!WARNING]
-> **Deprecated (DO NOT USE)**: Firebase/Firestore (fully removed Mar 2026 — FB Bot migrated to Postgres), Airtable.com, Stripe, Webflow, BMAD, QuickBooks. **n8n** = backup only (Antigravity is primary). DB `stripe*` columns store PayPal IDs.
+> **Deprecated (DO NOT USE)**: Firebase/Firestore (fully removed Mar 2026 — FB Bot migrated to Postgres), Airtable.com, Webflow, BMAD, QuickBooks. **n8n** = backup only (Antigravity is primary). **Payments**: PayPal (general SaaS tiers) + Stripe (per-customer, e.g. Elite Pro). DB `stripe*` columns store PayPal IDs for PayPal customers.
 
 > [!CAUTION]
 > **Content Extraction Rule (NEVER invent content)**:

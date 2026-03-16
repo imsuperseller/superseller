@@ -5,7 +5,7 @@
 > Query via API: `GET /api/admin/projects`. Update via: `PATCH /api/admin/projects { id, status, description }`.
 > This file is a **static customer reference** (contacts, revenue models) — NOT a status tracker.
 
-**Last Updated**: March 11, 2026
+**Last Updated**: March 13, 2026
 
 ---
 
@@ -15,7 +15,7 @@
 |----------|---------|-----------|--------------|--------|
 | **Miss Party** | Michal Kacher Szender | FB Marketplace bot — inflatable bouncy castle rentals | FREE (proving value, no fee to us) | ✅ POSTING |
 | **UAD** | David Szender | FB Marketplace bot — garage doors DFW | Revenue SPLIT on leads that convert | ✅ POSTING |
-| **Elite Pro Remodeling** | Saar Bitton (owner), Mor Dayan (PM) | Daily IG content: 1 reel + 1 story + 1 carousel/day | $2,000/mo SIGNED — NOT started yet | 🔴 BLOCKED |
+| **Elite Pro Remodeling** | Saar Bitton (owner), Mor Dayan (PM) | Daily IG content: 1 reel + 1 story + 1 carousel/day | $2,000/mo + $132 TX tax via Stripe | 🔴 BLOCKED (credentials + payment) |
 | **Yoram** | Shai's father | Landing page / lead gen (family referral) | Lihi pays once Yoram recommends | ⚠️ LOW PRI |
 | **Yossi (Mivnim)** | Yossi | AI avatar videos (Winner Studio) | TBD — one Trump video delivered | ⏸ PAUSED (war in Israel, no parties) |
 | **Shai Personal Brand** | @shaifriedman | Instagram/FB automation — Iran viral persona | Internal — no billing | ✅ PORTAL + COMPETE |
@@ -71,6 +71,12 @@ pm2 logs webhook-server --lines 100
 **Meeting cadence**: Fridays with Saar
 **Voice clones**: Saar `jlOXsp2JeEQ29fkljTTO`, Mor `1prnFNmpCkb2bx39pQSi` (ElevenLabs)
 
+**Revenue**: $2,000/mo + $132/mo TX sales tax via Stripe subscription
+**Contract**: SENT (ID: 3c2ce265-4d1a-41db-a8ef-179f44b78eb8, expires Mar 27)
+**Stripe**: SENT (checkout URL live, TX §151.351 20% exemption applied)
+**Post-payment flow**: WIRED (9/9 automations)
+**ClaudeClaw group agent**: LIVE in WhatsApp group (`120363408376076110@g.us`, tenant `elite-pro-remodeling`)
+
 **What they want**: Daily Instagram content
 - 1 Reel (1-3 min) + 1 Story + 1 Carousel per day starting Day 7
 - Before/after reveals, project walkthroughs, testimonials
@@ -80,10 +86,9 @@ pm2 logs webhook-server --lines 100
 **Demo delivered**: V12 video — `elite-pro-demo/elite-pro-v12-final.mp4` on R2 (25.7s, 1080x1920) ✅
 
 **BLOCKERS**:
-1. IG Meta App ID/Secret from Saar (NOT a paying customer yet — can't request until they pay)
-2. Saar + Mor WhatsApp numbers (use Shai's personal session 14695885133 for now)
-3. Competitor research (Apify script ready, need to run)
-4. Brand asset collection (photos, videos, logo, brand guidelines)
+1. FB Page Content access — waiting on Eliran to add shai@superseller.agency
+2. Contract signature from Saar (expires Mar 27)
+3. Stripe payment from Saar
 
 **Build plan once unblocked**:
 - Phase 1 (Days 1-7): WhatsApp group setup, competitor research, asset collection
@@ -218,7 +223,7 @@ Next: Set up Apify lead/competitor scraping for Israeli insurance market. Discus
 
 **Cross-business**: Rensto contractors = SuperSeller AI prospects. Use contractor DB for outreach. Zero technical dependency.
 
-**Code**: `~/rensto - online directory/` | GitHub: `imsuperseller/rensto-app` | Server: systemd `rensto`, port 3001
+**Code**: `~/rensto - online directory/` | GitHub: `renstollc/rensto-app` | Server: systemd `rensto`, port 3001
 
 ---
 

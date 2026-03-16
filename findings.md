@@ -1,5 +1,43 @@
 ---
 
+## 2026-03-15: Pre-Sale Data Architecture Gap
+
+**Symptom**: GP Homes meeting prep revealed customer research lives in markdown files, not DB. Every new conversation re-reads files from scratch. Landing pages are hardcoded React components, not template-driven. Video prompts aren't stored anywhere structured.
+
+**Root cause**: The GSD onboarding pipeline (phases 1-16) built solid DB-backed infrastructure for POST-sale (WhatsApp group, AI agent, pipeline, CharacterBible, cost tracking). But the PRE-sale layer (research, competitor intel, landing pages, pricing, prompts) was built ad-hoc as files and hardcoded components.
+
+**What's missing (tables that should exist)**:
+1. `prospect_research` — structured customer research (digital score, reviews, competitors, market data)
+2. `prompts` / `content_assets` — video/image generation prompts, mood board refs, style references
+3. Template-driven landing pages — DB-powered, not per-customer React components
+4. `TenantUser` links for prospects (Nir/Ron not in DB)
+5. Competitor data for GP Homes — `competitor_ads` table exists but has 0 rows for them
+
+**What works well (keep)**:
+- Elite Pro has proper structured data (105 competitor_ads, 44 ig_content_rules, 10 hashtag_sets)
+- Onboarding pipeline tables are solid (module state, pipeline runs, expenses)
+- Brand + TenantService properly seeded for GP Homes
+
+**Prevention**: New customer setup should provision ALL tables, not just Tenant + Brand. Research should go into DB immediately, not markdown files. Landing pages should be template-driven from LandingPage table (table doesn't even exist yet).
+
+**Also discovered**: Sora 2 video prompts don't use reference images/mood boards — just text. Missing image references for setting, style, emotion dramatically reduces output quality.
+
+---
+
+## 2026-03-15: R2 Public URL CORS + Video Encoding
+
+**Symptom**: Video embedded in GP Homes page wouldn't play in Chrome. Spinner forever.
+
+**Root causes (two)**:
+1. R2 `pub-*.r2.dev` URLs don't send `Access-Control-Allow-Origin` headers for browser `<video>` elements (curl shows CORS headers because it sends explicit Origin header — misleading)
+2. Original Sora 2 output used H.264 High profile which some browsers struggle with for streaming
+
+**Fix**: Moved video to Vercel `public/media/` (same-origin, no CORS needed). Re-encoded to H.264 Constrained Baseline + AAC + faststart.
+
+**Prevention**: All customer-facing videos should be served from same-origin (`public/media/` or a CDN with proper CORS), not raw R2 public URLs. Always re-encode AI-generated video with `-profile:v baseline -movflags +faststart` before serving on web.
+
+---
+
 ## 2026-03-11: Entitlement Phantom `id` Column — Ticking Time Bomb
 
 **Symptom**: No crash yet — only 2 entitlement rows existed (both created by worker raw SQL).
