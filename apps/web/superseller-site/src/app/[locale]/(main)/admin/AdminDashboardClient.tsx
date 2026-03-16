@@ -38,7 +38,8 @@ import {
     GitBranch,
     Swords,
     Clapperboard,
-    FileText
+    FileText,
+    History
 } from 'lucide-react';
 import WorkflowManagement from '@/components/admin/WorkflowManagement';
 import AIAgentManagement from '@/components/admin/AIAgentManagement';
@@ -61,6 +62,7 @@ import MissionControl from '@/components/admin/MissionControl';
 import SuperSellerOps from '@/components/admin/SuperSellerOps';
 import CompetitorAdsTab from '@/components/admin/CompetitorAdsTab';
 import ContentActorsTab from '@/components/admin/ContentActorsTab';
+import CharacterHistoryTab from '@/components/admin/CharacterHistoryTab';
 import InvoiceGenerator from '@/components/admin/InvoiceGenerator';
 import SitesManagement from '@/components/admin/SitesManagement';
 import { Skeleton } from '@/components/ui/skeleton-enhanced';
@@ -381,6 +383,7 @@ export default function AdminDashboardClient({
                                 { id: 'launch', label: 'Launch Control', icon: Rocket },
                                 { id: 'comp-ads', label: 'Comp Ads', icon: Swords },
                                 { id: 'actors', label: 'Content Actors', icon: Clapperboard },
+                                { id: 'character-history', label: 'Char History', icon: History },
                                 { id: 'invoices', label: 'Invoices', icon: FileText },
                                 { id: 'settings', label: 'Settings', icon: Settings },
                             ].map(item => (
@@ -707,6 +710,11 @@ export default function AdminDashboardClient({
                                     <p className="text-slate-400 font-medium">Manage actors for AI video content — voice IDs, Sora cameos, and roles.</p>
                                 </div>
                                 <ContentActorsTab />
+                            </div>
+                        )}
+                        {activeTab === 'character-history' && (
+                            <div className="space-y-8">
+                                <CharacterHistoryTab />
                             </div>
                         )}
                         {activeTab === 'sites' && (
