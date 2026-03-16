@@ -9,7 +9,7 @@ import { generateScene, buildScenePrompts } from "../../services/onboarding/modu
 import { getModuleState, upsertModuleState } from "../../services/onboarding/module-state";
 import { updateChangeRequestStatus } from "../../services/onboarding/change-request-intake";
 import { getLatestCharacterBible } from "../../services/onboarding/character-bible-versioning";
-import { sendText, sendVideo } from "../../services/waha-client";
+import { sendText, sendVideo, sendPoll } from "../../services/waha-client";
 import { trackExpense, normalizeProvider, COST_RATES } from "../../services/expense-tracker";
 import { createPipelineRun, updatePipelineRun } from "../../services/pipeline-run";
 import { sendAdminAlert } from "../../services/admin-alerts";
@@ -21,10 +21,16 @@ export let characterRegenWorker: Worker<CharacterRegenJobData>;
 async function processCharacterRegen(job: Job<CharacterRegenJobData>): Promise<void> {
     const { changeRequestId, sceneIndex, tenantId, groupId } = job.data;
 
+    // Derive the list of scene indices to process (multi-scene Phase 18 vs single-scene Phase 17)
+    const affectedIndices: number[] = job.data.affectedSceneIndices ?? [sceneIndex];
+    const isMultiScene = affectedIndices.length > 1;
+
     logger.info({
         msg: "character-regen: job started",
         changeRequestId,
         sceneIndex,
+        affectedIndices,
+        isMultiScene,
         tenantId,
         groupId,
         jobId: job.id,
@@ -34,18 +40,22 @@ async function processCharacterRegen(job: Job<CharacterRegenJobData>): Promise<v
     let pipelineRunId: string | null = null;
     let sceneStatuses: string[] = [];
     let tmpDir: string | null = null;
+    let totalCostCents = 0;
 
     try {
         // Step 1: Mark in-progress + send ack (REGEN-03 message 1 of 2)
         await updateChangeRequestStatus(changeRequestId, "in-progress");
-        await sendText(groupId, `Regenerating scene ${sceneIndex + 1}... You'll receive the updated video shortly.`);
+        const ackMsg = isMultiScene
+            ? `Regenerating ${affectedIndices.length} scenes with your character updates... You'll receive the updated video shortly.`
+            : `Regenerating scene ${sceneIndex + 1}... You'll receive the updated video shortly.`;
+        await sendText(groupId, ackMsg);
 
         // Step 2: Create PipelineRun
         pipelineRunId = await createPipelineRun({
             tenantId,
             pipelineType: "character-regen",
             status: "running",
-            inputJson: { groupId, changeRequestId, sceneIndex, characterBibleId: job.data.characterBibleId },
+            inputJson: { groupId, changeRequestId, sceneIndex, affectedIndices, characterBibleId: job.data.characterBibleId },
             modelUsed: "sora-2-pro-text-to-video",
         });
 
@@ -58,119 +68,132 @@ async function processCharacterRegen(job: Job<CharacterRegenJobData>): Promise<v
         sceneStatuses = state.collectedData.sceneStatuses
             ?? sceneUrls.map(() => "approved");  // Fallback for pre-Phase-17 tenants
 
-        // Step 4: Validate sceneIndex bounds
-        if (sceneIndex < 0 || sceneIndex >= sceneUrls.length) {
-            await updateChangeRequestStatus(changeRequestId, "failed");
-            await sendAdminAlert({
-                error: `character-regen: invalid sceneIndex ${sceneIndex} for ${sceneUrls.length} scenes`,
-                module: "character-regen",
-                groupId,
-            });
-            await sendText(groupId, "Sorry, we encountered an error processing your change request. Our team has been notified.");
-            await updatePipelineRun(pipelineRunId, { status: "failed", durationMs: Date.now() - startMs });
-            return;
+        // Step 4: Validate all scene indices are in bounds
+        for (const idx of affectedIndices) {
+            if (idx < 0 || idx >= sceneUrls.length) {
+                await updateChangeRequestStatus(changeRequestId, "failed");
+                await sendAdminAlert({
+                    error: `character-regen: invalid sceneIndex ${idx} for ${sceneUrls.length} scenes`,
+                    module: "character-regen",
+                    groupId,
+                });
+                await sendText(groupId, "Sorry, we encountered an error processing your change request. Our team has been notified.");
+                await updatePipelineRun(pipelineRunId, { status: "failed", durationMs: Date.now() - startMs });
+                return;
+            }
         }
 
-        // Step 5: Mark scene as pending in module state
-        sceneStatuses[sceneIndex] = "pending";
+        // Step 5: Mark all affected scenes as pending in module state
+        for (const idx of affectedIndices) {
+            sceneStatuses[idx] = "pending";
+        }
         await upsertModuleState(groupId, tenantId, "character-video-gen", "delivered", {
             ...state.collectedData,
             sceneStatuses,
         });
 
-        // Step 6: Load CharacterBible + build scene prompt
+        // Step 6: Load CharacterBible + build ALL scene prompts once
         const bible = await getLatestCharacterBible(tenantId);
         if (!bible) {
             throw new Error(`No CharacterBible found for tenant ${tenantId}`);
         }
         // buildScenePrompts expects the same fields that CharacterBibleRow from character-bible-versioning provides
         const scenePrompts = buildScenePrompts(bible as any);
-        const targetPrompt = scenePrompts[sceneIndex];
-        if (!targetPrompt) {
-            throw new Error(`No scene prompt at index ${sceneIndex}`);
-        }
 
-        // Step 7: Generate scene with retry (2 attempts, matching character-video-gen pattern)
-        let sceneOutput: { resultUrl: string; provider: string } | null = null;
-
-        for (let attempt = 0; attempt < 2; attempt++) {
-            try {
-                sceneOutput = await generateScene({
-                    tenantId,
-                    sceneIndex,
-                    prompt: targetPrompt.prompt,
-                    shotType: targetPrompt.shotType,
-                });
-                break;
-            } catch (err: any) {
-                logger.warn({
-                    msg: "character-regen: scene generation attempt failed",
-                    attempt: attempt + 1,
-                    sceneIndex,
-                    error: err.message,
-                });
-                if (attempt === 1) {
-                    // Terminal failure — revert scene status
-                    const durationMs = Date.now() - startMs;
-                    sceneStatuses[sceneIndex] = "approved";  // Revert to previous approved state
-                    await upsertModuleState(groupId, tenantId, "character-video-gen", "delivered", {
-                        ...state.collectedData,
-                        sceneStatuses,
-                    });
-                    await updateChangeRequestStatus(changeRequestId, "failed");
-                    await updatePipelineRun(pipelineRunId, { status: "failed", durationMs });
-                    await sendAdminAlert({
-                        error: `character-regen: scene generation failed after 2 attempts: ${err.message}`,
-                        module: "character-regen",
-                        groupId,
-                    });
-                    await sendText(groupId, "Sorry, we encountered an issue regenerating your scene. Our team has been notified and will follow up.");
-                    return;
-                }
-            }
-        }
-
-        // Step 8: Download generated video + upload to R2 (overwrite existing scene file)
+        // Create tmpDir before the loop — collects temp files for all scenes
         tmpDir = path.join(os.tmpdir(), `character-regen-${tenantId}-${Date.now()}`);
         fs.mkdirSync(tmpDir, { recursive: true });
-        const localPath = path.join(tmpDir, `scene-${sceneIndex}.mp4`);
 
-        // Download the generated video from the provider URL
-        const response = await fetch(sceneOutput!.resultUrl);
-        if (!response.ok) throw new Error(`Failed to download regen scene: ${response.status}`);
-        const buffer = Buffer.from(await response.arrayBuffer());
-        fs.writeFileSync(localPath, buffer);
+        // Step 7: Loop over all affected scene indices, generate + upload each
+        for (const idx of affectedIndices) {
+            const targetPrompt = scenePrompts[idx];
+            if (!targetPrompt) {
+                throw new Error(`No scene prompt at index ${idx}`);
+            }
 
-        const r2Key = `character-videos/${tenantId}/scene-${sceneIndex}.mp4`;
-        const newSceneUrl = await uploadToR2(localPath, r2Key, "video/mp4", {
-            tenantId,
-            type: "character-video-scene",
-            filename: `scene-${sceneIndex}.mp4`,
-            metadata: {
-                sceneIndex,
-                shotType: targetPrompt.shotType,
-                pipelineRunId,
-                isRegen: true,
-                changeRequestId,
-            },
-        });
+            // Generate scene with retry (2 attempts, matching character-video-gen pattern)
+            let sceneOutput: { resultUrl: string; provider: string } | null = null;
 
-        // Step 9: Track generation cost
-        const providerKey = normalizeProvider(sceneOutput!.provider);
-        const costDollars = COST_RATES[providerKey]?.sora_2_scene_1080p ?? COST_RATES.fal?.sora_2_scene_1080p ?? 1.00;
-        const costCents = Math.round(costDollars * 100);
-        await trackExpense({
-            service: providerKey,
-            operation: "character-regen-scene",
-            estimatedCost: costDollars,
-            metadata: { changeRequestId, sceneIndex, pipelineRunId, tenantId },
-        });
+            for (let attempt = 0; attempt < 2; attempt++) {
+                try {
+                    sceneOutput = await generateScene({
+                        tenantId,
+                        sceneIndex: idx,
+                        prompt: targetPrompt.prompt,
+                        shotType: targetPrompt.shotType,
+                    });
+                    break;
+                } catch (err: any) {
+                    logger.warn({
+                        msg: "character-regen: scene generation attempt failed",
+                        attempt: attempt + 1,
+                        sceneIndex: idx,
+                        error: err.message,
+                    });
+                    if (attempt === 1) {
+                        // Terminal failure — revert ALL affected scene statuses and fail the job
+                        const durationMs = Date.now() - startMs;
+                        for (const revertIdx of affectedIndices) {
+                            sceneStatuses[revertIdx] = "approved";  // Revert to previous approved state
+                        }
+                        await upsertModuleState(groupId, tenantId, "character-video-gen", "delivered", {
+                            ...state.collectedData,
+                            sceneStatuses,
+                        });
+                        await updateChangeRequestStatus(changeRequestId, "failed");
+                        if (pipelineRunId) {
+                            await updatePipelineRun(pipelineRunId, { status: "failed", durationMs });
+                        }
+                        await sendAdminAlert({
+                            error: `character-regen: scene ${idx} generation failed after 2 attempts: ${err.message}`,
+                            module: "character-regen",
+                            groupId,
+                        });
+                        await sendText(groupId, "Something went wrong regenerating your scenes. Our team will follow up.");
+                        throw err; // Fail the job — no partial regen recovery
+                    }
+                }
+            }
 
-        // Step 10: Update sceneUrls + sceneStatuses
-        sceneUrls[sceneIndex] = newSceneUrl;
-        sceneStatuses[sceneIndex] = "approved";
+            // Download the generated video from the provider URL
+            const localPath = path.join(tmpDir, `scene-${idx}.mp4`);
+            const dlResponse = await fetch(sceneOutput!.resultUrl);
+            if (!dlResponse.ok) throw new Error(`Failed to download regen scene ${idx}: ${dlResponse.status}`);
+            const buffer = Buffer.from(await dlResponse.arrayBuffer());
+            fs.writeFileSync(localPath, buffer);
 
-        // Step 11: Re-render Remotion CharacterReveal with mixed scenes
+            const r2Key = `character-videos/${tenantId}/scene-${idx}.mp4`;
+            const newSceneUrl = await uploadToR2(localPath, r2Key, "video/mp4", {
+                tenantId,
+                type: "character-video-scene",
+                filename: `scene-${idx}.mp4`,
+                metadata: {
+                    sceneIndex: idx,
+                    shotType: targetPrompt.shotType,
+                    pipelineRunId,
+                    isRegen: true,
+                    changeRequestId,
+                },
+            });
+
+            // Track generation cost per scene
+            const providerKey = normalizeProvider(sceneOutput!.provider);
+            const costDollarsScene = COST_RATES[providerKey]?.sora_2_scene_1080p ?? COST_RATES.fal?.sora_2_scene_1080p ?? 1.00;
+            const costCentsScene = Math.round(costDollarsScene * 100);
+            totalCostCents += costCentsScene;
+            await trackExpense({
+                service: providerKey,
+                operation: "character-regen-scene",
+                estimatedCost: costDollarsScene,
+                metadata: { changeRequestId, sceneIndex: idx, pipelineRunId, tenantId },
+            });
+
+            // Update sceneUrls + sceneStatuses for this index
+            sceneUrls[idx] = newSceneUrl;
+            sceneStatuses[idx] = "approved";
+        }
+
+        // Step 11: Re-render Remotion CharacterReveal with updated scenes
         // Use R2 URLs directly for all scenes (Remotion OffthreadVideo fetches from URLs during render)
         const brand = bible.metadata?.brand ?? {};
         const sceneLabels = bible.metadata?.scenario_names ?? sceneUrls.map((_, i) => `Scene ${i + 1}`);
@@ -211,8 +234,25 @@ async function processCharacterRegen(job: Job<CharacterRegenJobData>): Promise<v
         });
 
         // Step 12: Deliver video via WhatsApp (REGEN-03 message 2 of 2)
-        const caption = `Your updated character reveal video is ready! Scene ${sceneIndex + 1} has been regenerated.`;
+        const caption = isMultiScene
+            ? `Your updated character reveal video is ready! ${affectedIndices.length} scenes have been regenerated.`
+            : `Your updated character reveal video is ready! Scene ${sceneIndex + 1} has been regenerated.`;
         await sendVideo(groupId, newRevealUrl, caption);
+
+        // Post-delivery approve/change poll (ASSEM-02)
+        const approvalPollId = await sendPoll(
+            groupId,
+            "Happy with your updated character?",
+            ["Yes, I love it!", "Request more changes"],
+        );
+        if (approvalPollId) {
+            logger.info({
+                msg: "character-regen: post-delivery approval poll sent",
+                groupId,
+                changeRequestId,
+                pollId: approvalPollId,
+            });
+        }
 
         // Step 13: Update module state with new sceneUrls + revealUrl + sceneStatuses
         await upsertModuleState(groupId, tenantId, "character-video-gen", "delivered", {
@@ -227,8 +267,8 @@ async function processCharacterRegen(job: Job<CharacterRegenJobData>): Promise<v
         await updateChangeRequestStatus(changeRequestId, "completed");
         await updatePipelineRun(pipelineRunId, {
             status: "completed",
-            outputJson: { newSceneUrl, newRevealUrl, sceneIndex },
-            costCents,
+            outputJson: { newRevealUrl, affectedIndices, sceneIndex },
+            costCents: totalCostCents,
             durationMs,
         });
 
@@ -252,9 +292,12 @@ async function processCharacterRegen(job: Job<CharacterRegenJobData>): Promise<v
             stack: err.stack,
         });
 
-        // Revert sceneStatuses on unhandled error
-        if (sceneStatuses.length > sceneIndex && sceneStatuses[sceneIndex] === "pending") {
-            sceneStatuses[sceneIndex] = "approved";
+        // Revert sceneStatuses on unhandled error — revert ALL affected indices
+        const indicesToRevert = affectedIndices.filter((idx) => sceneStatuses[idx] === "pending");
+        if (indicesToRevert.length > 0) {
+            for (const idx of indicesToRevert) {
+                sceneStatuses[idx] = "approved";
+            }
             try {
                 const state = await getModuleState(groupId, "character-video-gen");
                 if (state?.collectedData) {
