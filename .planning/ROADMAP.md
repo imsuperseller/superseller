@@ -119,7 +119,10 @@ Plans:
   1. Admin portal shows a per-character timeline of CharacterBible versions with the diff and cost for each change
   2. Admin can roll back a character to any previous version with one click and a confirmation step
   3. Every change request in the audit log shows intent classification, scenes triggered, and cost in cents
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 19-01-PLAN.md — Prisma schema update + 3 admin API routes (character-versions, rollback, change-requests)
+- [ ] 19-02-PLAN.md — CharacterHistoryTab component + admin dashboard wiring + human verification
 
 ## Progress
 
@@ -142,9 +145,9 @@ Plans:
 | 15. Tech Debt Fixes | v1.3 | 2/2 | Complete | 2026-03-15 |
 | 16. Change Request Intake | v1.3 | 2/2 | Complete | 2026-03-15 |
 | 17. Scene-Level Regeneration | v1.3 | 2/2 | Complete | 2026-03-15 |
-| 18. Character-Level Changes | 2/2 | Complete    | 2026-03-16 | - |
-| 19. Admin Tooling | v1.3 | 0/TBD | Not started | - |
+| 18. Character-Level Changes | v1.3 | 2/2 | Complete | 2026-03-16 |
+| 19. Admin Tooling | v1.3 | 0/2 | Planning | - |
 
 ---
 *Created: 2026-03-13*
-*Updated: 2026-03-15 — Phase 18 plans created (2 plans, waves 1-2)*
+*Updated: 2026-03-16 — Phase 19 plans created (2 plans, waves 1-2)*
