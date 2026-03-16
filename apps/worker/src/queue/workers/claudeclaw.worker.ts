@@ -365,6 +365,57 @@ export const claudeclawWorker = new Worker<ClaudeClawJobData>(
             return { handled: "command", command: messageBody.split(" ")[0] };
         }
 
+        // ─── Admin Character Approval Poll Vote Detection ───
+        // Admin responds to character-change approval polls from their 1:1 chatId.
+        // Must come BEFORE customer poll routing since admin chatId is not a group.
+        try {
+            const adminPhone = config.admin?.defaultPhone;
+            if (adminPhone && job.data.isPollVote && job.data.pollOption) {
+                const { phoneToChatId } = await import("../../services/waha-client");
+                const adminChatId = phoneToChatId(adminPhone);
+
+                if (chatId === adminChatId) {
+                    const { handleAdminCharacterApprovalPollVote } = await import(
+                        "../../services/onboarding/character-level-changes"
+                    );
+                    const handled = await handleAdminCharacterApprovalPollVote({
+                        pollOption: job.data.pollOption,
+                        adminChatId,
+                    });
+                    if (handled) {
+                        return { handled: "admin-character-approval-poll-vote", isGroup: false };
+                    }
+                }
+            }
+        } catch (err: any) {
+            logger.warn({ msg: "Admin character approval poll routing error (non-critical)", error: err.message });
+        }
+
+        // ─── Admin Scene Selection Text Response ───
+        // Admin replies with scene numbers after "Select specific scenes" option.
+        try {
+            const adminPhone = config.admin?.defaultPhone;
+            if (adminPhone && !job.data.isPollVote) {
+                const { phoneToChatId } = await import("../../services/waha-client");
+                const adminChatId = phoneToChatId(adminPhone);
+
+                if (chatId === adminChatId && messageBody?.trim()) {
+                    const { handleAdminSceneSelectionText } = await import(
+                        "../../services/onboarding/character-level-changes"
+                    );
+                    const handled = await handleAdminSceneSelectionText({
+                        messageBody: messageBody.trim(),
+                        adminChatId,
+                    });
+                    if (handled) {
+                        return { handled: "admin-scene-selection-text", isGroup: false };
+                    }
+                }
+            }
+        } catch (err: any) {
+            logger.warn({ msg: "Admin scene selection text routing error (non-critical)", error: err.message });
+        }
+
         // Check for approval responses (approve/reject) before sending to Claude
         if (mode === "personal") {
             try {

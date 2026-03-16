@@ -31,6 +31,7 @@ import {
 import { sendText, sendPoll } from "../waha-client";
 import { sendAdminAlert } from "../admin-alerts";
 import type { ModuleHandleResult, ModuleState } from "./modules/types";
+import { classifyChangeDelta, sendAdminCharacterChangeReview, handleNameOnlyChange } from "./character-level-changes";
 
 // ── Types ─────────────────────────────────────────────────────
 
@@ -256,17 +257,24 @@ export async function handleChangeRequestPollVote(
             // Confirm the change request
             await updateChangeRequestStatus(changeRequestId, "confirmed");
 
-            // For character-change: create a new CharacterBible version
+            // For character-change: classify delta, create bible version, then fork to name-only or admin review
             if (cr.intent === "character-change") {
+                // Fetch current bible for the "from" value in the structured delta
+                const currentBible = await getLatestCharacterBible(tenantId);
+
+                // Build a structured changeDelta treating the customer's message as a visualStyle change
+                const structuredDelta: Record<string, { from: string; to: string }> = {
+                    visualStyle: {
+                        from: currentBible?.visualStyle ?? "cinematic",
+                        to: cr.change_summary ?? "updated style",
+                    },
+                };
+
+                // Create the new CharacterBible version with proper updatedFields and changeDelta
                 const versionId = await createCharacterBibleVersion(
                     tenantId,
-                    {},
-                    {
-                        requestedChange: {
-                            from: "current",
-                            to: cr.change_summary ?? "customer-requested change",
-                        },
-                    },
+                    { visualStyle: cr.change_summary ?? "updated style" },
+                    structuredDelta,
                 );
 
                 if (versionId) {
@@ -287,6 +295,50 @@ export async function handleChangeRequestPollVote(
                         changeRequestId,
                     });
                 }
+
+                // Classify the delta to determine name-only vs visual change
+                const classification = classifyChangeDelta(structuredDelta);
+
+                if (!classification.hasVisualChanges) {
+                    // Name-only change: re-deliver existing video at $0 cost
+                    const state = await import("./module-state").then((m) =>
+                        m.getModuleState(groupId, "character-video-gen" as any),
+                    );
+                    const revealUrl: string = (state?.collectedData?.revealUrl as string) ?? "";
+                    const newName: string = currentBible?.name ?? "your character";
+                    await handleNameOnlyChange({ groupId, changeRequestId, revealUrl, newName });
+                    return;
+                }
+
+                // Visual change: send admin review notification and pause
+                const customerName: string = currentBible?.name ?? "Customer";
+                const costCents = estimateChangeCost("character-change", classification.affectedSceneCount);
+                const costDollars = parseFloat((costCents / 100).toFixed(2));
+
+                await sendAdminCharacterChangeReview({
+                    groupId,
+                    tenantId,
+                    changeRequestId,
+                    changeDelta: structuredDelta,
+                    customerName,
+                    affectedSceneCount: classification.affectedSceneCount,
+                    costDollars,
+                });
+
+                await sendText(
+                    groupId,
+                    "Your character change has been submitted for review. You'll be notified once approved.",
+                );
+
+                logger.info({
+                    msg: "change-request-handler: character-change admin review sent",
+                    groupId,
+                    changeRequestId,
+                    affectedSceneCount: classification.affectedSceneCount,
+                });
+
+                // Return early — admin approval dispatches to queue (not this handler)
+                return;
             }
 
             // For scene-change: dispatch to character-regen queue with concurrency guard
