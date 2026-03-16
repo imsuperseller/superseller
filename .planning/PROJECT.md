@@ -6,16 +6,13 @@ A universal WhatsApp-first customer onboarding system for SuperSeller AI. Every 
 
 ## Current State
 
-Shipped v1.2. Starting v1.3: client-requested character changes + scene regeneration.
+Shipped v1.3 (2026-03-16). 4 milestones complete (v1.0-v1.3), 19 phases, 40 plans.
 
-## Current Milestone: v1.3 Character Iteration
+Full character iteration pipeline: customers send natural-language change requests via WhatsApp → intent classification → cost confirmation → scene-level or character-level regen → admin approval gate for character changes → mixed-scene Remotion assembly → WhatsApp delivery → approve/change loop. Admin portal with version timeline, rollback, and cost audit.
 
-**Goal:** Let customers request changes to their AI character and regenerate scenes through WhatsApp conversation — iterative refinement until they're happy.
+Tech stack: Node.js worker + BullMQ + WAHA + ClaudeClaw + Sora 2 (via fal.ai/Kie.ai) + Remotion + R2 + PostgreSQL + Prisma/Drizzle.
 
-**Target features:**
-- Customer requests character modifications via WhatsApp (appearance, personality, style)
-- Scene regeneration with updated character parameters
-- Approve/reject loop until customer is satisfied
+**Next milestone:** Not yet defined. Run `/gsd:new-milestone` to start v1.4 planning.
 
 ## Core Value
 

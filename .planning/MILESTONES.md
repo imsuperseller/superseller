@@ -1,5 +1,14 @@
 # Milestones
 
+## v1.3 Character Iteration (Shipped: 2026-03-16)
+
+**Phases completed:** 5 phases, 10 plans, 6 tasks
+
+**Key accomplishments:**
+- (none recorded)
+
+---
+
 ## v1.2 Production-Ready Onboarding (Shipped: 2026-03-15)
 
 **Phases completed:** 3 phases, 7 plans | 13 commits | 37 files | +4,174 LOC
