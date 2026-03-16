@@ -142,7 +142,7 @@ Plans:
 | 15. Tech Debt Fixes | v1.3 | 2/2 | Complete | 2026-03-15 |
 | 16. Change Request Intake | v1.3 | 2/2 | Complete | 2026-03-15 |
 | 17. Scene-Level Regeneration | v1.3 | 2/2 | Complete | 2026-03-15 |
-| 18. Character-Level Changes | 2/2 | Complete   | 2026-03-16 | - |
+| 18. Character-Level Changes | 2/2 | Complete    | 2026-03-16 | - |
 | 19. Admin Tooling | v1.3 | 0/TBD | Not started | - |
 
 ---
