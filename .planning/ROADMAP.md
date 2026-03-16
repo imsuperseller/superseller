@@ -106,7 +106,10 @@ Plans:
   2. Admin can approve the full scope, narrow the scope to specific scenes, or deny the request — all via WhatsApp
   3. After admin approval, only the affected scenes are regenerated and the updated reveal video is delivered to the customer with approve/change options
   4. A name-only change (no visual scenes affected) costs $0 AI generation — the existing video is re-delivered with an updated caption
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 18-01-PLAN.md — DB schema extension + queue interface + character-level-changes service module
+- [ ] 18-02-PLAN.md — Admin gate wiring + admin poll routing + multi-scene regen loop + post-delivery poll
 
 ### Phase 19: Admin Tooling
 **Goal**: Admin can view the full history of character changes, roll back to any previous CharacterBible version, and audit per-customer iteration spend
@@ -138,10 +141,10 @@ Plans:
 | 14. Language Detection | v1.2 | 1/1 | Complete | 2026-03-15 |
 | 15. Tech Debt Fixes | v1.3 | 2/2 | Complete | 2026-03-15 |
 | 16. Change Request Intake | v1.3 | 2/2 | Complete | 2026-03-15 |
-| 17. Scene-Level Regeneration | 2/2 | Complete    | 2026-03-15 | - |
-| 18. Character-Level Changes | v1.3 | 0/TBD | Not started | - |
+| 17. Scene-Level Regeneration | v1.3 | 2/2 | Complete | 2026-03-15 |
+| 18. Character-Level Changes | v1.3 | 0/2 | Planning | - |
 | 19. Admin Tooling | v1.3 | 0/TBD | Not started | - |
 
 ---
 *Created: 2026-03-13*
-*Updated: 2026-03-15 — Phase 17 plans created (2 plans, waves 1-2)*
+*Updated: 2026-03-15 — Phase 18 plans created (2 plans, waves 1-2)*
